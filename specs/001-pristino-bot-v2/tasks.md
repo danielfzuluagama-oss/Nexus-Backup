@@ -34,13 +34,13 @@
 - [x] T005 Write unit tests for circuit breaker state machine in tests/unit/circuit-breaker.test.ts [TS-044]
 - [x] T006 Implement circuit breaker in src/circuit-breaker.ts with per-(provider,model,key) isolation, 3-failure threshold, 60s cooldown [TS-044]
 - [x] T007 [P] Write unit tests for token budget calculation in tests/unit/tokens.test.ts [TS-060, TS-061]
-- [ ] T008 Implement token budget calculator and history trimming in src/tokens.ts (depends on T007) [TS-060, TS-061]
+- [x] T008 Implement token budget calculator and history trimming in src/tokens.ts (depends on T007) [TS-060, TS-061]
 - [x] T009 Write contract tests for LLM provider cascade in tests/contract/llm-provider.test.ts [TS-046]
-- [ ] T010 Implement 2D cascading LLM provider in src/config/llm-providers.ts with circuit breaker integration [TS-040, TS-046]
-- [ ] T011 [P] Implement AgentRuntime per-instance container in src/runtime.ts with isolated state fields
-- [ ] T012 [P] Implement tool registry dispatcher in src/tools/registry.ts
-- [ ] T092 [P] Implement sub-agent delegation registry in src/tools/delegate.ts with depth tracking state
-- [ ] T013 [P] Configure Express webhook server in src/index.ts with POST /webhook/:botName and GET /health [TS-062, TS-063]
+- [x] T010 Implement 2D cascading LLM provider in src/config/llm-providers.ts with circuit breaker integration [TS-040, TS-046]
+- [x] T011 [P] Implement AgentRuntime per-instance container in src/runtime.ts with isolated state fields
+- [x] T012 [P] Implement tool registry dispatcher in src/tools/registry.ts
+- [x] T092 [P] Implement sub-agent delegation registry in src/tools/delegate.ts with depth tracking state
+- [x] T013 [P] Configure Express webhook server in src/index.ts with POST /webhook/:botName and GET /health [TS-062, TS-063]
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
 
