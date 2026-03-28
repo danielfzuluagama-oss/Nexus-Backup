@@ -48,7 +48,7 @@ function validateOutput(response: string): ValidateResult
 
 **Invariants**:
 - Detects jailbreak compliance patterns (logs warning, does NOT block)
-- Scrubs forbidden brand voice terms and replaces them
+- Detects forbidden brand voice terms and logs warnings (does NOT replace — replacement is handled by format.ts)
 - Always delivers a response (soft pass per checkpoint hierarchy)
 - `warnings` array is always populated with any detected issues
 - Never throws; always returns a result

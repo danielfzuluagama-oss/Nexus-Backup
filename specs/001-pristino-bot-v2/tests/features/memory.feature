@@ -37,7 +37,7 @@ Feature: Three-Layer Memory Persistence
     Then all three memory layers are cleared for that user
     And the purge completes within 30 seconds
 
-  @TS-035 @FR-028 @P2 @validation
+  @TS-035 @FR-025 @FR-028 @P2 @validation
   Scenario Outline: All stored data has lifecycle classification
     Given a data record in the <layer> memory layer
     When the record is persisted

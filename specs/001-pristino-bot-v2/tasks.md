@@ -31,8 +31,8 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Write unit tests for circuit breaker state machine in tests/unit/circuit-breaker.test.ts [TS-044, TS-045]
-- [ ] T006 Implement circuit breaker in src/circuit-breaker.ts with per-(provider,model,key) isolation, 3-failure threshold, 60s cooldown [TS-044, TS-045]
+- [ ] T005 Write unit tests for circuit breaker state machine in tests/unit/circuit-breaker.test.ts [TS-044]
+- [ ] T006 Implement circuit breaker in src/circuit-breaker.ts with per-(provider,model,key) isolation, 3-failure threshold, 60s cooldown [TS-044]
 - [ ] T007 [P] Write unit tests for token budget calculation in tests/unit/tokens.test.ts [TS-060, TS-061]
 - [ ] T008 Implement token budget calculator and history trimming in src/tokens.ts (depends on T007) [TS-060, TS-061]
 - [ ] T009 Write contract tests for LLM provider cascade in tests/contract/llm-provider.test.ts [TS-046]
@@ -396,3 +396,6 @@ Phases 1-7 deliver the MVP: setup, foundational, security, ecosystem, routing, b
 - Q: Does Phase 11 (Resilience) depend only on Phase 2? -> A: No — T069 (mode degradation) requires terna and committee to exist. Added Phase 8 dependency. [T069, Phase 11]
 - Q: Is T033 (cognition loop) too large for one task? -> A: Narrowed scope to iteration control flow only. Prompt composition is T034, tool dispatch is T012. [T033]
 - Q: Is T040 (excellence scoring) 16 programmatic functions? -> A: No — LLM-based evaluation prompt, not programmatic scorers. Clarified in task description. [T040]
+- Q: T005/T006 reference TS-045 which was merged into TS-044 during clarify — stale reference? -> A: Yes — removed TS-045 from T005/T006. TS-044 Scenario Outline covers the full circuit breaker state machine. [T005, T006]
+- Q: contracts/security.md says CP3 "scrubs and replaces" forbidden terms but T019 says "warn only" — which is authoritative? -> A: T019 clarification is authoritative. Updated contracts/security.md to say "detects and logs warnings (does NOT replace)". [T019, contracts/security.md]
+- Q: FR-025 (episodic memory) has no @FR-025 tag in feature files — coverage gap? -> A: Added @FR-025 to TS-035 (lifecycle classification Scenario Outline, episodic row). [TS-035, FR-025]
