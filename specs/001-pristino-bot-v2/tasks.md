@@ -56,9 +56,9 @@
 
 > Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T014 [P] [US4] Write unit tests for CP1 sanitizeInput in tests/unit/security.test.ts [TS-014, TS-067, TS-018]
-- [ ] T015 [P] [US4] Write unit tests for CP2 buildSecurePrompt in tests/unit/security.test.ts [TS-015, TS-068, TS-019]
-- [ ] T016 [P] [US4] Write unit tests for CP3 validateOutput in tests/unit/security.test.ts [TS-016, TS-020]
+- [x] T014 [P] [US4] Write unit tests for CP1 sanitizeInput in tests/unit/security.test.ts [TS-014, TS-067, TS-018]
+- [x] T015 [P] [US4] Write unit tests for CP2 buildSecurePrompt in tests/unit/security.test.ts [TS-015, TS-068, TS-019]
+- [x] T016 [P] [US4] Write unit tests for CP3 validateOutput in tests/unit/security.test.ts [TS-016, TS-020]
 
 ### Implementation (GREEN)
 
