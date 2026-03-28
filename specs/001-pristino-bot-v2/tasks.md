@@ -79,15 +79,15 @@
 
 ### Tests (RED)
 
-- [ ] T021 [P] [US5] Write unit tests for agent.md loader in tests/unit/loader.test.ts [TS-025, TS-026, TS-027]
-- [ ] T022 [P] [US5] Write integration test for ecosystem loading in tests/integration/ecosystem.test.ts [TS-028]
+- [x] T021 [P] [US5] Write unit tests for agent.md loader in tests/unit/loader.test.ts [TS-025, TS-026, TS-027]
+- [x] T022 [P] [US5] Write integration test for ecosystem loading in tests/integration/ecosystem.test.ts [TS-028]
 
 ### Implementation (GREEN)
 
-- [ ] T023 [US5] Implement agent.md parser with Zod validation in src/ecosystem/loader.ts (depends on T004, T021)
-- [ ] T024 [US5] Implement shared defaults merger from agents/_shared/ in src/ecosystem/loader.ts [TS-027]
-- [ ] T025 [US5] Implement skill.yaml loader and registration in src/ecosystem/skill-engine.ts
-- [ ] T026 [US5] Implement dynamic agent registration into routing subsystem in src/ecosystem/router.ts [TS-025, TS-028]
+- [x] T023 [US5] Implement agent.md parser with Zod validation in src/ecosystem/loader.ts (depends on T004, T021)
+- [x] T024 [US5] Implement shared defaults merger from agents/_shared/ in src/ecosystem/loader.ts [TS-027]
+- [x] T025 [US5] Implement skill.yaml loader and registration in src/ecosystem/skill-engine.ts
+- [x] T026 [US5] Implement dynamic agent registration into routing subsystem in src/ecosystem/router.ts [TS-025, TS-028]
 
 **Checkpoint**: Ecosystem loads agents declaratively. Invalid definitions logged and skipped.
 
