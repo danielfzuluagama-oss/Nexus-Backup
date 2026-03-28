@@ -62,10 +62,10 @@
 
 ### Implementation (GREEN)
 
-- [ ] T017 [US4] Implement CP1 sanitizeInput in src/security.ts: injection detection, control char stripping, length enforcement (depends on T014)
-- [ ] T018 [US4] Implement CP2 buildSecurePrompt in src/security.ts: anti-jailbreak suffix, credential redaction, idempotency (depends on T015)
-- [ ] T019 [US4] Implement CP3 validateOutput in src/security.ts: prompt leak detection, forbidden term detection (warn only, no replacement — replacement handled by format.ts), soft-pass logging (depends on T016)
-- [ ] T020 [US4] Implement user allowlist authorization with silent drop for unauthorized users in src/bot.ts [TS-003, TS-017]
+- [x] T017 [US4] Implement CP1 sanitizeInput in src/security.ts: injection detection, control char stripping, length enforcement (depends on T014)
+- [x] T018 [US4] Implement CP2 buildSecurePrompt in src/security.ts: anti-jailbreak suffix, credential redaction, idempotency (depends on T015)
+- [x] T019 [US4] Implement CP3 validateOutput in src/security.ts: prompt leak detection, forbidden term detection (warn only, no replacement — replacement handled by format.ts), soft-pass logging (depends on T016)
+- [x] T020 [US4] Implement user allowlist authorization with silent drop for unauthorized users in src/bot.ts [TS-003, TS-017]
 
 **Checkpoint**: Security pipeline complete. All 3 checkpoints active with 100% test coverage.
 

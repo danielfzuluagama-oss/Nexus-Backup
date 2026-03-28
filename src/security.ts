@@ -25,7 +25,7 @@ const INJECTION_PATTERNS = [
 ];
 
 const OUTPUT_RISK_PATTERNS = [
-  /as\s+an?\s+ai\s+with(out)?\s+no\s+restrictions/i,
+  /as\s+an?\s+ai\s+with(?:out)?\s+(?:no\s+)?restrictions/i,
   /i\s+(?:can|will)\s+(?:now\s+)?do\s+anything/i,
   /my\s+(?:system\s+)?(?:prompt|instructions)\s+(?:is|are|says?)\s*:/i,
 ];
@@ -77,33 +77,57 @@ export function sanitizeInput(text: string): {
   return { safe: true, cleaned };
 }
 
+const CREDENTIAL_PATTERNS = [
+  /\bAPI_KEY\s*=\s*\S+/gi,
+  /\bSECRET_KEY\s*=\s*\S+/gi,
+  /\bBearer\s+[A-Za-z0-9\-._~+/]+=*/gi,
+  /\bsk-[A-Za-z0-9]{20,}/gi,
+];
+
 export function buildSecurePrompt(basePrompt: string): string {
-  return basePrompt + SECURITY_SUFFIX;
+  // Idempotent: don't double-append
+  if (basePrompt.includes("SECURITY RULES:")) return basePrompt;
+
+  // Redact any credentials that leaked into the prompt
+  let sanitized = basePrompt;
+  for (const pattern of CREDENTIAL_PATTERNS) {
+    sanitized = sanitized.replace(pattern, "[REDACTED]");
+  }
+
+  return sanitized + SECURITY_SUFFIX;
 }
 
 export function validateOutput(text: string): {
   safe: boolean;
   cleaned: string;
+  warnings: string[];
 } {
+  const warnings: string[] = [];
+
   for (const pattern of OUTPUT_RISK_PATTERNS) {
     if (pattern.test(text)) {
+      const warning = `prompt_leak: ${pattern.source}`;
+      warnings.push(warning);
       logger.warn("Suspicious output pattern detected", { pattern: pattern.source });
-      return { safe: false, cleaned: text };
     }
   }
 
-  // MetodologIA Brand Voice: scrub forbidden words from output
-  let cleaned = text;
+  // MetodologIA Brand Voice: detect forbidden words (warn only, no replacement)
+  // Replacement is handled by format.ts per CP3 soft-pass contract
   for (let i = 0; i < FORBIDDEN_PATTERNS.length; i++) {
     const pattern = FORBIDDEN_PATTERNS[i];
-    if (pattern.test(cleaned)) {
+    if (pattern.test(text)) {
+      warnings.push(`forbidden_term: ${FORBIDDEN_WORDS[i]}`);
       logger.warn("Forbidden brand-voice word detected in output", {
         word: FORBIDDEN_WORDS[i],
       });
       pattern.lastIndex = 0; // reset regex state after .test()
-      cleaned = cleaned.replace(pattern, "***");
     }
   }
 
-  return { safe: true, cleaned };
+  return {
+    safe: warnings.filter(w => w.startsWith("prompt_leak")).length === 0,
+    cleaned: text, // CP3 does not modify output (soft pass)
+    warnings,
+  };
 }
