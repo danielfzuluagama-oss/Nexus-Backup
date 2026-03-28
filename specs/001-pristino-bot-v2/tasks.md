@@ -33,9 +33,9 @@
 
 - [x] T005 Write unit tests for circuit breaker state machine in tests/unit/circuit-breaker.test.ts [TS-044]
 - [x] T006 Implement circuit breaker in src/circuit-breaker.ts with per-(provider,model,key) isolation, 3-failure threshold, 60s cooldown [TS-044]
-- [ ] T007 [P] Write unit tests for token budget calculation in tests/unit/tokens.test.ts [TS-060, TS-061]
+- [x] T007 [P] Write unit tests for token budget calculation in tests/unit/tokens.test.ts [TS-060, TS-061]
 - [ ] T008 Implement token budget calculator and history trimming in src/tokens.ts (depends on T007) [TS-060, TS-061]
-- [ ] T009 Write contract tests for LLM provider cascade in tests/contract/llm-provider.test.ts [TS-046]
+- [x] T009 Write contract tests for LLM provider cascade in tests/contract/llm-provider.test.ts [TS-046]
 - [ ] T010 Implement 2D cascading LLM provider in src/config/llm-providers.ts with circuit breaker integration [TS-040, TS-046]
 - [ ] T011 [P] Implement AgentRuntime per-instance container in src/runtime.ts with isolated state fields
 - [ ] T012 [P] Implement tool registry dispatcher in src/tools/registry.ts
