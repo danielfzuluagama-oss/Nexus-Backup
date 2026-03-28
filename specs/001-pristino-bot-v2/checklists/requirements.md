@@ -65,6 +65,80 @@
 - [x] No NEEDS CLARIFICATION markers remaining
 - [x] Spec ready for /iikit-02-plan
 
+## Acceptance Criteria Quality
+
+- [x] SC-001 (60s response) has a concrete numeric threshold
+  and specifies "across all routing modes" [Clarity, SC-001]
+- [x] SC-002/SC-003 use p95 percentile qualification,
+  not just averages [Clarity, SC-002, SC-003]
+- [x] SC-004 (100% checkpoint pass-through) is verifiable
+  via audit logs, not self-reported [Clarity, SC-004]
+- [x] SC-005 (0% forbidden terms) has a testable
+  post-delivery verification mechanism [Clarity, SC-005]
+- [x] SC-009 (circuit breaker 3 failures, 60s cooldown)
+  specifies exact numeric thresholds [Clarity, SC-009]
+- [x] SC-011 (coverage thresholds) distinguishes global
+  (80%) from critical-path (100%) with named modules
+  [Clarity, SC-011]
+- [x] SC-012 (zero state leakage) is testable via
+  independent instance mutation verification [Clarity, SC-012]
+
+## Scenario Coverage
+
+- [x] All 12 user stories have BDD scenarios in .feature
+  files with @US-XXX tags [Coverage, US-001 to US-012]
+- [x] All 43 functional requirements have at least one
+  @FR-XXX tag in feature files [Coverage, FR-001 to FR-043]
+- [x] 11/12 success criteria tagged in feature files;
+  SC-011 is a meta-criterion covered by coverage tooling
+  [Coverage, SC-001 to SC-012]
+- [x] Edge cases from spec (all-providers-unavailable,
+  startup queueing, non-Spanish voice, token exhaustion,
+  workflow timeout, duplicate mirror messages) all have
+  corresponding scenarios [Coverage, Edge Cases]
+
+## Consistency
+
+- [x] No terminology drift between spec, plan, and
+  implementation (e.g., "terna" used consistently, not
+  "trio" or "panel") [Consistency]
+- [x] Entity names in data-model.md match interfaces in
+  src/ecosystem/types.ts [Consistency, Data Model]
+- [x] CP3 contract aligned with implementation: detects
+  and warns only, no replacement (replacement in format.ts)
+  [Consistency, contracts/security.md, tasks.md Clarifications]
+- [x] Tiebreaker hierarchy consistent across spec (FR-003),
+  plan (Router contract), and implementation (router.ts)
+  [Consistency, FR-003]
+- [x] Timeout values consistent: single 15s, terna 30s,
+  committee 60s, step 30s across spec and plan
+  [Consistency, SC-001, SC-002, SC-003]
+
+## Non-Functional Requirements
+
+- [x] Performance thresholds specified with percentile
+  (p95) not just averages [Clarity, SC-002, SC-003]
+- [x] Availability target (99.5%) specified with
+  mechanism (cascade + degradation) [Clarity, SC-006]
+- [x] Security model (defense-in-depth) specifies
+  checkpoint hierarchy (hard/hard/soft) [Clarity, FR-015 to FR-017]
+- [x] Data retention policy specifies TTL mechanism and
+  purge capability per layer [Clarity, FR-024 to FR-028]
+- [x] Message size limits (4096 chars) with chunking
+  strategy specified [Clarity, FR-033]
+
+## Dependencies & Assumptions
+
+- [x] External dependencies (Groq, Firebase, Telegram)
+  have failure handling specified (cascade, fallback,
+  graceful degradation) [Assumptions, FR-029, FR-032]
+- [x] No assumption of unlimited API quota — multi-key
+  cascade with circuit breaker addresses rate limits
+  [Assumptions, FR-029, FR-030]
+- [x] Mirror instance isolation does not assume shared
+  database — per-instance state explicitly defined
+  [Assumptions, FR-037, FR-038]
+
 ## Clarifications
 
 ### Session 2026-03-28
