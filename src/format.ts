@@ -424,7 +424,177 @@ export function stripHtml(htmlText: string): string {
   return htmlText.replace(/<[^>]*>?/gm, '');
 }
 
-/** 
+// ---------------------------------------------------------------------------
+// TS-058: Template-Based Deliverable Rendering
+//
+// DELIVERABLE_TEMPLATES defines section schemas keyed by template name.
+// renderDeliverable(template, sections) assembles the structured output.
+// ---------------------------------------------------------------------------
+
+export interface DeliverableSection {
+  /** Stable machine key for this section (used to look up content). */
+  key: string;
+  /** Human-readable heading rendered in the output. */
+  heading: string;
+  /** Whether content for this section is required. */
+  required: boolean;
+}
+
+export interface DeliverableTemplateSchema {
+  /** Display name for the template type. */
+  name: string;
+  /** Ordered list of sections that compose the deliverable. */
+  sections: DeliverableSection[];
+}
+
+/**
+ * Built-in deliverable template schemas.
+ * Keys correspond to the template names accepted by renderDeliverable().
+ */
+export const DELIVERABLE_TEMPLATES: Record<string, DeliverableTemplateSchema> = {
+  assessment: {
+    name: "Assessment Report",
+    sections: [
+      { key: "executive_summary", heading: "Resumen Ejecutivo", required: true },
+      { key: "context", heading: "Contexto y Alcance", required: true },
+      { key: "findings", heading: "Hallazgos Principales", required: true },
+      { key: "recommendations", heading: "Recomendaciones", required: true },
+      { key: "next_steps", heading: "Próximos Pasos", required: true },
+    ],
+  },
+  brief: {
+    name: "Strategic Brief",
+    sections: [
+      { key: "objective", heading: "Objetivo", required: true },
+      { key: "background", heading: "Antecedentes", required: true },
+      { key: "approach", heading: "Enfoque", required: true },
+      { key: "deliverables", heading: "Entregables", required: true },
+    ],
+  },
+  proposal: {
+    name: "Proposal",
+    sections: [
+      { key: "summary", heading: "Resumen", required: true },
+      { key: "problem", heading: "Problema", required: true },
+      { key: "solution", heading: "Solución Propuesta", required: true },
+      { key: "timeline", heading: "Cronograma", required: false },
+      { key: "investment", heading: "Inversión", required: false },
+    ],
+  },
+};
+
+/**
+ * TS-058: Render a deliverable from a named template schema.
+ *
+ * @param templateName - Key in DELIVERABLE_TEMPLATES (e.g. "assessment")
+ * @param sections     - Map from section key → body content string
+ * @returns Structured plain-text deliverable with all section headings in schema order
+ */
+export function renderDeliverable(
+  templateName: string,
+  sections: Record<string, string>,
+): string {
+  const schema = DELIVERABLE_TEMPLATES[templateName];
+  if (!schema) {
+    logger.warn("renderDeliverable: unknown template", { templateName });
+    return `[Plantilla desconocida: ${templateName}]`;
+  }
+
+  const parts: string[] = [];
+
+  for (const sec of schema.sections) {
+    const body = (sections[sec.key] ?? "").trim();
+    // Always include the heading; omit empty optional sections
+    if (!body && !sec.required) continue;
+    parts.push(`${sec.heading}\n${body}`);
+  }
+
+  return parts.join("\n\n").trim();
+}
+
+// ---------------------------------------------------------------------------
+// TS-059: Deliverable chunking with sentence-boundary and heading preservation
+//
+// chunkDeliverable splits plain-text (or lightly formatted) deliverable text
+// at sentence boundaries so that:
+//   1. Each chunk is at most 4096 characters.
+//   2. No chunk ends mid-sentence (splits at . ! ? boundaries).
+//   3. A section heading is never separated from its immediate body paragraph.
+// ---------------------------------------------------------------------------
+
+const DELIVERABLE_CHUNK_LIMIT = 4096;
+
+/**
+ * TS-059: Split a deliverable string into chunks of at most 4096 characters.
+ *
+ * Strategy:
+ *   - Split input into sentences (ending in . ! ?).
+ *   - Accumulate sentences into a chunk until the next sentence would exceed the limit.
+ *   - Before flushing a chunk, check whether the last sentence added is a bare heading
+ *     (a line with no trailing period — indicating a section title). If so, move the
+ *     heading to the start of the next chunk to prevent heading–body separation.
+ *
+ * @param text - Plain or lightly formatted text to chunk
+ * @returns Array of chunks; single-element array if text fits within limit
+ */
+export function chunkDeliverable(text: string): string[] {
+  if (text.length <= DELIVERABLE_CHUNK_LIMIT) return [text];
+
+  // Split into sentence-terminated tokens. Keep the terminator attached to each sentence.
+  // Pattern: split after . ! ? optionally followed by a closing quote/paren and whitespace.
+  const sentencePattern = /(?<=[.!?]["')]?)\s+/;
+  const sentences = text.split(sentencePattern);
+
+  const chunks: string[] = [];
+  let current = "";
+
+  for (let i = 0; i < sentences.length; i++) {
+    const sentence = sentences[i];
+    const separator = current.length > 0 ? " " : "";
+    const candidate = current + separator + sentence;
+
+    if (candidate.length <= DELIVERABLE_CHUNK_LIMIT) {
+      current = candidate;
+    } else {
+      // Flush current chunk (if any) before starting a new one with this sentence
+      if (current.length > 0) {
+        // Heading–body check: if the last line of current is a bare heading (no sentence-
+        // terminating punctuation), move it to the beginning of the next chunk so the
+        // heading stays with its body.
+        const lines = current.split("\n");
+        const lastLine = lines[lines.length - 1].trim();
+        const isOrphanedHeading = lastLine.length > 0 && !/[.!?]$/.test(lastLine);
+
+        if (isOrphanedHeading && lines.length > 1) {
+          // Pop the orphaned heading off the current chunk
+          lines.pop();
+          chunks.push(lines.join("\n").trim());
+          // Prepend it to the new chunk being built
+          current = lastLine + "\n" + sentence;
+        } else {
+          chunks.push(current.trim());
+          current = sentence;
+        }
+      } else {
+        // Single sentence exceeds limit — hard-split at limit boundary as last resort
+        let remaining = sentence;
+        while (remaining.length > DELIVERABLE_CHUNK_LIMIT) {
+          chunks.push(remaining.slice(0, DELIVERABLE_CHUNK_LIMIT));
+          remaining = remaining.slice(DELIVERABLE_CHUNK_LIMIT);
+        }
+        current = remaining;
+      }
+    }
+  }
+
+  if (current.trim().length > 0) {
+    chunks.push(current.trim());
+  }
+
+  return chunks.length > 0 ? chunks : [text];
+}
+
+/**
  * Context-aware chunker that respects Telegram's limits without breaking HTML tags.
  * Since parsing HTML deeply for chunks can be very complex, this splits at block level where possible.
  */

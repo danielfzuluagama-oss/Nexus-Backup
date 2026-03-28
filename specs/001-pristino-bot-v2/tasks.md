@@ -236,14 +236,14 @@
 
 ### Tests (RED)
 
-- [ ] T066 [P] [US9] Write unit tests for provider cascade in tests/unit/circuit-breaker.test.ts [TS-040, TS-041, TS-072]
+- [x] T066 [P] [US9] Write unit tests for provider cascade in tests/unit/circuit-breaker.test.ts [TS-040, TS-041, TS-072]
 
 ### Implementation (GREEN)
 
-- [ ] T067 [US9] Implement credential-level cascade (horizontal: key-1→key-2 before tier drop) in src/config/llm-providers.ts (depends on T010, T066) [TS-040]
-- [ ] T068 [US9] Implement circuit breaker probe with pending user request in src/circuit-breaker.ts [TS-041, TS-072]
-- [ ] T069 [US9] Implement routing mode degradation on timeout (committee→terna→single→direct) in src/ecosystem/router.ts [TS-013, TS-009]
-- [ ] T070 [US9] Implement fallback response without error phrases when all providers exhausted [TS-042, TS-064]
+- [x] T067 [US9] Implement credential-level cascade (horizontal: key-1→key-2 before tier drop) in src/config/llm-providers.ts (depends on T010, T066) [TS-040]
+- [x] T068 [US9] Implement circuit breaker probe with pending user request in src/circuit-breaker.ts [TS-041, TS-072]
+- [x] T069 [US9] Implement routing mode degradation on timeout (committee→terna→single→direct) in src/ecosystem/router.ts [TS-013, TS-009]
+- [x] T070 [US9] Implement fallback response without error phrases when all providers exhausted [TS-042, TS-064]
 
 **Checkpoint**: Provider cascade resilient. Circuit breaker isolates failures. Mode degrades gracefully.
 
@@ -257,15 +257,15 @@
 
 ### Tests (RED)
 
-- [ ] T071 [P] [US10] Write unit tests for skill engine in tests/unit/skill-engine.test.ts [TS-051, TS-052, TS-053]
+- [x] T071 [P] [US10] Write unit tests for skill engine in tests/unit/skill-engine.test.ts [TS-051, TS-052, TS-053]
 
 ### Implementation (GREEN)
 
-- [ ] T072 [US10] Implement skill workflow executor with sequential steps and 30s default timeout in src/ecosystem/skill-engine.ts (depends on T025, T071) [TS-051]
-- [ ] T073 [US10] Implement per-step validation and recovery actions in src/ecosystem/skill-engine.ts [TS-052]
-- [ ] T074 [US10] Implement mid-workflow handoff with accumulated context in src/ecosystem/skill-engine.ts [TS-053]
-- [ ] T075 [US10] Verify catalog capacity (24+ skills, 96+ workflows) against loaded agent definitions [TS-054]
-- [ ] T076 [US10] Implement skill workflow timeout (60s) with partial result delivery in src/ecosystem/skill-engine.ts [TS-066]
+- [x] T072 [US10] Implement skill workflow executor with sequential steps and 30s default timeout in src/ecosystem/skill-engine.ts (depends on T025, T071) [TS-051]
+- [x] T073 [US10] Implement per-step validation and recovery actions in src/ecosystem/skill-engine.ts [TS-052]
+- [x] T074 [US10] Implement mid-workflow handoff with accumulated context in src/ecosystem/skill-engine.ts [TS-053]
+- [x] T075 [US10] Verify catalog capacity (24+ skills, 96+ workflows) against loaded agent definitions [TS-054]
+- [x] T076 [US10] Implement skill workflow timeout (60s) with partial result delivery in src/ecosystem/skill-engine.ts [TS-066]
 
 **Checkpoint**: Skill engine executes workflows with validation, recovery, handoff, and timeout handling.
 
@@ -279,13 +279,13 @@
 
 ### Tests (RED)
 
-- [ ] T077 [P] [US11] Write unit tests for instance isolation in tests/unit/runtime.test.ts [TS-055, TS-074, TS-075, TS-076, TS-077]
+- [x] T077 [P] [US11] Write unit tests for instance isolation in tests/unit/runtime.test.ts [TS-055, TS-074, TS-075, TS-076, TS-077]
 
 ### Implementation (GREEN)
 
-- [ ] T078 [US11] Implement per-instance credential isolation in src/runtime.ts (depends on T011, T077) [TS-055]
-- [ ] T079 [US11] Implement shared read-only definition loading at startup in src/ecosystem/loader.ts [TS-056]
-- [ ] T080 [US11] Verify conversation history, knowledge base, circuit breaker, and tool registry isolation between instances [TS-074, TS-075, TS-076, TS-077]
+- [x] T078 [US11] Implement per-instance credential isolation in src/runtime.ts (depends on T011, T077) [TS-055]
+- [x] T079 [US11] Implement shared read-only definition loading at startup in src/ecosystem/loader.ts [TS-056]
+- [x] T080 [US11] Verify conversation history, knowledge base, circuit breaker, and tool registry isolation between instances [TS-074, TS-075, TS-076, TS-077]
 
 **Checkpoint**: Mirror instances (Pristino/Deonto) operate independently with zero state leakage.
 
@@ -299,12 +299,12 @@
 
 ### Tests (RED)
 
-- [ ] T081 [P] [US12] Write unit tests for template rendering and chunking in tests/unit/format.test.ts [TS-058, TS-059]
+- [x] T081 [P] [US12] Write unit tests for template rendering and chunking in tests/unit/format.test.ts [TS-058, TS-059]
 
 ### Implementation (GREEN)
 
-- [ ] T082 [US12] Implement template engine with section schema validation in src/format.ts (depends on T037, T081) [TS-058]
-- [ ] T083 [US12] Implement message chunking with 4096-char limit, sentence-boundary splitting, and heading preservation in src/format.ts [TS-059]
+- [x] T082 [US12] Implement template engine with section schema validation in src/format.ts (depends on T037, T081) [TS-058]
+- [x] T083 [US12] Implement message chunking with 4096-char limit, sentence-boundary splitting, and heading preservation in src/format.ts [TS-059]
 
 **Checkpoint**: Deliverables render via templates. Oversized messages chunked cleanly.
 

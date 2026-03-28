@@ -6,6 +6,9 @@ import {
   scoreDeliverable,
   enforceExcellenceLoop,
   FORBIDDEN_TERM_MAP,
+  renderDeliverable,
+  chunkDeliverable,
+  DELIVERABLE_TEMPLATES,
 } from "../../src/format.js";
 
 // ---------------------------------------------------------------------------
@@ -498,5 +501,192 @@ describe("TS-069: Standard deliverable scored at 8/10 minimum", () => {
     // It must be within [1, 10]
     expect(result.overall).toBeGreaterThanOrEqual(1);
     expect(result.overall).toBeLessThanOrEqual(10);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TS-058 — Deliverable rendered with all required template sections,
+//           heading hierarchy matches
+// ---------------------------------------------------------------------------
+
+describe("TS-058: Deliverable rendered with all required template sections", () => {
+  it("DELIVERABLE_TEMPLATES is exported and contains an 'assessment' entry", () => {
+    expect(DELIVERABLE_TEMPLATES).toBeDefined();
+    expect(typeof DELIVERABLE_TEMPLATES).toBe("object");
+    expect(DELIVERABLE_TEMPLATES).toHaveProperty("assessment");
+  });
+
+  it("the 'assessment' template schema defines at least one section", () => {
+    const schema = DELIVERABLE_TEMPLATES["assessment"];
+    expect(Array.isArray(schema.sections)).toBe(true);
+    expect(schema.sections.length).toBeGreaterThan(0);
+  });
+
+  it("renderDeliverable is exported and callable", () => {
+    expect(typeof renderDeliverable).toBe("function");
+  });
+
+  it("renderDeliverable returns a string for valid input", () => {
+    const sections: Record<string, string> = {};
+    for (const sec of DELIVERABLE_TEMPLATES["assessment"].sections) {
+      sections[sec.key] = `Content for ${sec.heading}. This section provides relevant analysis and findings.`;
+    }
+    const result = renderDeliverable("assessment", sections);
+    expect(typeof result).toBe("string");
+    expect(result.trim().length).toBeGreaterThan(0);
+  });
+
+  it("output contains all section headings defined in the assessment template schema", () => {
+    const schema = DELIVERABLE_TEMPLATES["assessment"];
+    const sections: Record<string, string> = {};
+    for (const sec of schema.sections) {
+      sections[sec.key] = `Body content for the ${sec.heading} section.`;
+    }
+
+    const result = renderDeliverable("assessment", sections);
+
+    for (const sec of schema.sections) {
+      expect(result).toContain(sec.heading);
+    }
+  });
+
+  it("section hierarchy matches the template — headings appear in schema-defined order", () => {
+    const schema = DELIVERABLE_TEMPLATES["assessment"];
+    const sections: Record<string, string> = {};
+    for (const sec of schema.sections) {
+      sections[sec.key] = `Body text for ${sec.heading}.`;
+    }
+
+    const result = renderDeliverable("assessment", sections);
+
+    let lastIndex = -1;
+    for (const sec of schema.sections) {
+      const idx = result.indexOf(sec.heading);
+      expect(idx).toBeGreaterThan(lastIndex);
+      lastIndex = idx;
+    }
+  });
+
+  it("rendered output contains the body content provided for each section", () => {
+    const schema = DELIVERABLE_TEMPLATES["assessment"];
+    const sections: Record<string, string> = {};
+    for (const sec of schema.sections) {
+      sections[sec.key] = `Unique marker: ${sec.key}-body-content`;
+    }
+
+    const result = renderDeliverable("assessment", sections);
+
+    for (const sec of schema.sections) {
+      expect(result).toContain(`Unique marker: ${sec.key}-body-content`);
+    }
+  });
+
+  it("renderDeliverable throws or returns error string when an unknown template name is given", () => {
+    // Calling with a non-existent template key must not silently produce garbage output
+    const result = renderDeliverable("nonexistent_template_xyz", {});
+    // Either the function returns an error message string, or it returns empty, but must not throw
+    expect(typeof result).toBe("string");
+  });
+
+  it("renderDeliverable with empty sections still returns a structured string", () => {
+    const result = renderDeliverable("assessment", {});
+    expect(typeof result).toBe("string");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TS-059 — Oversized deliverable chunked at 4096 chars, no chunk ends
+//           mid-sentence, no heading split from body
+// ---------------------------------------------------------------------------
+
+describe("TS-059: Oversized deliverable chunked with formatting preservation", () => {
+  const CHUNK_LIMIT = 4096;
+
+  it("chunkDeliverable is exported and callable", () => {
+    expect(typeof chunkDeliverable).toBe("function");
+  });
+
+  it("a deliverable within the 4096-char limit is returned as a single-element array", () => {
+    const short = "This is a short deliverable. It fits within the limit.";
+    const chunks = chunkDeliverable(short);
+    expect(Array.isArray(chunks)).toBe(true);
+    expect(chunks).toHaveLength(1);
+    expect(chunks[0]).toBe(short);
+  });
+
+  it("each chunk is at most 4096 characters long", () => {
+    // Generate a deliverable well over the limit using repeated paragraphs
+    const paragraph = "La estrategia recomendada es implementar el método sistemático de delegación. " +
+      "Este principio garantiza la calidad y la trazabilidad de cada entregable. ";
+    const oversized = paragraph.repeat(100); // ~15_000 chars
+
+    const chunks = chunkDeliverable(oversized);
+
+    for (const chunk of chunks) {
+      expect(chunk.length).toBeLessThanOrEqual(CHUNK_LIMIT);
+    }
+  });
+
+  it("the concatenation of all chunks preserves the full content (no data loss)", () => {
+    const paragraph = "Each sentence contains unique information. The method ensures accuracy. ";
+    const oversized = paragraph.repeat(80);
+
+    const chunks = chunkDeliverable(oversized);
+    const rejoined = chunks.join(" ").replace(/\s+/g, " ").trim();
+    const original = oversized.replace(/\s+/g, " ").trim();
+
+    expect(rejoined).toBe(original);
+  });
+
+  it("no chunk ends mid-sentence — each chunk ends at a sentence boundary", () => {
+    // Build a controlled text with clear sentence boundaries
+    const sentences = Array.from({ length: 200 }, (_, i) =>
+      `Sentence number ${i + 1} contains substantive information about the topic.`
+    );
+    const oversized = sentences.join(" ");
+
+    const chunks = chunkDeliverable(oversized);
+
+    for (const chunk of chunks) {
+      const trimmed = chunk.trim();
+      if (trimmed.length === 0) continue;
+      // Each chunk must end with a sentence-terminating character (., !, ?)
+      // optionally followed by a quote or closing parenthesis
+      expect(trimmed).toMatch(/[.!?]["')]?\s*$/);
+    }
+  });
+
+  it("a heading at the start of a chunk is followed by its body in the same chunk", () => {
+    // Build text where a section heading appears just under the 4096 boundary
+    // so that naive splitting might orphan the heading at the end of a chunk
+    const filler = "Body content for the section. This provides detail and analysis. ".repeat(30);
+    // Place heading near the end of a 4096-boundary region
+    const paddingSize = CHUNK_LIMIT - 20;
+    const padding = "A".repeat(paddingSize) + ". ";
+    const text = padding + "\nResultados\nEl resultado principal es la mejora del proceso. Implementa el plan hoy.";
+
+    const chunks = chunkDeliverable(text);
+
+    // Find the chunk that contains "Resultados"
+    const headingChunk = chunks.find((c) => c.includes("Resultados"));
+    if (headingChunk) {
+      // The heading must not be the last non-whitespace content in its chunk
+      const afterHeading = headingChunk.slice(headingChunk.indexOf("Resultados") + "Resultados".length).trim();
+      expect(afterHeading.length).toBeGreaterThan(0);
+    }
+    // If the heading fell into no chunk, that's also a problem
+    const allText = chunks.join("");
+    expect(allText).toContain("Resultados");
+  });
+
+  it("produces multiple chunks when input exceeds the limit", () => {
+    const oversized = "Short sentence. ".repeat(400); // ~6400 chars
+    const chunks = chunkDeliverable(oversized);
+    expect(chunks.length).toBeGreaterThan(1);
+  });
+
+  it("empty string returns an array with one empty string", () => {
+    const chunks = chunkDeliverable("");
+    expect(chunks).toEqual([""]);
   });
 });
