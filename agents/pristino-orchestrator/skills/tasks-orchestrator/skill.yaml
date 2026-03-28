@@ -1,0 +1,149 @@
+# =============================================================================
+# Skill: tasks-orchestrator
+# Agent: pristino-orchestrator
+# Purpose: Advanced Task Lifecycle Management & Prioritization (Tasks v1.0-GAMMA)
+# =============================================================================
+
+id: tasks-orchestrator
+name: Agile Tasks Orchestrator
+purpose: >
+  6-phase task lifecycle manager employing Triage 1-3-5, Time ROI scoring, and 
+  Inbox Zero rituals. Prevents cognitive overload by mechanically classifying 
+  Most Important Tasks (MITs) vs low-ROI work and enforcing strict daily capacity limits.
+businessValue: >
+  The average professional juggles 30+ tasks daily but completes <5 meaningful ones.
+  This skill applies mathematical ROI scoring to surface high-leverage work, enforce
+  daily capacity limits (1-3-5), and systematically eliminate low-value activities.
+triggerTypes:
+  - task_triage
+  - sprint_planning
+  - project_backlog
+  - kanban_management
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "rawTasks: list (Raw brain dumps, existing backlogs, or inbox items)"
+  - "context: string (Available time blocks, urgency mapping, active OKRs)"
+
+outputs:
+  - "orchestratedPlan: text (Prioritized 1-3-5 matrix, Kanban board, RACI matrix, or Sprint plan)"
+
+assumptions:
+  - "User provides at least a rough task list. Empty inputs trigger structured capture prompts."
+  - "Default planning unit: 1 day. Weekly or sprint planning requires explicit request."
+  - "MITs are determined by ROI score, not by user emotion. Emotionally urgent ≠ strategically important."
+  - "Time estimates are user-provided or inferred from complexity. If neither is available, the skill asks."
+
+limits:
+  - "Cannot access project management tools (Jira, Linear, Asana). Output is structured text for manual import."
+  - "Cannot track actual task completion. The skill plans and prioritizes; the user executes and reports."
+  - "Cannot predict interruptions or unplanned work. Buffer allocation (20–30% of capacity) accounts for uncertainty."
+  - "Maximum daily task capacity: 9 items (1+3+5). Beyond 9, the user is overcommitted and must triage."
+
+# ── Operating Modes ──
+modes:
+  companion:
+    description: "Micro-interactions (<10s). Fast capture, quick prioritization, single-task focus."
+    use_case: "Mid-day triage, ad-hoc task addition, quick status check."
+  strategist:
+    description: "Deep session (15–30 min). Weekly/monthly planning, OKR breakdown, sprint architecture."
+    use_case: "Sunday weekly planning, sprint kickoff, quarterly OKR decomposition."
+  reviewer:
+    description: "Accountability mode. Weekly retrospectives with completion rate, leverage analysis, ROI tracking."
+    use_case: "Friday review, end-of-sprint retro, monthly productivity audit."
+
+# ── Core Heuristics ──
+heuristics:
+  triage135:
+    name: "Load Balance 1-3-5"
+    rule: "Daily capacity strictly capped at: 1 MIT + 3 High Priority + 5 Optional/Small."
+    rationale: "9 items = realistic daily throughput. More triggers context-switching costs (23 min to refocus per switch)."
+    enforcement: "If user adds task #10, force a swap: 'Which existing task does this replace?'"
+
+  timeRoi:
+    name: "Time ROI Prioritization"
+    formula: "Score = (Value × Impact) / Expected Time"
+    scale: "Value (1–10), Impact (1–10), Time (hours). Score >5.0 = high priority. Score <1.0 = defer or discard."
+    constraint: "Tasks with ROI <1.0 are automatically moved to Icebox with justification."
+    edge_case: "Tasks with Value=10 but Time=100h (large projects) should be decomposed, not deferred."
+
+  inboxZero:
+    name: "Weekly Inbox Zero"
+    schedule: "Friday 17:00"
+    action: "Drain all capture logs into strict project queues. Unprocessed items are force-triaged."
+    constraint: "Maximum 30 minutes. If backlog exceeds capacity, force-archive lowest-ROI items."
+
+  asyncFirst:
+    name: "Default Async"
+    action: "Default to async communication (docs, Loom, email). Meetings only for high-leverage alignment."
+    threshold: "A meeting is justified only if the decision requires real-time interaction from 2+ stakeholders."
+
+  bufferProtection:
+    name: "20–30% Buffer"
+    rule: "Never plan more than 70–80% of available time. The remaining 20–30% absorbs unplanned work."
+    enforcement: "If buffer drops below 20%, warn user. Below 10%, block new task additions."
+
+# ── 6-Phase Lifecycle Workflow ──
+workflows:
+  W_TASK_LIFECYCLE_6_PHASE:
+    phases:
+      1:
+        name: "Capture"
+        description: "Fast loop intake without friction. Accept any format."
+        constraint: "Zero cognitive overhead. Capture now, clarify later. Inbox entry = timestamp + raw text."
+      2:
+        name: "Clarify"
+        description: "Contextualize via structured questions."
+        questions: ["What is the desired outcome?", "What are the risks of NOT doing this?", "Who are the stakeholders?", "What is the deadline?"]
+      3:
+        name: "Prioritize"
+        description: "Apply Time ROI formula."
+        scoring: "Score = (Value × Impact) / Time. Sort descending. Top 1 = MIT."
+      4:
+        name: "Plan"
+        description: "Map dependencies, assign ownership, set timeboxes."
+        tools: ["RACI matrix", "Dependency graph", "Timebox allocation"]
+      5:
+        name: "Execute"
+        description: "Enable focus mode. Single-task execution."
+        methods: ["Pomodoro (25-5 cycles)", "Deep Work blocks (90 min)", "2-Minute Rule (tasks <2 min: do immediately)"]
+      6:
+        name: "Review"
+        description: "Weekly retrospective."
+        metrics: ["Completion rate", "MIT achievement rate", "ROI accuracy (predicted vs actual)", "Buffer utilization"]
+
+edge_cases:
+  - scenario: "User submits 50+ tasks in a single brain dump."
+    handling: "Batch process in groups of 10. Score all with ROI formula. Present top 9 (1-3-5 daily capacity) as recommended plan."
+  - scenario: "All tasks appear equally urgent."
+    handling: "Apply forced ranking: 'If you could only complete ONE task today, which one?' Use the answer to calibrate Value scores."
+  - scenario: "User repeatedly ignores the MIT and works on low-priority items."
+    handling: "In Reviewer mode, surface the pattern. Ask: 'You've deferred your MIT 3 days in a row. Is it truly the most important, or should we reclassify?'"
+  - scenario: "External emergency requires abandoning the planned 1-3-5."
+    handling: "Accept the disruption. Log the interrupted tasks as 'Deferred: Emergency'. Reschedule in the next planning cycle."
+
+trade_offs:
+  - decision: "Mathematical ROI scoring over intuitive prioritization."
+    justification: "Intuition is biased toward urgency and recency. ROI formula corrects for these biases systematically."
+  - decision: "Strict 1-3-5 daily limit over flexible capacity."
+    justification: "Context-switching costs 23 minutes per switch. 9 items maximize throughput within attention constraints."
+  - decision: "Inbox Zero ritual (weekly) over continuous inbox processing."
+    justification: "Continuous processing creates interrupt-driven work patterns. Batched processing preserves focus."
+
+constraints:
+  - "NEVER add more than 1 MIT to a single day. The Load Balance heuristic is sacred."
+  - "NEVER delete user tasks. Move low-ROI items to Icebox/Someday — never discard."
+  - "ALWAYS provide ROI score justification when recommending deferral or discard."
+  - "ALWAYS enforce the 20–30% buffer protection rule on daily capacity."
+  - "If data is missing to calculate ROI, clarify with the user instead of hallucinating impact."
+
+evaluation:
+  acceptance_criteria:
+    - "Output contains a clear 1-3-5 breakdown with the single MIT highlighted."
+    - "ROI scores visible for all prioritized tasks with dimension breakdown (Value, Impact, Time)."
+    - "Buffer allocation respected (20–30% of available time unplanned)."
+    - "Zero tasks discarded without user consent."
+  success_metrics:
+    - "≥90% of daily plans follow the 1-3-5 structure."
+    - "≥80% of MITs are completed on their planned day."
+    - "100% of deferred/discarded tasks include ROI justification."

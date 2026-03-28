@@ -1,0 +1,578 @@
+# =============================================================================
+# Skill: self-diagnosis
+# Agent: pristino-orchestrator
+# Purpose: Health check and error reporting for the ecosystem
+# =============================================================================
+
+id: self-diagnosis
+name: Self-Diagnosis and Health Monitor
+purpose: >
+  Monitor ecosystem health, generate error reports, track performance metrics,
+  and provide transparency about system status to administrators.
+businessValue: >
+  Self-monitoring and transparency about system health enables proactive
+  issue detection and builds trust through honest status reporting.
+triggerTypes:
+  - internal_event
+  - admin_command
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "healthCheckTrigger: { source: 'scheduled' | 'admin' | 'error_event' }"
+  - "errorEvent: { type: string, source: string, message: string, timestamp: string } (optional)"
+  - "adminCommand: { command: string, params: object } (optional)"
+  - "metricsWindow: { startTime: Date, endTime: Date } (for metrics collection)"
+
+outputs:
+  - "healthReport: HealthReport { status, components[], issues[], timestamp }"
+  - "errorReport: ErrorReport { errors[], patterns[], recommendations[] }"
+  - "performanceMetrics: Metrics { latency, throughput, errorRate, agentStats }"
+  - "ecosystemStatus: EcosystemStatus { agents[], skills[], connections[] }"
+
+dependencies:
+  - "memory.ts (SQLite for reading logs and metrics)"
+  - "loader.ts (loadAgentDefinition for agent availability checks)"
+  - "config.ts (health thresholds and monitoring config)"
+  - "security.ts (sanitizeInput for admin command validation)"
+
+toolUsage:
+  - "get_current_time: Timestamp for reports and metric windows"
+
+memoryReadsWrites:
+  reads:
+    - "routing_log: delegation history for success/failure rates"
+    - "error_log: recent errors for pattern analysis"
+    - "performance_metrics: latency and throughput data"
+    - "agent_catalog: registered agents and their status"
+  writes:
+    - "health_report: latest health check results"
+    - "error_summary: aggregated error patterns"
+    - "alert_log: any alerts generated from health checks"
+
+securityValidations:
+  - "CP1: sanitizeInput() on admin commands to prevent injection"
+  - "CP2: buildSecurePrompt() if LLM is used for error pattern analysis"
+  - "CP3: validateOutput() on health reports before delivery to admin"
+  - "Whitelist check: admin commands require elevated admin userId"
+
+observabilityEvents:
+  - "skill_activated: self-diagnosis skill triggered"
+  - "health_check_started: health check in progress"
+  - "health_check_completed: health check finished with status"
+  - "error_report_generated: error analysis completed"
+  - "performance_metrics_collected: metrics snapshot taken"
+  - "ecosystem_status_refreshed: full status updated"
+  - "alert_raised: health check found critical issue"
+
+failureHandling:
+  - "SQLite read failure: report partial results with note about data unavailability"
+  - "Agent catalog unreachable: report agents as 'unknown' status"
+  - "Metrics collection timeout: report available metrics with coverage percentage"
+  - "Self-diagnosis itself fails: log to stderr and report minimal status"
+
+interoperabilityContract:
+  inputType: "DiagnosisRequest { type: 'health'|'error'|'metrics'|'status', params }"
+  outputType: "DiagnosisResult { report, severity, recommendations[] }"
+  protocol: "Internal function call or admin command dispatch"
+
+wowCriteria:
+  - "Health reports are actionable, not just data dumps"
+  - "Error pattern analysis identifies root causes, not just symptoms"
+  - "Performance metrics include trend analysis (improving/degrading)"
+  - "Ecosystem status gives a complete picture in under 5 seconds"
+
+safeCriteria:
+  - "Health reports never expose sensitive user data"
+  - "Admin commands are validated and logged"
+  - "Error reports redact any PII from error messages"
+  - "Self-diagnosis never modifies system state (read-only + reporting)"
+
+# =============================================================================
+# Workflows
+# =============================================================================
+
+workflows:
+  # ---------------------------------------------------------------------------
+  # Workflow 1: Health Check
+  # ---------------------------------------------------------------------------
+  - id: health-check
+    title: Health Check
+    objective: Verify all ecosystem components are operational and report overall health status
+    trigger: "Scheduled interval, admin /health command, or error threshold exceeded"
+    preconditions:
+      - Self-diagnosis skill is active
+      - SQLite database accessible for reading
+      - Agent catalog is loadable
+    inputs:
+      - "healthCheckTrigger: { source: string }"
+      - "healthThresholds: { maxErrorRate: 0.05, maxLatency_ms: 30000, minAgentAvailability: 0.8 }"
+    steps:
+      - stepNumber: 1
+        title: Check database connectivity
+        desc: Verify SQLite database is accessible and responsive by executing a simple query.
+        whyThisMatters: Database is the foundation for memory, logging, and routing. Its failure affects everything.
+        inputNeeded: "SQLite database handle"
+        actionInstruction: "Execute SELECT 1 FROM messages LIMIT 1 as heartbeat query. Measure response time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "DatabaseHealth { status: 'healthy'|'degraded'|'down', latency_ms, error? }"
+        validationRule: "Query completes in < 1000ms and returns a result"
+        failureSignal: "Query times out (>1000ms) or throws exception"
+        recoveryAction: "Mark database as 'degraded' or 'down'. Continue health check for other components."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Check agent availability
+        desc: Attempt to load each registered agent definition and verify it parses correctly.
+        whyThisMatters: Unavailable agents cause delegation failures. Early detection prevents user-facing errors.
+        inputNeeded: "Agent catalog (list of registered agent IDs)"
+        actionInstruction: "For each agentId in catalog: loadAgentDefinition(agentId). Track success/failure per agent."
+        promptToUse: null (mechanical step)
+        expectedOutput: "AgentHealth[] array with status per agent: { agentId, status, loadTime_ms, error? }"
+        validationRule: "All agents report a status. Availability >= minAgentAvailability threshold."
+        failureSignal: "One or more agents fail to load, or availability < threshold"
+        recoveryAction: "Mark failed agents as 'unavailable'. Include in health report with error details."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Check recent error rate
+        desc: Query error log for the last hour and calculate error rate against total requests.
+        whyThisMatters: Elevated error rates indicate systemic issues that need immediate attention.
+        inputNeeded: "Error log from SQLite, request count for the last hour"
+        actionInstruction: "SELECT COUNT(*) FROM error_log WHERE timestamp > (now - 1h). SELECT COUNT(*) FROM routing_log WHERE timestamp > (now - 1h). Calculate rate."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ErrorRateCheck { errorCount, requestCount, rate, threshold, status }"
+        validationRule: "errorRate <= maxErrorRate threshold (default 5%)"
+        failureSignal: "errorRate > maxErrorRate, or query fails"
+        recoveryAction: "If query fails: report error rate as 'unknown'. If rate high: include in report as warning."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Compile health report
+        desc: Aggregate all component checks into a unified health report with overall status.
+        whyThisMatters: A unified report makes it easy to understand system health at a glance.
+        inputNeeded: "DatabaseHealth, AgentHealth[], ErrorRateCheck"
+        actionInstruction: "Determine overall status: 'healthy' if all green, 'degraded' if any warnings, 'critical' if any component down. Compile HealthReport."
+        promptToUse: null (mechanical step)
+        expectedOutput: "HealthReport { overallStatus, components[], issues[], recommendations[], timestamp }"
+        validationRule: "Report includes all checked components and overall status is consistent with individual results"
+        failureSignal: "Report compilation fails (should not happen if individual checks returned results)"
+        recoveryAction: "Return minimal report with whatever data is available"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Persist and alert
+        desc: Save the health report to SQLite and raise alerts if status is degraded or critical.
+        whyThisMatters: Persisted reports enable trend analysis. Alerts enable timely intervention.
+        inputNeeded: "HealthReport, alert thresholds"
+        actionInstruction: "INSERT health_report into SQLite. If status is 'degraded' or 'critical': emit alert_raised event. If admin triggered: send report to admin."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Health report persisted, alerts raised if needed"
+        validationRule: "Report written to database. Alert raised if status is not 'healthy'."
+        failureSignal: "Database write fails for the report itself"
+        recoveryAction: "Log report to stderr. Alert via any available channel."
+        handoffIfNeeded: null
+
+    mainOutput: "Comprehensive health report with overall ecosystem status"
+    secondaryOutputs:
+      - "health_check_completed event with overall status"
+      - "alert_raised event if issues detected"
+      - "component-level health details"
+    DoD:
+      - All components checked (database, agents, error rate)
+      - Overall status determined
+      - Report persisted
+      - Alerts raised for non-healthy status
+    qaChecklist:
+      - No sensitive data in health report
+      - All components accounted for
+      - Status is accurate (not false positive/negative)
+      - Report is actionable (includes recommendations)
+    raci:
+      responsible: "pristino-orchestrator (self-diagnosis skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "all registered agents (availability check)"
+      informed: "admin, logger"
+    kpis:
+      - "health_check_execution_time: <5s"
+      - "false_positive_rate: <5% (healthy reported as degraded)"
+      - "detection_rate: >= 95% of real issues caught"
+    cadence: "Scheduled every 5 minutes, or on-demand via admin command"
+    errorHandling: "Individual component check failure: report as 'unknown' status, continue with others"
+    fallbackRoute: "Minimal report with only available data and explicit gaps noted"
+    escalationRoute: "Critical status: notify admin immediately via highest priority channel"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 2: Error Report
+  # ---------------------------------------------------------------------------
+  - id: error-report
+    title: Error Report Generation
+    objective: Analyze recent errors, identify patterns, and generate actionable error report
+    trigger: "Admin /errors command, or error count exceeds threshold in time window"
+    preconditions:
+      - Error log accessible in SQLite
+      - At least one error recorded in the requested time window
+    inputs:
+      - "timeWindow: { start: Date, end: Date } (default: last 24 hours)"
+      - "adminCommand: { params: { severity?, agentId?, limit? } } (optional filters)"
+    steps:
+      - stepNumber: 1
+        title: Query error log
+        desc: Retrieve all errors within the specified time window, optionally filtered by severity or agent.
+        whyThisMatters: Comprehensive error data is the foundation for meaningful pattern analysis.
+        inputNeeded: "Time window, optional severity and agent filters"
+        actionInstruction: "SELECT * FROM error_log WHERE timestamp BETWEEN ? AND ? [AND severity = ?] [AND agentId = ?] ORDER BY timestamp DESC LIMIT 500."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ErrorEntry[] array with type, source, message, severity, timestamp per error"
+        validationRule: "Result is a valid array. Timestamps are within requested window."
+        failureSignal: "SQLite query fails or returns malformed data"
+        recoveryAction: "Return partial results or empty report with note about data unavailability"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Analyze error patterns
+        desc: Use LLM to identify recurring patterns, root cause clusters, and trending error types.
+        whyThisMatters: Pattern analysis transforms raw error logs into actionable insights.
+        inputNeeded: "ErrorEntry[] array from query, agent catalog for context"
+        actionInstruction: "Call llm.chat() with error analysis prompt (CP2-secured). Group errors by type, source, and frequency."
+        promptToUse: |
+          Analyze these error log entries and identify patterns:
+          1. Group errors by root cause (not just error message)
+          2. Identify the top 3 most frequent error patterns
+          3. Flag any new error types not seen before
+          4. Note any agent-specific error concentrations
+
+          Error entries ({{errorCount}} total):
+          {{errorSummary}}
+
+          Respond as structured JSON with: patterns[], topIssues[], newErrors[], agentIssues[]
+        expectedOutput: "ErrorAnalysis { patterns[], topIssues[], newErrors[], agentIssues[] }"
+        validationRule: "Analysis includes at least patterns array and topIssues with frequency counts"
+        failureSignal: "LLM fails or returns unstructured text"
+        recoveryAction: "Fall back to mechanical grouping: group by error type and count occurrences"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate recommendations
+        desc: Produce actionable recommendations based on identified error patterns.
+        whyThisMatters: Reports without recommendations are just noise. Actionable advice drives resolution.
+        inputNeeded: "ErrorAnalysis from pattern detection"
+        actionInstruction: "Call llm.chat() with recommendation generation prompt (CP2-secured)."
+        promptToUse: |
+          Based on this error analysis, generate specific, actionable recommendations:
+          - For each top issue: one concrete action to fix or mitigate
+          - Priority order by impact (frequency x severity)
+          - Include estimated effort (quick-fix, medium, significant)
+
+          Error analysis: {{errorAnalysis}}
+          Known system constraints: local-first SQLite, Groq/OpenRouter LLM, Telegram delivery
+
+          Respond as JSON: recommendations[] with { issue, action, priority, effort }
+        expectedOutput: "Recommendations[] with specific actions per top issue"
+        validationRule: "Each recommendation has issue, action, priority, and effort fields"
+        failureSignal: "LLM fails or recommendations are too generic"
+        recoveryAction: "Provide default recommendations: 'Review error logs for top issues' with raw pattern data"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Compile and deliver error report
+        desc: Assemble the full error report with PII redacted and deliver to admin or persist.
+        whyThisMatters: PII redaction in error reports is a security requirement. Complete reports enable resolution.
+        inputNeeded: "ErrorEntry[] data, ErrorAnalysis, Recommendations, admin delivery preference"
+        actionInstruction: "Redact any PII from error messages (userId -> hash, message content -> truncated). Compile ErrorReport. Persist to SQLite. If admin-triggered: format for Telegram delivery."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ErrorReport { summary, patterns, recommendations, rawErrors (redacted), generatedAt }"
+        validationRule: "Report contains no PII. All sections present. Persisted successfully."
+        failureSignal: "PII detection fails or persistence error"
+        recoveryAction: "Over-redact (remove all message content) rather than risk PII exposure. Log to stderr if persistence fails."
+        handoffIfNeeded: null
+
+    mainOutput: "Actionable error report with patterns, analysis, and recommendations"
+    secondaryOutputs:
+      - "error_report_generated event"
+      - "error patterns persisted for trend tracking"
+    DoD:
+      - All errors in time window analyzed
+      - Patterns identified and grouped
+      - Actionable recommendations generated
+      - Report redacted of PII and delivered
+    qaChecklist:
+      - No PII in error report
+      - Recommendations are specific and actionable
+      - Error counts match raw data
+      - Report is readable and well-structured
+    raci:
+      responsible: "pristino-orchestrator (self-diagnosis skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "admin"
+    kpis:
+      - "report_generation_time: <10s"
+      - "pattern_detection_accuracy: patterns verified by admin review"
+      - "recommendation_actionability: admin can act on >= 80% of recommendations"
+    cadence: "On-demand via admin command, or auto-triggered when error threshold exceeded"
+    errorHandling: "LLM failure for analysis: fall back to mechanical grouping by error type"
+    fallbackRoute: "Raw error list with frequency counts (no LLM analysis)"
+    escalationRoute: "If error rate is critical: immediate admin notification with raw counts"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 3: Performance Metrics
+  # ---------------------------------------------------------------------------
+  - id: performance-metrics
+    title: Performance Metrics Collection
+    objective: Collect and analyze performance metrics for the ecosystem over a configurable time window
+    trigger: "Admin /metrics command, or scheduled daily metrics collection"
+    preconditions:
+      - Routing log and performance data accessible in SQLite
+      - Metrics time window specified
+    inputs:
+      - "metricsWindow: { start: Date, end: Date } (default: last 24 hours)"
+      - "granularity: 'hourly' | 'daily' | 'summary' (default: summary)"
+    steps:
+      - stepNumber: 1
+        title: Collect latency metrics
+        desc: Query routing log for response latency statistics (p50, p95, p99) across the time window.
+        whyThisMatters: Latency is the primary user-facing performance indicator. Degradation must be detected.
+        inputNeeded: "Time window, routing log in SQLite"
+        actionInstruction: "SELECT latency_ms FROM routing_log WHERE timestamp BETWEEN ? AND ?. Calculate p50, p95, p99 percentiles and average."
+        promptToUse: null (mechanical step)
+        expectedOutput: "LatencyMetrics { p50, p95, p99, average, min, max, sampleCount }"
+        validationRule: "All percentile values are positive numbers and sampleCount > 0"
+        failureSignal: "SQLite query fails or no data in time window"
+        recoveryAction: "Report latency as 'no data' for the window. Continue with other metrics."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Collect throughput metrics
+        desc: Calculate request throughput, delegation distribution, and agent utilization rates.
+        whyThisMatters: Throughput and distribution reveal capacity usage and routing patterns.
+        inputNeeded: "Time window, routing log in SQLite"
+        actionInstruction: "SELECT mode, COUNT(*) FROM routing_log WHERE timestamp BETWEEN ? AND ? GROUP BY mode. Calculate requests per hour."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ThroughputMetrics { totalRequests, requestsPerHour, modeDistribution: { single, terna, committee, fallback } }"
+        validationRule: "totalRequests >= 0 and mode distribution percentages sum to 100"
+        failureSignal: "SQLite query fails"
+        recoveryAction: "Report throughput as 'no data'. Continue with remaining metrics."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Collect agent performance
+        desc: Calculate per-agent success rates, average response times, and error rates.
+        whyThisMatters: Agent-level metrics identify underperforming specialists that need attention.
+        inputNeeded: "Time window, routing and error logs in SQLite"
+        actionInstruction: "JOIN routing_log and error_log on agentId. Calculate success_rate, avg_latency, error_count per agent."
+        promptToUse: null (mechanical step)
+        expectedOutput: "AgentMetrics[] with { agentId, successRate, avgLatency_ms, errorCount, requestCount }"
+        validationRule: "Each agent has valid metrics. successRate is between 0 and 1."
+        failureSignal: "Query fails or produces inconsistent rates"
+        recoveryAction: "Report agent metrics as 'partial' with whatever data is available"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Analyze trends
+        desc: Compare current metrics against previous period to detect trends (improving, stable, degrading).
+        whyThisMatters: Trend detection enables proactive response to gradual degradation before it becomes critical.
+        inputNeeded: "Current period metrics, previous period metrics (same window size, shifted back)"
+        actionInstruction: "Load previous period metrics from SQLite. Compare key indicators: latency p95, error rate, throughput. Classify each as improving/stable/degrading."
+        promptToUse: null (mechanical step)
+        expectedOutput: "TrendAnalysis { latencyTrend, errorTrend, throughputTrend, overallTrend }"
+        validationRule: "Each trend is one of 'improving', 'stable', 'degrading' with percentage change"
+        failureSignal: "Previous period data unavailable (first run)"
+        recoveryAction: "Skip trend analysis, report 'insufficient data for trends' in metrics report"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Compile metrics report
+        desc: Assemble all metrics into a structured report and persist for historical tracking.
+        whyThisMatters: Persisted metrics enable long-term trend analysis and capacity planning.
+        inputNeeded: "LatencyMetrics, ThroughputMetrics, AgentMetrics[], TrendAnalysis"
+        actionInstruction: "Compile PerformanceReport { latency, throughput, agents[], trends, window, generatedAt }. Persist to SQLite metrics table."
+        promptToUse: null (mechanical step)
+        expectedOutput: "PerformanceReport persisted and ready for delivery"
+        validationRule: "Report has all sections populated (or marked as 'no data'). Persisted successfully."
+        failureSignal: "Persistence fails"
+        recoveryAction: "Log report to stderr. Deliver to admin even if persistence fails."
+        handoffIfNeeded: null
+
+    mainOutput: "Performance metrics report with latency, throughput, agent stats, and trends"
+    secondaryOutputs:
+      - "performance_metrics_collected event"
+      - "trend_analysis for historical comparison"
+      - "per-agent performance breakdown"
+    DoD:
+      - Latency metrics (p50, p95, p99) calculated
+      - Throughput and mode distribution calculated
+      - Per-agent metrics calculated
+      - Trend analysis completed (if prior data available)
+      - Report persisted
+    qaChecklist:
+      - Metrics are mathematically correct
+      - Sample counts match actual request logs
+      - No sensitive data in metrics report
+      - Trends are based on comparable time windows
+    raci:
+      responsible: "pristino-orchestrator (self-diagnosis skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "admin, logger"
+    kpis:
+      - "metrics_collection_time: <5s"
+      - "data_coverage: >= 99% of requests reflected in metrics"
+      - "trend_accuracy: trend direction matches actual data"
+    cadence: "Scheduled daily, or on-demand via admin command"
+    errorHandling: "Individual metric collection failure: report available metrics, note gaps"
+    fallbackRoute: "Partial metrics report with explicit gaps marked"
+    escalationRoute: "If metrics show critical degradation: trigger immediate health-check workflow"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 4: Ecosystem Status
+  # ---------------------------------------------------------------------------
+  - id: ecosystem-status
+    title: Ecosystem Status Report
+    objective: Provide a comprehensive snapshot of the entire ecosystem including agents, skills, and connections
+    trigger: "Admin /status command, or startup self-check"
+    preconditions:
+      - Agent catalog accessible
+      - Skill definitions loadable
+      - System is at least partially operational
+    inputs:
+      - "adminCommand: { command: 'status', params: { verbose?: boolean } }"
+    steps:
+      - stepNumber: 1
+        title: Enumerate registered agents
+        desc: Load the agent catalog and verify each agent definition is valid and accessible.
+        whyThisMatters: Knowing which agents are available is the foundation of ecosystem awareness.
+        inputNeeded: "Agent catalog directory/configuration"
+        actionInstruction: "Scan agents/ directory. For each agent: loadAgentDefinition(agentId). Record status, version, skills count."
+        promptToUse: null (mechanical step)
+        expectedOutput: "AgentStatus[] with { agentId, name, version, status, skillCount, tools[] }"
+        validationRule: "All registered agents are enumerated with a valid status"
+        failureSignal: "Agent directory scan fails or individual agent definitions are corrupt"
+        recoveryAction: "Report found agents, mark unreachable ones as 'error' with failure reason"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Enumerate active skills
+        desc: For each agent, list its registered skills and their activation status.
+        whyThisMatters: Skill availability determines what the ecosystem can do. Gaps need to be visible.
+        inputNeeded: "AgentStatus[] from previous step"
+        actionInstruction: "For each agent: scan skills/ directory. Load each skill.yaml. Record id, trigger types, workflow count."
+        promptToUse: null (mechanical step)
+        expectedOutput: "SkillStatus[] with { skillId, agentId, triggerTypes, workflowCount, status }"
+        validationRule: "Each skill has a valid id, owning agent, and at least 1 workflow"
+        failureSignal: "Skill YAML fails to parse or references non-existent agent"
+        recoveryAction: "Mark broken skills as 'error' with parse failure details. Continue enumeration."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Check inter-component connections
+        desc: Verify that dependency chains between agents and skills are satisfied (no broken references).
+        whyThisMatters: Broken dependency chains cause runtime failures that are hard to diagnose without explicit checking.
+        inputNeeded: "AgentStatus[], SkillStatus[], dependency declarations from skill.yaml files"
+        actionInstruction: "For each skill: verify each dependency exists (tools, agents, modules). Track unresolved dependencies."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ConnectionHealth { resolved[], unresolved[], warnings[] }"
+        validationRule: "All dependencies are either resolved or explicitly marked as unresolved"
+        failureSignal: "Dependency resolution process itself fails"
+        recoveryAction: "Report all dependencies as 'unchecked' with reason for failure"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Compile ecosystem report
+        desc: Assemble the full ecosystem status report with agents, skills, connections, and overall health.
+        whyThisMatters: A single comprehensive report enables quick ecosystem assessment and issue identification.
+        inputNeeded: "AgentStatus[], SkillStatus[], ConnectionHealth, current timestamp"
+        actionInstruction: "Compile EcosystemStatus { agents[], skills[], connections, overallHealth, version, generatedAt }. Calculate overallHealth from component statuses."
+        promptToUse: null (mechanical step)
+        expectedOutput: "EcosystemStatus report with all components and overall health assessment"
+        validationRule: "Report includes all enumerated components and overall health is consistent with details"
+        failureSignal: "Compilation fails (should not happen if individual steps completed)"
+        recoveryAction: "Return partial report with whatever data was collected"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Deliver status report
+        desc: Format the report for the requesting channel (admin Telegram, log, or startup check) and deliver.
+        whyThisMatters: The report must reach the requester in a readable format to be useful.
+        inputNeeded: "EcosystemStatus report, delivery channel (admin Telegram, log, startup)"
+        actionInstruction: "Format report based on channel: Telegram gets concise summary with counts, log gets full JSON, startup check logs and proceeds. Apply CP3 on Telegram output."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Report delivered to appropriate channel"
+        validationRule: "Report delivered successfully to the requesting channel"
+        failureSignal: "Telegram delivery fails or log write fails"
+        recoveryAction: "Try alternate delivery channel. At minimum, write to stderr."
+        handoffIfNeeded: null
+
+    mainOutput: "Comprehensive ecosystem status report with agents, skills, and connections"
+    secondaryOutputs:
+      - "ecosystem_status_refreshed event"
+      - "unresolved_dependencies list for remediation"
+      - "agent and skill inventory counts"
+    DoD:
+      - All registered agents enumerated with status
+      - All skills enumerated with activation status
+      - Dependency chains verified
+      - Overall ecosystem health assessed
+      - Report delivered to requester
+    qaChecklist:
+      - All agents in catalog are accounted for
+      - Skill counts match actual skill.yaml files
+      - Unresolved dependencies are flagged
+      - Report is readable and not overwhelming
+      - No sensitive data exposed
+    raci:
+      responsible: "pristino-orchestrator (self-diagnosis skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "all registered agents (via definition loading)"
+      informed: "admin"
+    kpis:
+      - "status_generation_time: <5s"
+      - "enumeration_completeness: 100% of registered components covered"
+      - "dependency_resolution_accuracy: all broken deps correctly identified"
+    cadence: "On-demand via admin command, or once at system startup"
+    errorHandling: "Individual component enumeration failure: mark as 'error', continue with others"
+    fallbackRoute: "Partial status report with explicit gaps noted"
+    escalationRoute: "If overall ecosystem health is critical: trigger admin alert with immediate summary"
+
+# ── Gap-Closing: 10× Quality Enhancement ──
+
+assumptions:
+  - "All registered agents and skills have valid definition files. Missing definitions indicate a deployment error, not a runtime state."
+  - "Self-diagnosis runs on-demand or at system startup. It is not a continuous monitoring system."
+  - "Health checks are read-only. Self-diagnosis NEVER modifies agent configurations or skill definitions."
+  - "Admin commands for self-diagnosis are whitelisted. Non-admin users cannot trigger ecosystem scans."
+
+limits:
+  - "Cannot diagnose runtime performance issues (memory leaks, CPU spikes). Scope is structural health: definitions, dependencies, configurations."
+  - "Cannot repair broken components. Diagnosis identifies issues; repair requires human intervention or a separate remediation skill."
+  - "Cannot test external API availability (Groq, OpenRouter). External dependency health is out of scope."
+  - "Report generation must complete in <5s. If the ecosystem is too large, component enumeration is paginated."
+
+edge_cases:
+  - scenario: "An agent has circular dependencies (Agent A depends on Agent B which depends on Agent A)."
+    handling: "Detect and report the cycle with the exact dependency path. Mark both agents as 'degraded'. Do not attempt to resolve."
+  - scenario: "Self-diagnosis is triggered while a deployment is in progress."
+    handling: "Warn that results may be inconsistent. Recommend re-running after deployment completes."
+  - scenario: "A skill definition file exists but contains invalid YAML."
+    handling: "Mark the skill as 'error: invalid definition'. Include the parse error in the report. Continue scanning other skills."
+  - scenario: "No agents are registered in the ecosystem."
+    handling: "Report 'empty ecosystem' status. This is a valid state during initial setup, not an error."
+
+trade_offs:
+  - decision: "Structural health checks over runtime performance monitoring."
+    justification: "Structural issues (missing skills, broken dependencies) cause 100% failure. Performance issues cause degradation. Prioritize total failures."
+  - decision: "Read-only diagnosis over auto-remediation."
+    justification: "Auto-remediation risks cascading failures. Diagnosis + human decision = safer for production systems."
+  - decision: "<5s report generation over exhaustive deep scanning."
+    justification: "Self-diagnosis is an on-demand tool. Slow reports discourage usage. Fast reports encourage frequent health checks."
+
+evaluation:
+  acceptance_criteria:
+    - "100% of registered components enumerated in every scan."
+    - "All broken dependencies correctly identified with specific error messages."
+    - "Report generated in <5s for ecosystems with ≤50 components."
+    - "Zero false positives (healthy components marked as broken)."
+    - "Admin-only access enforced (non-admin triggers rejected)."
+  success_metrics:
+    - "Dependency resolution accuracy: 100%."
+    - "Report generation time: <5s (P95)."
+    - "Zero false positives in health assessments."

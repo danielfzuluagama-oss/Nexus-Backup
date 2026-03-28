@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Server-only access: Firebase Admin SDK bypasses rules.
+    // These deny-all rules are a safety net against unauthorized client access.
+
+    // ── Working Memory ──
+    match /threads/{threadId} {
+      allow read, write: if false;
+      match /messages/{messageId} {
+        allow read, write: if false;
+      }
+    }
+
+    // ── Episodic Memory ──
+    match /voice_notes/{noteId} {
+      allow read, write: if false;
+    }
+    match /meetings/{meetingId} {
+      allow read, write: if false;
+    }
+    match /interaction_log/{logId} {
+      allow read, write: if false;
+    }
+
+    // ── Semantic Memory ──
+    match /users/{userId} {
+      allow read, write: if false;
+    }
+    match /knowledge/{knowledgeId} {
+      allow read, write: if false;
+    }
+    match /tasks/{taskId} {
+      allow read, write: if false;
+    }
+    match /rag_chunks/{chunkId} {
+      allow read, write: if false;
+    }
+    match /system_config/{configId} {
+      allow read, write: if false;
+    }
+
+    // Catch-all deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

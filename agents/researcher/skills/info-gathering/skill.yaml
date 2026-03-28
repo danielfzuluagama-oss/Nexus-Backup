@@ -1,0 +1,620 @@
+id: info-gathering
+name: Information Gathering
+purpose: Gather relevant information on requested topics using available knowledge, structured research patterns, and critical evaluation to produce comprehensive findings with confidence levels.
+businessValue: Provides users with well-organized, confidence-rated research findings that save time and surface insights that would otherwise require extensive manual investigation.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: researcher
+
+inputs:
+  - "topic: string - The subject or question to research"
+  - "scope: string - Breadth and depth parameters for the research"
+  - "context: string - Background information and constraints"
+  - "priorFindings: string[] - Any previously gathered information to build upon"
+
+outputs:
+  - "findings: Finding[] - Structured findings with confidence levels (alto/medio/bajo)"
+  - "gaps: string[] - Identified information gaps and areas of uncertainty"
+  - "sources: SourceReference[] - Reasoning chains and knowledge references supporting findings"
+  - "summary: string - Concise executive summary of gathered information"
+
+dependencies:
+  - "agents/researcher/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context continuity"
+    - "delegated_task: Task specification from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - research_findings_produced
+  - gap_identified
+  - confidence_assessed
+  - fallback_triggered
+
+failureHandling:
+  - "Topic too broad: Narrow scope automatically and inform orchestrator of reduced scope"
+  - "Insufficient knowledge: Declare gap honestly with explanation of what is missing"
+  - "Timeout on research: Return partial findings with completeness percentage"
+  - "Ambiguous query: Request clarification via orchestrator before proceeding"
+
+interoperabilityContract:
+  inputType: "ResearchRequest { topic: string, scope: string, context: string, priorFindings?: string[] }"
+  outputType: "ResearchResult { findings: Finding[], gaps: string[], sources: SourceReference[], summary: string, confidenceOverall: 'alto'|'medio'|'bajo' }"
+
+wowCriteria:
+  - "Findings are structured with clear confidence levels and supporting reasoning"
+  - "Gaps are proactively identified before being asked"
+  - "Summary captures 90%+ of essential information in under 200 words"
+  - "Research builds logically on prior findings without redundancy"
+
+safeCriteria:
+  - "No fabricated information presented as fact"
+  - "Every finding has an explicit confidence level"
+  - "Limitations and gaps are transparently declared"
+  - "Facts clearly separated from inferences and speculation"
+
+workflows:
+  - id: broad-topic-research
+    title: Broad Topic Research
+    objective: Conduct wide-ranging research on a broad topic to map the landscape of available knowledge and identify key subtopics
+    trigger: "request.scope === 'broad' or topic requires landscape mapping"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Topic provided and non-empty"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "topic: string (sanitized)"
+      - "context: string - background and constraints"
+    steps:
+      - stepNumber: 1
+        title: Sanitize and parse topic
+        desc: Apply CP1 to the incoming topic and context, then parse the research domain and boundaries.
+        whyThisMatters: Prevents prompt injection and ensures the research starts from a clean, well-defined topic rather than a malformed input.
+        inputNeeded: "Raw topic string and context from orchestrator"
+        actionInstruction: "Call sanitizeInput(topic) and sanitizeInput(context). Parse topic into domain keywords and boundary constraints."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized topic string and parsed domain boundaries object"
+        validationRule: "sanitized topic is non-empty and contains no control characters"
+        failureSignal: "sanitizeInput returns empty string or throws exception"
+        recoveryAction: "Return error to orchestrator: 'Could not parse research topic. Please rephrase.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Map knowledge landscape
+        desc: Use LLM to identify major subtopics, key concepts, and knowledge domains relevant to the broad topic.
+        whyThisMatters: A landscape map prevents tunnel vision and ensures comprehensive coverage across all relevant areas of the topic.
+        inputNeeded: "Sanitized topic, domain boundaries, conversation context"
+        actionInstruction: "Call llm.chat() with the landscape mapping prompt. Parse response into subtopic categories."
+        promptToUse: |
+          You are the Researcher agent performing broad topic research. Map the knowledge landscape for this topic.
+
+          Topic: {{topic}}
+          Context: {{context}}
+
+          Identify:
+          1. Major subtopics (3-7 areas)
+          2. Key concepts and terminology
+          3. Known relationships between subtopics
+          4. Areas where knowledge may be limited
+
+          For each subtopic, rate your knowledge confidence as alto/medio/bajo.
+          Structure your response as a clear landscape map.
+        expectedOutput: "KnowledgeLandscape { subtopics: Subtopic[], keyConcepts: string[], relationships: string[], limitedAreas: string[] }"
+        validationRule: "At least 3 subtopics identified, each with a confidence rating"
+        failureSignal: "LLM returns unstructured text or fewer than 2 subtopics"
+        recoveryAction: "Retry with simplified prompt focusing on top 3 most obvious subtopics"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Gather findings per subtopic
+        desc: For each identified subtopic, gather detailed findings with supporting reasoning and confidence levels.
+        whyThisMatters: Subtopic-level research ensures depth within each area while maintaining the broad coverage established in the landscape map.
+        inputNeeded: "KnowledgeLandscape with subtopics and confidence ratings"
+        actionInstruction: "For each subtopic, call llm.chat() with the finding-gathering prompt. Collect findings into structured array."
+        promptToUse: |
+          You are the Researcher agent. Gather detailed findings for this specific subtopic.
+
+          Main topic: {{topic}}
+          Subtopic: {{subtopic.name}}
+          Known context: {{context}}
+
+          For each finding:
+          - State the finding clearly
+          - Provide the reasoning or knowledge that supports it
+          - Rate confidence: alto (well-established), medio (reasonable but uncertain), bajo (speculative)
+          - Note any caveats or conditions
+
+          Be honest about what you do not know. Do not fabricate information.
+        expectedOutput: "Finding[] with each finding having content, reasoning, confidence, and caveats"
+        validationRule: "Each finding has non-empty content and a valid confidence level"
+        failureSignal: "Empty findings array or findings without confidence ratings"
+        recoveryAction: "Return partial findings from successful subtopics and mark failed subtopics as gaps"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Identify gaps and synthesize
+        desc: Identify knowledge gaps across all subtopics and produce a unified summary of the broad research.
+        whyThisMatters: Gap identification is critical for intellectual honesty and helps downstream agents know where additional investigation is needed.
+        inputNeeded: "All findings organized by subtopic, original topic"
+        actionInstruction: "Call llm.chat() with gap analysis prompt. Compile final research result with findings, gaps, and summary."
+        promptToUse: |
+          You are the Researcher agent finalizing broad topic research.
+
+          Topic: {{topic}}
+          Findings by subtopic:
+          {{findingsBySubtopic}}
+
+          Tasks:
+          1. Identify gaps: What important aspects are missing or have bajo confidence?
+          2. Identify uncertainties: Where do findings conflict or lack support?
+          3. Produce an executive summary (under 200 words) capturing the essential landscape.
+          4. Rate overall research confidence: alto/medio/bajo
+
+          Be transparent about limitations.
+        expectedOutput: "ResearchResult { findings, gaps, summary, confidenceOverall }"
+        validationRule: "Summary is under 200 words, gaps array is present even if empty, overall confidence is rated"
+        failureSignal: "Missing summary or missing gaps section"
+        recoveryAction: "Generate minimal summary from available findings and mark entire research as confidence: bajo"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver output
+        desc: Apply CP3 validation to the final research output and return to orchestrator.
+        whyThisMatters: Security validation ensures no prompt leaks or unsafe content reach the user, and structured output ensures downstream compatibility.
+        inputNeeded: "Complete ResearchResult object"
+        actionInstruction: "Call validateOutput(researchResult). Format as interoperability contract output type. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ResearchResult delivered to orchestrator"
+        validationRule: "CP3 passed, output conforms to interoperabilityContract.outputType schema"
+        failureSignal: "CP3 flags content or output schema validation fails"
+        recoveryAction: "Strip flagged content, add note about redacted sections, return sanitized result"
+        handoffIfNeeded: null
+
+    mainOutput: "Comprehensive landscape research with confidence-rated findings and identified gaps"
+    secondaryOutputs:
+      - "knowledge_landscape_map for future reference"
+      - "gap_list for follow-up research"
+      - "research_metrics (subtopic count, finding count, confidence distribution)"
+    DoD:
+      - "At least 3 subtopics covered with findings"
+      - "Every finding has a confidence rating"
+      - "Gaps explicitly identified"
+      - "Executive summary under 200 words"
+      - "CP3 passed on final output"
+    qaChecklist:
+      - "No fabricated information presented as fact"
+      - "Confidence levels are consistent with reasoning"
+      - "Gaps are genuinely identified, not just boilerplate"
+      - "Summary faithfully represents the findings"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "subtopic_coverage: >= 3 subtopics mapped"
+      - "finding_confidence_distribution: no more than 50% bajo"
+      - "gap_identification_rate: at least 1 gap per broad topic"
+      - "response_time_p95: < 45s"
+    cadence: "Per-request (when broad research is needed)"
+    errorHandling: "If fewer than 2 subtopics found, narrow topic interpretation and retry once"
+    fallbackRoute: "Return partial findings with explicit incomplete status to orchestrator"
+    escalationRoute: "Report to orchestrator that topic requires internet access or specialized knowledge beyond scope"
+
+  - id: specific-question-research
+    title: Specific Question Research
+    objective: Answer a focused question with targeted research, providing a direct answer with supporting evidence and confidence level
+    trigger: "request.scope === 'specific' or topic is a direct question"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Question provided and non-empty"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "question: string (sanitized)"
+      - "context: string - background constraints"
+    steps:
+      - stepNumber: 1
+        title: Parse and classify question
+        desc: Sanitize input and classify the question type (factual, analytical, comparative, definitional) to determine research strategy.
+        whyThisMatters: Different question types require different research approaches; classification ensures the most efficient path to a quality answer.
+        inputNeeded: "Raw question string from orchestrator"
+        actionInstruction: "Call sanitizeInput(question). Classify question type using pattern matching on question structure."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized question and classification { type: 'factual'|'analytical'|'comparative'|'definitional', complexity: 'simple'|'compound' }"
+        validationRule: "Question type is one of the four valid types and complexity is determined"
+        failureSignal: "Cannot classify question type or sanitization produces empty string"
+        recoveryAction: "Default to type: 'analytical', complexity: 'compound' and proceed with general approach"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Research targeted answer
+        desc: Apply focused research to directly answer the specific question using available knowledge.
+        whyThisMatters: Targeted research avoids wasting effort on tangential information and provides the user with the most relevant answer quickly.
+        inputNeeded: "Classified question, context, question type"
+        actionInstruction: "Call llm.chat() with the targeted research prompt appropriate for the question type."
+        promptToUse: |
+          You are the Researcher agent answering a specific question.
+
+          Question: {{question}}
+          Question type: {{questionType}}
+          Context: {{context}}
+
+          Provide:
+          1. A direct answer to the question
+          2. Supporting evidence and reasoning
+          3. Confidence level: alto/medio/bajo
+          4. Any important caveats or conditions
+          5. What you do not know that could affect the answer
+
+          Be direct. Do not pad with unnecessary background. If you are not sure, say so clearly.
+        expectedOutput: "TargetedAnswer { directAnswer: string, evidence: string[], confidence: string, caveats: string[], unknowns: string[] }"
+        validationRule: "directAnswer is non-empty, confidence is valid, evidence has at least 1 item"
+        failureSignal: "No direct answer provided or answer is evasive without stating uncertainty"
+        recoveryAction: "Return honest 'I cannot confidently answer this question' with explanation of why"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Cross-check and validate answer
+        desc: Cross-check the answer against known facts and look for internal contradictions or unsupported claims.
+        whyThisMatters: Self-validation catches errors before they reach the user and increases reliability of the research output.
+        inputNeeded: "TargetedAnswer with evidence and reasoning"
+        actionInstruction: "Call llm.chat() with the cross-check prompt to verify internal consistency of the answer."
+        promptToUse: |
+          You are the Researcher agent performing self-validation on a research answer.
+
+          Question: {{question}}
+          Answer provided: {{directAnswer}}
+          Evidence cited: {{evidence}}
+          Stated confidence: {{confidence}}
+
+          Check:
+          1. Does the evidence actually support the answer?
+          2. Are there any internal contradictions?
+          3. Is the confidence level appropriate given the evidence?
+          4. Are there obvious counterarguments not addressed?
+
+          Report any issues found. If the answer is solid, confirm it.
+        expectedOutput: "ValidationCheck { isValid: boolean, issues: string[], adjustedConfidence?: string, recommendation: string }"
+        validationRule: "Validation check completed with clear isValid boolean"
+        failureSignal: "Validation returns contradictions or significantly lower confidence"
+        recoveryAction: "Adjust answer and confidence level based on validation findings, note the adjustment"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format and deliver result
+        desc: Apply CP3 validation, format the final answer with all supporting metadata, and return to orchestrator.
+        whyThisMatters: Proper formatting ensures the answer is immediately usable by the orchestrator and meets security requirements.
+        inputNeeded: "Validated TargetedAnswer with any adjustments from cross-check"
+        actionInstruction: "Call validateOutput(finalAnswer). Format as ResearchResult conforming to interoperability contract. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ResearchResult with direct answer, evidence, confidence, and gaps"
+        validationRule: "CP3 passed, output matches interoperabilityContract.outputType"
+        failureSignal: "CP3 flags content or schema validation fails"
+        recoveryAction: "Strip flagged content, return sanitized answer with reduced confidence"
+        handoffIfNeeded: null
+
+    mainOutput: "Direct answer to specific question with confidence level and supporting evidence"
+    secondaryOutputs:
+      - "evidence_chain for audit trail"
+      - "cross_check_results for quality metrics"
+      - "research_metrics (question type, confidence, time)"
+    DoD:
+      - "Direct answer provided for the question"
+      - "Confidence level assigned with justification"
+      - "Supporting evidence cited"
+      - "CP3 passed on final output"
+    qaChecklist:
+      - "Answer directly addresses the question asked"
+      - "Evidence supports the stated confidence level"
+      - "No fabricated facts or unsupported claims"
+      - "Caveats are relevant, not boilerplate"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "answer_directness: answer addresses question in first sentence"
+      - "evidence_count: >= 1 supporting evidence item"
+      - "response_time_p95: < 30s"
+      - "cross_check_pass_rate: >= 80%"
+    cadence: "Per-request (when specific question research is needed)"
+    errorHandling: "If question cannot be answered, return structured 'unanswerable' response with reason"
+    fallbackRoute: "Return 'insufficient knowledge' with what is known and what is missing"
+    escalationRoute: "Report to orchestrator that question requires specialized domain knowledge or external data"
+
+  - id: multi-source-compilation
+    title: Multi-Source Compilation
+    objective: Compile information from multiple knowledge domains into a unified research document with cross-referenced findings
+    trigger: "request requires compilation across multiple domains or request.type === 'compilation'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "At least 2 knowledge domains identified in the topic"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "topic: string (sanitized)"
+      - "domains: string[] - knowledge domains to cover"
+      - "context: string - background and requirements"
+    steps:
+      - stepNumber: 1
+        title: Identify compilation domains
+        desc: Sanitize input and identify the distinct knowledge domains that need to be compiled for the topic.
+        whyThisMatters: Clear domain identification prevents overlap and ensures each domain is researched with appropriate depth and focus.
+        inputNeeded: "Raw topic and any pre-specified domains"
+        actionInstruction: "Call sanitizeInput(topic). Use llm.chat() to identify domains if not pre-specified."
+        promptToUse: |
+          You are the Researcher agent identifying knowledge domains for multi-source compilation.
+
+          Topic: {{topic}}
+          Pre-specified domains: {{domains}}
+          Context: {{context}}
+
+          Identify 2-5 distinct knowledge domains relevant to this topic.
+          For each domain, specify:
+          - Domain name
+          - What aspect of the topic it covers
+          - Expected confidence level for available knowledge
+
+          Ensure domains are non-overlapping and collectively cover the topic.
+        expectedOutput: "DomainList { domains: Domain[], coverage_assessment: string }"
+        validationRule: "Between 2 and 5 domains identified, each with name and coverage description"
+        failureSignal: "Fewer than 2 domains or domains with significant overlap"
+        recoveryAction: "Default to 2 most obvious domains and proceed with reduced scope"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Research each domain
+        desc: Conduct focused research within each identified domain, gathering domain-specific findings.
+        whyThisMatters: Domain-specific research ensures depth and accuracy within each area, which is essential for a credible compilation.
+        inputNeeded: "DomainList with identified domains, topic context"
+        actionInstruction: "For each domain, call llm.chat() with domain-specific research prompt. Collect findings per domain."
+        promptToUse: |
+          You are the Researcher agent gathering findings for a specific knowledge domain.
+
+          Main topic: {{topic}}
+          Current domain: {{domain.name}}
+          Domain coverage: {{domain.coverageDescription}}
+          Context: {{context}}
+
+          Research this domain thoroughly:
+          1. Key facts and established knowledge
+          2. Important nuances and details
+          3. Connections to the main topic
+          4. Confidence level for each finding: alto/medio/bajo
+          5. Known limitations in this domain
+
+          Focus on accuracy over breadth.
+        expectedOutput: "DomainFindings { domain: string, findings: Finding[], connections: string[], limitations: string[] }"
+        validationRule: "Each domain has at least 2 findings with confidence levels"
+        failureSignal: "Empty findings for a domain or missing confidence levels"
+        recoveryAction: "Mark domain as 'insufficient data' and continue with remaining domains"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Cross-reference domains
+        desc: Identify connections, contradictions, and complementary information across the researched domains.
+        whyThisMatters: Cross-referencing transforms isolated domain findings into an integrated understanding, which is the core value of multi-source compilation.
+        inputNeeded: "All DomainFindings from each domain"
+        actionInstruction: "Call llm.chat() with cross-reference prompt comparing findings across domains."
+        promptToUse: |
+          You are the Researcher agent cross-referencing findings across multiple knowledge domains.
+
+          Topic: {{topic}}
+          Domain findings:
+          {{allDomainFindings}}
+
+          Analyze cross-domain relationships:
+          1. Where do domains agree or reinforce each other?
+          2. Where do domains contradict or create tension?
+          3. What emerges from combining domains that is not visible from any single domain?
+          4. What gaps exist between domains?
+
+          Be precise about connections and honest about contradictions.
+        expectedOutput: "CrossReferenceAnalysis { agreements: string[], contradictions: string[], emergentInsights: string[], interDomainGaps: string[] }"
+        validationRule: "At least one agreement or connection identified across domains"
+        failureSignal: "No cross-domain connections found or analysis is superficial"
+        recoveryAction: "Return domain findings without cross-referencing, note that compilation is domain-segregated"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Compile and validate output
+        desc: Compile all domain findings and cross-references into a unified research document, apply CP3, and deliver.
+        whyThisMatters: The compiled document is the primary deliverable; proper compilation ensures coherence and the security check ensures safe delivery.
+        inputNeeded: "All DomainFindings, CrossReferenceAnalysis, original topic"
+        actionInstruction: "Compile into unified ResearchResult. Call validateOutput() for CP3. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ResearchResult with compiled multi-domain findings, cross-references, gaps, and summary"
+        validationRule: "CP3 passed, all domains represented in output, summary present"
+        failureSignal: "CP3 flags content or compilation is missing domains"
+        recoveryAction: "Strip flagged content, note missing domains, deliver partial compilation"
+        handoffIfNeeded: null
+
+    mainOutput: "Unified multi-domain research compilation with cross-referenced findings"
+    secondaryOutputs:
+      - "per_domain_findings for detailed reference"
+      - "cross_reference_map showing domain interconnections"
+      - "compilation_metrics (domain count, finding count, cross-reference count)"
+    DoD:
+      - "All identified domains researched with findings"
+      - "Cross-domain references identified"
+      - "Unified compilation document produced"
+      - "CP3 passed on final output"
+    qaChecklist:
+      - "All domains adequately represented in compilation"
+      - "Cross-references are genuine, not forced"
+      - "Contradictions are noted, not hidden"
+      - "Compilation adds value beyond individual domain reports"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "domain_coverage: 100% of identified domains researched"
+      - "cross_reference_count: >= 1 per domain pair"
+      - "response_time_p95: < 60s"
+      - "compilation_coherence: no internal contradictions unaddressed"
+    cadence: "Per-request (when multi-source compilation is needed)"
+    errorHandling: "If a domain yields no findings, exclude it and note in gaps section"
+    fallbackRoute: "Return individual domain findings without compilation if cross-referencing fails"
+    escalationRoute: "Report to orchestrator that topic requires external sources beyond available knowledge"
+
+  - id: gap-identification
+    title: Gap Identification
+    objective: Systematically identify what is unknown, uncertain, or missing in the current knowledge about a topic
+    trigger: "request.type === 'gap-analysis' or explicit gap identification requested"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Topic or existing findings provided"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "topic: string (sanitized)"
+      - "existingFindings: Finding[] - current knowledge to analyze for gaps"
+      - "requirements: string[] - what a complete answer would need"
+    steps:
+      - stepNumber: 1
+        title: Establish completeness criteria
+        desc: Define what a complete, thorough answer to the topic would require, establishing the benchmark for gap identification.
+        whyThisMatters: Without a completeness benchmark, gap identification is aimless and gaps cannot be prioritized by importance.
+        inputNeeded: "Topic, requirements if specified, existing findings for context"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with completeness criteria prompt."
+        promptToUse: |
+          You are the Researcher agent establishing completeness criteria for gap identification.
+
+          Topic: {{topic}}
+          Specified requirements: {{requirements}}
+          Existing findings count: {{existingFindings.length}}
+
+          Define what a complete answer to this topic would require:
+          1. Essential information categories (must-have)
+          2. Important but secondary categories (should-have)
+          3. Nice-to-have enrichment categories
+          4. Minimum confidence threshold for adequacy
+
+          Be specific about what each category requires.
+        expectedOutput: "CompletenessCriteria { essential: string[], important: string[], niceToHave: string[], confidenceThreshold: string }"
+        validationRule: "At least 3 essential criteria defined"
+        failureSignal: "No criteria generated or criteria are too vague to test against"
+        recoveryAction: "Use generic completeness criteria: accuracy, coverage, depth, recency, relevance"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Audit existing knowledge
+        desc: Compare existing findings against completeness criteria to identify which areas are covered and which are not.
+        whyThisMatters: Systematic auditing prevents both false confidence (thinking coverage is complete when it is not) and false alarm (flagging gaps that are actually covered).
+        inputNeeded: "CompletenessCriteria, existingFindings"
+        actionInstruction: "Call llm.chat() with the audit prompt to map findings against criteria."
+        promptToUse: |
+          You are the Researcher agent auditing existing knowledge against completeness criteria.
+
+          Topic: {{topic}}
+          Completeness criteria:
+          Essential: {{criteria.essential}}
+          Important: {{criteria.important}}
+
+          Existing findings:
+          {{existingFindings}}
+
+          For each criterion, assess:
+          - COVERED: finding(s) adequately address this criterion
+          - PARTIAL: some information exists but is insufficient
+          - MISSING: no relevant information found
+          - UNCERTAIN: information exists but confidence is bajo
+
+          Be honest and precise in the audit.
+        expectedOutput: "CoverageAudit { covered: AuditItem[], partial: AuditItem[], missing: AuditItem[], uncertain: AuditItem[] }"
+        validationRule: "Every criterion from CompletenessCriteria appears in exactly one audit category"
+        failureSignal: "Criteria missing from audit or all criteria marked as 'covered' without justification"
+        recoveryAction: "Re-run audit with stricter evaluation criteria"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Characterize and prioritize gaps
+        desc: For each identified gap, characterize its nature, impact, and priority for resolution.
+        whyThisMatters: Not all gaps are equal; prioritization ensures downstream efforts focus on the most impactful gaps first.
+        inputNeeded: "CoverageAudit with missing, partial, and uncertain items"
+        actionInstruction: "Call llm.chat() with gap characterization prompt."
+        promptToUse: |
+          You are the Researcher agent characterizing knowledge gaps.
+
+          Topic: {{topic}}
+          Missing areas: {{audit.missing}}
+          Partial areas: {{audit.partial}}
+          Uncertain areas: {{audit.uncertain}}
+
+          For each gap:
+          1. Describe what is specifically missing
+          2. Assess impact: How much does this gap affect overall understanding?
+          3. Assess resolvability: Could this gap be filled with available resources?
+          4. Priority: Critical / High / Medium / Low
+          5. Suggested approach to fill the gap
+
+          Rank gaps by priority.
+        expectedOutput: "GapAnalysis { gaps: Gap[], totalGapCount: number, criticalGapCount: number, overallCompleteness: percentage }"
+        validationRule: "Each gap has priority and impact assessment, gaps are ordered by priority"
+        failureSignal: "Gaps without priority or impact assessment"
+        recoveryAction: "Assign default priority 'Medium' to unassessed gaps and continue"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver gap report
+        desc: Apply CP3, format the gap analysis as a structured report, and return to orchestrator.
+        whyThisMatters: The gap report must be actionable and properly validated to be useful for decision-making by the orchestrator.
+        inputNeeded: "GapAnalysis with prioritized gaps"
+        actionInstruction: "Call validateOutput(gapReport). Format as ResearchResult with gaps as primary output. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ResearchResult with gap analysis as primary content"
+        validationRule: "CP3 passed, gaps are prioritized, overall completeness percentage present"
+        failureSignal: "CP3 flags content or gap report is unstructured"
+        recoveryAction: "Return simplified gap list without detailed characterization"
+        handoffIfNeeded: null
+
+    mainOutput: "Prioritized gap analysis with completeness assessment and resolution suggestions"
+    secondaryOutputs:
+      - "completeness_criteria for future reference"
+      - "coverage_audit_map showing what is and is not covered"
+      - "gap_metrics (total gaps, critical gaps, completeness percentage)"
+    DoD:
+      - "Completeness criteria established"
+      - "All criteria audited against existing knowledge"
+      - "Gaps characterized with priority and impact"
+      - "Overall completeness percentage provided"
+      - "CP3 passed on final output"
+    qaChecklist:
+      - "Gaps are genuine, not manufactured"
+      - "Priorities are justified by impact assessment"
+      - "Completeness percentage is realistic"
+      - "Resolution suggestions are actionable"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "criteria_coverage: 100% of criteria audited"
+      - "gap_prioritization: all gaps have priority assigned"
+      - "response_time_p95: < 40s"
+      - "actionable_suggestions: >= 1 per critical gap"
+    cadence: "Per-request (when gap identification is needed)"
+    errorHandling: "If no existing findings provided, generate preliminary findings first then identify gaps"
+    fallbackRoute: "Return simple list of unknown areas without full characterization"
+    escalationRoute: "Report to orchestrator that gap resolution requires resources beyond researcher capability"

@@ -1,0 +1,629 @@
+id: summarization
+name: Summarization
+purpose: Produce concise, accurate summaries that capture essential information from content of varying length and complexity, adapted to the target audience and purpose.
+businessValue: Saves users time by distilling large volumes of information into digestible formats while preserving the most important insights and maintaining factual accuracy.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: researcher
+
+inputs:
+  - "content: string - The content to summarize"
+  - "summaryType: string - 'executive'|'technical'|'key-points'|'progressive'"
+  - "targetLength: string - Desired summary length or 'auto'"
+  - "audience: string - Target audience for the summary"
+
+outputs:
+  - "summary: string - The produced summary"
+  - "keyPoints: string[] - Extracted key points"
+  - "omittedTopics: string[] - Topics excluded from summary with reason"
+  - "fidelityScore: string - Self-assessed faithfulness to original content"
+
+dependencies:
+  - "agents/researcher/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task specification from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - summary_produced
+  - key_points_extracted
+  - content_compressed
+  - fidelity_assessed
+  - fallback_triggered
+
+failureHandling:
+  - "Content too short to summarize: Return original with note"
+  - "Content too long for single pass: Apply progressive summarization"
+  - "Summary loses critical information: Re-summarize with higher fidelity threshold"
+  - "Ambiguous audience: Default to general audience with clear language"
+
+interoperabilityContract:
+  inputType: "SummarizationRequest { content: string, summaryType: string, targetLength: string, audience: string }"
+  outputType: "SummarizationResult { summary: string, keyPoints: string[], omittedTopics: string[], fidelityScore: string }"
+
+wowCriteria:
+  - "Summary captures 90%+ of essential information in the target length"
+  - "Key points are prioritized by importance, not by order of appearance"
+  - "Omitted topics are proactively disclosed with justification"
+  - "Summary reads naturally and is adapted to the target audience"
+
+safeCriteria:
+  - "No information added that is not in the original content"
+  - "Key facts are not distorted or misrepresented"
+  - "Critical caveats and conditions are preserved"
+  - "Summary clearly labeled as summary, not original content"
+
+workflows:
+  - id: executive-summary
+    title: Executive Summary
+    objective: Produce a high-level executive summary that captures strategic insights and key decisions for leadership-level readers
+    trigger: "summaryType === 'executive'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Content provided and non-empty"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "content: string (sanitized)"
+      - "targetLength: string"
+      - "audience: string - leadership or decision-maker audience"
+    steps:
+      - stepNumber: 1
+        title: Analyze content structure
+        desc: Sanitize input and analyze the content to identify its structure, main themes, and hierarchy of importance.
+        whyThisMatters: Understanding content structure before summarizing prevents the summary from following source order rather than importance order.
+        inputNeeded: "Raw content and audience specification"
+        actionInstruction: "Call sanitizeInput(content). Call llm.chat() with content analysis prompt."
+        promptToUse: |
+          You are the Researcher agent analyzing content for executive summarization.
+
+          Content: {{content}}
+          Target audience: {{audience}}
+
+          Analyze:
+          1. Main themes (rank by strategic importance, not by order of appearance)
+          2. Key decisions or conclusions present
+          3. Critical data points and metrics
+          4. Action items or recommendations
+          5. Risks or concerns mentioned
+          6. Content length and complexity assessment
+
+          Focus on what a decision-maker needs to know, not comprehensive coverage.
+        expectedOutput: "ContentAnalysis { themes: Theme[], decisions: string[], dataPoints: string[], actions: string[], risks: string[], complexity: string }"
+        validationRule: "At least 1 theme identified, themes ranked by importance"
+        failureSignal: "No themes identified or themes listed in document order without ranking"
+        recoveryAction: "Extract first paragraph as theme proxy and proceed with simplified analysis"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Draft executive summary
+        desc: Draft the executive summary prioritizing strategic insights, decisions, and actions over detailed analysis.
+        whyThisMatters: Executive summaries serve decision-makers who need the bottom line first, supporting details second, and comprehensive analysis not at all.
+        inputNeeded: "ContentAnalysis with ranked themes and key elements"
+        actionInstruction: "Call llm.chat() with executive summary drafting prompt."
+        promptToUse: |
+          You are the Researcher agent drafting an executive summary.
+
+          Content analysis:
+          {{contentAnalysis}}
+          Target length: {{targetLength}}
+          Audience: {{audience}}
+
+          Draft an executive summary following this structure:
+          1. Bottom line (1-2 sentences: the most important takeaway)
+          2. Key findings (3-5 bullet points, ranked by importance)
+          3. Decisions or actions needed (if any)
+          4. Risks or concerns (if any)
+          5. Recommendation (if supported by content)
+
+          Rules:
+          - Lead with conclusions, not background
+          - Use concrete numbers over vague qualifiers
+          - Every sentence must earn its place
+          - Do not add information not in the original content
+          - Target length: {{targetLength}} (or 150-250 words if 'auto')
+        expectedOutput: "ExecutiveSummary { bottomLine: string, keyFindings: string[], actions: string[], risks: string[], recommendation: string }"
+        validationRule: "Bottom line present, summary within target length, no fabricated information"
+        failureSignal: "Summary exceeds target length by >50% or adds information not in source"
+        recoveryAction: "Trim summary to target length, prioritizing bottom line and top findings"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Assess fidelity
+        desc: Compare the summary against original content to verify faithfulness, identify any distortions, and list omitted topics.
+        whyThisMatters: Fidelity checking prevents the summary from inadvertently misrepresenting the original content, which could lead to poor decisions.
+        inputNeeded: "ExecutiveSummary, original content"
+        actionInstruction: "Call llm.chat() with fidelity assessment prompt."
+        promptToUse: |
+          You are the Researcher agent assessing summary fidelity.
+
+          Original content: {{content}}
+          Executive summary: {{summary}}
+
+          Assess fidelity:
+          1. Are all summary claims supported by the original content?
+          2. Are any facts distorted or misrepresented?
+          3. What important topics were omitted and why?
+          4. Is the overall impression accurate?
+          5. Fidelity score: alto (faithful) / medio (mostly faithful) / bajo (significant gaps)
+
+          Be strict. The summary must not mislead.
+        expectedOutput: "FidelityAssessment { isAccurate: boolean, distortions: string[], omittedTopics: OmittedTopic[], overallImpression: string, fidelityScore: string }"
+        validationRule: "Fidelity score assigned, omitted topics listed even if empty"
+        failureSignal: "Assessment finds significant distortions"
+        recoveryAction: "Re-draft the summary correcting identified distortions"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3, finalize the summary with fidelity metadata, and deliver to orchestrator.
+        whyThisMatters: Final validation ensures the summary is safe and includes transparency about its faithfulness.
+        inputNeeded: "FidelityAssessment, finalized ExecutiveSummary"
+        actionInstruction: "Call validateOutput(). Format as SummarizationResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated SummarizationResult with summary, key points, omissions, and fidelity score"
+        validationRule: "CP3 passed, fidelity score included, omitted topics listed"
+        failureSignal: "CP3 flags content or missing metadata"
+        recoveryAction: "Strip flagged content, deliver summary with reduced metadata"
+        handoffIfNeeded: null
+
+    mainOutput: "Executive summary with strategic focus, key findings, and fidelity assessment"
+    secondaryOutputs:
+      - "content_analysis for reference"
+      - "fidelity_assessment for quality audit"
+      - "summarization_metrics (compression ratio, fidelity score, word count)"
+    DoD:
+      - "Executive summary produced within target length"
+      - "Bottom line clearly stated"
+      - "Key findings ranked by importance"
+      - "Fidelity assessed and score assigned"
+      - "CP3 passed"
+    qaChecklist:
+      - "No information fabricated or added"
+      - "Summary reads naturally for target audience"
+      - "Critical facts preserved"
+      - "Omissions are justified"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "target_length_compliance: within 20% of target"
+      - "fidelity_score: medio or alto"
+      - "response_time_p95: < 30s"
+      - "key_point_count: 3-5 key findings"
+    cadence: "Per-request (when executive summary is needed)"
+    errorHandling: "If content is too short for executive summary, return as-is with note"
+    fallbackRoute: "Return key-points extraction instead of executive format"
+    escalationRoute: "Report to orchestrator that content requires domain expertise for accurate summarization"
+
+  - id: technical-summary
+    title: Technical Summary
+    objective: Produce a technically precise summary preserving domain terminology, methodology details, and technical conclusions
+    trigger: "summaryType === 'technical'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Technical content provided"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "content: string (sanitized)"
+      - "targetLength: string"
+      - "audience: string - technical audience"
+    steps:
+      - stepNumber: 1
+        title: Identify technical elements
+        desc: Sanitize input and identify the technical components including methodology, data, findings, technical terminology, and domain-specific concepts.
+        whyThisMatters: Technical summaries must preserve precise terminology and methodology details that non-technical summaries would simplify or omit.
+        inputNeeded: "Raw technical content and audience"
+        actionInstruction: "Call sanitizeInput(content). Call llm.chat() with technical analysis prompt."
+        promptToUse: |
+          You are the Researcher agent analyzing technical content for summarization.
+
+          Content: {{content}}
+          Target audience: {{audience}}
+
+          Identify technical elements:
+          1. Domain and subdomain
+          2. Methodology or approach used
+          3. Technical terminology (preserve these exactly)
+          4. Data and metrics presented
+          5. Technical findings or conclusions
+          6. Limitations and constraints noted
+          7. Dependencies or prerequisites mentioned
+
+          Preserve technical precision. Do not simplify terminology.
+        expectedOutput: "TechnicalAnalysis { domain: string, methodology: string, terminology: string[], data: string[], findings: string[], limitations: string[], dependencies: string[] }"
+        validationRule: "Domain identified, at least 1 finding or conclusion extracted"
+        failureSignal: "No technical elements identifiable in content"
+        recoveryAction: "Treat as non-technical content and redirect to executive-summary workflow"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Draft technical summary
+        desc: Draft the summary preserving technical accuracy, domain terminology, and methodology details while compressing non-essential content.
+        whyThisMatters: Technical audiences need precise, accurate summaries that they can rely on for technical decisions without consulting the full document.
+        inputNeeded: "TechnicalAnalysis with identified elements"
+        actionInstruction: "Call llm.chat() with technical summary drafting prompt."
+        promptToUse: |
+          You are the Researcher agent drafting a technical summary.
+
+          Technical analysis:
+          {{technicalAnalysis}}
+          Target length: {{targetLength}}
+          Audience: {{audience}}
+
+          Draft a technical summary:
+          1. Scope and methodology (what was done and how)
+          2. Key findings with supporting data
+          3. Technical implications
+          4. Limitations and constraints
+          5. Dependencies or prerequisites
+
+          Rules:
+          - Preserve exact technical terminology
+          - Include specific numbers and metrics
+          - Maintain causal relationships accurately
+          - Do not oversimplify technical concepts
+          - Target length: {{targetLength}} (or 200-400 words if 'auto')
+        expectedOutput: "TechnicalSummary { scope: string, findings: string[], implications: string[], limitations: string[], dependencies: string[] }"
+        validationRule: "Summary preserves key terminology, includes data points, within target length"
+        failureSignal: "Technical terms simplified or data points omitted"
+        recoveryAction: "Re-draft with explicit instruction to preserve all terminology and numbers"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Verify technical accuracy
+        desc: Cross-check the summary against original content for technical accuracy, ensuring no methodology or finding is misrepresented.
+        whyThisMatters: Technical inaccuracy in a summary can lead to incorrect implementations or decisions by engineers and scientists who rely on it.
+        inputNeeded: "TechnicalSummary, original content"
+        actionInstruction: "Call llm.chat() with technical accuracy verification prompt."
+        promptToUse: |
+          You are the Researcher agent verifying technical accuracy of a summary.
+
+          Original content: {{content}}
+          Technical summary: {{summary}}
+
+          Verify:
+          1. Are methodological claims accurate?
+          2. Are data points correctly stated?
+          3. Are causal claims preserved correctly?
+          4. Are limitations accurately represented?
+          5. Are any technical nuances lost that change the meaning?
+          6. Fidelity score: alto / medio / bajo
+
+          Technical accuracy is critical. Flag any deviation.
+        expectedOutput: "TechnicalVerification { isAccurate: boolean, deviations: string[], omittedTopics: string[], fidelityScore: string }"
+        validationRule: "Verification completed, deviations listed if any, fidelity score assigned"
+        failureSignal: "Significant technical deviations found"
+        recoveryAction: "Correct identified deviations and re-verify"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the technical summary with accuracy metadata.
+        whyThisMatters: Final validation ensures safe delivery of the technically accurate summary.
+        inputNeeded: "Verified TechnicalSummary with accuracy metadata"
+        actionInstruction: "Call validateOutput(). Format as SummarizationResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated SummarizationResult with technical summary and accuracy verification"
+        validationRule: "CP3 passed, accuracy metadata included"
+        failureSignal: "CP3 flags content or metadata missing"
+        recoveryAction: "Strip flagged content, deliver summary with accuracy caveat"
+        handoffIfNeeded: null
+
+    mainOutput: "Technically precise summary preserving methodology, data, and domain terminology"
+    secondaryOutputs:
+      - "technical_analysis for domain reference"
+      - "accuracy_verification for quality audit"
+      - "summarization_metrics (compression ratio, terminology preservation rate)"
+    DoD:
+      - "Technical summary produced within target length"
+      - "Domain terminology preserved"
+      - "Data points and metrics included"
+      - "Technical accuracy verified"
+      - "CP3 passed"
+    qaChecklist:
+      - "No technical terms simplified or lost"
+      - "Data points match original"
+      - "Causal relationships preserved"
+      - "Limitations accurately represented"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "terminology_preservation: 100% of key terms retained"
+      - "data_accuracy: all numbers match original"
+      - "fidelity_score: alto or medio"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when technical summary is needed)"
+    errorHandling: "If content is not technical, redirect to executive-summary workflow"
+    fallbackRoute: "Return key-points extraction with preserved terminology"
+    escalationRoute: "Report to orchestrator that technical domain requires specialist verification"
+
+  - id: key-points-extraction
+    title: Key Points Extraction
+    objective: Extract and rank the most important points from content as a structured, prioritized list
+    trigger: "summaryType === 'key-points'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Content provided and non-empty"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "content: string (sanitized)"
+      - "maxPoints: number - maximum key points to extract"
+      - "audience: string"
+    steps:
+      - stepNumber: 1
+        title: Extract candidate points
+        desc: Sanitize input and extract all potentially important points from the content without filtering.
+        whyThisMatters: Exhaustive extraction before filtering ensures important points are not prematurely discarded.
+        inputNeeded: "Raw content and audience context"
+        actionInstruction: "Call sanitizeInput(content). Call llm.chat() with point extraction prompt."
+        promptToUse: |
+          You are the Researcher agent extracting key points from content.
+
+          Content: {{content}}
+          Audience: {{audience}}
+
+          Extract ALL potentially important points:
+          - Facts and findings
+          - Conclusions and recommendations
+          - Data points and metrics
+          - Caveats and limitations
+          - Action items
+          - Surprises or counterintuitive findings
+
+          List each point as a single clear sentence. Do not filter yet — extract comprehensively.
+        expectedOutput: "CandidatePoints { points: string[], totalCount: number }"
+        validationRule: "At least 3 candidate points extracted"
+        failureSignal: "Fewer than 2 points or points are vague paraphrases"
+        recoveryAction: "Extract at sentence level, treating each substantive sentence as a candidate point"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Rank and filter points
+        desc: Rank candidate points by importance for the target audience and filter to the requested maximum.
+        whyThisMatters: Ranking by audience-relevant importance ensures the final list serves the user's specific needs rather than just following document order.
+        inputNeeded: "CandidatePoints, maxPoints limit, audience"
+        actionInstruction: "Call llm.chat() with ranking prompt."
+        promptToUse: |
+          You are the Researcher agent ranking key points by importance.
+
+          Candidate points:
+          {{candidatePoints}}
+          Target audience: {{audience}}
+          Maximum points: {{maxPoints}}
+
+          Rank by importance to the target audience:
+          1. Assign importance score 1-10 to each point
+          2. Select top {{maxPoints}} points (or top 5-7 if maxPoints not specified)
+          3. Order by importance score (highest first)
+          4. For each selected point, briefly justify why it is key
+
+          Importance is audience-relative. What matters to a technical reader differs from an executive.
+        expectedOutput: "RankedPoints { selected: RankedPoint[], excluded: string[], selectionCriteria: string }"
+        validationRule: "Selected count <= maxPoints, each point has importance score and justification"
+        failureSignal: "More points than maxPoints or points without scores"
+        recoveryAction: "Take top N by document position if importance scoring fails"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Polish and validate
+        desc: Polish the key points for clarity and consistency, apply CP3, and deliver.
+        whyThisMatters: Polished key points communicate more effectively and the validation ensures safe delivery.
+        inputNeeded: "RankedPoints, original content for fidelity check"
+        actionInstruction: "Polish point wording for clarity. Call validateOutput(). Return to orchestrator."
+        promptToUse: |
+          You are the Researcher agent polishing key points for delivery.
+
+          Selected key points:
+          {{rankedPoints}}
+          Audience: {{audience}}
+
+          Polish each point:
+          - Ensure clarity and specificity
+          - Use consistent formatting (each point is one sentence)
+          - Verify each point is faithful to the original content
+          - Rate overall fidelity: alto / medio / bajo
+        expectedOutput: "PolishedPoints { points: string[], fidelityScore: string, omittedTopics: string[] }"
+        validationRule: "Points are clear single sentences, fidelity score assigned"
+        failureSignal: "Points are vague or fidelity assessment missing"
+        recoveryAction: "Return unpolished ranked points with basic fidelity note"
+        handoffIfNeeded: null
+
+    mainOutput: "Prioritized list of key points ranked by audience-relevant importance"
+    secondaryOutputs:
+      - "full_candidate_list for reference"
+      - "ranking_justifications for audit"
+      - "extraction_metrics (candidate count, selection ratio, fidelity)"
+    DoD:
+      - "Key points extracted and ranked"
+      - "Within maxPoints limit"
+      - "Each point is clear and specific"
+      - "Fidelity assessed"
+      - "CP3 passed"
+    qaChecklist:
+      - "Points are faithful to original content"
+      - "Ranking reflects audience needs"
+      - "No fabricated points"
+      - "Important topics not arbitrarily excluded"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "point_count: within maxPoints limit"
+      - "fidelity_score: alto or medio"
+      - "response_time_p95: < 25s"
+      - "point_specificity: each point contains concrete information"
+    cadence: "Per-request (when key points extraction is needed)"
+    errorHandling: "If content has fewer meaningful points than maxPoints, return all with note"
+    fallbackRoute: "Return unranked points if ranking algorithm fails"
+    escalationRoute: "Report to orchestrator that content domain requires specialist for accurate key point identification"
+
+  - id: progressive-summary
+    title: Progressive Summary
+    objective: Produce summaries at multiple levels of detail (one-line, paragraph, full) so users can choose their preferred depth
+    trigger: "summaryType === 'progressive' or multi-level summary requested"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Content provided with sufficient length for multi-level summarization"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "content: string (sanitized)"
+      - "levels: number - number of detail levels (default 3)"
+      - "audience: string"
+    steps:
+      - stepNumber: 1
+        title: Analyze content depth
+        desc: Sanitize input and analyze the content to understand its depth and identify which information belongs at which summary level.
+        whyThisMatters: Depth analysis ensures each summary level adds genuine value rather than just being a longer version of the previous level.
+        inputNeeded: "Raw content, desired number of levels, audience"
+        actionInstruction: "Call sanitizeInput(content). Call llm.chat() with depth analysis prompt."
+        promptToUse: |
+          You are the Researcher agent analyzing content for progressive summarization.
+
+          Content: {{content}}
+          Summary levels: {{levels}} (typically 3: one-line, paragraph, full)
+          Audience: {{audience}}
+
+          Categorize information by importance tier:
+          - Tier 1 (core): Absolutely essential — must appear in even the shortest summary
+          - Tier 2 (important): Significant — belongs in medium-length summary
+          - Tier 3 (detail): Useful context — belongs only in the longest summary
+          - Tier 4 (omittable): Can be excluded from all summaries
+
+          For each tier, list the specific information items.
+        expectedOutput: "DepthAnalysis { tiers: Tier[], contentLength: number, recommendedLevels: number }"
+        validationRule: "At least 3 tiers populated, Tier 1 has essential items"
+        failureSignal: "All information in one tier or Tier 1 is empty"
+        recoveryAction: "Apply simple 1/3 splits based on document position"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Generate summary levels
+        desc: Generate each summary level, ensuring each builds on the previous while adding genuine new information.
+        whyThisMatters: Progressive summaries must be coherent at each level and each level must justify its existence by adding meaningful detail.
+        inputNeeded: "DepthAnalysis with tiered information"
+        actionInstruction: "Call llm.chat() with progressive summarization prompt to generate all levels."
+        promptToUse: |
+          You are the Researcher agent generating progressive summaries.
+
+          Depth analysis:
+          {{depthAnalysis}}
+          Audience: {{audience}}
+          Levels to generate: {{levels}}
+
+          Generate {{levels}} summary levels:
+
+          Level 1 - One Line (max 25 words):
+          Capture the single most essential takeaway from Tier 1 information.
+
+          Level 2 - Paragraph (75-150 words):
+          Expand with all Tier 1 and key Tier 2 information. Must be self-contained.
+
+          Level 3 - Full Summary (200-400 words):
+          Include Tier 1, 2, and 3 information. Provide context and nuance.
+
+          Rules:
+          - Each level must be self-contained (readable without other levels)
+          - Each level must add genuine new information over the previous
+          - No fabricated information at any level
+          - Longer levels must not contradict shorter ones
+        expectedOutput: "ProgressiveSummaries { levels: SummaryLevel[], wordCounts: number[] }"
+        validationRule: "All requested levels generated, each progressively longer, no contradictions between levels"
+        failureSignal: "Levels contradict each other or a longer level adds no new information"
+        recoveryAction: "Regenerate the contradicting level using the previous level as a constraint"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Verify consistency and fidelity
+        desc: Verify that all levels are consistent with each other and faithful to the original content.
+        whyThisMatters: Inconsistency between summary levels would confuse users and undermine trust in the summarization.
+        inputNeeded: "ProgressiveSummaries, original content"
+        actionInstruction: "Call llm.chat() with consistency verification prompt."
+        promptToUse: |
+          You are the Researcher agent verifying progressive summary consistency.
+
+          Original content: {{content}}
+          Summary levels:
+          {{levels}}
+
+          Verify:
+          1. Level consistency: Do shorter levels align with longer ones?
+          2. Content fidelity: Is each level faithful to the original?
+          3. Progressive value: Does each level add genuine information?
+          4. Omissions: What important content was excluded from all levels?
+          5. Overall fidelity: alto / medio / bajo
+        expectedOutput: "ConsistencyCheck { isConsistent: boolean, fidelityScore: string, issues: string[], omittedTopics: string[] }"
+        validationRule: "Consistency assessed, fidelity score assigned"
+        failureSignal: "Inconsistencies found between levels"
+        recoveryAction: "Flag inconsistencies and regenerate affected levels"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver all summary levels with metadata to orchestrator.
+        whyThisMatters: Validated delivery ensures all levels are safe and properly packaged for user consumption.
+        inputNeeded: "Verified ProgressiveSummaries with consistency metadata"
+        actionInstruction: "Call validateOutput(). Format as SummarizationResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated SummarizationResult with all summary levels, key points, and fidelity data"
+        validationRule: "CP3 passed, all levels present in output"
+        failureSignal: "CP3 flags content or levels missing"
+        recoveryAction: "Deliver available levels, note which are missing"
+        handoffIfNeeded: null
+
+    mainOutput: "Progressive multi-level summaries from one-line to full, each self-contained and consistent"
+    secondaryOutputs:
+      - "depth_analysis for information tiering reference"
+      - "consistency_check for quality audit"
+      - "summarization_metrics (per-level word count, fidelity, compression ratio)"
+    DoD:
+      - "All requested summary levels generated"
+      - "Levels are self-contained and consistent"
+      - "Progressive detail increase verified"
+      - "Fidelity assessed across levels"
+      - "CP3 passed"
+    qaChecklist:
+      - "Shorter levels do not contradict longer ones"
+      - "Each level adds genuine new information"
+      - "All levels are faithful to original content"
+      - "One-line summary captures the core takeaway"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "level_count: matches requested levels"
+      - "consistency: no contradictions between levels"
+      - "fidelity_score: medio or alto for all levels"
+      - "response_time_p95: < 40s"
+    cadence: "Per-request (when progressive summarization is needed)"
+    errorHandling: "If content too short for 3 levels, produce 2 levels and note"
+    fallbackRoute: "Return single executive summary if progressive generation fails"
+    escalationRoute: "Report to orchestrator that content complexity requires domain specialist summarization"

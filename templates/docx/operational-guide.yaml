@@ -1,0 +1,190 @@
+# Operational Guide DOCX Template Specification
+# Used by skill-engine to generate DOCX files on demand
+# Binary .docx rendered via docx-template-creator skill
+
+id: operational-guide
+name: Operational Guide
+purpose: Step-by-step operational guide for agent workflows
+format: docx
+version: "1.0.0"
+
+pageSetup:
+  size: A4
+  margins:
+    top: 2.54cm
+    bottom: 2.54cm
+    left: 3.18cm
+    right: 3.18cm
+  orientation: portrait
+
+styles:
+  title:
+    font: Calibri
+    size: 28pt
+    color: "#2563eb"
+    bold: true
+  heading1:
+    font: Calibri
+    size: 18pt
+    color: "#1f2937"
+    bold: true
+    spaceBefore: 24pt
+    spaceAfter: 12pt
+  heading2:
+    font: Calibri
+    size: 14pt
+    color: "#2563eb"
+    bold: true
+    spaceBefore: 18pt
+    spaceAfter: 6pt
+  heading3:
+    font: Calibri
+    size: 12pt
+    color: "#374151"
+    bold: true
+    spaceBefore: 12pt
+    spaceAfter: 4pt
+  body:
+    font: Calibri
+    size: 11pt
+    color: "#1f2937"
+    lineSpacing: 1.15
+  caption:
+    font: Calibri
+    size: 9pt
+    color: "#6b7280"
+    italic: true
+
+sections:
+  - id: cover
+    title: Cover Page
+    placeholders:
+      - "{{title}}"
+      - "{{version}}"
+      - "{{date}}"
+      - "{{owningAgent}}"
+      - "{{classification}}"
+
+  - id: toc
+    title: Table of Contents
+    autoGenerate: true
+    depth: 3
+
+  - id: executive-summary
+    title: Executive Summary
+    heading: Heading 1
+    content:
+      - type: paragraph
+        text: "{{executiveSummary}}"
+
+  - id: scope
+    title: Scope and Applicability
+    heading: Heading 1
+    content:
+      - type: paragraph
+        text: "{{scope}}"
+      - type: bulletList
+        items:
+          - "{{applicableAgent}}"
+          - "{{applicableSkill}}"
+          - "{{applicableWorkflow}}"
+
+  - id: prerequisites
+    title: Prerequisites
+    heading: Heading 1
+    content:
+      - type: numberedList
+        items:
+          - "{{prerequisite}}"
+
+  - id: glossary
+    title: Glossary
+    heading: Heading 1
+    content:
+      - type: table
+        columns: [Term, Definition]
+        rows:
+          - ["{{term}}", "{{definition}}"]
+
+  - id: procedure
+    title: Step-by-Step Procedure
+    heading: Heading 1
+    repeatable: true
+    content:
+      - type: heading2
+        text: "Step {{stepNumber}}: {{stepTitle}}"
+      - type: paragraph
+        style: body
+        text: "{{stepDescription}}"
+      - type: callout
+        label: "Why this matters"
+        text: "{{whyThisMatters}}"
+      - type: heading3
+        text: "Action"
+      - type: codeBlock
+        text: "{{actionInstruction}}"
+      - type: heading3
+        text: "Expected Output"
+      - type: paragraph
+        text: "{{expectedOutput}}"
+      - type: heading3
+        text: "Validation"
+      - type: paragraph
+        text: "{{validationRule}}"
+      - type: callout
+        label: "Recovery"
+        text: "If this step fails: {{recoveryAction}}"
+
+  - id: expected-results
+    title: Expected Results
+    heading: Heading 1
+    content:
+      - type: paragraph
+        text: "{{expectedResults}}"
+      - type: bulletList
+        items:
+          - "{{outputArtifact}}"
+
+  - id: troubleshooting
+    title: Troubleshooting
+    heading: Heading 1
+    content:
+      - type: table
+        columns: [Problem, Cause, Solution]
+        rows:
+          - ["{{problem}}", "{{cause}}", "{{solution}}"]
+
+  - id: raci
+    title: RACI Matrix
+    heading: Heading 1
+    content:
+      - type: table
+        columns: [Role, Agent/Entity]
+        rows:
+          - [Responsible, "{{responsible}}"]
+          - [Accountable, "{{accountable}}"]
+          - [Consulted, "{{consulted}}"]
+          - [Informed, "{{informed}}"]
+
+  - id: revision-history
+    title: Revision History
+    heading: Heading 1
+    content:
+      - type: table
+        columns: [Version, Date, Author, Changes]
+        rows:
+          - ["{{version}}", "{{date}}", "{{author}}", "{{changes}}"]
+
+header:
+  text: "{{title}} — v{{version}}"
+  alignment: right
+  font: Calibri
+  size: 8pt
+  color: "#9ca3af"
+
+footer:
+  text: "Pristino Ecosystem | Page {{pageNumber}} of {{totalPages}}"
+  alignment: center
+  font: Calibri
+  size: 8pt
+  color: "#9ca3af"

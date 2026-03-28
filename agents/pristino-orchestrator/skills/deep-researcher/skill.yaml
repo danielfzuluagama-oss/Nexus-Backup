@@ -1,0 +1,123 @@
+id: "deep-researcher"
+name: "Deep Research Orchestrator (v1.0-GAMMA)"
+version: "1.0.0"
+description: "ENTRUSTED-certified cognitive investigation engine. Employs 32 analytic methodologies, 44 reasoning frameworks (including multi-perspective Tree-of-Thought), and strict RAG handling. Mandates Human-In-The-Loop escalations for unresolvable ambiguities."
+owner: "agent_orchestrator"
+category: "cognitive-operation"
+
+business_value: |
+  Provides a dedicated, tireless PhD-level analyst capable of consuming massive datasets via RAG,
+  dissecting information through 44 reasoning frameworks, and synthesizing actionable strategic
+  reports calibrated to 40 semantic archetypes. Reduces analysis time from weeks to hours.
+
+triggers:
+  - keywords: ["investiga", "investigación profunda", "deep research", "analiza", "RAG", "tree of thought", "metodología analítica", "informe exhaustivo"]
+  - context_patterns:
+      - pattern: "(?i)(buscar|analizar|investigar) a fondo"
+      - pattern: "(?i)(análisis|informe) (exhaustivo|profundo|detallado)"
+      - pattern: "(?i)(comparar|contrastar|evaluar).* (opciones|alternativas|tecnologías)"
+
+dependencies:
+  skills:
+    - "prompt-engineer"    # For structuring research prompts with algebraic composition.
+    - "quality-excellence"  # For 16D scoring on research outputs.
+    - "strategic-coach"     # For handoffs requiring behavioral or market alignment insights.
+
+# ── Assumptions ──
+assumptions:
+  - "External context (documents, URLs, transcripts) is provided by the user or RAG system. The skill does not autonomously browse the internet."
+  - "RAG-sourced claims are grounded in the provided context. If the context is incomplete, the skill states 'Insufficient Data' explicitly."
+  - "Default output depth is 'Executive Summary + Detailed Analysis'. User can request only one level."
+  - "Reasoning framework selection is automatic based on the subject. User can override with explicit framework request."
+
+# ── Limits ──
+limits:
+  - "Cannot perform live experiments, A/B tests, or real-time data collection. Output is analytical, not empirical."
+  - "Cannot access paywalled academic papers unless provided in-context. Cites sources based on what is available."
+  - "Maximum context window per analysis: depends on underlying LLM (typically 128K tokens). Larger datasets require chunked analysis."
+  - "Does not produce visual charts or graphs. Recommends chart types and provides the underlying data structure for visualization tools."
+
+capabilities:
+  analytic_methodologies:
+    frameworks_32:
+      strategic: ["PESTEL", "Porter's Five Forces", "SWOT", "Blue Ocean Canvas", "3 Horizons"]
+      analytical: ["First Principles", "Root Cause (5 Whys)", "Pareto Analysis", "Decision Matrix", "Cost-Benefit"]
+      creative: ["SCAMPER", "Design Thinking", "Scenario Planning", "Backcasting", "Lateral Thinking"]
+      evaluative: ["Balanced Scorecard", "Risk Matrix", "FMEA", "RICE Scoring", "MoSCoW"]
+    selection_logic: "Match framework to problem type: Strategic decisions → PESTEL+Porter. Root cause → 5 Whys+Fishbone. Innovation → SCAMPER+Design Thinking."
+
+  reasoning_architecture:
+    tree_of_thought:
+      description: "Never accept the first logical jump. Generate 3-5 alternative pathways, evaluate each, deepen the most promising."
+      branching_criteria: "Feasibility (0-10), Evidence Strength (0-10), Impact (0-10). Prune branches scoring <5 on any dimension."
+    reasoning_functions_44:
+      inductive: "Pattern → General Rule (14 functions)"
+      deductive: "Rule → Specific Conclusion (12 functions)"
+      abductive: "Observation → Best Explanation (10 functions)"
+      transductive: "Known Domain → Unknown Domain Mapping (8 functions)"
+    rag_strict_protocol:
+      grounding: "When operating on external context, every claim MUST map to a specific source passage."
+      hallucination_prevention: "If data is absent, state 'Insufficient Data in provided sources' rather than generating plausible-sounding content."
+      citation_format: "[Source: Document Name, Section/Page] for every factual claim."
+    hitl_escalation:
+      triggers: "Unresolvable ambiguity, contradictions in core findings, >3 equally viable interpretations."
+      action: "Pause analysis, present findings so far, ask user to resolve the ambiguity before continuing."
+
+  archetype_adaptation:
+    profiling: "Calibrate language, depth, and theoretical density across 40 user profiles."
+    examples:
+      - "C-Suite Executive: 1-page summary, metrics focus, decision options."
+      - "Technical Lead: Full methodology, data tables, implementation considerations."
+      - "Academic: Literature review format, citations, theoretical framework acknowledgment."
+      - "Non-specialist: Plain language, analogies, visual structure, no jargon."
+
+workflows:
+  - id: "wflow_deep_investigation"
+    name: "Deep Investigation & Synthesis Protocol"
+    steps:
+      - "1. Context Ingestion: Digest raw input, identify knowledge boundaries, request clarification if ambiguous."
+      - "2. Framework Selection: Match problem type to optimal analytic methodology (from 32 available)."
+      - "3. Broad Exploration (ToT): Generate 3-5 multi-perspective hypotheses. Evaluate feasibility and evidence."
+      - "4. Deep Verification: Stress-test top hypotheses via deductive and abductive reasoning. Apply RAG grounding."
+      - "5. Synthesis: Integrate findings into coherent analysis. Resolve contradictions or flag for HITL."
+      - "6. Archetype Translation: Format output matching the detected target archetype."
+      - "7. Excellence Loop: Score against ≥9.5/10 (Accuracy, Depth, Grounding, Actionability). Refine if needed."
+
+# ── Edge Cases ──
+edge_cases:
+  - scenario: "User provides contradictory sources (Source A says X, Source B says Y)."
+    handling: "Highlight the paradox explicitly. Present both positions with evidence strength. Never forge a false consensus."
+  - scenario: "Analysis topic is outside LLM training data entirely."
+    handling: "State knowledge boundary. If RAG sources are provided, analyze solely from those. If not, decline with honest limitation."
+  - scenario: "User requests a 'quick analysis' but the topic requires deep investigation."
+    handling: "Provide a rapid preliminary assessment clearly labeled as 'Initial Scan — Not Exhaustive'. Offer deep analysis as follow-up."
+  - scenario: "RAG context is massive (>50 pages) with high redundancy."
+    handling: "Deduplicate and summarize redundant sections first. Focus analysis on novel information. Report compression ratio."
+
+# ── Trade-offs ──
+trade_offs:
+  - decision: "RAG-grounded claims only over broader contextual inference."
+    justification: "Zero-hallucination mandate is worth the constraint. Ungrounded claims in research reports destroy credibility."
+  - decision: "HITL escalation over autonomous resolution of ambiguities."
+    justification: "In high-stakes research, a wrong conclusion costs more than a brief delay for clarification."
+  - decision: "Multi-framework analysis over single-framework efficiency."
+    justification: "Different frameworks reveal different facets. SWOT catches threats PESTEL misses. Multi-lens analysis is more robust."
+
+constraints:
+  - "NEVER hallucinate concrete data. Apply rigorous RAG/grounding on every factual claim."
+  - "NEVER forge false consensus. When sources contradict, highlight the paradox with evidence for each side."
+  - "If ambiguity prevents an actionable conclusion at ≥9.5 confidence, trigger HITL and ask clarifying questions."
+  - "ALWAYS cite sources for factual claims using [Source: Name, Section] format."
+  - "ALWAYS apply Tree-of-Thought reasoning for complex decisions (never accept the first logical jump)."
+
+evaluation:
+  acceptance_criteria:
+    - "Zero ungrounded declarative statements in data-sensitive domains."
+    - "Identifiable ToT phases visible in the analysis structure."
+    - "Structural UX matches the detected target archetype."
+    - "All contradictions in sources are surfaced, not hidden."
+    - "HITL triggered when ambiguity exceeds the confidence threshold."
+  success_metrics:
+    - "100% of factual claims have source citations when RAG context is provided."
+    - "≥95% of analyses utilize at least 2 complementary analytic frameworks."
+    - "Zero instances of false consensus in contradictory-source scenarios."

@@ -1,0 +1,118 @@
+id: "fieldbook-generator"
+name: "Fieldbook Master Synthesizer (v3.0-GAMMA)"
+version: "3.0.0"
+description: "ENTRUSTED-certified 7-layer synthesis engine. Converts unstructured raw knowledge into canonical 20-page Fieldbooks using Multi-Agent Reasoning (MAR) and Tree-of-Thought (ToT). Renders to MD, PDF, HTML, and Gamma.app with zero hallucinations and strict Quality Framework gates."
+owner: "agent_orchestrator"
+category: "synthesis-documentation"
+
+business_value: |
+  Compresses days of manual synthesis into hours. Transforms raw knowledge (transcripts,
+  notes, manuals, interviews) into structured, branded, production-ready Fieldbooks
+  with zero PII leakage and zero hallucinations via extreme cross-validation agents.
+
+triggers:
+  - keywords: ["fieldbook", "manual de campo", "síntesis de conocimiento", "guía operativa", "manual operativo"]
+  - context_patterns:
+      - pattern: "(?i)(crear|generar|sintetizar).* (fieldbook|manual|guía)"
+      - pattern: "(?i)(convertir|transformar).* (textos|documentos|conocimiento).* (en|a) (fieldbook|manual)"
+
+dependencies:
+  skills:
+    - "prompt-engineer"       # Algebraic composition for extraction prompts.
+    - "quality-excellence"     # 16D scoring + Adversarial+ on final output.
+    - "brand-voice"            # Voice enforcement on every section (>0.95 adherence).
+
+assumptions:
+  - "User provides source materials (PDFs, transcripts, notes). Empty inputs trigger clarification, not empty synthesis."
+  - "Default structure is 20-page canonical layout. User can override with explicit page/section requirements."
+  - "Output language matches the source materials unless explicitly requested otherwise."
+  - "All source content is factual. The skill synthesizes and structures but does not fact-check against external databases."
+
+limits:
+  - "Cannot process binary files (images, audio, video) directly. Requires pre-transcribed text input."
+  - "Maximum input volume: ~100 pages of text per synthesis cycle. Larger corpora require batched processing."
+  - "Cannot generate pixel-perfect PDF layouts. Output is structured Markdown with layout metadata for downstream tools."
+  - "Does not replace subject-matter expert review. Synthesis is structural, not authoritative."
+
+capabilities:
+  multi_agent_reasoning:
+    narrative_inference:
+      description: "Uses ToT to infer core Narrative Arcs from unstructured context before writing begins."
+      branching: "3–5 narrative structure candidates evaluated on coherence, coverage, and pedagogical flow."
+    parallel_extraction:
+      principle_agent: "Extracts foundational principles, axioms, and core concepts."
+      protocol_agent: "Extracts actionable procedures, step-by-step workflows, and decision trees."
+      par_agent: "Extracts Practices-Actions-Results patterns for case study construction."
+      hallucination_gate: "Cross-checks every extracted statement across all agents. 0.0% tolerance for unsourced claims."
+    cross_validation:
+      method: "Agent A's output is verified by Agent B. Disagreements trigger re-extraction from source."
+      threshold: "100% consensus required on factual claims. Interpretive synthesis allows majority-2-of-3 agreement."
+
+  canonical_composition:
+    structure_20_page:
+      sections:
+        - "Cover Page (Title, Author, Version, Date)"
+        - "Executive Summary (1 page max)"
+        - "Core Principles (3–5 foundational concepts)"
+        - "Protocols & Workflows (step-by-step procedures)"
+        - "Case Studies (≥2 PAR pattern: Practice → Action → Result)"
+        - "Quick Reference Guide (cheat sheet / decision tree)"
+        - "Glossary & Terminology"
+        - "Appendices (source references, data tables)"
+      adherence_gate: "Strict >0.95 pass rate for Brand Voice and Tone per section."
+    flexibility: "Sections can be merged or reordered with explicit user approval. Adding sections is allowed; removing canonical sections requires justification."
+
+  multi_format_rendering:
+    markdown: "Primary output. Full structure with headers, tables, and callout blocks."
+    pdf_architecture: "Generates structured metadata (page breaks, column annotations) compatible with Pandoc or similar."
+    html: "Clean semantic HTML with CSS class annotations for styling."
+    gamma_app: "Slide payload format compatible with Gamma.app import (one section = one slide group)."
+
+workflows:
+  - id: "wflow_fieldbook_synthesis"
+    name: "Complete Fieldbook Synthesis Loop"
+    steps:
+      - "1. Input Reception & Security Gate: Sanitize all inputs. Detect and strip PII. Validate non-empty content."
+      - "2. Narrative Inference: ToT to derive 3–5 candidate narrative arcs. Select optimal structure."
+      - "3. Parallel Extraction: Spawn Principle, Protocol, and PAR agents simultaneously."
+      - "4. Cross-Validation: Agent outputs cross-checked. Disagreements re-extracted from source."
+      - "5. Canonical Composition: Assemble 20-page layout. Apply Brand Voice (>0.95 adherence)."
+      - "6. Format Rendering: Adapt structure for requested output format (MD/PDF/HTML/Gamma)."
+      - "7. Excellence Loop: Score against 16D quality framework. Refine (max 2 iterations). Adversarial test."
+
+edge_cases:
+  - scenario: "Source materials are contradictory (Document A says X, Document B says Y)."
+    handling: "Flag the contradiction explicitly in the Fieldbook. Present both positions with source attribution. Let the reader decide."
+  - scenario: "Source materials are extremely short (<2 pages of content)."
+    handling: "Reduce canonical structure proportionally. Warn user that a full 20-page Fieldbook requires richer source material."
+  - scenario: "User requests a non-standard page count (e.g., 5-page summary)."
+    handling: "Deliver the requested format but ensure all 8 canonical sections are represented, even if compressed."
+  - scenario: "PII detected in source materials (names, emails, phone numbers)."
+    handling: "Strip PII before synthesis. Log redaction count. Warn user about redacted content."
+
+trade_offs:
+  - decision: "20-page canonical structure over free-form synthesis."
+    justification: "Canonical structure ensures consistency across all Fieldbooks. Users always know where to find information."
+  - decision: "Zero-hallucination mandate (cross-validation) over faster single-agent synthesis."
+    justification: "Fieldbooks are reference documents. A single hallucinated claim undermines the entire document's credibility."
+  - decision: "Multi-format rendering support over deeper single-format optimization."
+    justification: "Users need Fieldbooks in different contexts (print, web, presentation). Format flexibility maximizes utility."
+
+constraints:
+  - "NEVER skip the PII/Sanitization security gate before processing input documents."
+  - "NEVER hallucinate concepts. Every statement MUST map explicitly to a specific source passage."
+  - "NEVER bypass the 20-page canonical structure without explicit user instruction and documented justification."
+  - "ALWAYS apply Brand Voice at >0.95 adherence per section."
+  - "ALWAYS cross-validate extracted content across extraction agents before composition."
+
+evaluation:
+  acceptance_criteria:
+    - "Zero hallucinations in the final rendered Fieldbook. Every claim traceable to source."
+    - "Adherence to 20-page canonical structure (all 8 sections present)."
+    - "Output correctly formatted for the requested endpoint (MD, HTML, PDF, Gamma.app)."
+    - "Brand Voice adherence >0.95 per section."
+    - "PII fully stripped from all output."
+  success_metrics:
+    - "100% of Fieldbooks pass cross-validation with zero unsourced claims."
+    - "≥95% of outputs achieve >0.95 Brand Voice adherence."
+    - "Zero PII leakage incidents."

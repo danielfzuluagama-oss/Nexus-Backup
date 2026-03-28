@@ -1,0 +1,633 @@
+id: report-gen
+name: Report Generation
+purpose: Generate structured reports from dispersed data and multiple agent outputs, producing coherent documents with executive summaries, findings, analysis, and recommendations.
+businessValue: Transforms fragmented multi-agent outputs into polished, stakeholder-ready reports that communicate results clearly and support informed decision-making.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: synthesizer
+
+inputs:
+  - "data: DataSource[] - Multiple data sources and agent outputs to compile"
+  - "reportType: string - 'executive'|'detailed'|'comparative'|'progress'"
+  - "originalQuery: string - The original question or task"
+  - "audience: string - Target audience for the report"
+
+outputs:
+  - "report: StructuredReport - The generated report with sections"
+  - "executiveSummary: string - Top-level summary for quick consumption"
+  - "recommendations: string[] - Actionable recommendations derived from data"
+  - "confidence: string - Overall confidence in report accuracy"
+
+dependencies:
+  - "agents/synthesizer/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task with data from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - report_structured
+  - section_generated
+  - recommendations_derived
+  - report_completed
+  - fallback_triggered
+
+failureHandling:
+  - "Insufficient data for report: Generate partial report with gaps clearly marked"
+  - "Data conflicts: Report conflicts in findings section rather than hiding them"
+  - "Report too long: Generate with cross-references to detailed sections"
+  - "Audience mismatch: Adapt language level while preserving accuracy"
+
+interoperabilityContract:
+  inputType: "ReportRequest { data: DataSource[], reportType: string, originalQuery: string, audience: string }"
+  outputType: "ReportResult { report: StructuredReport, executiveSummary: string, recommendations: string[], confidence: string }"
+
+wowCriteria:
+  - "Report reads as a professional document, not a collage of agent outputs"
+  - "Executive summary captures the essence in under 200 words"
+  - "Recommendations are specific, actionable, and derived from findings"
+  - "Report structure matches audience expectations for the report type"
+
+safeCriteria:
+  - "No data fabricated or extrapolated beyond evidence"
+  - "Conflicting data reported transparently"
+  - "Recommendations qualified with confidence levels"
+  - "Sources of data attributed without agent name leaks"
+
+workflows:
+  - id: executive-report
+    title: Executive Report
+    objective: Generate a concise executive report focused on key findings, decisions needed, and recommended actions for leadership audiences
+    trigger: "reportType === 'executive'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Data sources provided"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "data: DataSource[] (sanitized)"
+      - "originalQuery: string"
+      - "audience: string - executive or leadership"
+    steps:
+      - stepNumber: 1
+        title: Triage and prioritize data
+        desc: Sanitize all data sources and triage by strategic importance, separating must-include findings from supporting detail.
+        whyThisMatters: Executives need the most important information first; data triage prevents the report from burying critical findings in detail.
+        inputNeeded: "All data sources and original query"
+        actionInstruction: "Call sanitizeInput() on all data. Call llm.chat() with triage prompt."
+        promptToUse: |
+          You are the Synthesizer agent triaging data for an executive report.
+
+          Original query: {{originalQuery}}
+          Data sources:
+          {{data}}
+
+          Triage by strategic importance:
+          - CRITICAL: Must be in the executive summary (decisions, risks, key metrics)
+          - IMPORTANT: Should be in the report body (supporting findings, context)
+          - SUPPLEMENTARY: Can be referenced but not detailed (methodology, raw data)
+
+          For each critical item, explain why it requires executive attention.
+        expectedOutput: "DataTriage { critical: TriagedItem[], important: TriagedItem[], supplementary: TriagedItem[] }"
+        validationRule: "At least 1 critical item, all data sources categorized"
+        failureSignal: "No critical items or data sources missing from triage"
+        recoveryAction: "Promote the most impactful finding to critical and proceed"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Generate executive report
+        desc: Generate the structured executive report with summary, key findings, and recommended actions.
+        whyThisMatters: The executive report is the primary deliverable; its structure and clarity directly impact leadership decision-making.
+        inputNeeded: "DataTriage with prioritized items"
+        actionInstruction: "Call llm.chat() with executive report generation prompt."
+        promptToUse: |
+          You are the Synthesizer agent generating an executive report.
+
+          Data triage:
+          {{dataTriage}}
+          Original query: {{originalQuery}}
+          Audience: {{audience}}
+
+          Generate executive report sections:
+          1. Executive Summary (under 200 words): Bottom line, key findings, recommended action
+          2. Key Findings (3-5 bullet points with supporting data)
+          3. Risks and Concerns (if any)
+          4. Recommendations (specific, actionable, prioritized)
+          5. Next Steps (if applicable)
+
+          Rules:
+          - Lead with conclusions, not process
+          - Use concrete metrics, not vague qualifiers
+          - Keep total report under 800 words
+          - Every recommendation must be supported by a finding
+          - Do not attribute to specific agents
+        expectedOutput: "ExecutiveReport { summary: string, findings: string[], risks: string[], recommendations: string[], nextSteps: string[] }"
+        validationRule: "All 5 sections present, summary under 200 words, total under 800 words"
+        failureSignal: "Missing sections or exceeds length limits significantly"
+        recoveryAction: "Trim to essentials: summary + findings + recommendations only"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Validate report quality
+        desc: Verify the report is accurate, well-structured, and appropriate for the executive audience.
+        whyThisMatters: Quality validation prevents embarrassing errors in a document intended for leadership consumption.
+        inputNeeded: "ExecutiveReport, original data sources"
+        actionInstruction: "Call llm.chat() with report validation prompt. Then call validateOutput() for CP3."
+        promptToUse: |
+          You are the Synthesizer agent validating an executive report.
+
+          Report: {{report}}
+          Original data: {{data}}
+
+          Validate:
+          1. Are all findings supported by the data?
+          2. Are recommendations actionable and specific?
+          3. Is the language appropriate for executive audience?
+          4. Is the report internally consistent?
+          5. Are any critical data points missing?
+          6. Overall quality: ready / needs revision / inadequate
+        expectedOutput: "ReportValidation { quality: string, issues: string[], missingData: string[], confidence: string }"
+        validationRule: "Quality assessment provided, issues cataloged"
+        failureSignal: "Quality rated 'inadequate' or critical data missing"
+        recoveryAction: "Revise report addressing identified issues, re-validate"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Deliver final report
+        desc: Apply CP3 and deliver the validated executive report to orchestrator.
+        whyThisMatters: Final CP3 validation ensures the report is safe for delivery to the user.
+        inputNeeded: "Validated ExecutiveReport"
+        actionInstruction: "Call validateOutput(). Format as ReportResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ReportResult with executive report, summary, recommendations, and confidence"
+        validationRule: "CP3 passed, all report sections present"
+        failureSignal: "CP3 flags content or sections missing"
+        recoveryAction: "Strip flagged content, deliver with redaction note"
+        handoffIfNeeded: null
+
+    mainOutput: "Concise executive report with summary, findings, recommendations, and next steps"
+    secondaryOutputs:
+      - "data_triage for reference"
+      - "report_validation for quality audit"
+      - "report_metrics (word count, finding count, recommendation count)"
+    DoD:
+      - "Executive summary under 200 words"
+      - "3-5 key findings documented"
+      - "Recommendations are actionable"
+      - "Report under 800 words total"
+      - "CP3 passed"
+    qaChecklist:
+      - "Findings supported by data"
+      - "Recommendations linked to findings"
+      - "Language appropriate for audience"
+      - "No agent attribution leaked"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "summary_length: under 200 words"
+      - "total_length: under 800 words"
+      - "recommendation_actionability: all recommendations are specific"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when executive report is needed)"
+    errorHandling: "If data is insufficient, generate partial report with marked gaps"
+    fallbackRoute: "Return bullet-point summary instead of full report"
+    escalationRoute: "Report to orchestrator that data quality is insufficient for executive report"
+
+  - id: detailed-report
+    title: Detailed Report
+    objective: Generate a comprehensive detailed report with full methodology, analysis, findings, and appendices
+    trigger: "reportType === 'detailed'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Sufficient data for detailed analysis"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "data: DataSource[] (sanitized)"
+      - "originalQuery: string"
+      - "audience: string"
+    steps:
+      - stepNumber: 1
+        title: Structure report outline
+        desc: Sanitize inputs and create a detailed report outline organizing all data into logical sections.
+        whyThisMatters: A clear outline prevents the detailed report from becoming a disorganized data dump and ensures logical flow.
+        inputNeeded: "All data sources, original query, audience"
+        actionInstruction: "Call sanitizeInput() on all inputs. Call llm.chat() with outline creation prompt."
+        promptToUse: |
+          You are the Synthesizer agent creating a detailed report outline.
+
+          Original query: {{originalQuery}}
+          Data sources:
+          {{data}}
+          Audience: {{audience}}
+
+          Create report outline:
+          1. Executive Summary
+          2. Introduction and Background
+          3. Methodology / Approach
+          4. Findings (organized by theme or data source)
+          5. Analysis and Discussion
+          6. Conclusions
+          7. Recommendations
+          8. Limitations and Caveats
+          9. Appendices (if needed)
+
+          For each section, note which data sources contribute and estimated length.
+        expectedOutput: "ReportOutline { sections: SectionPlan[], estimatedTotalLength: string, dataMapping: object }"
+        validationRule: "All 8+ sections planned, data sources mapped to sections"
+        failureSignal: "Missing key sections or data sources not mapped"
+        recoveryAction: "Use default academic report structure and proceed"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Generate report sections
+        desc: Generate each report section following the outline, maintaining consistency and cross-referencing between sections.
+        whyThisMatters: Section-by-section generation with cross-referencing produces a coherent document rather than a collection of independent sections.
+        inputNeeded: "ReportOutline, all data sources"
+        actionInstruction: "For each section, call llm.chat() with section-specific generation prompt."
+        promptToUse: |
+          You are the Synthesizer agent generating a report section.
+
+          Section: {{section.title}}
+          Section plan: {{section.plan}}
+          Data for this section: {{section.dataSources}}
+          Previous sections summary: {{previousSections}}
+          Original query: {{originalQuery}}
+
+          Generate this section:
+          - Follow the outline plan for this section
+          - Reference related findings in other sections where appropriate
+          - Be thorough but not redundant
+          - Maintain consistent terminology and tone
+          - Support all claims with data citations
+          - Do not attribute to specific agents
+        expectedOutput: "ReportSection { title: string, content: string, wordCount: number, crossReferences: string[] }"
+        validationRule: "Section content is non-empty, cross-references are valid"
+        failureSignal: "Empty section or content does not match section plan"
+        recoveryAction: "Generate minimal section noting data limitations"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compile and review report
+        desc: Compile all sections into a unified report, check for consistency, and generate the executive summary.
+        whyThisMatters: The compilation step ensures the report reads as a single document with consistent voice and no contradictions between sections.
+        inputNeeded: "All generated sections, report outline"
+        actionInstruction: "Compile sections. Call llm.chat() with review and executive summary generation prompt."
+        promptToUse: |
+          You are the Synthesizer agent compiling and reviewing a detailed report.
+
+          Report sections:
+          {{sections}}
+
+          Review and compile:
+          1. Check cross-section consistency (no contradictions)
+          2. Verify terminology is consistent throughout
+          3. Generate executive summary (under 300 words) capturing the full report essence
+          4. Ensure conclusions follow from findings
+          5. Verify recommendations are supported by analysis
+          6. Rate overall report quality: alto / medio / bajo
+        expectedOutput: "CompiledReport { report: StructuredReport, executiveSummary: string, consistencyIssues: string[], quality: string }"
+        validationRule: "Report compiled with all sections, executive summary present, quality rated"
+        failureSignal: "Consistency issues found or quality rated bajo"
+        recoveryAction: "Fix consistency issues and re-compile affected sections"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the complete detailed report.
+        whyThisMatters: Final validation ensures the full report is safe and properly formatted.
+        inputNeeded: "CompiledReport"
+        actionInstruction: "Call validateOutput(). Format as ReportResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ReportResult with full detailed report"
+        validationRule: "CP3 passed, all sections present"
+        failureSignal: "CP3 flags content or sections missing"
+        recoveryAction: "Strip flagged content, deliver with redaction notes"
+        handoffIfNeeded: null
+
+    mainOutput: "Comprehensive detailed report with methodology, findings, analysis, conclusions, and recommendations"
+    secondaryOutputs:
+      - "report_outline for structure reference"
+      - "consistency_check for quality audit"
+      - "report_metrics (total word count, section count, cross-reference count)"
+    DoD:
+      - "All planned sections generated"
+      - "Executive summary produced"
+      - "Cross-section consistency verified"
+      - "Recommendations supported by analysis"
+      - "CP3 passed"
+    qaChecklist:
+      - "Report is internally consistent"
+      - "Findings supported by data"
+      - "Conclusions follow from analysis"
+      - "No agent attribution leaked"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "section_completeness: all planned sections generated"
+      - "consistency: no contradictions between sections"
+      - "quality_score: medio or alto"
+      - "response_time_p95: < 60s"
+    cadence: "Per-request (when detailed report is needed)"
+    errorHandling: "If a section cannot be generated, include placeholder with explanation"
+    fallbackRoute: "Generate executive report if detailed report fails"
+    escalationRoute: "Report to orchestrator that data volume exceeds synthesis capability"
+
+  - id: comparative-report
+    title: Comparative Report
+    objective: Generate a report that systematically compares two or more items, approaches, or outcomes across defined criteria
+    trigger: "reportType === 'comparative'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "At least 2 items to compare"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "data: DataSource[] (sanitized)"
+      - "comparisonSubjects: string[] - items to compare"
+      - "criteria: string[] - comparison criteria"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Define comparison framework
+        desc: Sanitize inputs and establish the comparison framework including subjects, criteria, and scoring methodology.
+        whyThisMatters: A clear framework ensures fair, apples-to-apples comparison rather than ad-hoc evaluation.
+        inputNeeded: "Comparison subjects, criteria, data sources"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with framework definition prompt."
+        promptToUse: |
+          You are the Synthesizer agent defining a comparison framework.
+
+          Subjects to compare: {{comparisonSubjects}}
+          Provided criteria: {{criteria}}
+          Available data: {{data}}
+          Original query: {{originalQuery}}
+
+          Define framework:
+          1. Confirm comparison subjects (ensure they are comparable)
+          2. Establish criteria (use provided or derive from data)
+          3. Define scoring method (qualitative or quantitative)
+          4. Identify data gaps per subject-criterion combination
+          5. Note any inherent comparison limitations
+        expectedOutput: "ComparisonFramework { subjects: string[], criteria: Criterion[], scoringMethod: string, dataGaps: Gap[], limitations: string[] }"
+        validationRule: "At least 2 subjects and 3 criteria, scoring method defined"
+        failureSignal: "Subjects not comparable or insufficient criteria"
+        recoveryAction: "Narrow comparison scope to comparable aspects only"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Score and compare
+        desc: Evaluate each subject against each criterion using available data, building the comparison matrix.
+        whyThisMatters: Systematic scoring prevents bias and ensures every subject is evaluated on every criterion with the same rigor.
+        inputNeeded: "ComparisonFramework, all data sources"
+        actionInstruction: "Call llm.chat() with comparison scoring prompt."
+        promptToUse: |
+          You are the Synthesizer agent performing systematic comparison.
+
+          Framework:
+          {{comparisonFramework}}
+          Data:
+          {{data}}
+
+          For each subject-criterion pair:
+          1. Evaluate based on available data
+          2. Score or rate (per scoring method)
+          3. Cite supporting evidence
+          4. Note where data is insufficient
+
+          Build comparison matrix. Be fair and consistent across subjects.
+        expectedOutput: "ComparisonMatrix { scores: SubjectScore[][], summary: string, dataInsufficiency: string[] }"
+        validationRule: "All subject-criterion combinations scored, evidence cited"
+        failureSignal: "Missing scores or inconsistent evaluation standards"
+        recoveryAction: "Mark unscoreable cells as 'N/A' and proceed with available data"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate comparative report
+        desc: Generate the structured comparative report with the comparison matrix, analysis of differences, and recommendations.
+        whyThisMatters: The report must make the comparison actionable, not just present raw scores without interpretation.
+        inputNeeded: "ComparisonMatrix, framework, original query"
+        actionInstruction: "Call llm.chat() with report generation prompt."
+        promptToUse: |
+          You are the Synthesizer agent generating a comparative report.
+
+          Comparison matrix: {{comparisonMatrix}}
+          Framework: {{comparisonFramework}}
+          Original query: {{originalQuery}}
+
+          Generate report:
+          1. Executive Summary: Key comparison findings in 2-3 sentences
+          2. Comparison Matrix: Formatted for easy scanning
+          3. Analysis: Key differentiators, surprising findings, trade-offs
+          4. Recommendation: Best choice per use case (if applicable)
+          5. Caveats: Data limitations and comparison constraints
+
+          The report must help the reader make an informed choice.
+        expectedOutput: "ComparativeReport { summary: string, matrix: string, analysis: string, recommendations: string[], caveats: string[] }"
+        validationRule: "All sections present, recommendations are context-specific"
+        failureSignal: "Missing sections or generic recommendations"
+        recoveryAction: "Deliver comparison matrix with brief analysis only"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the comparative report.
+        whyThisMatters: Validated delivery ensures fair, safe comparison reaches the user.
+        inputNeeded: "ComparativeReport"
+        actionInstruction: "Call validateOutput(). Format as ReportResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ReportResult with comparative report and recommendations"
+        validationRule: "CP3 passed, comparison is fair and complete"
+        failureSignal: "CP3 flags content or comparison is biased"
+        recoveryAction: "Strip biased content, deliver with fairness caveat"
+        handoffIfNeeded: null
+
+    mainOutput: "Structured comparative report with matrix, analysis, and use-case-specific recommendations"
+    secondaryOutputs:
+      - "comparison_framework for methodology reference"
+      - "raw_comparison_matrix for detailed data"
+      - "comparison_metrics (subject count, criteria count, data coverage)"
+    DoD:
+      - "Comparison framework defined"
+      - "All subjects evaluated on all criteria"
+      - "Analysis interprets the comparison"
+      - "Recommendations are context-specific"
+      - "CP3 passed"
+    qaChecklist:
+      - "Same criteria applied to all subjects"
+      - "Comparison is fair and balanced"
+      - "Data gaps acknowledged"
+      - "Recommendations supported by comparison data"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "criteria_coverage: all criteria evaluated for all subjects"
+      - "fairness: same standards applied across subjects"
+      - "recommendation_specificity: per use-case recommendations"
+      - "response_time_p95: < 45s"
+    cadence: "Per-request (when comparative report is needed)"
+    errorHandling: "If subjects are not comparable, explain why and suggest alternatives"
+    fallbackRoute: "Return individual subject assessments without comparison"
+    escalationRoute: "Report to orchestrator that comparison requires additional data collection"
+
+  - id: progress-report
+    title: Progress Report
+    objective: Generate a progress report tracking advancement, blockers, and next steps for ongoing work
+    trigger: "reportType === 'progress'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Current state and baseline data available"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "data: DataSource[] (sanitized)"
+      - "baseline: string - previous state or plan to compare against"
+      - "originalQuery: string"
+      - "reportingPeriod: string"
+    steps:
+      - stepNumber: 1
+        title: Assess current state
+        desc: Sanitize inputs and assess the current state of progress against the baseline or plan.
+        whyThisMatters: Accurate state assessment is the foundation of a progress report; errors here cascade into wrong conclusions about progress.
+        inputNeeded: "Current data, baseline, reporting period"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with state assessment prompt."
+        promptToUse: |
+          You are the Synthesizer agent assessing current progress.
+
+          Current data:
+          {{data}}
+          Baseline/Plan: {{baseline}}
+          Reporting period: {{reportingPeriod}}
+          Original context: {{originalQuery}}
+
+          Assess:
+          1. What was planned or expected?
+          2. What has been accomplished?
+          3. What is on track?
+          4. What is behind schedule or below target?
+          5. What new items emerged that were not in the plan?
+          6. Overall progress: ahead / on track / slightly behind / significantly behind
+        expectedOutput: "ProgressAssessment { planned: string[], accomplished: string[], onTrack: string[], behind: string[], newItems: string[], overallStatus: string }"
+        validationRule: "Overall status assessed, both positive and negative progress noted"
+        failureSignal: "Assessment is entirely positive or entirely negative without nuance"
+        recoveryAction: "Force identification of at least one positive and one area for improvement"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Identify blockers and risks
+        desc: Identify current blockers preventing progress and risks that could affect future progress.
+        whyThisMatters: Blockers and risks are the most actionable part of a progress report; stakeholders need these to remove obstacles.
+        inputNeeded: "ProgressAssessment, current data"
+        actionInstruction: "Call llm.chat() with blocker identification prompt."
+        promptToUse: |
+          You are the Synthesizer agent identifying blockers and risks for a progress report.
+
+          Progress assessment: {{progressAssessment}}
+          Current data: {{data}}
+
+          Identify:
+          1. Active blockers: What is currently preventing progress?
+          2. For each blocker: Severity, who can resolve it, suggested action
+          3. Emerging risks: What could become a blocker?
+          4. For each risk: Likelihood, impact, mitigation strategy
+          5. Dependencies: What progress depends on external factors?
+        expectedOutput: "BlockerAnalysis { blockers: Blocker[], risks: Risk[], dependencies: Dependency[] }"
+        validationRule: "Each blocker has severity and suggested action"
+        failureSignal: "No blockers when progress is behind schedule"
+        recoveryAction: "Investigate causes of delays and report as implicit blockers"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate progress report
+        desc: Generate the structured progress report with status, achievements, blockers, and next steps.
+        whyThisMatters: The report structure must enable quick scanning while providing enough detail for action.
+        inputNeeded: "ProgressAssessment, BlockerAnalysis"
+        actionInstruction: "Call llm.chat() with progress report generation prompt. Then call validateOutput() for CP3."
+        promptToUse: |
+          You are the Synthesizer agent generating a progress report.
+
+          Assessment: {{progressAssessment}}
+          Blockers and risks: {{blockerAnalysis}}
+          Reporting period: {{reportingPeriod}}
+
+          Generate progress report:
+          1. Status Summary (traffic light: green/yellow/red with explanation)
+          2. Key Accomplishments (what was completed this period)
+          3. In Progress (what is currently being worked on)
+          4. Blockers and Risks (with suggested resolutions)
+          5. Next Steps (planned actions for next period)
+          6. Metrics (if quantifiable progress data available)
+
+          Keep it concise and actionable.
+        expectedOutput: "ProgressReport { status: string, accomplishments: string[], inProgress: string[], blockers: string[], nextSteps: string[], metrics: object }"
+        validationRule: "Status summary present, at least accomplishments and next steps populated"
+        failureSignal: "Missing status or no next steps"
+        recoveryAction: "Generate minimal status + next steps report"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the progress report.
+        whyThisMatters: Validated delivery ensures the progress report is accurate and safe.
+        inputNeeded: "ProgressReport"
+        actionInstruction: "Call validateOutput(). Format as ReportResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ReportResult with progress report and status summary"
+        validationRule: "CP3 passed, all sections present"
+        failureSignal: "CP3 flags content or sections missing"
+        recoveryAction: "Deliver status summary only"
+        handoffIfNeeded: null
+
+    mainOutput: "Structured progress report with status, accomplishments, blockers, and next steps"
+    secondaryOutputs:
+      - "progress_assessment for detailed reference"
+      - "blocker_analysis for action tracking"
+      - "progress_metrics (completion rate, blocker count, risk count)"
+    DoD:
+      - "Current state assessed against baseline"
+      - "Blockers identified with actions"
+      - "Next steps defined"
+      - "Status clearly communicated"
+      - "CP3 passed"
+    qaChecklist:
+      - "Status accurately reflects progress"
+      - "Blockers have actionable resolutions"
+      - "Next steps are specific and achievable"
+      - "Report is balanced (not overly optimistic or pessimistic)"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "status_accuracy: matches data assessment"
+      - "blocker_actionability: each blocker has suggested resolution"
+      - "next_steps_specificity: each step is concrete"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request or periodic (when progress reporting is needed)"
+    errorHandling: "If baseline is missing, report current state without comparison"
+    fallbackRoute: "Return status summary with bullet points if full report fails"
+    escalationRoute: "Report to orchestrator that progress data is insufficient for meaningful report"

@@ -1,0 +1,184 @@
+# =============================================================================
+# Skill: metodologia-patterns
+# Agent: pristino-orchestrator
+# Purpose: Atomic Primitives, Algebraic Composition, and Design/Prompting Patterns
+# =============================================================================
+
+id: metodologia-patterns
+name: MetodologIA Primitives & Patterns Engine
+version: "2.0.0"
+purpose: >
+  Provides the atomic building blocks (primitives), structural patterns (design/prompting/UX),
+  and algebraic composition syntax that all other skills use to construct complex workflows.
+  This skill is infrastructure — it enables other skills, not the end user directly.
+businessValue: >
+  Guarantees architectural consistency and modularity across the entire skill ecosystem.
+  By using established primitives and patterns, error rates drop by ~30% and maintenance 
+  becomes centralized. A change to a primitive propagates to all consuming skills.
+triggerTypes:
+  - architecture_design
+  - prompt_engineering
+  - code_generation
+  - workflow_composition
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "domain: enum (Code, Prompt, KB, UX, Architecture)"
+  - "goal: enum (Creation, Refinement, Validation, Composition, Decomposition)"
+
+outputs:
+  - "recommendedPrimitives: Primitive[] (Atomic operations ranked by relevance)"
+  - "applicablePatterns: Pattern[] (Structural/Behavioral patterns with usage context)"
+
+assumptions:
+  - "Primitives are atomic and composable. Each primitive does exactly one thing."
+  - "Algebraic composition syntax is universal across all skills. Skills must not invent their own composition syntax."
+  - "Design patterns follow GoF (Gang of Four) naming conventions. Non-GoF patterns must be explicitly labeled."
+  - "Prompting patterns are LLM-agnostic. Provider-specific optimizations are opt-in, not default."
+
+limits:
+  - "This skill provides building blocks, not complete solutions. Complete solutions are assembled by consuming skills."
+  - "Cannot validate if a composed workflow actually works. Validation requires runtime context."
+  - "Pattern recommendations are structural, not domain-specific. Domain context must come from the consuming skill."
+  - "Maximum composition chain: 10 primitives. Beyond 10, the workflow should be decomposed into sub-workflows."
+
+# ── Core Primitives (Atomic Operations) ──
+
+primitives:
+  universal:
+    CREATE:
+      signature: "Specification → Artifact (≥9.5/10 quality)"
+      description: "Generate a new artifact from a specification."
+      prerequisite: "Well-defined specification with success criteria."
+    REVIEW:
+      signature: "Artifact → ReviewReport (≥92% accuracy across 4 layers)"
+      description: "Audit an existing artifact against quality standards."
+      layers: ["Security", "Quality", "Architecture", "Completeness"]
+    EVOLVE:
+      signature: "Artifact + EvolutionSpec → EnhancedArtifact"
+      description: "Improve an existing artifact based on evolution specifications."
+      constraint: "ALWAYS runs REVIEW first to establish baseline. No blind evolution."
+    REPAIR:
+      signature: "BrokenArtifact + Symptoms → RepairedArtifact"
+      description: "Fix a broken artifact using root cause analysis."
+      workflow: "Diagnose → Root Cause (ToT) → Surgical Fix → Regression Check"
+
+  domainSpecific:
+    code:
+      primitives: ["CODE_GENERATE", "CODE_REFINE", "CODE_VALIDATE", "CODE_DECOMPOSE", "CODE_CALIBRATE"]
+      description: "Software engineering operations. Consumed by software-architect skill."
+    prompt:
+      primitives: ["PE_GENERATE", "PE_REFINE", "PE_VALIDATE", "PE_OPTIMIZE", "PE_PERSONALIZE"]
+      description: "Prompt engineering operations. Consumed by prompt-engineer skill."
+    context:
+      primitives: ["CTX_DESIGN", "CE_LOAD", "CE_CACHE", "CE_SWAP", "CE_COMPRESS"]
+      description: "Context management operations. Consumed by memory-mgmt skill."
+
+  algebraicComposition:
+    operators:
+      sequential:
+        symbol: ">>>"
+        meaning: "A >>> B: Execute A, pass output to B."
+        example: "DETECT_CONTEXT >>> REASON_ROOT_CAUSE >>> SYNTHESIZE_SOLUTION"
+      parallel:
+        symbol: "<||>"
+        meaning: "A <||> B: Execute A and B concurrently with the same input."
+        example: "GENERATE_JUEGOS <||> CRAFT_QUICK_WINS <||> DESIGN_SPRINT_ZERO"
+      conditional:
+        symbol: "<|>"
+        meaning: "A <|> B: Execute A OR B based on a condition."
+        example: "RESPONSE_SIMPLE <|> RESPONSE_COMPLEX (based on taskComplexity)"
+      coordination:
+        symbol: "<&>"
+        meaning: "A <&> B: Execute both and aggregate/coordinate results."
+        example: "VALIDATE_QUALITY <&> (quality >= 10)"
+      iterative:
+        symbol: "<!>"
+        meaning: "A <!> n: Execute A up to n times."
+        example: "EXCELLENCE_LOOP <!> 2"
+    composition_rules:
+      - "Operators can be nested: (A >>> B) <||> (C >>> D)"
+      - "Maximum chain depth: 10 primitives. Beyond that, extract a sub-workflow."
+      - "Parallel execution (<||>) requires operations with no data dependency between them."
+
+# ── Technical & Prompting Patterns ──
+
+patterns:
+  design:
+    creational:
+      patterns: ["Factory", "Builder", "Singleton", "Dependency Injection"]
+      when: "Creating complex objects or managing instantiation logic."
+    structural:
+      patterns: ["Adapter", "Decorator", "Facade", "Composite"]
+      when: "Organizing relationships between entities or simplifying interfaces."
+    behavioral:
+      patterns: ["Chain of Responsibility", "Command", "Observer", "Strategy"]
+      when: "Defining how objects interact, communicate, or make decisions."
+
+  prompting:
+    persona:
+      template: "Act as [Expert Role] with [Specific Traits] to deliver [Result]."
+      when: "Establishing the LLM's identity and expertise domain."
+    audienceTargeting:
+      template: "Explain [Topic] assuming the audience is [Audience Persona with specific knowledge level]."
+      when: "Adapting content complexity and vocabulary to a specific audience."
+    flippedInteraction:
+      template: "Ask me questions one by one until you have enough information to [Task]."
+      when: "User's initial brief is incomplete. Extracting requirements interactively."
+    formatConstraint:
+      template: "Return the exact output strictly as [JSON/Markdown/YAML]. No additional text."
+      when: "Output must be machine-parseable or follow a strict structure."
+    cognitiveVerifier:
+      template: "Generate [Output]. Then, verify it against [Rules] and self-correct before finalizing."
+      when: "High-stakes outputs requiring self-validation (code, security rules, legal text)."
+
+  ux:
+    krugsLaws:
+      1:
+        principle: "Don't make me think."
+        interpretation: "Self-evident interfaces and instructions. Zero cognitive load for routine actions."
+        application: "Every prompt, output, and UI element should be immediately understandable."
+      2:
+        principle: "It doesn't matter how many clicks, as long as each is a mindless, unambiguous choice."
+        interpretation: "Depth is fine if each step is obvious."
+        application: "Multi-step workflows are acceptable when each step is clearly labeled."
+      3:
+        principle: "Get rid of half the words, then get rid of half of what's left."
+        interpretation: "Ruthless concision. Every word must justify its existence."
+        application: "Applied to all text outputs: prompts, slides, copy, documentation."
+
+edge_cases:
+  - scenario: "Consuming skill needs a primitive that doesn't exist in the catalog."
+    handling: "Use the closest universal primitive (CREATE/REVIEW/EVOLVE/REPAIR). Do NOT invent new primitives ad-hoc. Propose the new primitive for formal addition."
+  - scenario: "Algebraic composition chain exceeds 10 primitives."
+    handling: "Extract a named sub-workflow. Replace the long chain with SubWorkflow >>> Continuation."
+  - scenario: "Two design patterns seem equally applicable."
+    handling: "Apply the one with lower coupling. If equal, prefer the one the codebase already uses for consistency."
+  - scenario: "User requests a pattern the skill doesn't have."
+    handling: "Check if an existing pattern can be adapted. If not, compose from primitives. Document the composition."
+
+trade_offs:
+  - decision: "Universal 4-operation model (CREATE/REVIEW/EVOLVE/REPAIR) over unlimited operation types."
+    justification: "4 operations cover 95% of all artifact lifecycle needs. Custom operations create fragmentation."
+  - decision: "Algebraic composition syntax over natural-language workflow descriptions."
+    justification: "Symbolic syntax is precise, composable, and auditable. Natural language introduces ambiguity."
+  - decision: "GoF naming conventions over custom pattern names."
+    justification: "GoF names are industry-standard. Custom names require learning curve and documentation."
+
+constraints:
+  - "NEVER invent new primitives if an existing universal one (CREATE/REVIEW/EVOLVE/REPAIR) applies."
+  - "NEVER compose chains longer than 10 primitives without extraction into sub-workflows."
+  - "ALWAYS use the defined algebraic operators (>>>, <||>, <|>, <&>, <!>). No ad-hoc syntax."
+  - "ALWAYS adhere to format constraints when PE patterns are used."
+  - "Krug's Law 3 applies to ALL text outputs produced by the ecosystem."
+
+evaluation:
+  acceptance_criteria:
+    - "Recommended primitives exist in the formal catalog (no invented operations)."
+    - "Algebraic composition uses only the 5 defined operators."
+    - "Pattern recommendations include 'when to use' context."
+    - "Composition chains ≤10 primitives (or extracted into sub-workflows)."
+  success_metrics:
+    - "100% of skill workflows use formal algebraic composition syntax."
+    - "Zero ad-hoc primitives created without formal catalog addition."
+    - "≥95% of pattern recommendations include usage context."

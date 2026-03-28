@@ -1,0 +1,208 @@
+# Assessment Report DOCX Template Specification
+# Used by skill-engine to generate DOCX files on demand
+# Binary .docx rendered via docx-template-creator skill
+
+id: assessment-report
+name: Assessment Report
+purpose: Formal evaluation report for validated outputs
+format: docx
+version: "1.0.0"
+
+pageSetup:
+  size: A4
+  margins:
+    top: 2.54cm
+    bottom: 2.54cm
+    left: 3.18cm
+    right: 3.18cm
+  orientation: portrait
+
+styles:
+  title:
+    font: Calibri
+    size: 28pt
+    color: "#2563eb"
+    bold: true
+  heading1:
+    font: Calibri
+    size: 18pt
+    color: "#1f2937"
+    bold: true
+    spaceBefore: 24pt
+    spaceAfter: 12pt
+  heading2:
+    font: Calibri
+    size: 14pt
+    color: "#2563eb"
+    bold: true
+    spaceBefore: 18pt
+    spaceAfter: 6pt
+  body:
+    font: Calibri
+    size: 11pt
+    color: "#1f2937"
+    lineSpacing: 1.15
+  caption:
+    font: Calibri
+    size: 9pt
+    color: "#6b7280"
+    italic: true
+
+sections:
+  - id: cover
+    title: Cover Page
+    placeholders:
+      - "{{title}}"
+      - "{{version}}"
+      - "{{date}}"
+      - "{{evaluatingAgent}}"
+      - "{{evaluatedOutput}}"
+      - "{{classification}}"
+      - "{{verdict}}"
+
+  - id: toc
+    title: Table of Contents
+    autoGenerate: true
+    depth: 3
+
+  - id: executive-summary
+    title: Executive Summary
+    heading: Heading 1
+    content:
+      - type: paragraph
+        text: "{{executiveSummary}}"
+      - type: callout
+        label: Verdict
+        text: "{{verdict}}: {{verdictJustification}}"
+      - type: paragraph
+        text: "Quality Score: {{score}}/100"
+
+  - id: evaluation-scope
+    title: Evaluation Scope
+    heading: Heading 1
+    content:
+      - type: table
+        columns: [Attribute, Value]
+        rows:
+          - [Evaluated Output, "{{evaluatedOutput}}"]
+          - [Source Agent, "{{sourceAgent}}"]
+          - [Evaluation Mode, "{{evaluationMode}}"]
+          - [Criteria Source, "{{criteriaSource}}"]
+          - [Date, "{{date}}"]
+          - [Duration, "{{duration}}"]
+
+  - id: methodology
+    title: Evaluation Methodology
+    heading: Heading 1
+    content:
+      - type: paragraph
+        text: "{{methodology}}"
+      - type: heading2
+        text: "Evaluation Dimensions"
+      - type: table
+        columns: [Dimension, Weight, Score, Assessment]
+        rows:
+          - ["{{dimensionName}}", "{{weight}}", "{{score}}", "{{assessment}}"]
+
+  - id: findings
+    title: Findings
+    heading: Heading 1
+    repeatable: true
+    content:
+      - type: heading2
+        text: "Finding {{findingNumber}}: {{findingTitle}}"
+      - type: table
+        columns: [Attribute, Value]
+        rows:
+          - [Severity, "{{severity}}"]
+          - [Dimension, "{{dimension}}"]
+          - [Impact, "{{impact}}"]
+      - type: heading3
+        text: "Description"
+      - type: paragraph
+        text: "{{findingDescription}}"
+      - type: heading3
+        text: "Evidence"
+      - type: paragraph
+        style: caption
+        text: "{{evidence}}"
+      - type: heading3
+        text: "Recommendation"
+      - type: paragraph
+        text: "{{recommendation}}"
+
+  - id: findings-summary
+    title: Findings Summary
+    heading: Heading 1
+    content:
+      - type: table
+        columns: [Severity, Count, Examples]
+        rows:
+          - [Critical, "{{criticalCount}}", "{{criticalExamples}}"]
+          - [High, "{{highCount}}", "{{highExamples}}"]
+          - [Medium, "{{mediumCount}}", "{{mediumExamples}}"]
+          - [Low, "{{lowCount}}", "{{lowExamples}}"]
+          - [Info, "{{infoCount}}", "{{infoExamples}}"]
+
+  - id: recommendations
+    title: Prioritized Recommendations
+    heading: Heading 1
+    content:
+      - type: numberedList
+        items:
+          - "**[{{priority}}]** {{recommendation}} — Impact: {{impact}}, Effort: {{effort}}"
+
+  - id: positive-observations
+    title: Positive Observations
+    heading: Heading 1
+    content:
+      - type: bulletList
+        items:
+          - "{{positiveObservation}}"
+
+  - id: conclusion
+    title: Conclusion
+    heading: Heading 1
+    content:
+      - type: paragraph
+        text: "{{conclusion}}"
+      - type: callout
+        label: "Next Steps"
+        text: "{{nextSteps}}"
+
+  - id: appendix-raw-input
+    title: "Appendix A: Raw Input"
+    heading: Heading 1
+    content:
+      - type: codeBlock
+        text: "{{rawInput}}"
+
+  - id: appendix-validation-log
+    title: "Appendix B: Validation Log"
+    heading: Heading 1
+    content:
+      - type: codeBlock
+        text: "{{validationLog}}"
+
+  - id: revision-history
+    title: Revision History
+    heading: Heading 1
+    content:
+      - type: table
+        columns: [Version, Date, Author, Changes]
+        rows:
+          - ["{{version}}", "{{date}}", "{{author}}", "{{changes}}"]
+
+header:
+  text: "{{title}} — v{{version}}"
+  alignment: right
+  font: Calibri
+  size: 8pt
+  color: "#9ca3af"
+
+footer:
+  text: "Pristino Ecosystem | Page {{pageNumber}} of {{totalPages}}"
+  alignment: center
+  font: Calibri
+  size: 8pt
+  color: "#9ca3af"

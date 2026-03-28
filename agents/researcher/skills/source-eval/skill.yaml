@@ -1,0 +1,624 @@
+id: source-eval
+name: Source Evaluation
+purpose: Evaluate the quality, reliability, and credibility of information sources using systematic assessment criteria to help users distinguish trustworthy information from unreliable content.
+businessValue: Enables informed decision-making by providing transparent, criteria-based source evaluation that helps users understand why a source should or should not be trusted.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: researcher
+
+inputs:
+  - "sources: SourceDescription[] - One or more sources to evaluate"
+  - "evaluationContext: string - Purpose of the evaluation and domain"
+  - "criteria: string[] - Specific evaluation criteria if provided"
+  - "compareTo: SourceDescription[] - Optional reference sources for comparison"
+
+outputs:
+  - "evaluations: SourceEvaluation[] - Per-source evaluation with scores and reasoning"
+  - "rankings: SourceRanking[] - Comparative ranking when multiple sources provided"
+  - "biasReport: BiasReport - Detected biases with evidence"
+  - "overallAssessment: string - Summary assessment and recommendations"
+
+dependencies:
+  - "agents/researcher/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task specification from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - source_evaluated
+  - bias_detected
+  - credibility_scored
+  - comparison_completed
+  - fallback_triggered
+
+failureHandling:
+  - "Source description too vague: Request more details via orchestrator"
+  - "Cannot assess source type: Report as 'not evaluable' with reason"
+  - "Evaluation criteria conflict: Apply all criteria and note conflicts"
+  - "Insufficient information about source: Assess what is assessable, declare limitations"
+
+interoperabilityContract:
+  inputType: "SourceEvalRequest { sources: SourceDescription[], evaluationContext: string, criteria?: string[], compareTo?: SourceDescription[] }"
+  outputType: "SourceEvalResult { evaluations: SourceEvaluation[], rankings?: SourceRanking[], biasReport: BiasReport, overallAssessment: string }"
+
+wowCriteria:
+  - "Evaluations cite specific evidence for every credibility claim"
+  - "Bias detection identifies subtle biases beyond obvious ones"
+  - "Comparative evaluations make fair, criteria-based comparisons"
+  - "Recommendations are actionable and context-appropriate"
+
+safeCriteria:
+  - "No source dismissed without evidence-based reasoning"
+  - "Evaluation criteria are transparent and stated"
+  - "Researcher limitations in evaluating sources are declared"
+  - "Bias assessment applies equally to all sources"
+
+workflows:
+  - id: single-source-evaluation
+    title: Single Source Evaluation
+    objective: Evaluate a single information source across multiple credibility dimensions to produce a comprehensive reliability assessment
+    trigger: "sources.length === 1 and no comparison requested"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Source description provided with sufficient detail"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "source: SourceDescription (sanitized)"
+      - "evaluationContext: string"
+      - "criteria: string[] - evaluation criteria"
+    steps:
+      - stepNumber: 1
+        title: Parse source characteristics
+        desc: Sanitize input and extract key characteristics of the source including type, domain, stated authority, and observable quality indicators.
+        whyThisMatters: Accurate characterization is the foundation of fair evaluation; misidentifying source type leads to applying wrong criteria.
+        inputNeeded: "Raw source description and evaluation context"
+        actionInstruction: "Call sanitizeInput(source). Call llm.chat() with source characterization prompt."
+        promptToUse: |
+          You are the Researcher agent characterizing an information source for evaluation.
+
+          Source: {{source}}
+          Evaluation context: {{evaluationContext}}
+
+          Extract source characteristics:
+          1. Source type: academic / journalistic / governmental / commercial / personal / organizational / unknown
+          2. Domain expertise claimed
+          3. Observable quality indicators (methodology, citations, transparency)
+          4. Potential conflicts of interest
+          5. Intended audience
+          6. Recency and currency of information
+
+          Be objective. Identify what can and cannot be assessed from available information.
+        expectedOutput: "SourceProfile { type: string, domain: string, qualityIndicators: string[], conflictsOfInterest: string[], audience: string, recency: string }"
+        validationRule: "Source type classified, at least 2 quality indicators identified"
+        failureSignal: "Cannot determine source type or no quality indicators identifiable"
+        recoveryAction: "Classify as 'unknown' type and evaluate on content quality alone"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Apply evaluation criteria
+        desc: Evaluate the source against each criterion, scoring and providing evidence for each dimension.
+        whyThisMatters: Criteria-based evaluation ensures systematic coverage and prevents subjective or inconsistent assessments.
+        inputNeeded: "SourceProfile, evaluation criteria (provided or default)"
+        actionInstruction: "Call llm.chat() with criteria evaluation prompt."
+        promptToUse: |
+          You are the Researcher agent evaluating a source against credibility criteria.
+
+          Source profile:
+          {{sourceProfile}}
+          Evaluation criteria: {{criteria}}
+          Context: {{evaluationContext}}
+
+          If no criteria specified, use these defaults:
+          - Accuracy: Is the information factually correct?
+          - Authority: Does the source have relevant expertise?
+          - Objectivity: Is the presentation balanced and fair?
+          - Currency: Is the information up to date?
+          - Coverage: Is the topic covered thoroughly?
+          - Transparency: Are methods and sources disclosed?
+
+          For each criterion:
+          1. Score: 1-5 (1=poor, 5=excellent)
+          2. Evidence supporting the score
+          3. Caveats or conditions
+        expectedOutput: "CriteriaEvaluation { scores: CriterionScore[], overallScore: number, strengths: string[], weaknesses: string[] }"
+        validationRule: "All criteria scored with evidence, overall score is average of individual scores"
+        failureSignal: "Criteria without scores or evidence, or scores without justification"
+        recoveryAction: "Score unevaluable criteria as 3 (neutral) with note 'insufficient information to assess'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Assess overall credibility
+        desc: Synthesize criterion scores into an overall credibility assessment with a clear recommendation.
+        whyThisMatters: The overall assessment translates detailed scoring into actionable guidance that users can immediately apply to their decision-making.
+        inputNeeded: "CriteriaEvaluation with all scores"
+        actionInstruction: "Call llm.chat() with overall assessment prompt."
+        promptToUse: |
+          You are the Researcher agent producing an overall source credibility assessment.
+
+          Source: {{source}}
+          Criteria evaluation:
+          {{criteriaEvaluation}}
+          Context: {{evaluationContext}}
+
+          Produce overall assessment:
+          1. Credibility rating: highly reliable / generally reliable / mixed reliability / questionable / unreliable
+          2. Key strengths that support credibility
+          3. Key weaknesses that undermine credibility
+          4. Recommendation: How should a user treat information from this source?
+          5. Conditions: Under what conditions is this source more or less reliable?
+          6. Confidence in this evaluation: alto/medio/bajo
+
+          Be fair and evidence-based. Do not dismiss sources without cause.
+        expectedOutput: "CredibilityAssessment { rating: string, strengths: string[], weaknesses: string[], recommendation: string, conditions: string[], evaluationConfidence: string }"
+        validationRule: "Rating is one of 5 defined levels, recommendation is present and actionable"
+        failureSignal: "Rating without justification or recommendation is vague"
+        recoveryAction: "Default to 'mixed reliability' with note about insufficient evaluation data"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver evaluation
+        desc: Apply CP3 and deliver the source evaluation to the orchestrator.
+        whyThisMatters: Validated delivery ensures the evaluation itself is trustworthy and properly formatted.
+        inputNeeded: "CredibilityAssessment with full supporting data"
+        actionInstruction: "Call validateOutput(). Format as SourceEvalResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated SourceEvalResult with evaluation, credibility rating, and recommendation"
+        validationRule: "CP3 passed, output conforms to interoperabilityContract.outputType"
+        failureSignal: "CP3 flags content or schema validation fails"
+        recoveryAction: "Strip flagged content, deliver simplified evaluation"
+        handoffIfNeeded: null
+
+    mainOutput: "Comprehensive single-source credibility evaluation with rating, evidence, and recommendation"
+    secondaryOutputs:
+      - "source_profile for reference"
+      - "per_criterion_scores for detailed analysis"
+      - "evaluation_metrics (score distribution, confidence level)"
+    DoD:
+      - "Source profiled and characterized"
+      - "All criteria evaluated with scores and evidence"
+      - "Overall credibility rating assigned"
+      - "Actionable recommendation provided"
+      - "CP3 passed"
+    qaChecklist:
+      - "Every score is supported by evidence"
+      - "Assessment is fair and not dismissive"
+      - "Limitations of the evaluation are declared"
+      - "Recommendation is actionable"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "criteria_coverage: 100% of criteria scored"
+      - "evidence_per_score: >= 1 evidence item per criterion"
+      - "response_time_p95: < 30s"
+      - "recommendation_specificity: recommendation references source type and context"
+    cadence: "Per-request (when single source evaluation is needed)"
+    errorHandling: "If source description is insufficient, evaluate what is available and note limitations"
+    fallbackRoute: "Return partial evaluation with 'insufficient data' for unassessable criteria"
+    escalationRoute: "Report to orchestrator that source evaluation requires domain expert assessment"
+
+  - id: comparative-source-evaluation
+    title: Comparative Source Evaluation
+    objective: Compare multiple sources on the same topic to identify which are most reliable and why
+    trigger: "sources.length > 1 or compareTo is provided"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "At least 2 sources provided for comparison"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "sources: SourceDescription[] (sanitized, 2+)"
+      - "evaluationContext: string"
+      - "criteria: string[]"
+    steps:
+      - stepNumber: 1
+        title: Evaluate sources individually
+        desc: Apply the same evaluation criteria to each source independently to establish a fair comparison baseline.
+        whyThisMatters: Independent evaluation prevents one source from biasing the assessment of another and ensures each stands on its own merits.
+        inputNeeded: "All sources with shared evaluation context and criteria"
+        actionInstruction: "For each source, call llm.chat() with standardized evaluation prompt (same criteria applied uniformly)."
+        promptToUse: |
+          You are the Researcher agent evaluating a source for comparative analysis.
+
+          Source: {{source}}
+          Evaluation context: {{evaluationContext}}
+          Standardized criteria: {{criteria}}
+
+          Evaluate this source independently using the standardized criteria.
+          For each criterion, score 1-5 with evidence.
+
+          Important: Evaluate this source on its own merits. Do not reference other sources.
+        expectedOutput: "IndividualEvaluation { source: string, scores: CriterionScore[], overallScore: number }"
+        validationRule: "All criteria scored, scores are 1-5 with evidence"
+        failureSignal: "Criteria without scores or evaluation references other sources"
+        recoveryAction: "Score unevaluable criteria as 3 with 'insufficient data' note"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Compare across sources
+        desc: Compare sources head-to-head on each criterion to identify relative strengths and weaknesses.
+        whyThisMatters: Head-to-head comparison reveals which sources excel in which areas, enabling nuanced source selection rather than simple ranking.
+        inputNeeded: "All IndividualEvaluations with standardized scores"
+        actionInstruction: "Call llm.chat() with comparative analysis prompt."
+        promptToUse: |
+          You are the Researcher agent performing comparative source analysis.
+
+          Individual evaluations:
+          {{evaluations}}
+          Context: {{evaluationContext}}
+
+          Compare sources:
+          1. Per-criterion comparison: Which source scores highest on each criterion and why?
+          2. Aggregate comparison: Overall score ranking
+          3. Complementarity: Do sources complement each other (one strong where another is weak)?
+          4. Agreement areas: Where do sources agree (increasing confidence)?
+          5. Disagreement areas: Where do sources disagree (decreasing confidence)?
+
+          Be fair. Acknowledge that different sources may serve different purposes.
+        expectedOutput: "ComparativeAnalysis { rankings: SourceRanking[], criterionLeaders: object, complementarity: string[], agreements: string[], disagreements: string[] }"
+        validationRule: "All sources ranked, per-criterion leaders identified"
+        failureSignal: "Sources not ranked or comparison is superficial"
+        recoveryAction: "Rank by aggregate score only without per-criterion comparison"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Produce comparative recommendation
+        desc: Generate a recommendation about which sources to prioritize and how to use them together.
+        whyThisMatters: Users need actionable guidance, not just raw comparisons; the recommendation translates analysis into practical source selection advice.
+        inputNeeded: "ComparativeAnalysis with rankings and complementarity"
+        actionInstruction: "Call llm.chat() with recommendation prompt."
+        promptToUse: |
+          You are the Researcher agent producing source selection recommendations.
+
+          Comparative analysis:
+          {{comparativeAnalysis}}
+          User context: {{evaluationContext}}
+
+          Recommendations:
+          1. Best overall source for this context and why
+          2. Best source per use case (if different use cases have different best sources)
+          3. Recommended combination (if using multiple sources adds value)
+          4. Sources to approach with caution and why
+          5. Confidence in this comparison: alto/medio/bajo
+        expectedOutput: "ComparisonRecommendation { bestOverall: string, perUseCase: object, recommendedCombination: string[], cautionSources: string[], confidence: string }"
+        validationRule: "Best overall source identified, confidence assigned"
+        failureSignal: "No clear recommendation or all sources rated equally without explanation"
+        recoveryAction: "State that sources are comparable and recommend using multiple for cross-verification"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver comparison
+        desc: Apply CP3 and deliver the comparative evaluation to the orchestrator.
+        whyThisMatters: Security validation and proper formatting ensure reliable delivery of the comparative results.
+        inputNeeded: "Full comparative evaluation with recommendations"
+        actionInstruction: "Call validateOutput(). Format as SourceEvalResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated SourceEvalResult with evaluations, rankings, and recommendations"
+        validationRule: "CP3 passed, all sources represented in output"
+        failureSignal: "CP3 flags content or sources missing from output"
+        recoveryAction: "Deliver individual evaluations without comparative analysis"
+        handoffIfNeeded: null
+
+    mainOutput: "Comparative source evaluation with rankings, complementarity analysis, and selection recommendations"
+    secondaryOutputs:
+      - "per_source_evaluations for individual reference"
+      - "criterion_comparison_matrix showing per-criterion leaders"
+      - "comparison_metrics (score ranges, agreement rate)"
+    DoD:
+      - "All sources evaluated independently"
+      - "Head-to-head comparison completed"
+      - "Rankings produced with justification"
+      - "Selection recommendation provided"
+      - "CP3 passed"
+    qaChecklist:
+      - "Same criteria applied to all sources"
+      - "Comparison is fair and evidence-based"
+      - "Recommendation accounts for context"
+      - "No source unfairly favored or dismissed"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "source_coverage: 100% of sources evaluated"
+      - "criteria_uniformity: same criteria applied to all sources"
+      - "response_time_p95: < 45s"
+      - "recommendation_clarity: clear best source identified"
+    cadence: "Per-request (when comparative evaluation is needed)"
+    errorHandling: "If sources are too different to compare, evaluate individually and note incomparability"
+    fallbackRoute: "Return individual evaluations without comparison if comparison fails"
+    escalationRoute: "Report to orchestrator that sources require domain expertise for accurate comparison"
+
+  - id: bias-detection
+    title: Bias Detection
+    objective: Identify potential biases in information sources including selection bias, confirmation bias, framing effects, and conflicts of interest
+    trigger: "explicit bias detection requested or source shows bias indicators"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Source description or content provided"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "source: SourceDescription (sanitized)"
+      - "content: string - the content to analyze for bias"
+      - "context: string"
+    steps:
+      - stepNumber: 1
+        title: Screen for bias indicators
+        desc: Scan the source and content for common bias indicators including language patterns, omissions, framing choices, and structural imbalances.
+        whyThisMatters: Early bias screening focuses detailed analysis on areas with genuine indicators rather than exhaustively checking every possible bias type.
+        inputNeeded: "Source description, content to analyze, context"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with bias screening prompt."
+        promptToUse: |
+          You are the Researcher agent screening for bias indicators in an information source.
+
+          Source: {{source}}
+          Content: {{content}}
+          Context: {{context}}
+
+          Screen for bias indicators:
+          1. Language bias: Loaded words, emotional appeals, one-sided framing
+          2. Selection bias: Cherry-picked data, omitted perspectives, selective citations
+          3. Confirmation bias: Only supporting evidence presented, counterarguments absent
+          4. Structural bias: Unbalanced coverage, prominence given to preferred viewpoints
+          5. Conflict of interest: Financial, political, or personal interests that could influence
+          6. Authority bias: Appeals to authority without substantive evidence
+
+          For each detected indicator, cite specific evidence from the content.
+          If no bias is detected in a category, say so.
+        expectedOutput: "BiasScreen { indicators: BiasIndicator[], overallBiasLevel: 'none'|'low'|'moderate'|'high', priorityAreas: string[] }"
+        validationRule: "Every bias category assessed, evidence cited for detected indicators"
+        failureSignal: "Categories skipped or indicators cited without evidence"
+        recoveryAction: "Apply broader screening with simpler checklist approach"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Analyze priority biases
+        desc: For each priority area flagged in screening, conduct deeper analysis to characterize the bias, its likely origin, and its impact on reliability.
+        whyThisMatters: Surface-level bias detection is insufficient; understanding the nature, origin, and impact of bias is essential for informed source use.
+        inputNeeded: "BiasScreen with priority areas identified"
+        actionInstruction: "For each priority area, call llm.chat() with deep bias analysis prompt."
+        promptToUse: |
+          You are the Researcher agent performing deep bias analysis.
+
+          Source: {{source}}
+          Detected bias area: {{priorityArea}}
+          Evidence from screening: {{indicators}}
+
+          Deep analysis:
+          1. Nature of bias: What specifically is biased and how?
+          2. Likely origin: Why does this bias exist? (intentional, structural, unconscious)
+          3. Direction: Which conclusion does the bias push toward?
+          4. Magnitude: How significantly does it affect the reliability of the content?
+          5. Mitigation: How should a reader adjust their interpretation?
+          6. Certainty: How confident are you this is genuine bias vs. legitimate perspective?
+
+          Be careful not to flag legitimate perspective or editorial choice as bias.
+        expectedOutput: "DeepBiasAnalysis { area: string, nature: string, origin: string, direction: string, magnitude: string, mitigation: string, certainty: string }"
+        validationRule: "All 6 analysis dimensions addressed with specific rather than generic answers"
+        failureSignal: "Generic analysis that could apply to any source or missing dimensions"
+        recoveryAction: "Return screening-level findings without deep analysis for the failed area"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compile bias report
+        desc: Compile all bias findings into a structured report with an overall bias assessment and practical guidance for the user.
+        whyThisMatters: The compiled report transforms individual bias findings into a coherent assessment that users can act on to adjust their trust level.
+        inputNeeded: "All DeepBiasAnalysis results, original BiasScreen"
+        actionInstruction: "Call llm.chat() to produce structured bias report. Call validateOutput() for CP3."
+        promptToUse: |
+          You are the Researcher agent compiling a bias report.
+
+          Screening results: {{biasScreen}}
+          Deep analysis results: {{deepAnalyses}}
+          Source: {{source}}
+
+          Compile bias report:
+          1. Executive summary: Overall bias profile in 2-3 sentences
+          2. Detected biases: List with severity and evidence
+          3. Undetected bias areas: Where no bias was found
+          4. Overall reliability impact: How much do detected biases affect source trustworthiness?
+          5. User guidance: How should the user use this source given its biases?
+          6. Comparison note: Is this level of bias typical for this source type?
+        expectedOutput: "BiasReport { summary: string, detectedBiases: Bias[], cleanAreas: string[], reliabilityImpact: string, guidance: string, typicalityNote: string }"
+        validationRule: "Report covers both detected and undetected areas, guidance is actionable"
+        failureSignal: "Report only focuses on negative findings or lacks practical guidance"
+        recoveryAction: "Simplify report to list of detected biases with severity ratings"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the bias report to the orchestrator.
+        whyThisMatters: Final validation ensures the bias report itself is balanced and safe for delivery.
+        inputNeeded: "BiasReport"
+        actionInstruction: "Call validateOutput(biasReport). Format as SourceEvalResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated SourceEvalResult with bias report as primary output"
+        validationRule: "CP3 passed, report includes both biased and clean areas"
+        failureSignal: "CP3 flags content or report is one-sided"
+        recoveryAction: "Strip flagged content, deliver bias summary only"
+        handoffIfNeeded: null
+
+    mainOutput: "Structured bias report with detected biases, severity, evidence, and user guidance"
+    secondaryOutputs:
+      - "bias_screening_results for reference"
+      - "deep_analysis_per_area for detailed review"
+      - "bias_metrics (detected count, severity distribution)"
+    DoD:
+      - "All bias categories screened"
+      - "Priority areas deeply analyzed"
+      - "Bias report compiled with guidance"
+      - "Clean areas acknowledged"
+      - "CP3 passed"
+    qaChecklist:
+      - "Bias claims are supported by specific evidence"
+      - "Legitimate perspective not flagged as bias"
+      - "Analysis is balanced and fair"
+      - "Guidance is practical and actionable"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "category_coverage: all 6 bias categories screened"
+      - "evidence_per_bias: each detected bias has cited evidence"
+      - "response_time_p95: < 40s"
+      - "false_positive_rate: legitimate perspectives not flagged as bias"
+    cadence: "Per-request (when bias detection is needed)"
+    errorHandling: "If content is too short for meaningful bias analysis, note limitation and assess what is available"
+    fallbackRoute: "Return screening-level findings without deep analysis"
+    escalationRoute: "Report to orchestrator that bias assessment requires domain expert familiar with source type norms"
+
+  - id: credibility-scoring
+    title: Credibility Scoring
+    objective: Produce a quantitative credibility score (0-100) for a source with transparent scoring methodology and breakdown
+    trigger: "quantitative credibility score requested or scoring is needed for automated ranking"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Source description provided"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "source: SourceDescription (sanitized)"
+      - "context: string"
+      - "scoringWeights: object - optional custom weights for scoring dimensions"
+    steps:
+      - stepNumber: 1
+        title: Define scoring dimensions
+        desc: Establish the scoring dimensions and their weights, using provided weights or applying domain-appropriate defaults.
+        whyThisMatters: Transparent dimension definition makes the scoring methodology auditable and allows users to understand and challenge specific components.
+        inputNeeded: "Source description, context, optional custom weights"
+        actionInstruction: "Call sanitizeInput() on inputs. Determine scoring dimensions based on source type and context."
+        promptToUse: |
+          You are the Researcher agent defining credibility scoring dimensions.
+
+          Source: {{source}}
+          Context: {{context}}
+          Custom weights: {{scoringWeights}}
+
+          Define scoring dimensions with weights (total must equal 100):
+          Default dimensions:
+          - Accuracy (25): Factual correctness of content
+          - Authority (20): Source expertise and credentials
+          - Objectivity (20): Balance and fairness
+          - Transparency (15): Methodology and source disclosure
+          - Currency (10): Timeliness and relevance
+          - Consistency (10): Internal consistency and track record
+
+          If custom weights provided, use those. Otherwise, adjust defaults based on context.
+          Explain why these weights are appropriate for this source type and context.
+        expectedOutput: "ScoringFramework { dimensions: Dimension[], totalWeight: 100, weightJustification: string }"
+        validationRule: "Weights sum to 100, at least 4 dimensions defined, justification provided"
+        failureSignal: "Weights do not sum to 100 or fewer than 4 dimensions"
+        recoveryAction: "Use default equal-weight scoring (6 dimensions at ~16.7 each)"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Score each dimension
+        desc: Evaluate the source on each dimension, producing a 0-100 sub-score with specific evidence.
+        whyThisMatters: Per-dimension scoring provides granularity that enables users to see exactly where a source excels or falls short.
+        inputNeeded: "ScoringFramework, source description, context"
+        actionInstruction: "Call llm.chat() with dimension scoring prompt for each dimension."
+        promptToUse: |
+          You are the Researcher agent scoring a source on a specific credibility dimension.
+
+          Source: {{source}}
+          Dimension: {{dimension.name}} (weight: {{dimension.weight}})
+          Dimension definition: {{dimension.definition}}
+          Context: {{context}}
+
+          Score this dimension 0-100:
+          - 90-100: Exceptional, among the best in class
+          - 70-89: Strong, above average for this source type
+          - 50-69: Adequate, meets basic standards
+          - 30-49: Below average, notable weaknesses
+          - 0-29: Poor, significant credibility concerns
+
+          Provide:
+          1. Score (0-100)
+          2. Specific evidence supporting the score
+          3. What would improve the score
+          4. How certain you are about this score: alto/medio/bajo
+        expectedOutput: "DimensionScore { dimension: string, score: number, evidence: string, improvement: string, certainty: string }"
+        validationRule: "Score is 0-100, evidence is specific to this source, certainty is rated"
+        failureSignal: "Score without evidence or score outside 0-100 range"
+        recoveryAction: "Assign score of 50 (neutral) with 'insufficient data to evaluate' note"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Calculate composite score
+        desc: Calculate the weighted composite credibility score and produce the scoring breakdown.
+        whyThisMatters: The composite score is the primary deliverable for automated ranking systems and quick credibility reference.
+        inputNeeded: "All DimensionScores, ScoringFramework with weights"
+        actionInstruction: "Calculate weighted average: sum(score * weight) / 100 for each dimension. Compile breakdown."
+        promptToUse: null (mechanical step)
+        expectedOutput: "CompositeScore { total: number, breakdown: DimensionScore[], methodology: string, confidence: string }"
+        validationRule: "Total score is weighted average of dimension scores, between 0 and 100"
+        failureSignal: "Total does not match weighted calculation or breakdown is incomplete"
+        recoveryAction: "Recalculate using simple average if weighted calculation fails"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver score
+        desc: Apply CP3 and deliver the credibility score with full breakdown to the orchestrator.
+        whyThisMatters: Validated delivery ensures the scoring is complete and safe for consumption by downstream systems.
+        inputNeeded: "CompositeScore with full breakdown"
+        actionInstruction: "Call validateOutput(). Format as SourceEvalResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated SourceEvalResult with credibility score, breakdown, and methodology"
+        validationRule: "CP3 passed, score and all dimension breakdowns present"
+        failureSignal: "CP3 flags content or breakdown incomplete"
+        recoveryAction: "Deliver composite score only without detailed breakdown"
+        handoffIfNeeded: null
+
+    mainOutput: "Quantitative credibility score (0-100) with transparent dimension breakdown and methodology"
+    secondaryOutputs:
+      - "scoring_framework for methodology audit"
+      - "per_dimension_evidence for detailed review"
+      - "scoring_metrics (score, dimension range, confidence)"
+    DoD:
+      - "Scoring dimensions defined with weights"
+      - "Each dimension scored with evidence"
+      - "Composite score calculated correctly"
+      - "Methodology is transparent"
+      - "CP3 passed"
+    qaChecklist:
+      - "Weights sum to 100"
+      - "Composite score matches weighted calculation"
+      - "Every dimension has supporting evidence"
+      - "Methodology is replicable"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "scoring_accuracy: weighted average is correctly calculated"
+      - "dimension_coverage: 100% of dimensions scored"
+      - "evidence_coverage: 100% of scores have evidence"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when quantitative scoring is needed)"
+    errorHandling: "If source is too vague to score, score available dimensions and note incomplete assessment"
+    fallbackRoute: "Return qualitative evaluation (highly reliable/generally reliable/etc.) instead of score"
+    escalationRoute: "Report to orchestrator that scoring requires domain-specific calibration data"

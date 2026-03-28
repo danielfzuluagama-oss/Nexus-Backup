@@ -1,0 +1,632 @@
+id: fact-checking
+name: Fact Checking
+purpose: Verify claims and assertions using critical thinking, cross-referencing, and systematic evidence evaluation to produce confidence-rated verification results.
+businessValue: Protects users from misinformation by providing rigorous, transparent claim verification that clearly distinguishes confirmed facts from unverifiable assertions.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: researcher
+
+inputs:
+  - "claims: string[] - One or more claims to verify"
+  - "context: string - Source and context of the claims"
+  - "evidenceProvided: string[] - Any supporting evidence already available"
+  - "verificationDepth: string - 'quick'|'standard'|'thorough'"
+
+outputs:
+  - "verificationResults: VerificationResult[] - Per-claim results with status and evidence"
+  - "overallAssessment: string - Summary assessment across all claims"
+  - "confidenceReport: ConfidenceReport - Detailed confidence analysis"
+  - "unverifiableClaims: string[] - Claims that cannot be verified with available knowledge"
+
+dependencies:
+  - "agents/researcher/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task specification from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - claim_verified
+  - claim_refuted
+  - claim_unverifiable
+  - confidence_assessed
+  - fallback_triggered
+
+failureHandling:
+  - "Claim too vague to verify: Request clarification via orchestrator"
+  - "Contradictory evidence found: Report as 'contested' with both sides"
+  - "Insufficient knowledge to verify: Report as 'unverifiable' not 'false'"
+  - "Timeout during verification: Return partial results with progress indicator"
+
+interoperabilityContract:
+  inputType: "FactCheckRequest { claims: string[], context: string, evidenceProvided?: string[], verificationDepth: string }"
+  outputType: "FactCheckResult { verificationResults: VerificationResult[], overallAssessment: string, confidenceReport: ConfidenceReport, unverifiableClaims: string[] }"
+
+wowCriteria:
+  - "Each claim receives a clear verdict with transparent reasoning chain"
+  - "Counterarguments and alternative interpretations are proactively considered"
+  - "Confidence levels precisely reflect the strength of available evidence"
+  - "Unverifiable claims are clearly separated from refuted claims"
+
+safeCriteria:
+  - "No unverifiable claim reported as 'false' — always 'unverifiable'"
+  - "Evidence chain is traceable for every verdict"
+  - "Speculation clearly labeled as such"
+  - "Limitations of verification transparently declared"
+
+workflows:
+  - id: single-claim-verification
+    title: Single Claim Verification
+    objective: Verify a single claim through systematic evidence evaluation and produce a clear verdict with supporting reasoning
+    trigger: "claims.length === 1 and verificationDepth !== 'thorough'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Exactly one claim provided"
+      - "Claim is specific enough to verify"
+    inputs:
+      - "claim: string (sanitized)"
+      - "context: string - where the claim originated"
+      - "evidenceProvided: string[] - pre-existing evidence"
+    steps:
+      - stepNumber: 1
+        title: Parse and decompose claim
+        desc: Sanitize the claim and decompose it into its core assertion, identifying the specific factual components that need verification.
+        whyThisMatters: Complex claims often contain multiple sub-assertions; decomposition ensures each verifiable component is checked rather than only the surface statement.
+        inputNeeded: "Raw claim string and context"
+        actionInstruction: "Call sanitizeInput(claim). Call llm.chat() with claim decomposition prompt."
+        promptToUse: |
+          You are the Researcher agent decomposing a claim for fact-checking.
+
+          Claim: {{claim}}
+          Context: {{context}}
+
+          Decompose this claim:
+          1. Core assertion: What is the central factual claim?
+          2. Sub-assertions: What subsidiary facts does this claim depend on?
+          3. Implicit assumptions: What does this claim assume to be true?
+          4. Verifiability: Can each component be verified with available knowledge?
+
+          Be precise. Separate opinion from fact.
+        expectedOutput: "ClaimDecomposition { coreAssertion: string, subAssertions: string[], assumptions: string[], verifiableComponents: string[] }"
+        validationRule: "Core assertion is non-empty, at least 1 verifiable component identified"
+        failureSignal: "Cannot identify a core factual assertion in the claim"
+        recoveryAction: "Report to orchestrator that claim is opinion-based, not factual, and cannot be fact-checked"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Evaluate evidence
+        desc: Assess available evidence for and against the claim, including any pre-provided evidence and the researcher's own knowledge.
+        whyThisMatters: Balanced evidence evaluation prevents confirmation bias and ensures the verdict reflects the full picture, not just supporting evidence.
+        inputNeeded: "ClaimDecomposition, any provided evidence, context"
+        actionInstruction: "Call llm.chat() with evidence evaluation prompt for each verifiable component."
+        promptToUse: |
+          You are the Researcher agent evaluating evidence for a factual claim.
+
+          Core assertion: {{coreAssertion}}
+          Verifiable components: {{verifiableComponents}}
+          Provided evidence: {{evidenceProvided}}
+
+          For each verifiable component:
+          1. Evidence supporting it (from knowledge and provided evidence)
+          2. Evidence against it
+          3. Quality of evidence: strong/moderate/weak/none
+          4. Component verdict: confirmed/refuted/uncertain/unverifiable
+
+          Be objective. Give equal scrutiny to supporting and opposing evidence.
+          Do not fabricate evidence. If you lack knowledge, say so.
+        expectedOutput: "EvidenceAssessment { components: ComponentVerdict[], overallEvidenceStrength: string }"
+        validationRule: "Every verifiable component has a verdict, evidence quality is rated"
+        failureSignal: "Components without verdicts or evidence fabrication detected"
+        recoveryAction: "Mark unassessed components as 'unverifiable' and proceed with partial assessment"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Render verdict
+        desc: Synthesize component verdicts into an overall claim verdict with confidence level and reasoning chain.
+        whyThisMatters: The verdict is the primary deliverable; it must be logically derived from the evidence assessment and clearly communicated.
+        inputNeeded: "EvidenceAssessment with component verdicts"
+        actionInstruction: "Call llm.chat() with verdict synthesis prompt."
+        promptToUse: |
+          You are the Researcher agent rendering a fact-check verdict.
+
+          Claim: {{claim}}
+          Component verdicts:
+          {{componentVerdicts}}
+          Overall evidence strength: {{overallEvidenceStrength}}
+
+          Render your verdict:
+          - CONFIRMED: Strong evidence supports the claim, no significant counter-evidence
+          - REFUTED: Strong evidence contradicts the claim
+          - PARTIALLY TRUE: Some components confirmed, others refuted
+          - UNVERIFIABLE: Insufficient evidence to confirm or refute
+          - CONTESTED: Strong evidence on both sides
+
+          Provide:
+          1. Verdict with justification
+          2. Confidence level: alto/medio/bajo
+          3. Key evidence that determined the verdict
+          4. Important caveats
+        expectedOutput: "Verdict { status: string, confidence: string, justification: string, keyEvidence: string[], caveats: string[] }"
+        validationRule: "Verdict status is one of the 5 valid types, confidence is assigned, justification is non-empty"
+        failureSignal: "Invalid verdict status or missing justification"
+        recoveryAction: "Default to 'UNVERIFIABLE' with explanation of why a clear verdict could not be reached"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 validation to the verdict and format as interoperability contract output.
+        whyThisMatters: Security validation and proper formatting ensure the verdict is safe and usable by downstream consumers.
+        inputNeeded: "Verdict with all supporting metadata"
+        actionInstruction: "Call validateOutput(verdict). Format as FactCheckResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated FactCheckResult with verdict, evidence, confidence, and caveats"
+        validationRule: "CP3 passed, output matches interoperabilityContract.outputType"
+        failureSignal: "CP3 flags content or schema validation fails"
+        recoveryAction: "Strip flagged content, deliver verdict with reduced detail"
+        handoffIfNeeded: null
+
+    mainOutput: "Single claim verification verdict with confidence level and evidence chain"
+    secondaryOutputs:
+      - "claim_decomposition for audit"
+      - "evidence_assessment for detailed review"
+      - "verification_metrics (evidence strength, component count, time)"
+    DoD:
+      - "Claim decomposed into verifiable components"
+      - "Evidence evaluated for and against"
+      - "Clear verdict rendered with justification"
+      - "Confidence level assigned"
+      - "CP3 passed"
+    qaChecklist:
+      - "Verdict is supported by cited evidence"
+      - "Counter-evidence was considered"
+      - "Unverifiable components not marked as refuted"
+      - "Confidence level matches evidence strength"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "verdict_clarity: verdict is one of 5 defined types"
+      - "evidence_balance: both supporting and opposing evidence considered"
+      - "response_time_p95: < 30s"
+      - "decomposition_depth: >= 2 verifiable components per claim"
+    cadence: "Per-request (when single claim verification is needed)"
+    errorHandling: "If claim is pure opinion, return 'not factually verifiable' with explanation"
+    fallbackRoute: "Return 'UNVERIFIABLE' with honest explanation of knowledge limitations"
+    escalationRoute: "Report to orchestrator that claim requires domain expertise or external data"
+
+  - id: multi-claim-batch
+    title: Multi-Claim Batch Verification
+    objective: Efficiently verify multiple claims in batch, identifying patterns and relationships between claims
+    trigger: "claims.length > 1"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple claims provided (2+)"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "claims: string[] (sanitized, 2+ items)"
+      - "context: string - shared context for the claims"
+      - "verificationDepth: string"
+    steps:
+      - stepNumber: 1
+        title: Classify and group claims
+        desc: Sanitize all claims and classify them by type, grouping related claims that can be verified together for efficiency.
+        whyThisMatters: Grouping related claims prevents redundant research and reveals when claims depend on or contradict each other.
+        inputNeeded: "Array of raw claims and shared context"
+        actionInstruction: "Call sanitizeInput() on each claim. Call llm.chat() with classification prompt."
+        promptToUse: |
+          You are the Researcher agent classifying claims for batch verification.
+
+          Claims:
+          {{claims}}
+          Context: {{context}}
+
+          For each claim:
+          1. Classify type: factual / statistical / causal / comparative / definitional
+          2. Identify related claims (shared subject matter)
+          3. Detect dependencies (claim B depends on claim A being true)
+          4. Detect contradictions (claims that cannot both be true)
+
+          Group related claims for efficient batch processing.
+        expectedOutput: "ClaimClassification { groups: ClaimGroup[], dependencies: Dependency[], contradictions: Contradiction[] }"
+        validationRule: "Every input claim appears in exactly one group"
+        failureSignal: "Claims missing from classification or circular dependencies detected"
+        recoveryAction: "Place unclassified claims in individual groups and proceed"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Batch verify by group
+        desc: Verify each claim group, leveraging shared context within the group for efficient verification.
+        whyThisMatters: Group-level verification is more efficient and catches inter-claim relationships that individual verification would miss.
+        inputNeeded: "ClaimClassification with grouped claims"
+        actionInstruction: "For each group, call llm.chat() with group verification prompt. Collect per-claim verdicts."
+        promptToUse: |
+          You are the Researcher agent performing batch claim verification.
+
+          Claim group: {{group.name}}
+          Claims in group:
+          {{group.claims}}
+          Shared context: {{context}}
+          Known dependencies: {{dependencies}}
+
+          Verify each claim in this group:
+          For each claim provide:
+          - Verdict: CONFIRMED / REFUTED / PARTIALLY TRUE / UNVERIFIABLE / CONTESTED
+          - Confidence: alto / medio / bajo
+          - Key evidence (brief)
+          - Relationship to other claims in group
+
+          Be consistent across related claims. If claim A is confirmed and claim B contradicts A, address this.
+        expectedOutput: "GroupVerdicts { groupName: string, verdicts: Verdict[], interClaimNotes: string[] }"
+        validationRule: "Every claim in the group has a verdict and confidence level"
+        failureSignal: "Claims without verdicts or inconsistent verdicts for related claims"
+        recoveryAction: "Re-verify claims with inconsistent verdicts individually"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Analyze batch patterns
+        desc: Look across all verified claims for patterns in truth, deception, or systematic bias in the source.
+        whyThisMatters: Batch patterns (e.g., all statistical claims are exaggerated) provide meta-insights that individual verification cannot reveal.
+        inputNeeded: "All GroupVerdicts, original claims, context"
+        actionInstruction: "Call llm.chat() with pattern analysis prompt."
+        promptToUse: |
+          You are the Researcher agent analyzing patterns across batch-verified claims.
+
+          All verdicts:
+          {{allVerdicts}}
+          Original context: {{context}}
+
+          Analyze patterns:
+          1. What proportion of claims are confirmed vs refuted vs unverifiable?
+          2. Are there systematic patterns (e.g., consistent exaggeration, selective truth)?
+          3. What does the pattern suggest about the source reliability?
+          4. Are the contradictions between claims significant or minor?
+
+          Provide overall batch assessment.
+        expectedOutput: "BatchAnalysis { verdictDistribution: object, patterns: string[], sourceReliabilityNote: string, overallAssessment: string }"
+        validationRule: "Verdict distribution adds up to total claim count, overall assessment present"
+        failureSignal: "Distribution does not match claim count or no patterns analyzed"
+        recoveryAction: "Skip pattern analysis and return individual verdicts only"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Compile and deliver batch results
+        desc: Compile all verdicts and batch analysis into a structured report, apply CP3, and deliver.
+        whyThisMatters: The compiled report with both individual verdicts and batch patterns is the complete deliverable that maximizes value of batch verification.
+        inputNeeded: "All GroupVerdicts, BatchAnalysis"
+        actionInstruction: "Compile into FactCheckResult. Call validateOutput(). Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated FactCheckResult with per-claim verdicts, batch analysis, and overall assessment"
+        validationRule: "CP3 passed, every input claim has a verdict in the output"
+        failureSignal: "CP3 flags content or claims missing from output"
+        recoveryAction: "Strip flagged content, ensure all claims have at least a basic verdict"
+        handoffIfNeeded: null
+
+    mainOutput: "Batch verification results with per-claim verdicts and cross-claim pattern analysis"
+    secondaryOutputs:
+      - "claim_groupings for reference"
+      - "batch_pattern_analysis for source evaluation"
+      - "batch_metrics (claim count, verdict distribution, time per claim)"
+    DoD:
+      - "Every submitted claim has a verdict"
+      - "Related claims checked for consistency"
+      - "Batch patterns analyzed"
+      - "Overall assessment provided"
+      - "CP3 passed"
+    qaChecklist:
+      - "No claim overlooked in batch"
+      - "Related claim verdicts are mutually consistent"
+      - "Verdict distribution is realistic"
+      - "Batch patterns are evidence-based"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "claim_coverage: 100% of input claims verified"
+      - "consistency_check: related claims do not have contradictory verdicts without explanation"
+      - "response_time_p95: < 60s for up to 10 claims"
+      - "pattern_detection: patterns identified when 3+ claims from same source"
+    cadence: "Per-request (when multiple claims need verification)"
+    errorHandling: "If batch is too large (>20 claims), split into sub-batches of 10"
+    fallbackRoute: "Verify claims individually if batch grouping fails"
+    escalationRoute: "Report to orchestrator if batch contains claims requiring specialized verification"
+
+  - id: source-cross-reference
+    title: Source Cross-Reference
+    objective: Cross-reference a claim against multiple independent reasoning paths to assess convergence or divergence of evidence
+    trigger: "verificationDepth === 'thorough' or claim is high-stakes"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Claim identified as needing thorough verification"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "claim: string (sanitized)"
+      - "context: string"
+      - "knownSources: string[] - any known sources of the claim"
+    steps:
+      - stepNumber: 1
+        title: Identify reasoning paths
+        desc: Identify multiple independent reasoning paths (logical, empirical, analogical, authoritative) that could confirm or refute the claim.
+        whyThisMatters: Multiple independent reasoning paths reduce the chance of systematic bias in verification and increase confidence in the verdict.
+        inputNeeded: "Claim, context, known sources"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with reasoning path identification prompt."
+        promptToUse: |
+          You are the Researcher agent identifying independent reasoning paths for claim verification.
+
+          Claim: {{claim}}
+          Context: {{context}}
+          Known sources: {{knownSources}}
+
+          Identify 3-5 independent reasoning paths to verify this claim:
+          - Logical reasoning: Can it be deduced from known principles?
+          - Empirical evidence: What observable facts support or refute it?
+          - Analogical reasoning: Are there analogous cases with known outcomes?
+          - Authoritative consensus: What do recognized authorities say?
+          - Internal consistency: Does the claim contradict itself or known facts?
+
+          Each path must be genuinely independent (different evidence base).
+        expectedOutput: "ReasoningPaths { paths: ReasoningPath[], independenceAssessment: string }"
+        validationRule: "At least 3 reasoning paths identified, each with distinct evidence basis"
+        failureSignal: "Fewer than 2 paths or paths are not genuinely independent"
+        recoveryAction: "Proceed with available paths, noting limited cross-referencing capability"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Evaluate each path
+        desc: Follow each reasoning path independently to reach a conclusion about the claim.
+        whyThisMatters: Independent evaluation of each path prevents cross-contamination of reasoning and enables genuine convergence analysis.
+        inputNeeded: "ReasoningPaths with defined paths"
+        actionInstruction: "For each path, call llm.chat() with path-specific evaluation prompt."
+        promptToUse: |
+          You are the Researcher agent following a specific reasoning path to verify a claim.
+
+          Claim: {{claim}}
+          Reasoning path: {{path.type}} - {{path.description}}
+          Evidence basis: {{path.evidenceBasis}}
+
+          Follow ONLY this reasoning path:
+          1. What does this line of reasoning conclude about the claim?
+          2. How strong is the conclusion? (strong/moderate/weak)
+          3. What assumptions does this reasoning path make?
+          4. What could invalidate this reasoning?
+
+          Do not reference other reasoning paths. Evaluate independently.
+        expectedOutput: "PathConclusion { pathType: string, conclusion: string, strength: string, assumptions: string[], vulnerabilities: string[] }"
+        validationRule: "Conclusion is clear (supports/refutes/inconclusive), strength is rated"
+        failureSignal: "Conclusion is ambiguous or path evaluation references other paths"
+        recoveryAction: "Mark path as 'inconclusive' and proceed with remaining paths"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Analyze convergence
+        desc: Compare conclusions across all reasoning paths to determine convergence (agreement) or divergence (disagreement).
+        whyThisMatters: Convergence across independent paths dramatically increases confidence; divergence signals genuine uncertainty that must be reported honestly.
+        inputNeeded: "All PathConclusions from independent reasoning paths"
+        actionInstruction: "Call llm.chat() with convergence analysis prompt."
+        promptToUse: |
+          You are the Researcher agent analyzing convergence across independent verification paths.
+
+          Claim: {{claim}}
+          Path conclusions:
+          {{pathConclusions}}
+
+          Analyze convergence:
+          1. Do paths converge (agree) or diverge (disagree)?
+          2. What is the convergence ratio (e.g., 3/4 paths agree)?
+          3. For divergent paths: why do they disagree?
+          4. Overall confidence given convergence pattern
+          5. Final cross-referenced verdict
+
+          Strong convergence = high confidence. Divergence = honest uncertainty.
+        expectedOutput: "ConvergenceAnalysis { convergenceRatio: string, convergentVerdict: string, divergenceReasons: string[], confidence: string, finalVerdict: string }"
+        validationRule: "Convergence ratio is calculated, final verdict accounts for all paths"
+        failureSignal: "Convergence analysis ignores divergent paths or inflates confidence"
+        recoveryAction: "Default to most conservative conclusion among the paths"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the cross-referenced verification result.
+        whyThisMatters: The cross-referenced result is higher quality than single-path verification; proper delivery preserves this quality.
+        inputNeeded: "ConvergenceAnalysis with final verdict"
+        actionInstruction: "Call validateOutput(). Format as FactCheckResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated FactCheckResult with cross-referenced verdict and convergence data"
+        validationRule: "CP3 passed, convergence data included in output"
+        failureSignal: "CP3 flags content or convergence data missing"
+        recoveryAction: "Deliver verdict without convergence detail if formatting fails"
+        handoffIfNeeded: null
+
+    mainOutput: "Cross-referenced claim verification with convergence analysis across independent reasoning paths"
+    secondaryOutputs:
+      - "per_path_conclusions for detailed audit"
+      - "convergence_analysis for confidence justification"
+      - "cross_reference_metrics (path count, convergence ratio, time)"
+    DoD:
+      - "At least 3 independent reasoning paths evaluated"
+      - "Convergence/divergence analyzed"
+      - "Final verdict reflects cross-referencing"
+      - "Confidence justified by convergence pattern"
+      - "CP3 passed"
+    qaChecklist:
+      - "Reasoning paths are genuinely independent"
+      - "Each path evaluated without cross-contamination"
+      - "Convergence ratio accurately calculated"
+      - "Divergence honestly reported"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "path_count: >= 3 independent paths evaluated"
+      - "independence_check: paths use different evidence bases"
+      - "convergence_accuracy: ratio matches actual path conclusions"
+      - "response_time_p95: < 45s"
+    cadence: "Per-request (when thorough cross-referencing is needed)"
+    errorHandling: "If fewer than 3 paths available, proceed with available paths and note limitation"
+    fallbackRoute: "Fall back to single-claim-verification workflow with standard depth"
+    escalationRoute: "Report to orchestrator that claim requires external expert verification"
+
+  - id: confidence-assessment
+    title: Confidence Assessment
+    objective: Produce a detailed confidence assessment for a set of claims or findings, quantifying uncertainty and its sources
+    trigger: "explicit confidence assessment requested or findings need uncertainty quantification"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Claims or findings provided for assessment"
+      - "Researcher agent available at depth 1"
+    inputs:
+      - "findings: Finding[] - claims or findings to assess"
+      - "context: string - domain and constraints"
+    steps:
+      - stepNumber: 1
+        title: Identify uncertainty sources
+        desc: For each finding, identify the specific sources of uncertainty (knowledge gaps, ambiguity, conflicting evidence, assumption dependency).
+        whyThisMatters: Knowing why confidence is limited is more valuable than a simple confidence score; it tells downstream consumers where to focus improvement efforts.
+        inputNeeded: "Findings array and context"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with uncertainty analysis prompt."
+        promptToUse: |
+          You are the Researcher agent performing uncertainty analysis.
+
+          Findings to assess:
+          {{findings}}
+          Context: {{context}}
+
+          For each finding, identify sources of uncertainty:
+          - Knowledge gap: Missing information that would increase confidence
+          - Ambiguity: Terms or claims that can be interpreted multiple ways
+          - Conflicting evidence: Evidence that points in different directions
+          - Assumption dependency: Confidence depends on unverified assumptions
+          - Temporal uncertainty: Information may be outdated
+          - Domain limitation: Outside core knowledge area
+
+          Rate each uncertainty source as major/minor.
+        expectedOutput: "UncertaintyAnalysis { perFinding: FindingUncertainty[], systemicUncertainties: string[] }"
+        validationRule: "Every finding has at least one uncertainty source identified or explicitly stated as 'no significant uncertainty'"
+        failureSignal: "Findings without uncertainty analysis or all findings marked 'no uncertainty'"
+        recoveryAction: "Apply default uncertainty analysis using generic factors (knowledge recency, domain familiarity)"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Calculate confidence levels
+        desc: Translate uncertainty analysis into calibrated confidence levels using a consistent framework.
+        whyThisMatters: Calibrated confidence levels ensure that alto/medio/bajo ratings are applied consistently and mean the same thing across different findings.
+        inputNeeded: "UncertaintyAnalysis for all findings"
+        actionInstruction: "Call llm.chat() with confidence calibration prompt."
+        promptToUse: |
+          You are the Researcher agent calibrating confidence levels.
+
+          Uncertainty analysis:
+          {{uncertaintyAnalysis}}
+
+          Apply this confidence framework:
+          - ALTO (high): No major uncertainty sources, strong evidence support, well-established knowledge
+          - MEDIO (medium): 1-2 minor uncertainty sources or 1 major, reasonable evidence
+          - BAJO (low): Multiple major uncertainty sources, weak evidence, or significant knowledge gaps
+
+          For each finding:
+          1. Assign calibrated confidence: alto/medio/bajo
+          2. Justify the rating based on specific uncertainty sources
+          3. What would increase the confidence level?
+          4. What is the probability range this represents? (alto: 80-100%, medio: 50-79%, bajo: < 50%)
+        expectedOutput: "ConfidenceAssessment { ratings: ConfidenceRating[], calibrationNotes: string, overallConfidence: string }"
+        validationRule: "Every finding has a calibrated confidence with justification"
+        failureSignal: "Confidence ratings without justification or inconsistent calibration"
+        recoveryAction: "Apply conservative confidence (one level lower than calculated) and note calibration uncertainty"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Produce confidence report
+        desc: Compile the full confidence assessment into a structured report with actionable recommendations for improving confidence.
+        whyThisMatters: The confidence report is the deliverable that enables informed decision-making about which findings to trust and where to invest further research.
+        inputNeeded: "ConfidenceAssessment with calibrated ratings"
+        actionInstruction: "Call llm.chat() to generate structured confidence report with improvement recommendations."
+        promptToUse: |
+          You are the Researcher agent producing a confidence report.
+
+          Confidence assessment:
+          {{confidenceAssessment}}
+          Original findings:
+          {{findings}}
+
+          Produce a confidence report:
+          1. Summary: Overall confidence profile (how many alto/medio/bajo)
+          2. Highest confidence findings (most reliable)
+          3. Lowest confidence findings (least reliable)
+          4. Key uncertainty themes across findings
+          5. Top 3 actions to improve overall confidence
+          6. Recommendation: Can these findings be relied upon for decision-making?
+
+          Be constructive but honest.
+        expectedOutput: "ConfidenceReport { summary: string, highConfidence: string[], lowConfidence: string[], themes: string[], improvementActions: string[], recommendation: string }"
+        validationRule: "Report has all 6 sections, improvement actions are specific and actionable"
+        failureSignal: "Missing sections or generic non-actionable recommendations"
+        recoveryAction: "Generate simplified report with just confidence ratings and overall recommendation"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver report
+        desc: Apply CP3 and deliver the confidence report to the orchestrator.
+        whyThisMatters: Validated delivery ensures the confidence report itself is trustworthy and properly formatted for consumption.
+        inputNeeded: "ConfidenceReport"
+        actionInstruction: "Call validateOutput(report). Format as FactCheckResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated FactCheckResult with confidence report as primary output"
+        validationRule: "CP3 passed, report conforms to output schema"
+        failureSignal: "CP3 flags content or schema validation fails"
+        recoveryAction: "Deliver simplified confidence ratings without full report"
+        handoffIfNeeded: null
+
+    mainOutput: "Detailed confidence report with calibrated ratings, uncertainty sources, and improvement recommendations"
+    secondaryOutputs:
+      - "uncertainty_analysis for detailed reference"
+      - "calibration_framework for consistency auditing"
+      - "confidence_metrics (distribution, average confidence, top uncertainties)"
+    DoD:
+      - "Every finding has a calibrated confidence level"
+      - "Uncertainty sources identified per finding"
+      - "Overall confidence profile summarized"
+      - "Improvement actions recommended"
+      - "CP3 passed"
+    qaChecklist:
+      - "Confidence levels are consistently calibrated"
+      - "Justifications match the ratings"
+      - "Improvement actions are specific and actionable"
+      - "No finding has inflated confidence"
+    raci:
+      responsible: researcher
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "calibration_consistency: similar uncertainty profiles get same confidence level"
+      - "coverage: 100% of findings assessed"
+      - "actionability: all improvement actions are specific"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when confidence assessment is needed)"
+    errorHandling: "If findings are too vague to assess, request clarification before proceeding"
+    fallbackRoute: "Return simple alto/medio/bajo ratings without detailed analysis"
+    escalationRoute: "Report to orchestrator that findings require domain expert review for accurate confidence calibration"

@@ -1,0 +1,109 @@
+id: "feature-architect"
+name: "Feature Engineering Orchestrator (v2.0-GAMMA)"
+version: "2.0.0"
+description: "Generates simultaneously: Functional User Stories (Connextra + Gherkin), Technical Enablers (L0–L3 hierarchy), and Execution Workflows. Guarantees >95% traceability with zero orphaned artifacts and cycle-free dependency graphs."
+owner: "agent_orchestrator"
+category: "technical-operation"
+
+business_value: |
+  Reduces PM–Engineering clarification cycles by 60% by delivering complete, traceable,
+  production-ready feature specifications. Replaces chaotic flat task lists with a 4-level
+  technical hierarchy that enables parallelization boundaries and accurate critical-path extraction.
+
+triggers:
+  - keywords: ["feature", "historias de usuario", "user stories", "enabler", "requerimiento", "PRD", "épica", "backlog"]
+  - context_patterns:
+      - pattern: "(?i)(escribir|redactar|definir).* (feature|requerimiento|historia)"
+      - pattern: "(?i)(desglosar).* (historias|historias de usuario|tareas|épica)"
+
+dependencies:
+  skills:
+    - "prompt-engineer"     # Algebraic composition for decomposition prompts.
+    - "quality-excellence"   # 16D scoring on specification quality.
+    - "software-architect"   # Handoff for L2/L3 enablers requiring code design.
+
+assumptions:
+  - "User provides at least a high-level objective or epic. Single-sentence briefs trigger structured clarification."
+  - "Default methodology is Connextra (As a [role] I want [goal] so that [benefit]). SAFe or custom formats require explicit request."
+  - "Acceptance Criteria are measurable. If the user provides vague criteria, the skill reformulates with numeric thresholds."
+  - "Output is text/Markdown. Integration with Jira, Linear, or Notion is out of scope."
+
+limits:
+  - "Cannot estimate calendar duration — only relative complexity (Story Points 1–13 Fibonacci). Duration depends on team velocity."
+  - "Cannot validate technical feasibility of enablers against a live codebase. Feasibility is structural, not runtime."
+  - "Maximum decomposition depth: L3 (Atomic Tasks, 2–5 Story Points). Sub-L3 decomposition indicates the story is too large."
+  - "Does not replace a Product Owner's prioritization decisions. It structures; the user decides priority."
+
+capabilities:
+  triple_decomposition_engine:
+    functional_layer:
+      format: "As a [role], I want [goal], so that [benefit]."
+      requirements: "3–5 measurable Acceptance Criteria per story + Gherkin scenarios (Given/When/Then)."
+      constraint: "Stories must be Independently testable, Negotiable, Valuable, Estimable, Small, Testable (INVEST criteria)."
+    technical_layer:
+      hierarchy:
+        L0: "Infrastructure (cloud, CI/CD, DNS, databases) — foundation that enables everything."
+        L1: "Architecture (API contracts, data models, auth flows) — structural decisions."
+        L2: "Implementation (services, modules, integrations) — buildable components."
+        L3: "Atomic Tasks (functions, unit tests, config changes) — 2–5 Story Point ceiling."
+      constraint: "L3↔L3 dependencies are forbidden by design. If two L3 items depend on each other, they must be merged or elevated to L2."
+    behavioral_layer:
+      description: "Interaction mapping connecting User Stories to the exact Enablers that implement them."
+      format: "US-001 → [E-L1-001, E-L2-003, E-L2-004] with dependency direction arrows."
+
+  traceability_matrix:
+    causality_lock: "Orphaned artifacts are forbidden. An Enabler without a parent User Story is invalid. A User Story without Enablers is incomplete."
+    coverage_target: ">95% cross-reference coverage. Below 95% triggers internal refinement before output."
+    audit_format: "Matrix table: rows = User Stories, columns = Enablers, cells = dependency type (implements, supports, validates)."
+
+  dependency_graphing:
+    cycle_prevention: "Circular dependencies are detected and resolved before output. The skill presents the cycle and proposes resolution."
+    parallel_detection: "Identifies independent L2/L3 streams that can be executed in parallel by different engineers."
+    critical_path: "Highlights the longest sequential chain as the minimum viable delivery path."
+
+workflows:
+  - id: "wflow_feature_definition"
+    name: "Full Specification Protocol"
+    steps:
+      - "1. Requirements Capture: Clarify structural ambiguities. If epic has >5 unknowns, request stakeholder input."
+      - "2. Triple Decomposition: Concurrently generate User Stories, Enablers (L0–L3), and Behavioral Mappings."
+      - "3. Traceability Check: Build and validate the cross-reference matrix. If <95% coherent, refine internally."
+      - "4. Dependency Analysis: Generate dependency graph. Detect cycles and parallel streams."
+      - "5. Output Formatting: Deliver the specification separated by Layers, scoring >9.5/10 on Excellence Loop."
+
+edge_cases:
+  - scenario: "User provides a single vague sentence ('build a dashboard')."
+    handling: "Trigger structured discovery: Who uses it? What data? What decisions does it support? What existing systems does it connect to?"
+  - scenario: "Decomposition produces >50 enablers."
+    handling: "Likely the epic is too large. Recommend splitting into 2–3 sub-epics before continuing."
+  - scenario: "Two L3 items are mutually dependent."
+    handling: "Merge into a single L2 enabler or identify a common L3 dependency to extract."
+  - scenario: "User insists on flat task lists (no hierarchy)."
+    handling: "Deliver flat list as requested, but include the L0–L3 hierarchy as an appendix with a note on parallelization benefits."
+
+trade_offs:
+  - decision: "4-level hierarchy (L0–L3) over flat task lists."
+    justification: "Flat lists hide parallelization opportunities and create implicit dependencies. The hierarchy makes them explicit, reducing integration surprises by ~40%."
+  - decision: "INVEST-compliant stories over free-form descriptions."
+    justification: "INVEST stories are estimable and testable. Free-form descriptions cause scope ambiguity during sprint planning."
+  - decision: ">95% traceability enforcement over faster output."
+    justification: "Orphaned artifacts cause rework. The traceability check costs minutes but saves days of confusion."
+
+constraints:
+  - "NEVER output a flat list of tasks. ALWAYS format into L0–L3 hierarchy."
+  - "NEVER allow a User Story without corresponding Technical Enablers."
+  - "NEVER hallucinate metrics in Acceptance Criteria. Request concrete numbers if absent."
+  - "ALWAYS enforce the L3↔L3 dependency prohibition."
+  - "ALWAYS include a traceability matrix in the final output."
+
+evaluation:
+  acceptance_criteria:
+    - "Output contains User Stories, Technical Enablers, and Behavioral Mappings simultaneously."
+    - ">95% of artifacts are cross-referenced in the traceability matrix."
+    - "Structural hierarchy resolves to L3 (Atomic 2–5 Story Point boundaries)."
+    - "Zero circular dependencies in the dependency graph."
+    - "All Acceptance Criteria are measurable (contain numeric thresholds or binary conditions)."
+  success_metrics:
+    - "≥95% traceability coverage on every output."
+    - "Zero orphaned enablers or incomplete stories."
+    - "≥90% of outputs identify at least one parallel execution stream."

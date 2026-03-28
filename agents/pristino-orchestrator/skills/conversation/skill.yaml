@@ -1,0 +1,549 @@
+# =============================================================================
+# Skill: conversation
+# Agent: pristino-orchestrator
+# Purpose: Handle direct dialog with the user (greetings, simple queries, clarifications)
+# =============================================================================
+
+id: conversation
+name: Direct Conversation Handler
+purpose: >
+  Handle direct dialog with the user including greetings, simple queries, and
+  clarification requests without delegating to specialist agents.
+businessValue: >
+  Efficient direct responses without unnecessary delegation reduce latency
+  and provide a natural conversational experience for simple interactions.
+triggerTypes:
+  - user_message
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "userMessage: string (sanitized, max 4096 chars)"
+  - "conversationHistory: Message[] (last 20 messages from SQLite)"
+  - "userProfile: { userId: string, preferredLanguage?: string }"
+  - "routingDecision: RoutingDecision (when router determines direct response)"
+
+outputs:
+  - "directResponse: string (response for the user, max 4096 chars)"
+  - "conversationEvent: { type: string, timestamp: string }"
+  - "contextUpdate: { lastTopic?: string, clarificationPending?: boolean }"
+
+dependencies:
+  - "security.ts (sanitizeInput, buildSecurePrompt, validateOutput)"
+  - "memory.ts (SQLite conversation history read/write)"
+  - "llm client (Groq primary, OpenRouter fallback)"
+
+toolUsage:
+  - "get_current_time: For time-related queries and greeting context"
+
+memoryReadsWrites:
+  reads:
+    - "conversationHistory: last 20 messages for context continuity"
+    - "userProfile: language preference and userId"
+    - "lastRoutingDecision: to understand why this skill was activated"
+  writes:
+    - "assistantMessage: direct response added to conversation history"
+    - "contextUpdate: topic tracking and clarification state"
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on system prompt for LLM calls"
+  - "CP3: validateOutput() on all responses before delivery"
+  - "Whitelist check: verify userId in allowedUserIds"
+
+observabilityEvents:
+  - "skill_activated: conversation skill triggered"
+  - "greeting_detected: user sent greeting message"
+  - "simple_query_handled: query answered without delegation"
+  - "clarification_requested: asking user for more detail"
+  - "context_maintained: conversation thread continued"
+  - "response_delivered: message sent to user"
+
+failureHandling:
+  - "LLM error: Groq -> OpenRouter fallback for response generation"
+  - "Empty response: retry once with simplified prompt"
+  - "Telegram send failure: retry once after 2s"
+  - "Memory write failure: log warning, deliver response anyway (response > persistence)"
+
+interoperabilityContract:
+  inputType: "ConversationRequest { userMessage, history, userProfile }"
+  outputType: "ConversationResult { response, contextUpdate }"
+  protocol: "Internal function call, no inter-agent delegation"
+
+wowCriteria:
+  - "Greetings feel natural and contextual (time-of-day aware)"
+  - "Simple queries answered in < 3s"
+  - "Clarification requests are specific about what is needed, not generic"
+  - "Conversation flows naturally without feeling robotic"
+
+safeCriteria:
+  - "Every response passes CP3 validateOutput()"
+  - "No delegation occurs for clearly conversational messages"
+  - "Conversation history accurately updated after each exchange"
+  - "User always receives a response within 10s"
+
+# =============================================================================
+# Workflows
+# =============================================================================
+
+workflows:
+  # ---------------------------------------------------------------------------
+  # Workflow 1: Greeting Response
+  # ---------------------------------------------------------------------------
+  - id: greeting-response
+    title: Greeting Response
+    objective: Respond to user greetings with natural, contextual, time-aware salutations
+    trigger: "Message classified as greeting (hola, hi, buenos dias, etc.)"
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Input sanitized through CP1
+      - Message classified as greeting by intent detection
+    inputs:
+      - "userMessage: string (greeting text)"
+      - "conversationHistory: Message[] (for returning user context)"
+      - "currentTime: Date (for time-of-day awareness)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize greeting input
+        desc: Apply CP1 to the greeting message and verify it is safe.
+        whyThisMatters: Even greetings can contain injection attempts disguised as friendly messages.
+        inputNeeded: "Raw user message from Telegram"
+        actionInstruction: "Call sanitizeInput(userMessage). Verify cleaned message is non-empty."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized greeting string"
+        validationRule: "cleaned.length > 0 and safe === true"
+        failureSignal: "sanitizeInput returns empty or throws"
+        recoveryAction: "Treat as generic greeting and respond with default salutation"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Detect greeting context
+        desc: Determine time of day, whether user is returning, and any conversation continuity signals.
+        whyThisMatters: Context-aware greetings feel personal rather than robotic, building user trust.
+        inputNeeded: "Sanitized greeting, current time, last conversation timestamp from history"
+        actionInstruction: "Call get_current_time(). Check conversationHistory for last interaction. Classify: new_session, returning_user, or continuation."
+        promptToUse: null (mechanical step)
+        expectedOutput: "GreetingContext { timeOfDay, sessionType, lastTopic? }"
+        validationRule: "timeOfDay is one of morning/afternoon/evening/night and sessionType is classified"
+        failureSignal: "get_current_time fails or history lookup errors"
+        recoveryAction: "Default to timeOfDay='day' and sessionType='new_session'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate greeting response
+        desc: Use LLM to produce a natural, contextual greeting that matches the user's language and style.
+        whyThisMatters: The greeting sets the tone for the entire conversation and must feel natural.
+        inputNeeded: "Sanitized greeting, GreetingContext, user language preference"
+        actionInstruction: "Call llm.chat() with greeting system prompt secured by CP2."
+        promptToUse: |
+          You are Pristino. Respond to this greeting naturally.
+          Be concise (1-2 sentences max). Match the user's language.
+          If returning user: briefly acknowledge without being creepy.
+          Time of day: {{timeOfDay}}. Session type: {{sessionType}}.
+
+          User greeting: {{userMessage}}
+        expectedOutput: "Natural greeting response string (1-2 sentences)"
+        validationRule: "Response is 1-2 sentences, matches user language, and is friendly"
+        failureSignal: "LLM fails or returns overly long/irrelevant response"
+        recoveryAction: "Use static greeting: 'Hola! How can I help you today?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Deliver greeting
+        desc: Validate the greeting response via CP3, persist to memory, and send to user.
+        whyThisMatters: Even simple greetings must be tracked in conversation history for continuity.
+        inputNeeded: "Greeting response string, userId"
+        actionInstruction: "validateOutput(greeting). memory.addMessage(userId, 'assistant', greeting). Send via Telegram."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Greeting sent to user, conversation history updated"
+        validationRule: "CP3 passed, message persisted, Telegram send successful"
+        failureSignal: "Telegram API error"
+        recoveryAction: "Retry Telegram send once after 2s"
+        handoffIfNeeded: null
+
+    mainOutput: "Natural greeting response delivered to user"
+    secondaryOutputs:
+      - "greeting_event logged with session type and time"
+      - "conversation_history updated with greeting exchange"
+    DoD:
+      - User received contextual greeting response
+      - Greeting exchange persisted in conversation history
+      - CP1/CP3 applied
+    qaChecklist:
+      - Greeting matches user language
+      - Response is concise (1-2 sentences)
+      - No system prompt leakage
+      - Response time < 3s
+    raci:
+      responsible: "pristino-orchestrator"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "response_time_p95: <3s"
+      - "language_match_rate: greeting language matches user language 100%"
+    cadence: "Per-request (when greeting detected)"
+    errorHandling: "LLM failure: use static greeting. Telegram failure: retry once."
+    fallbackRoute: "Static greeting: 'Hola! En que te puedo ayudar?'"
+    escalationRoute: "Not applicable for greetings — always resolvable locally"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 2: Simple Query Response
+  # ---------------------------------------------------------------------------
+  - id: simple-query-response
+    title: Simple Query Response
+    objective: Answer simple factual queries directly without delegating to specialist agents
+    trigger: "Message classified as simple query that Pristino can answer directly"
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Input sanitized through CP1
+      - Router determined query is simple enough for direct response
+    inputs:
+      - "userMessage: string (simple query)"
+      - "conversationHistory: Message[] (for context)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize query input
+        desc: Apply CP1 security to the query and validate non-empty result.
+        whyThisMatters: All user input must pass security validation regardless of perceived simplicity.
+        inputNeeded: "Raw user query from Telegram"
+        actionInstruction: "Call sanitizeInput(userMessage). Verify cleaned.length > 0."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized query string"
+        validationRule: "cleaned.length > 0 and safe === true"
+        failureSignal: "sanitizeInput returns empty or throws"
+        recoveryAction: "Return 'Could you rephrase your question?' to the user"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Classify query scope
+        desc: Verify this query is within Pristino's direct response capability and does not need delegation.
+        whyThisMatters: Misclassification wastes user time. Simple queries should not incur delegation overhead.
+        inputNeeded: "Sanitized query, conversation context, available agent domains"
+        actionInstruction: "Quick LLM classification call: is this query answerable directly or does it need a specialist? Use short classification prompt."
+        promptToUse: |
+          Classify this query. Respond with ONLY one word:
+          - DIRECT: general knowledge, time, small talk, clarifications
+          - DELEGATE: needs specialist analysis, code, research, complex reasoning
+
+          Query: {{userMessage}}
+        expectedOutput: "Classification: 'DIRECT' or 'DELEGATE'"
+        validationRule: "Classification is exactly 'DIRECT' or 'DELEGATE'"
+        failureSignal: "Classification is neither DIRECT nor DELEGATE, or LLM fails"
+        recoveryAction: "Default to DIRECT for short queries (<50 chars), DELEGATE for longer ones"
+        handoffIfNeeded: "If DELEGATE: hand off to delegation skill"
+
+      - stepNumber: 3
+        title: Generate direct answer
+        desc: Use Pristino's LLM to generate a concise, helpful answer to the simple query.
+        whyThisMatters: Direct answers to simple queries provide the fastest and most efficient user experience.
+        inputNeeded: "Sanitized query, conversation history for context"
+        actionInstruction: "Call llm.chat() with Pristino system prompt (CP2-secured). Include recent history for context."
+        promptToUse: |
+          You are Pristino. Answer this simple query directly and concisely.
+          Use chat format: short sentences, bullets for lists.
+          If you are not confident, say so honestly.
+
+          Recent context: {{recentHistory}}
+          User query: {{userMessage}}
+        expectedOutput: "Concise answer string in chat format"
+        validationRule: "Response is non-empty, relevant to the query, and reasonably concise"
+        failureSignal: "LLM fails, returns empty, or response is irrelevant"
+        recoveryAction: "Groq fails -> retry with OpenRouter. Both fail -> honest 'I could not answer that right now.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver answer
+        desc: Apply CP3, persist response, and send to user via Telegram.
+        whyThisMatters: Response quality and conversation continuity require validation and persistence.
+        inputNeeded: "Answer string, userId"
+        actionInstruction: "validateOutput(answer). memory.addMessage(userId, 'assistant', answer). Send via Telegram."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Answer sent to user, conversation updated"
+        validationRule: "CP3 passed, message persisted, Telegram send successful"
+        failureSignal: "CP3 flags issue or Telegram error"
+        recoveryAction: "CP3 log-but-dont-block. Telegram retry once."
+        handoffIfNeeded: null
+
+    mainOutput: "Direct answer to simple query delivered to user"
+    secondaryOutputs:
+      - "query_classification_log: DIRECT with reason"
+      - "conversation_history updated"
+    DoD:
+      - User received relevant answer to their query
+      - Query handled without unnecessary delegation
+      - CP1/CP3 applied
+      - Conversation history updated
+    qaChecklist:
+      - Answer is relevant to the question asked
+      - Response is concise (chat format, not essay)
+      - No unnecessary delegation occurred
+      - Response time < 5s
+    raci:
+      responsible: "pristino-orchestrator"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "response_time_p95: <5s"
+      - "direct_resolution_rate: >= 90% of simple queries resolved without delegation"
+      - "relevance_score: answer addresses the actual question"
+    cadence: "Per-request (when query classified as simple)"
+    errorHandling: "LLM failure: Groq -> OpenRouter fallback. Both fail: honest error message."
+    fallbackRoute: "Delegate to specialist if direct answer is insufficient"
+    escalationRoute: "If query is actually complex: re-route to delegation skill"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 3: Clarification Request
+  # ---------------------------------------------------------------------------
+  - id: clarification-request
+    title: Clarification Request
+    objective: Ask the user for additional information when a request is ambiguous or incomplete
+    trigger: "Message classified as ambiguous, or delegation cannot proceed without more info"
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Input sanitized through CP1
+      - Request determined to be ambiguous or incomplete
+    inputs:
+      - "userMessage: string (ambiguous request)"
+      - "conversationHistory: Message[] (for context)"
+      - "ambiguityReason: string (what is unclear)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize ambiguous input
+        desc: Apply CP1 to the ambiguous message and preserve it for analysis.
+        whyThisMatters: Even ambiguous messages must be security-validated before processing.
+        inputNeeded: "Raw user message from Telegram"
+        actionInstruction: "Call sanitizeInput(userMessage). Store cleaned version for ambiguity analysis."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized message string"
+        validationRule: "cleaned.length > 0"
+        failureSignal: "sanitizeInput returns empty"
+        recoveryAction: "Ask generic clarification: 'Could you provide more details about what you need?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Identify ambiguity type
+        desc: Classify what type of clarification is needed (scope, domain, intent, or missing parameters).
+        whyThisMatters: Specific clarification questions get better responses than vague prompts for more info.
+        inputNeeded: "Sanitized message, conversation history, available agent domains"
+        actionInstruction: "Call llm.chat() with ambiguity classification prompt (CP2-secured)."
+        promptToUse: |
+          Analyze this message and identify what clarification is needed.
+          Categories:
+          - SCOPE: request is too broad, need to narrow down
+          - DOMAIN: unclear which area (code, analysis, writing, etc.)
+          - INTENT: unclear what the user wants done (analyze? create? fix?)
+          - PARAMS: missing specific parameters (which file? what format? what timeframe?)
+
+          Respond with: category and a specific clarifying question.
+
+          Conversation context: {{recentHistory}}
+          User message: {{userMessage}}
+        expectedOutput: "AmbiguityAnalysis { category, clarifyingQuestion }"
+        validationRule: "category is one of SCOPE/DOMAIN/INTENT/PARAMS and clarifyingQuestion is a specific question"
+        failureSignal: "LLM fails or returns generic rather than specific clarification"
+        recoveryAction: "Default to generic: 'Could you tell me more about what you need?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate clarification question
+        desc: Formulate a user-friendly clarification question that guides the user toward a complete request.
+        whyThisMatters: Well-crafted questions reduce back-and-forth and help users articulate their needs.
+        inputNeeded: "AmbiguityAnalysis with category and suggested question, user language"
+        actionInstruction: "Call llm.chat() with clarification generation prompt (CP2-secured)."
+        promptToUse: |
+          You are Pristino. You need clarification from the user.
+          Ambiguity type: {{category}}
+          Suggested question: {{clarifyingQuestion}}
+
+          Generate a friendly, specific clarification question.
+          Rules:
+          - One question only (do not overwhelm)
+          - Offer examples or options when possible
+          - Match the user's language
+          - Keep it short (1-2 sentences)
+
+          User's original message: {{userMessage}}
+        expectedOutput: "Friendly clarification question string"
+        validationRule: "Response is a question (ends with ?) and is specific to the ambiguity"
+        failureSignal: "Response is not a question or is too generic"
+        recoveryAction: "Use the raw clarifyingQuestion from step 2 as fallback"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Deliver clarification and set pending
+        desc: Send the clarification question, mark conversation as pending clarification, and persist state.
+        whyThisMatters: Tracking clarification state ensures the next user message is treated as a response, not a new request.
+        inputNeeded: "Clarification question, userId, ambiguity category"
+        actionInstruction: "validateOutput(question). memory.addMessage(userId, 'assistant', question). Set contextUpdate.clarificationPending = true. Send via Telegram."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Clarification question sent, conversation state marked as pending"
+        validationRule: "CP3 passed, message persisted, clarificationPending flag set, Telegram sent"
+        failureSignal: "Telegram error or state persistence failure"
+        recoveryAction: "Retry Telegram once. If state fails to persist, handle next message as new request."
+        handoffIfNeeded: null
+
+    mainOutput: "Specific clarification question sent to user"
+    secondaryOutputs:
+      - "ambiguity_log: category and original message"
+      - "clarification_pending flag set in conversation context"
+    DoD:
+      - User received a specific, actionable clarification question
+      - Conversation state marked as pending clarification
+      - Ambiguity type logged
+      - CP1/CP3 applied
+    qaChecklist:
+      - Question is specific (not generic)
+      - Question addresses the identified ambiguity
+      - Only one question asked (not a list)
+      - Language matches user language
+    raci:
+      responsible: "pristino-orchestrator"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "clarification_resolution_rate: >= 80% of clarifications lead to actionable follow-up"
+      - "response_time_p95: <5s"
+      - "single_question_rate: 100% of clarifications ask exactly one question"
+    cadence: "Per-request (when ambiguity detected)"
+    errorHandling: "LLM failure: use generic clarification question"
+    fallbackRoute: "Generic: 'Could you provide more details about what you need?'"
+    escalationRoute: "If 3+ clarification rounds: suggest user rephrase from scratch"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 4: Context Maintenance
+  # ---------------------------------------------------------------------------
+  - id: context-maintenance
+    title: Context Maintenance
+    objective: Maintain conversational continuity by tracking topics, references, and pending states
+    trigger: "Every user message (runs as pre-processing step for conversation skill)"
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Conversation history accessible in SQLite
+    inputs:
+      - "userMessage: string (current message)"
+      - "conversationHistory: Message[] (last 20 messages)"
+      - "currentContext: { lastTopic?, clarificationPending?, referencedEntities? }"
+    steps:
+      - stepNumber: 1
+        title: Load conversation context
+        desc: Retrieve the current conversation context including topic tracking and pending states.
+        whyThisMatters: Without context loading, every message is treated in isolation, breaking conversational flow.
+        inputNeeded: "userId for context lookup"
+        actionInstruction: "Query SQLite for conversation context: last topic, clarification pending flag, referenced entities. Load last 20 messages."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ConversationContext object with all tracked state"
+        validationRule: "Context object loaded with at least conversationHistory array (may be empty for new users)"
+        failureSignal: "SQLite query fails or returns corrupted data"
+        recoveryAction: "Initialize empty context: { lastTopic: null, clarificationPending: false, referencedEntities: [] }"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Detect context signals
+        desc: Analyze the current message for references to prior topics, pronouns, and continuation signals.
+        whyThisMatters: Detecting that-references and continuations prevents the bot from losing thread of conversation.
+        inputNeeded: "Current message, conversation context, recent history"
+        actionInstruction: "Call llm.chat() with context analysis prompt (CP2-secured). Quick classification call."
+        promptToUse: |
+          Analyze this message for conversational context signals:
+          1. Does it reference a prior topic? (pronouns like "it", "that", "the one")
+          2. Is it a follow-up to a pending clarification?
+          3. Does it introduce a new topic?
+          4. Are there any entity references that need resolution?
+
+          Respond as JSON: { isFollowUp, isNewTopic, resolvedReferences, newTopic? }
+
+          Last topic: {{lastTopic}}
+          Clarification pending: {{clarificationPending}}
+          Recent messages: {{recentMessages}}
+          Current message: {{userMessage}}
+        expectedOutput: "ContextSignals { isFollowUp, isNewTopic, resolvedReferences, newTopic? }"
+        validationRule: "isFollowUp and isNewTopic are boolean, resolvedReferences is array"
+        failureSignal: "LLM fails or returns unparseable JSON"
+        recoveryAction: "Default to isNewTopic=true (safe default: treat as fresh message)"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Update conversation context
+        desc: Persist updated context to SQLite including new topic, resolved references, and cleared flags.
+        whyThisMatters: Accurate context persistence is the foundation for multi-turn conversation quality.
+        inputNeeded: "ContextSignals from analysis, current context, userId"
+        actionInstruction: "Update SQLite context: set lastTopic if new, clear clarificationPending if follow-up, update referencedEntities."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Updated ConversationContext persisted to SQLite"
+        validationRule: "Context written successfully, all fields consistent with ContextSignals"
+        failureSignal: "SQLite write fails"
+        recoveryAction: "Log warning, continue with in-memory context only (will be lost on restart)"
+        handoffIfNeeded: null
+
+    mainOutput: "Updated conversation context available for current request processing"
+    secondaryOutputs:
+      - "context_update_event logged"
+      - "topic_change_log if topic switched"
+    DoD:
+      - Conversation context accurately reflects current state
+      - Follow-ups correctly linked to prior messages
+      - New topics tracked
+      - Clarification flags managed
+    qaChecklist:
+      - Follow-up messages correctly reference prior topic
+      - New topics correctly identified and tracked
+      - Clarification pending flag cleared on follow-up
+      - Context update takes < 2s
+    raci:
+      responsible: "pristino-orchestrator"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "context_accuracy: follow-ups correctly linked >= 90%"
+      - "context_update_latency_p95: <2s"
+      - "topic_tracking_accuracy: new topics detected >= 95%"
+    cadence: "Per-request (pre-processing step for every conversation)"
+    errorHandling: "SQLite failure: use in-memory context for current request"
+    fallbackRoute: "Treat every message as new topic (safe degradation)"
+    escalationRoute: "Persistent SQLite failures escalate to self-diagnosis skill"
+
+# ── Gap-Closing: 10× Quality Enhancement ──
+
+assumptions:
+  - "Conversation context persists across messages within a thread. Thread boundaries define context scope."
+  - "Topic detection is heuristic-based. Accuracy ≥95% for clear topic shifts, lower for subtle drift."
+  - "Follow-up messages within 5 minutes of the same topic are automatically linked. Beyond 5 minutes, new topic detection triggers."
+  - "Memory backend is Firestore in production and in-memory fallback in development."
+
+limits:
+  - "Cannot maintain context across different platforms (Telegram thread ≠ web session). Context is per-channel, per-thread."
+  - "Cannot detect sarcasm, irony, or implicit topic changes. Detection is keyword and timing-based."
+  - "Maximum conversation history window: last 20 messages. Beyond that, older messages are summarized, not replayed."
+  - "Cannot handle multi-party conversations where multiple users interact in the same thread simultaneously."
+
+edge_cases:
+  - scenario: "User sends two unrelated messages in rapid succession (<10s apart)."
+    handling: "Treat as same topic by default (rapid-fire belongs to same context). If second message is clearly unrelated (different language, different domain), split into new topic."
+  - scenario: "User returns to a topic from 3 days ago without explicit reference."
+    handling: "If keyword overlap >70% with a recent topic, link them. Otherwise, treat as new topic with similar content."
+  - scenario: "Conversation context corrupts (database failure mid-write)."
+    handling: "Fall back to in-memory context for current request. Log the corruption for self-diagnosis."
+  - scenario: "User switches languages mid-conversation."
+    handling: "Track as same topic. Language switch does not constitute a topic change."
+
+trade_offs:
+  - decision: "Last-20-message window over full conversation replay."
+    justification: "Full replay exceeds token limits and adds latency. 20 messages provide sufficient context for 95% of follow-ups."
+  - decision: "Heuristic topic detection over ML-based classification."
+    justification: "Heuristics are fast, deterministic, and auditable. ML adds latency and non-determinism for marginal accuracy gains."
+  - decision: "Automatic follow-up linking (5-min window) over explicit user tagging."
+    justification: "Users rarely tag follow-ups explicitly. Automatic linking reduces friction while accepting occasional mis-links."
+
+evaluation:
+  acceptance_criteria:
+    - "Follow-ups correctly linked to prior topics ≥90% of the time."
+    - "New topics correctly identified ≥95% of the time."
+    - "Context update latency <2s (P95)."
+    - "In-memory fallback activates transparently on database failure."
+  success_metrics:
+    - "Context accuracy: follow-ups correctly linked ≥90%."
+    - "Topic tracking accuracy: new topics detected ≥95%."
+    - "Context update latency P95: <2s."

@@ -1,0 +1,608 @@
+id: comparison
+name: Comparison
+purpose: >
+  Compare multiple elements identifying pros, cons, trade-offs, and relative
+  strengths to support informed decision-making.
+businessValue: >
+  Clear multi-criteria comparison for decision-making with transparent
+  methodology and balanced assessment of all options.
+triggerTypes:
+  - user_message
+owningAgent: analyst
+inputs:
+  - "options: string[] — the items/options to compare (min 2)"
+  - "comparisonType: string — binary | multi-option | feature-matrix | weighted"
+  - "criteria: string[] — optional evaluation criteria (auto-generated if absent)"
+  - "weights: object — optional criteria weights for weighted comparison"
+outputs:
+  - "comparisonReport: object — structured comparison with per-option analysis"
+  - "comparisonTable: object — tabular comparison matrix"
+  - "recommendation: string — brief recommendation based on comparison results"
+dependencies:
+  - "llm-chat — LLM inference for comparative analysis"
+  - "security.ts — CP1/CP2/CP3 checkpoints"
+toolUsage:
+  - get_current_time
+memoryReadsWrites:
+  reads:
+    - "Delegated task context from orchestrator"
+  writes: []
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - comparison_completed
+  - validation_failed
+  - fallback_triggered
+failureHandling:
+  - "Fewer than 2 options provided: return error requesting minimum 2 options"
+  - "Options too dissimilar to compare: note limitation, attempt comparison on available dimensions"
+  - "Criteria not specified: auto-generate reasonable criteria with justification"
+  - "LLM timeout: retry once then return partial comparison with disclaimer"
+interoperabilityContract:
+  inputType: "ComparisonRequest { options: string[], comparisonType: string, criteria?: string[], weights?: object }"
+  outputType: "ComparisonResult { report: object, table: object, recommendation: string, metadata: object }"
+wowCriteria:
+  - "Comparison reveals non-obvious trade-offs between options"
+  - "Criteria are perfectly calibrated to the decision context"
+  - "Table format makes differences immediately scannable"
+  - "Recommendation is nuanced with conditional advice"
+safeCriteria:
+  - "Same criteria applied fairly to all options"
+  - "No option unfairly favored or disadvantaged"
+  - "Trade-offs explicitly stated, not hidden"
+  - "Output passes CP3 validation without flags"
+
+workflows:
+  - id: binary-comparison
+    title: Binary comparison
+    objective: Compare two options head-to-head across relevant criteria with clear winner assessment
+    trigger: "comparisonType === 'binary' or exactly 2 options provided"
+    designRationale: >
+      Structured comparison with explicit criteria ensures reproducibility and
+      enables downstream synthesis. Free-form analysis lacks traceability.
+    timeoutMs: 15000
+    preconditions:
+      - "Exactly 2 options provided and non-empty"
+      - "Input sanitized via CP1"
+    inputs:
+      - "options: string[2] — the two items to compare"
+      - "criteria: string[] — optional evaluation criteria"
+    steps:
+      - stepNumber: 1
+        title: Sanitize comparison inputs
+        desc: Apply CP1 security checkpoint to both option descriptions and any criteria text.
+        whyThisMatters: Prevents prompt injection from reaching the comparison pipeline through crafted option names.
+        inputNeeded: "Raw options array and criteria from the delegated task"
+        actionInstruction: "Call sanitizeInput() on each option string and each criterion. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized options[2] and criteria[] with all control characters stripped"
+        validationRule: "Both options are non-empty after sanitization, safe === true for all inputs"
+        failureSignal: "Either option is empty after sanitization or safe === false"
+        recoveryAction: "Return error to orchestrator: 'One or both options could not be sanitized. Please provide clean option descriptions.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Establish comparison criteria
+        desc: If criteria not provided, generate appropriate criteria based on the option domain. If provided, validate and enrich them.
+        whyThisMatters: Fair comparison requires explicit, relevant criteria — implicit criteria introduce hidden bias.
+        inputNeeded: "Sanitized options from step 1, optional criteria"
+        actionInstruction: "Call llm.chat() with the criteria generation prompt. Parse criteria list."
+        promptToUse: |
+          You are a comparison criteria specialist. Given these two options to compare:
+          Option A: {{optionA}}
+          Option B: {{optionB}}
+
+          {{#if criteria}}
+          The user specified these criteria: {{criteria}}
+          Validate these are appropriate and add any critical missing criteria.
+          {{else}}
+          No criteria were specified. Generate 4-6 relevant comparison criteria for these options.
+          {{/if}}
+
+          For each criterion provide:
+          1. **Name**: Short label (2-4 words)
+          2. **Description**: What this criterion measures
+          3. **Why relevant**: Why this matters for this specific comparison
+          4. **Measurement**: How to assess (qualitative scale, numeric, boolean)
+
+          Ensure criteria are balanced — not biased toward either option.
+        expectedOutput: "ComparisonCriteria[] — array of { name, description, relevance, measurement } objects"
+        validationRule: "4-6 criteria returned, each with all 4 fields, no criterion inherently favors one option"
+        failureSignal: "Fewer than 3 criteria or criteria descriptions are vague"
+        recoveryAction: "Use default generic criteria: quality, cost, ease of use, reliability. Proceed with note."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Execute head-to-head comparison
+        desc: Evaluate both options against each criterion with evidence, scoring, and trade-off identification.
+        whyThisMatters: This is the core comparison step producing the primary deliverable — fair, evidence-based assessment.
+        inputNeeded: "Sanitized options from step 1, ComparisonCriteria from step 2"
+        actionInstruction: "Call llm.chat() with the binary comparison prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst performing a binary comparison.
+
+          Option A: {{optionA}}
+          Option B: {{optionB}}
+
+          Criteria: {{criteria}}
+
+          For each criterion:
+          1. **Score Option A**: 1-10 with specific justification
+          2. **Score Option B**: 1-10 with specific justification
+          3. **Winner**: Which option is stronger on this criterion (or tie)
+          4. **Trade-off**: What you gain/lose by choosing the winner
+
+          After all criteria, provide:
+          - **Summary Table**: Criterion | Option A Score | Option B Score | Winner
+          - **Key Trade-offs**: The 2-3 most important trade-offs between the options
+          - **Overall Assessment**: Which option is stronger overall and in what contexts
+          - **Conditional Recommendation**: "Choose A if... Choose B if..."
+
+          Be objective and fair. Apply identical scrutiny to both options.
+        expectedOutput: "BinaryComparison { criteriaResults[], summaryTable, tradeoffs[], overallAssessment, conditionalRec }"
+        validationRule: "All criteria scored for both options, scores 1-10, summary table complete, conditional recommendation present"
+        failureSignal: "Missing scores for any criterion, or recommendation lacks conditional framing"
+        recoveryAction: "Re-prompt for missing criteria scores. If fails, return partial comparison with scored criteria only."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, format comparison into tabular deliverable with metadata and timestamp.
+        whyThisMatters: Ensures the comparison is safe, fair, and properly formatted before reaching the user.
+        inputNeeded: "BinaryComparison from step 3"
+        actionInstruction: "Call validateOutput(comparison) from security.ts. Add timestamp via get_current_time. Format final output."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ComparisonResult { report: BinaryComparison, table: SummaryTable, recommendation: string, metadata: object }"
+        validationRule: "CP3 passes, table has rows for all criteria, recommendation is non-empty"
+        failureSignal: "CP3 flags output or table formatting fails"
+        recoveryAction: "Log CP3 warning, strip flagged content, deliver sanitized comparison"
+        handoffIfNeeded: null
+
+    mainOutput: "Head-to-head comparison report with per-criterion scores, summary table, trade-offs, and conditional recommendation"
+    secondaryOutputs:
+      - "criteria_rationale: why each criterion was selected"
+      - "score_justifications: detailed reasoning for each score"
+      - "comparison_event_log: timestamps and step metrics"
+    DoD:
+      - "Both options scored on all criteria"
+      - "Summary table complete with all criteria and scores"
+      - "Trade-offs explicitly identified"
+      - "Conditional recommendation provided"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Same criteria applied equally to both options"
+      - "Scores are justified with specific reasoning"
+      - "No unfair bias toward either option"
+      - "Trade-offs are genuine (not fabricated advantages)"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "criteria_fairness: identical scrutiny applied to both options"
+      - "score_justification_rate: 100% of scores have reasoning"
+      - "response_time_p95: < 15s"
+    cadence: "Per-request (when binary comparison is requested)"
+    errorHandling: "If options are too dissimilar, note the limitation and compare on available common dimensions"
+    fallbackRoute: "Return simple pros/cons list for each option without scoring"
+    escalationRoute: "Report to orchestrator that comparison requires domain expertise beyond analyst scope"
+
+  - id: multi-option-comparison
+    title: Multi-option comparison
+    objective: Compare 3 or more options across shared criteria with ranking and trade-off analysis
+    trigger: "comparisonType === 'multi-option' or more than 2 options provided"
+    preconditions:
+      - "3 or more options provided and non-empty"
+      - "Input sanitized via CP1"
+    inputs:
+      - "options: string[] — 3+ items to compare"
+      - "criteria: string[] — optional evaluation criteria"
+    steps:
+      - stepNumber: 1
+        title: Sanitize comparison inputs
+        desc: Apply CP1 security checkpoint to all option descriptions and criteria text.
+        whyThisMatters: Multiple options increase the attack surface — each must be individually sanitized.
+        inputNeeded: "Raw options array and criteria from the delegated task"
+        actionInstruction: "Call sanitizeInput() on each option string and criterion. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized options[] and criteria[] with all control characters stripped"
+        validationRule: "All options are non-empty after sanitization, minimum 3 options remain"
+        failureSignal: "Fewer than 3 options remain after sanitization"
+        recoveryAction: "If exactly 2 remain, redirect to binary-comparison workflow. If fewer, return error."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Generate comparison framework
+        desc: Establish shared criteria and scoring methodology appropriate for multi-option comparison.
+        whyThisMatters: Multi-option comparison requires a consistent framework — ad hoc criteria produce unfair results.
+        inputNeeded: "Sanitized options from step 1, optional criteria"
+        actionInstruction: "Call llm.chat() with the framework generation prompt."
+        promptToUse: |
+          You are a comparison framework specialist. Given {{optionCount}} options to compare:
+          {{#each options}}
+          - Option {{@index}}: {{this}}
+          {{/each}}
+
+          {{#if criteria}}
+          User-specified criteria: {{criteria}}
+          Validate and supplement these criteria for a multi-option comparison.
+          {{else}}
+          Generate 5-7 comparison criteria that apply equally to all options.
+          {{/if}}
+
+          For each criterion:
+          1. **Name**: Short label
+          2. **Description**: What it measures
+          3. **Scale**: How to score (1-10 with anchor descriptions)
+          4. **Equal applicability**: Confirm this criterion applies to ALL options
+
+          Ensure no criterion is irrelevant to any option (that would create unfair comparisons).
+        expectedOutput: "ComparisonFramework { criteria: CriterionDef[], optionCount: number, methodology: string }"
+        validationRule: "5-7 criteria, each applicable to all options, scale anchors defined"
+        failureSignal: "Criteria not applicable to all options or fewer than 4 criteria"
+        recoveryAction: "Remove non-universal criteria and supplement with generic ones. Minimum 4 required."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Score all options
+        desc: Evaluate every option against every criterion with justification, producing a complete comparison matrix.
+        whyThisMatters: The complete matrix is the core deliverable — partial scoring makes the comparison unreliable.
+        inputNeeded: "ComparisonFramework from step 2, sanitized options from step 1"
+        actionInstruction: "Call llm.chat() with the multi-option scoring prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst performing a multi-option comparison.
+
+          Options:
+          {{#each options}}
+          {{@index}}. {{this}}
+          {{/each}}
+
+          Criteria and scale:
+          {{criteria}}
+
+          For each option, score every criterion (1-10) with a brief justification (1-2 sentences).
+
+          Present results as:
+          1. **Comparison Matrix**: Options (rows) x Criteria (columns) with scores
+          2. **Per-Option Summary**: 2-3 sentence assessment of each option's profile
+          3. **Trade-off Map**: Key trade-offs between the top options
+          4. **Ranking**: Order options by total score with percentage of maximum possible
+          5. **Context-Dependent Pick**: "Best for X: Option Y. Best for Z: Option W."
+
+          Apply identical scrutiny to all options. Declare if any option lacks sufficient information for fair scoring.
+        expectedOutput: "MultiOptionComparison { matrix, optionSummaries[], tradeoffs[], ranking[], contextPicks[] }"
+        validationRule: "Matrix has scores for all option-criterion pairs, ranking sums match matrix, all options ranked"
+        failureSignal: "Missing scores in matrix, ranking order inconsistent with scores, or fewer than 3 options ranked"
+        recoveryAction: "Re-prompt for missing scores. If persistent, return matrix with gaps noted and partial ranking."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, format multi-option comparison with matrix, ranking, and recommendations.
+        whyThisMatters: Ensures fairness and safety of the comparison before delivery to the user.
+        inputNeeded: "MultiOptionComparison from step 3"
+        actionInstruction: "Call validateOutput(comparison) from security.ts. Add timestamp via get_current_time. Format final output."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ComparisonResult { report: MultiOptionComparison, table: ComparisonMatrix, recommendation: string, metadata: object }"
+        validationRule: "CP3 passes, matrix is complete, ranking is consistent with scores"
+        failureSignal: "CP3 flags output or matrix formatting fails"
+        recoveryAction: "Log CP3 warning, strip flagged content, deliver sanitized comparison"
+        handoffIfNeeded: null
+
+    mainOutput: "Multi-option comparison matrix with scores, rankings, trade-off analysis, and context-dependent recommendations"
+    secondaryOutputs:
+      - "comparison_matrix: complete scores table"
+      - "option_profiles: per-option strength/weakness summaries"
+      - "ranking_methodology: how scores were computed"
+    DoD:
+      - "All options scored on all criteria"
+      - "Complete comparison matrix generated"
+      - "Ranking computed and consistent with matrix scores"
+      - "Context-dependent recommendations provided"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "All options evaluated with equal depth"
+      - "No option scored without justification"
+      - "Ranking math is correct (totals match)"
+      - "Trade-offs are substantive, not trivial"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "matrix_completeness: 100% cells filled"
+      - "fairness_check: score justification for every cell"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when multi-option comparison is requested)"
+    errorHandling: "If an option lacks sufficient detail, score with available info and flag uncertainty"
+    fallbackRoute: "Return simplified ranking with top-line scores only"
+    escalationRoute: "Report to orchestrator if options span incompatible domains"
+
+  - id: feature-matrix-comparison
+    title: Feature matrix comparison
+    objective: Create a detailed feature-by-feature comparison matrix showing capability coverage across options
+    trigger: "comparisonType === 'feature-matrix'"
+    preconditions:
+      - "At least 2 options provided"
+      - "Options are feature-comparable (products, services, tools)"
+      - "Input sanitized via CP1"
+    inputs:
+      - "options: string[] — items to compare"
+      - "criteria: string[] — optional feature categories to evaluate"
+    steps:
+      - stepNumber: 1
+        title: Sanitize comparison inputs
+        desc: Apply CP1 security checkpoint to all option descriptions and feature criteria.
+        whyThisMatters: Prevents injection through crafted feature names or option descriptions.
+        inputNeeded: "Raw options and criteria from the delegated task"
+        actionInstruction: "Call sanitizeInput() on each option and criterion. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized options[] and criteria[] arrays"
+        validationRule: "All options non-empty after sanitization, minimum 2 options"
+        failureSignal: "Fewer than 2 options after sanitization"
+        recoveryAction: "Return error to orchestrator: 'Insufficient options for feature matrix comparison.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Identify feature dimensions
+        desc: Determine the complete set of features to evaluate across all options, organized by category.
+        whyThisMatters: A comprehensive feature list ensures the matrix covers all decision-relevant capabilities.
+        inputNeeded: "Sanitized options from step 1, optional criteria for feature categories"
+        actionInstruction: "Call llm.chat() with the feature identification prompt."
+        promptToUse: |
+          You are a feature analysis specialist. Given these options to compare:
+          {{#each options}}
+          - {{this}}
+          {{/each}}
+
+          {{#if criteria}}
+          Focus on these feature categories: {{criteria}}
+          {{else}}
+          Identify all relevant feature categories for comparing these options.
+          {{/if}}
+
+          For each feature category, list specific features to evaluate:
+          1. **Category name**: Broad grouping
+          2. **Features**: Specific capabilities within the category
+          3. **Assessment type**: For each feature, specify how to assess:
+             - present/absent (boolean)
+             - quality level (basic/standard/advanced/premium)
+             - capacity (numeric with unit)
+             - description (qualitative)
+
+          Aim for 15-25 total features across 3-6 categories.
+          Ensure every feature is applicable to all options being compared.
+        expectedOutput: "FeatureFramework { categories: { name, features: { name, assessmentType }[] }[] }"
+        validationRule: "3-6 categories with 15-25 total features, each feature has an assessment type"
+        failureSignal: "Fewer than 10 features or features not applicable to all options"
+        recoveryAction: "Supplement with generic capability features to reach minimum 10. Flag as limited."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Build feature matrix
+        desc: Evaluate each option on every feature, creating the complete feature-by-feature matrix.
+        whyThisMatters: The matrix is the primary deliverable — it must be complete and accurate for each cell.
+        inputNeeded: "FeatureFramework from step 2, sanitized options from step 1"
+        actionInstruction: "Call llm.chat() with the matrix building prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst building a feature comparison matrix.
+
+          Options:
+          {{#each options}}
+          {{@index}}. {{this}}
+          {{/each}}
+
+          Feature framework:
+          {{featureFramework}}
+
+          For each option and each feature, provide the assessment:
+          - Boolean features: Yes/No (with note if partial)
+          - Quality features: Basic/Standard/Advanced/Premium
+          - Capacity features: Numeric value with unit
+          - Description features: Brief factual description
+
+          Format as a clear matrix table.
+
+          After the matrix, provide:
+          1. **Feature coverage summary**: What percentage of features each option has
+          2. **Standout features**: Where one option clearly excels
+          3. **Critical gaps**: Features that are absent in options where they'd be expected
+          4. **Overall feature leader**: Which option has the strongest feature set and why
+        expectedOutput: "FeatureMatrix { matrix[][], coverageSummary, standoutFeatures[], criticalGaps[], leader }"
+        validationRule: "Matrix has values for all option-feature pairs, coverage percentages computed, leader identified"
+        failureSignal: "More than 10% of matrix cells empty or coverage not computed"
+        recoveryAction: "Fill empty cells with 'Unknown/Not assessed' and adjust coverage accordingly. Note data limitations."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, format the feature matrix for optimal readability and delivery.
+        whyThisMatters: Matrix formatting quality directly impacts usability — a messy matrix defeats the purpose.
+        inputNeeded: "FeatureMatrix from step 3"
+        actionInstruction: "Call validateOutput(matrix) from security.ts. Add timestamp via get_current_time. Format as table."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ComparisonResult { report: FeatureMatrix, table: FormattedMatrix, recommendation: string, metadata: object }"
+        validationRule: "CP3 passes, table is properly aligned, all cells populated"
+        failureSignal: "CP3 flags output or table alignment breaks"
+        recoveryAction: "Log CP3 warning, reformat as list-based comparison if table fails"
+        handoffIfNeeded: null
+
+    mainOutput: "Feature-by-feature comparison matrix with coverage analysis, standout features, and critical gaps"
+    secondaryOutputs:
+      - "feature_framework: categorized feature list with assessment types"
+      - "coverage_percentages: per-option feature coverage"
+      - "gap_analysis: missing features per option"
+    DoD:
+      - "Complete matrix with all option-feature cells filled"
+      - "Feature coverage percentages computed"
+      - "Standout features and critical gaps identified"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "All options assessed on identical features"
+      - "Assessment types are consistently applied"
+      - "No feature invented that doesn't apply to the domain"
+      - "Matrix is scannable and properly formatted"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "matrix_fill_rate: >= 95% of cells populated"
+      - "category_balance: no single category > 40% of total features"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when feature matrix comparison is requested)"
+    errorHandling: "If feature information is unavailable for an option, mark cells as 'Not assessed' with explanation"
+    fallbackRoute: "Return simplified feature checklist (present/absent only) without quality levels"
+    escalationRoute: "Report to orchestrator that feature data is insufficient for meaningful matrix"
+
+  - id: weighted-comparison
+    title: Weighted comparison
+    objective: Compare options using weighted criteria where each criterion's importance is quantified
+    trigger: "comparisonType === 'weighted' or weights object provided"
+    preconditions:
+      - "At least 2 options provided"
+      - "Weights provided or can be reasonably generated"
+      - "Input sanitized via CP1"
+    inputs:
+      - "options: string[] — items to compare"
+      - "criteria: string[] — evaluation criteria"
+      - "weights: object — criteria weights (0.0-1.0, must sum to 1.0)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize and validate inputs
+        desc: Apply CP1 checkpoint and validate weights sum to 1.0, options are non-empty, criteria are provided.
+        whyThisMatters: Weighted comparison requires mathematical correctness — invalid weights produce meaningless results.
+        inputNeeded: "Raw options, criteria, and weights from the delegated task"
+        actionInstruction: "Call sanitizeInput() on options and criteria. Validate weights object sums to 1.0 (tolerance 0.01)."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized inputs with validated weights summing to 1.0"
+        validationRule: "All inputs sanitized, weights sum is in [0.99, 1.01], each weight in [0.0, 1.0]"
+        failureSignal: "Weights don't sum to ~1.0 or any weight is negative"
+        recoveryAction: "Normalize weights to sum to 1.0 and log adjustment. If no weights provided, generate equal weights."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Establish weighted framework
+        desc: Generate or validate criteria with weights, explain the weighting rationale, and set scoring methodology.
+        whyThisMatters: Transparent weighting methodology is essential — hidden weight choices manipulate outcomes.
+        inputNeeded: "Sanitized options and criteria from step 1, weights (provided or to be generated)"
+        actionInstruction: "Call llm.chat() with the weighted framework prompt."
+        promptToUse: |
+          You are a weighted comparison specialist. Set up a weighted comparison framework.
+
+          Options to compare:
+          {{#each options}}
+          - {{this}}
+          {{/each}}
+
+          {{#if weights}}
+          User-specified criteria and weights:
+          {{#each criteria}}
+          - {{this}}: weight {{lookup ../weights @index}}
+          {{/each}}
+          Validate these weights are reasonable. Flag if any weight seems disproportionate for the context.
+          {{else}}
+          Criteria: {{criteria}}
+          Generate appropriate weights (summing to 1.0) with justification for each.
+          {{/if}}
+
+          Provide:
+          1. **Criteria with weights**: Each criterion, its weight, and why that weight
+          2. **Scoring scale**: 1-10 with anchor descriptions for each criterion
+          3. **Weighted score formula**: Explain how final scores will be computed
+          4. **Sensitivity note**: Which criteria, if re-weighted, would most change the outcome
+        expectedOutput: "WeightedFramework { criteriaWeights[], scoringScale, formula, sensitivityNotes }"
+        validationRule: "Weights sum to 1.0, each criterion has weight justification, scoring scale defined"
+        failureSignal: "Weights don't sum to 1.0 or justifications are missing"
+        recoveryAction: "Normalize weights and use generic justifications. Proceed with disclaimer."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Score and compute weighted results
+        desc: Score each option on each criterion, compute weighted scores, and produce the final ranking.
+        whyThisMatters: The weighted computation is the core value — it transforms subjective criteria into quantified comparison.
+        inputNeeded: "WeightedFramework from step 2, sanitized options from step 1"
+        actionInstruction: "Call llm.chat() with the weighted scoring prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst performing weighted comparison.
+
+          Options:
+          {{#each options}}
+          {{@index}}. {{this}}
+          {{/each}}
+
+          Weighted criteria:
+          {{criteriaWeights}}
+
+          Scoring scale: {{scoringScale}}
+
+          For each option:
+          1. Score every criterion (1-10) with brief justification
+          2. Compute weighted score per criterion: raw_score * weight
+          3. Sum weighted scores for total weighted score
+          4. Compute percentage of maximum possible weighted score
+
+          Present:
+          - **Scoring Table**: Option | Criterion1 (raw/weighted) | ... | Total | %Max
+          - **Ranking**: Options ordered by total weighted score
+          - **Margin Analysis**: How close are the top options? Is the winner decisive?
+          - **Sensitivity Check**: Would changing any single weight by 20% change the ranking?
+          - **Recommendation**: Best option overall and contextual notes
+
+          Show all math transparently. The user should be able to verify every computation.
+        expectedOutput: "WeightedComparison { scoringTable, ranking[], marginAnalysis, sensitivityCheck, recommendation }"
+        validationRule: "All weighted scores correctly computed (raw * weight), totals match, ranking consistent with totals"
+        failureSignal: "Math errors in weighted scores, totals don't match sum of weighted scores"
+        recoveryAction: "Recompute weighted scores mechanically from raw scores and weights. Flag any discrepancies."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, verify mathematical correctness, and format weighted comparison for delivery.
+        whyThisMatters: Mathematical accuracy is critical for weighted comparisons — errors undermine trust and decisions.
+        inputNeeded: "WeightedComparison from step 3"
+        actionInstruction: "Call validateOutput(comparison) from security.ts. Verify math programmatically. Add timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ComparisonResult { report: WeightedComparison, table: ScoringTable, recommendation: string, metadata: object }"
+        validationRule: "CP3 passes, all arithmetic verified correct, sensitivity analysis present"
+        failureSignal: "CP3 flags output or arithmetic inconsistencies found"
+        recoveryAction: "Correct arithmetic errors mechanically and deliver. Log discrepancy for review."
+        handoffIfNeeded: null
+
+    mainOutput: "Weighted comparison with transparent scoring table, weighted totals, ranking, sensitivity analysis, and recommendation"
+    secondaryOutputs:
+      - "weight_justifications: reasoning for each criterion weight"
+      - "sensitivity_report: how weight changes affect ranking"
+      - "margin_analysis: closeness of top options"
+    DoD:
+      - "All options scored on all criteria with weights applied"
+      - "Weighted totals correctly computed and verified"
+      - "Ranking consistent with weighted totals"
+      - "Sensitivity analysis completed"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "All arithmetic is correct and verifiable"
+      - "Weights are justified and sum to 1.0"
+      - "Sensitivity analysis identifies real tipping points"
+      - "Recommendation accounts for margin between top options"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "arithmetic_accuracy: 100% of weighted scores correct"
+      - "weight_transparency: every weight has justification"
+      - "response_time_p95: < 20s"
+    cadence: "Per-request (when weighted comparison is requested)"
+    errorHandling: "If weights are unreasonable, flag concern and offer normalized alternative"
+    fallbackRoute: "Return unweighted multi-option comparison with equal weights"
+    escalationRoute: "Report to orchestrator if weighting methodology is contested"

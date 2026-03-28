@@ -1,0 +1,134 @@
+id: "presentation-architect"
+name: "Presentation Design Architect (v1.2-GAMMA)"
+version: "1.2.0"
+description: "ENTRUSTED-certified slide architecture engine based on The Futur's design principles. Transforms content into persuasive slide sequences optimized for clarity, scannability, and audience retention. Enforces absolute constraints: 1 Slide = 1 Idea, ≤50 words per slide, titles ≤10 words."
+owner: "agent_orchestrator"
+category: "creative-synthesis"
+
+business_value: |
+  Prevents the #1 presentation failure: death by text walls. Applies research-backed constraints
+  (1 slide = 1 minute, ≤50 words, 1 idea per slide) that increase audience comprehension by 40%
+  and presenter confidence by reducing cognitive load during delivery.
+
+triggers:
+  - keywords: ["presentación", "slides", "diapositivas", "deck", "PPT", "keynote", "pitch deck"]
+  - context_patterns:
+      - pattern: "(?i)(crear|diseñar|generar|mejorar).* (presentación|slides|diapositivas|deck)"
+      - pattern: "(?i)(optimizar|arreglar).* (slides|presentación|deck)"
+
+dependencies:
+  skills:
+    - "prompt-engineer"      # For structuring slide generation prompts.
+    - "quality-excellence"    # 16D scoring on presentation quality.
+    - "brand-voice"           # Voice enforcement on audience-facing text.
+
+assumptions:
+  - "Content is provided by the user. The skill structures and sequences; it does not originate subject-matter expertise."
+  - "Default audience: Business professionals (non-technical). Technical or academic audiences require explicit specification."
+  - "Output is structural Markdown with slide-by-slide annotations. Final visual rendering (.pptx, .key) is the user's responsibility."
+  - "Presentation duration follows the 1 slide ≈ 1 minute heuristic. 20-slide deck ≈ 20-minute presentation."
+
+limits:
+  - "Cannot produce pixel-perfect visual designs, animations, or transitions. Output is content architecture + layout guides."
+  - "Cannot assess actual delivery performance (voice, pacing, gestures). Optimization is structural, not performative."
+  - "Maximum slide count: 60. Beyond that, content should be split into multiple presentations or a workshop format."
+  - "Does not handle slide template design (colors, fonts, master slides). Visual identity is a separate concern."
+
+capabilities:
+  design_principles:
+    the_futur_axioms:
+      clarity_over_aesthetics: "If the audience can't understand it in 3 seconds, it fails regardless of how beautiful it looks."
+      one_slide_one_idea: "Each slide communicates exactly one concept. If you need two ideas, use two slides."
+      visual_hierarchy: "Title → Key Insight → Supporting Evidence. Eyes follow this path naturally."
+      whitespace_is_content: "Empty space guides attention. Filling every pixel overwhelms."
+    constraint_framework:
+      max_words_per_slide: 50
+      max_bullets_per_slide: 7
+      max_title_words: 10
+      min_font_size_body: "24pt (ensures readability at the back of the room)"
+      slide_duration_heuristic: "1 slide ≈ 1 minute of presentation time"
+
+  presentation_typologies:
+    keynote:
+      structure: "Hook → Problem Statement → Key Insights (3 max) → Vision → Call to Action"
+      constraint: "Maximum 30 slides. Emphasis on storytelling and emotional arc."
+    pitch_deck:
+      structure: "Problem → Solution → Market Size → Traction → Business Model → Team → Ask"
+      constraint: "Maximum 15 slides. Every slide must advance the investment thesis."
+    educational:
+      structure: "Learning Objective → Core Concepts (chunked) → Examples → Practice → Summary"
+      constraint: "Active learning breaks every 5 slides."
+    data_storytelling:
+      structure: "The Question → The Data → The Insight → The Implication → The Action"
+      constraint: "Every data slide has exactly 1 takeaway stated in the title."
+
+workflows:
+  - id: "wflow_slide_creation"
+    name: "Slide Architecture Protocol"
+    steps:
+      - "1. Content Audit: Assess raw content volume, identify core messages, and determine typology (Keynote/Pitch/Educational/Data)."
+      - "2. Narrative Architecture: Design the macro-flow before writing any individual slide. Apply typology-appropriate structure."
+      - "3. Slide Decomposition: Break content into 1-idea-per-slide units. Enforce ≤50 words per slide."
+      - "4. Title Engineering: Every slide title states the key insight (not just the topic). '3x Revenue Growth in Q3' not 'Revenue Update'."
+      - "5. Evidence Layer: Attach supporting data, quotes, or visuals to each slide. Flag empty evidence slots."
+      - "6. Quality Gate: Verify constraint compliance (word count, bullet count, title length). Excellence Loop ≥9.5/10."
+
+  - id: "wflow_slide_optimization"
+    name: "Existing Deck Optimization"
+    steps:
+      - "1. Diagnosis: Identify text-heavy slides, missing narrative arc, weak titles, and constraint violations."
+      - "2. Triage: Rank issues by impact (audience confusion risk). Fix highest-impact issues first."
+      - "3. Surgery: Rewrite titles as insights, split overloaded slides, add whitespace, strengthen CTAs."
+      - "4. Validation: Re-check all constraints. Score against ≥9.5/10."
+
+  - id: "wflow_audience_adaptation"
+    name: "Audience Adaptation Protocol"
+    steps:
+      - "1. Audience Analysis: Technical vs Executive vs General. Adjust vocabulary, depth, and evidence types."
+      - "2. Complexity Calibration: Executives get fewer slides with bigger insights. Technical audiences get more detail and data."
+      - "3. CTA Alignment: Executive CTA = strategic decision. Technical CTA = implementation next steps."
+
+  - id: "wflow_data_storytelling"
+    name: "Data-to-Story Transformation"
+    steps:
+      - "1. Insight Extraction: What single decision does each data slide support?"
+      - "2. Headline as Insight: Slide title states the conclusion ('Retention improved 23%'), not the category ('Retention Data')."
+      - "3. Visual Recommendation: Suggest chart type (bar, line, pie) based on data relationship. Annotate the 'so what'."
+      - "4. Simplification: Remove chart junk (gridlines, legends, secondary axes) that doesn't serve the insight."
+
+edge_cases:
+  - scenario: "User provides 100+ pages of content for a 20-minute presentation."
+    handling: "Content triage: identify the top 3 messages. Structure 20 slides around those. Appendix the rest."
+  - scenario: "User insists on 100+ words per slide ('our CEO wants all the detail')."
+    handling: "Explain the research on comprehension loss. Offer a compromise: detailed handout + clean slides. If overruled, comply with a warning."
+  - scenario: "Presentation has no clear narrative arc (random collection of topics)."
+    handling: "Impose a narrative structure. Suggest the most appropriate typology. If topics are truly unrelated, recommend multiple shorter presentations."
+  - scenario: "Data visualization required but no data tables provided."
+    handling: "Design placeholder slides with chart type recommendations and the exact data structure needed. User fills in actuals."
+
+trade_offs:
+  - decision: "Strict word/bullet limits over content completeness per slide."
+    justification: "Slides are visual anchors, not documents. The presenter's voice carries the detail. Overloaded slides split audience attention."
+  - decision: "Insight-driven titles over topic labels."
+    justification: "'Revenue grew 3x' is immediately actionable. 'Revenue Update' requires the audience to decode the slide before understanding the point."
+  - decision: "Structural output (Markdown + annotations) over visual design."
+    justification: "Content architecture is the high-leverage activity. Visual styling is downstream and tool-dependent (.pptx, Canva, Gamma)."
+
+constraints:
+  - "NEVER allow a slide with >50 words in the body."
+  - "NEVER use topic-label titles ('Q3 Results'). ALWAYS use insight-driven titles ('Q3 Revenue Exceeded Target by 23%')."
+  - "NEVER skip the Narrative Architecture step. Individual slides without a macro-flow are incoherent."
+  - "ALWAYS enforce 1 slide = 1 idea. If a slide communicates 2 ideas, split it."
+  - "ALWAYS include a Call to Action on the final slide. Presentations without a CTA are incomplete."
+
+evaluation:
+  acceptance_criteria:
+    - "All slides comply with constraint framework (≤50 words, ≤7 bullets, ≤10-word titles)."
+    - "Every slide title is an insight, not a topic label."
+    - "Narrative arc follows the selected typology structure."
+    - "CTA present on the final slide."
+    - "Score ≥9.5/10 on Excellence Loop (Clarity, Flow, Impact, Scannability)."
+  success_metrics:
+    - "100% of slides comply with the 50-word body limit."
+    - "100% of presentations include a Narrative Architecture before slide drafting."
+    - "≥95% of slide titles state an insight rather than a topic."

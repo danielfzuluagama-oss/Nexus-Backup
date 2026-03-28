@@ -1,0 +1,540 @@
+id: completeness-check
+name: Completeness Check
+purpose: Verify that outputs meet all specified requirements and cover all necessary aspects of the original request, identifying gaps and missing elements.
+businessValue: Prevents delivery of incomplete outputs that would require follow-up rounds, saving user time and ensuring quality by catching omissions before delivery.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: validator
+
+inputs:
+  - "output: string - The output to check for completeness"
+  - "requirements: string[] - Requirements to check against"
+  - "definitionOfDone: string[] - Completion criteria if available"
+  - "originalQuery: string - The original user request"
+
+outputs:
+  - "completenessResult: CompletenessResult - Pass/Fail/Partial with details"
+  - "coverageMap: CoverageMap - Requirement-to-output mapping"
+  - "gaps: Gap[] - Identified gaps with priority"
+  - "completenessScore: number - Completeness percentage 0-100"
+
+dependencies:
+  - "agents/validator/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task with output and requirements from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - requirement_met
+  - requirement_unmet
+  - gap_identified
+  - completeness_scored
+  - validation_failed
+  - fallback_triggered
+
+failureHandling:
+  - "No requirements provided: Derive requirements from the original query"
+  - "Requirements are ambiguous: Apply reasonable interpretation and document it"
+  - "Output is empty: Immediate Fail with completeness score 0"
+  - "Requirements exceed scope of output type: Note scope mismatch"
+
+interoperabilityContract:
+  inputType: "CompletenessRequest { output: string, requirements?: string[], definitionOfDone?: string[], originalQuery: string }"
+  outputType: "CompletenessResult { completenessResult: object, coverageMap: CoverageMap, gaps: Gap[], completenessScore: number }"
+
+wowCriteria:
+  - "Coverage map links each requirement to specific output sections"
+  - "Gaps are prioritized by importance to the user's goal"
+  - "Missing elements are described precisely enough to guide fix"
+  - "Completeness score accurately reflects the user experience of receiving the output"
+
+safeCriteria:
+  - "No false completeness — honestly report what is missing"
+  - "Requirements not fabricated or inflated"
+  - "Gaps are genuine omissions, not style preferences"
+  - "Score reflects actual coverage, not optimistic interpretation"
+
+workflows:
+  - id: requirements-coverage-check
+    title: Requirements Coverage Check
+    objective: Verify that every specified requirement is addressed in the output, producing a requirement-by-requirement coverage report
+    trigger: "requirements provided explicitly"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Explicit requirements list provided"
+      - "Output to validate is non-empty"
+    inputs:
+      - "output: string (sanitized)"
+      - "requirements: string[] (explicit list)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Parse and classify requirements
+        desc: Sanitize inputs, parse each requirement, and classify as mandatory, important, or nice-to-have for priority assessment.
+        whyThisMatters: Requirement classification ensures that missing mandatory items are flagged as critical while missing nice-to-haves get appropriate lower severity.
+        inputNeeded: "Requirements list and original query for context"
+        actionInstruction: "Call sanitizeInput() on all inputs. Call llm.chat() with requirement parsing prompt."
+        promptToUse: |
+          You are the Validator agent parsing requirements for completeness checking.
+
+          Requirements:
+          {{requirements}}
+          Original query: {{originalQuery}}
+
+          For each requirement:
+          1. Restate it as a testable criterion
+          2. Classify priority: mandatory (must have) / important (should have) / nice-to-have (could have)
+          3. Define what "met" means (observable evidence in the output)
+          4. Note if the requirement is ambiguous and how you interpret it
+
+          Ensure no requirement is duplicated or conflated.
+        expectedOutput: "ParsedRequirements { requirements: ParsedRequirement[], mandatoryCount: number, importantCount: number, niceToHaveCount: number }"
+        validationRule: "Every input requirement parsed and classified, no requirements lost"
+        failureSignal: "Requirements missing from parsed list or all classified identically"
+        recoveryAction: "Classify all as mandatory if priority cannot be determined"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Check coverage per requirement
+        desc: For each requirement, search the output for evidence of coverage and determine the coverage status.
+        whyThisMatters: Per-requirement checking ensures nothing is overlooked and creates an auditable coverage trace.
+        inputNeeded: "ParsedRequirements, full output"
+        actionInstruction: "Call llm.chat() with coverage checking prompt."
+        promptToUse: |
+          You are the Validator agent checking output coverage against requirements.
+
+          Output:
+          {{output}}
+          Requirements:
+          {{parsedRequirements}}
+
+          For each requirement:
+          1. Status: Fully Met / Partially Met / Not Met
+          2. Evidence: Quote or describe the specific part of the output that addresses this requirement
+          3. If Partially Met: What is covered and what is missing?
+          4. If Not Met: Is there any tangential coverage?
+
+          Be strict: "partially mentioned" is not "fully met."
+          Be fair: implicit coverage counts if clearly present.
+        expectedOutput: "CoverageCheck { perRequirement: RequirementCoverage[], fullyMetCount: number, partialCount: number, notMetCount: number }"
+        validationRule: "Every requirement has a coverage status with evidence or gap description"
+        failureSignal: "Requirements without status or evidence claims without quotes"
+        recoveryAction: "Mark unchecked requirements as 'Not Assessed' with reason"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Identify and prioritize gaps
+        desc: Compile all unmet and partially met requirements into a prioritized gap list with impact assessment.
+        whyThisMatters: Prioritized gaps guide efficient rework, ensuring the most important omissions are fixed first.
+        inputNeeded: "CoverageCheck with not-met and partially-met items"
+        actionInstruction: "Call llm.chat() with gap prioritization prompt."
+        promptToUse: |
+          You are the Validator agent prioritizing completeness gaps.
+
+          Coverage results:
+          Not Met: {{notMetRequirements}}
+          Partially Met: {{partialRequirements}}
+          Original query: {{originalQuery}}
+
+          For each gap:
+          1. What specifically is missing?
+          2. Impact on user: How much does this gap reduce the usefulness of the output?
+          3. Priority: Critical (output is useless without this) / High (significantly reduces value) / Medium (noticeable gap) / Low (minor omission)
+          4. Effort to fix: How much work to fill this gap?
+          5. Suggestion: Brief guidance on how to address the gap
+
+          Rank by priority (Critical first).
+        expectedOutput: "GapAnalysis { gaps: PrioritizedGap[], totalGaps: number, criticalGaps: number, completenessScore: number }"
+        validationRule: "All not-met and partially-met items in gap list, gaps prioritized"
+        failureSignal: "Gaps missing from analysis or no prioritization"
+        recoveryAction: "List all gaps with default Medium priority"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver results
+        desc: Apply CP3 and deliver the completeness check results with coverage map and gap analysis.
+        whyThisMatters: Validated delivery with full traceability enables informed decisions about whether to ship or rework.
+        inputNeeded: "GapAnalysis, CoverageCheck"
+        actionInstruction: "Call validateOutput(). Format as CompletenessResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated CompletenessResult with coverage map, gaps, and score"
+        validationRule: "CP3 passed, all requirements accounted for in output"
+        failureSignal: "CP3 flags or requirements missing from results"
+        recoveryAction: "Deliver coverage summary without detailed mapping"
+        handoffIfNeeded: null
+
+    mainOutput: "Requirement-by-requirement coverage report with prioritized gaps and completeness score"
+    secondaryOutputs:
+      - "parsed_requirements for reference"
+      - "coverage_map for traceability"
+      - "completeness_metrics (score, gap count by priority)"
+    DoD:
+      - "All requirements parsed and classified"
+      - "Coverage checked per requirement"
+      - "Gaps identified and prioritized"
+      - "Completeness score calculated"
+      - "CP3 passed"
+    qaChecklist:
+      - "No requirements lost in parsing"
+      - "Coverage evidence is specific"
+      - "Gap priorities reflect actual impact"
+      - "Score matches coverage data"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "requirement_coverage: 100% of requirements checked"
+      - "evidence_quality: coverage claims have specific evidence"
+      - "gap_actionability: each gap has fix guidance"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when requirements coverage check is needed)"
+    errorHandling: "If requirements are empty, derive from original query"
+    fallbackRoute: "Return simple met/not-met list without detailed analysis"
+    escalationRoute: "Report Critical gaps to orchestrator for re-delegation"
+
+  - id: dod-verification
+    title: Definition of Done Verification
+    objective: Verify output against a formal Definition of Done checklist, producing a pass/fail for each DoD item
+    trigger: "definitionOfDone provided"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "DoD checklist provided"
+      - "Output to validate is non-empty"
+    inputs:
+      - "output: string (sanitized)"
+      - "definitionOfDone: string[] (DoD checklist)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Parse DoD checklist
+        desc: Sanitize inputs and parse each DoD item into a testable assertion.
+        whyThisMatters: DoD items must be unambiguously testable; parsing ensures each item has a clear pass/fail criterion.
+        inputNeeded: "DoD checklist"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with DoD parsing prompt."
+        promptToUse: |
+          You are the Validator agent parsing a Definition of Done checklist.
+
+          DoD items:
+          {{definitionOfDone}}
+
+          For each DoD item:
+          1. Restate as a testable yes/no assertion
+          2. Define what evidence constitutes "done"
+          3. Note if the item is ambiguous and how you interpret it
+          4. Classify: functional (does it work?) / quality (is it good?) / process (was it done right?)
+        expectedOutput: "ParsedDoD { items: DoDItem[], totalItems: number, ambiguousItems: number }"
+        validationRule: "Every DoD item parsed with testable assertion"
+        failureSignal: "DoD items missing or not testable"
+        recoveryAction: "Use DoD items as-is with best-effort interpretation"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Verify each DoD item
+        desc: Test each DoD item against the output, producing a clear pass/fail for each.
+        whyThisMatters: DoD verification is binary by nature; each item is done or not done, enabling clear completion status.
+        inputNeeded: "ParsedDoD, full output"
+        actionInstruction: "Call llm.chat() with DoD verification prompt."
+        promptToUse: |
+          You are the Validator agent verifying Definition of Done items.
+
+          Output:
+          {{output}}
+          DoD items:
+          {{parsedDoD}}
+
+          For each DoD item:
+          1. DONE or NOT DONE (binary, no partial)
+          2. Evidence: What in the output proves it is done (or what is missing)
+          3. If NOT DONE: What specifically needs to happen?
+
+          Be strict about "done." Partially done is NOT done.
+        expectedOutput: "DoDVerification { results: DoDResult[], doneCount: number, notDoneCount: number, completionPercentage: number }"
+        validationRule: "Every DoD item has DONE/NOT DONE status with evidence"
+        failureSignal: "Items without status or partial statuses"
+        recoveryAction: "Force binary classification for all items"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compile and deliver verdict
+        desc: Compile DoD verification results into a clear verdict and deliver with CP3 validation.
+        whyThisMatters: The DoD verdict is a hard gate for output acceptance; it must be accurate and properly validated.
+        inputNeeded: "DoDVerification results"
+        actionInstruction: "Determine overall verdict (all DONE = Pass, any NOT DONE = Fail). Call validateOutput(). Return."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated CompletenessResult with DoD verification and completion percentage"
+        validationRule: "CP3 passed, verdict is binary (Pass only if 100% DONE)"
+        failureSignal: "CP3 flags or verdict incorrect"
+        recoveryAction: "Deliver item-by-item results without overall verdict"
+        handoffIfNeeded: null
+
+    mainOutput: "Definition of Done verification with per-item pass/fail, evidence, and completion percentage"
+    secondaryOutputs:
+      - "parsed_dod for reference"
+      - "per_item_evidence for audit"
+      - "dod_metrics (done count, not-done count, percentage)"
+    DoD:
+      - "Every DoD item verified"
+      - "Binary pass/fail per item"
+      - "Evidence cited for each verdict"
+      - "Overall completion percentage"
+      - "CP3 passed"
+    qaChecklist:
+      - "No items skipped"
+      - "Binary classification enforced"
+      - "Evidence is specific"
+      - "Overall verdict matches item results"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "item_coverage: 100% of DoD items verified"
+      - "binary_enforcement: no partial statuses"
+      - "evidence_quality: each verdict has cited evidence"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when DoD verification is needed)"
+    errorHandling: "If DoD is empty, report 'no DoD to verify against'"
+    fallbackRoute: "Apply standard completeness check if DoD parsing fails"
+    escalationRoute: "Report NOT DONE items to orchestrator for re-work"
+
+  - id: gap-analysis
+    title: Completeness Gap Analysis
+    objective: Identify and characterize what is missing from the output without specific requirements, using the original query as the completeness benchmark
+    trigger: "No explicit requirements but completeness check needed"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Output and original query provided"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "output: string (sanitized)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Derive expected coverage
+        desc: Sanitize inputs and derive what a complete answer to the original query would need to contain.
+        whyThisMatters: Without explicit requirements, the original query defines expected coverage; proper derivation prevents both overly strict and overly lenient assessment.
+        inputNeeded: "Original query for coverage derivation"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with coverage derivation prompt."
+        promptToUse: |
+          You are the Validator agent deriving expected coverage from a query.
+
+          Original query: {{originalQuery}}
+
+          What would a complete answer include?
+          1. Essential elements (must be present for a useful answer)
+          2. Expected elements (a good answer would include these)
+          3. Bonus elements (an excellent answer would add these)
+
+          Be reasonable: do not expect more than the query asks for.
+          Consider the query type (factual, analytical, creative, etc.) when setting expectations.
+        expectedOutput: "ExpectedCoverage { essential: string[], expected: string[], bonus: string[], queryType: string }"
+        validationRule: "At least 2 essential elements derived, elements are specific to the query"
+        failureSignal: "Generic elements not specific to the query"
+        recoveryAction: "Use generic completeness criteria: direct answer, supporting evidence, caveats"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Assess actual coverage
+        desc: Check the output against derived expected coverage, identifying what is present and what is missing.
+        whyThisMatters: Systematic coverage assessment produces a clear gap map rather than a vague impression of incompleteness.
+        inputNeeded: "ExpectedCoverage, full output"
+        actionInstruction: "Call llm.chat() with coverage assessment prompt."
+        promptToUse: |
+          You are the Validator agent assessing output coverage against expected elements.
+
+          Output:
+          {{output}}
+          Expected coverage:
+          Essential: {{essential}}
+          Expected: {{expected}}
+          Bonus: {{bonus}}
+
+          Assess each element:
+          1. Present / Absent / Partially Present
+          2. If present: Where in the output?
+          3. If absent: How significant is this gap?
+          4. If partially present: What is covered and what is missing?
+        expectedOutput: "CoverageAssessment { essentialCoverage: ElementStatus[], expectedCoverage: ElementStatus[], bonusCoverage: ElementStatus[], overallScore: number }"
+        validationRule: "Every element assessed, essential elements get priority attention"
+        failureSignal: "Elements missing from assessment"
+        recoveryAction: "Assess essential elements only"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compile gap report and deliver
+        desc: Compile coverage assessment into a prioritized gap report and deliver with CP3 validation.
+        whyThisMatters: The gap report guides improvement efforts and the score enables automated completeness gating.
+        inputNeeded: "CoverageAssessment"
+        actionInstruction: "Compile gaps from absent and partial items. Prioritize. Call validateOutput(). Return."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated CompletenessResult with gap report, coverage map, and score"
+        validationRule: "CP3 passed, score reflects coverage data"
+        failureSignal: "CP3 flags or score mismatch"
+        recoveryAction: "Deliver gap list without score"
+        handoffIfNeeded: null
+
+    mainOutput: "Completeness gap analysis with derived requirements, coverage assessment, and prioritized gap list"
+    secondaryOutputs:
+      - "derived_requirements for reference"
+      - "coverage_assessment for audit"
+      - "gap_metrics (score, essential coverage, gap count)"
+    DoD:
+      - "Expected coverage derived from query"
+      - "Output assessed against derived coverage"
+      - "Gaps identified and prioritized"
+      - "Completeness score calculated"
+      - "CP3 passed"
+    qaChecklist:
+      - "Derived requirements are reasonable for the query"
+      - "Assessment is fair and evidence-based"
+      - "Essential gaps prioritized over bonus gaps"
+      - "Score reflects actual completeness"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "derivation_quality: requirements specific to the query"
+      - "assessment_coverage: all elements checked"
+      - "gap_prioritization: essential gaps ranked highest"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when gap analysis is needed)"
+    errorHandling: "If query is too vague to derive requirements, apply minimal standards"
+    fallbackRoute: "Return simple 'output addresses query: yes/partially/no'"
+    escalationRoute: "Report that completeness assessment needs clearer requirements from user"
+
+  - id: scope-completeness
+    title: Scope Completeness Check
+    objective: Verify that the output covers the full scope of the request without scope creep or scope gaps
+    trigger: "Scope verification needed or multi-part request"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Output addresses a multi-part or scoped request"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "output: string (sanitized)"
+      - "originalQuery: string"
+      - "scopeDefinition: string - explicit scope if available"
+    steps:
+      - stepNumber: 1
+        title: Define scope boundaries
+        desc: Sanitize inputs and define the scope boundaries including what is in scope, out of scope, and boundary areas.
+        whyThisMatters: Clear scope boundaries prevent both false gaps (flagging out-of-scope items as missing) and false completeness (ignoring in-scope items).
+        inputNeeded: "Original query, scope definition if available"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with scope definition prompt."
+        promptToUse: |
+          You are the Validator agent defining scope boundaries for completeness checking.
+
+          Original query: {{originalQuery}}
+          Explicit scope: {{scopeDefinition}}
+
+          Define scope:
+          1. In scope: What the output must cover
+          2. Out of scope: What the output should NOT cover
+          3. Boundary items: Items that could reasonably be in or out of scope
+          4. Scope parts: If the query has multiple parts, list each
+
+          Be precise about boundaries. If the query is ambiguous about scope, note the ambiguity.
+        expectedOutput: "ScopeDefinition { inScope: string[], outOfScope: string[], boundary: string[], parts: string[], ambiguities: string[] }"
+        validationRule: "In-scope items defined, scope parts identified"
+        failureSignal: "Cannot determine scope from query"
+        recoveryAction: "Use the literal query as the entire scope"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Check scope coverage
+        desc: Verify that every in-scope item is addressed and detect any scope creep (out-of-scope content) or scope gaps.
+        whyThisMatters: Scope coverage verification ensures the output is both complete within scope and disciplined about staying within scope.
+        inputNeeded: "ScopeDefinition, full output"
+        actionInstruction: "Call llm.chat() with scope coverage prompt."
+        promptToUse: |
+          You are the Validator agent checking scope coverage.
+
+          Output:
+          {{output}}
+          Scope:
+          In scope: {{inScope}}
+          Out of scope: {{outOfScope}}
+          Parts: {{parts}}
+
+          Check:
+          1. For each in-scope item: Is it addressed in the output?
+          2. For each query part: Is it answered?
+          3. Scope creep: Does the output include significant out-of-scope content?
+          4. Scope gaps: Are any in-scope items missing?
+          5. Boundary items: Which are included, which are not?
+
+          Scope creep is not always bad (useful context) but should be noted.
+        expectedOutput: "ScopeCoverage { inScopeCoverage: ScopeItem[], scopeCreep: string[], scopeGaps: string[], partsCoverage: PartStatus[], scopeScore: number }"
+        validationRule: "All in-scope items checked, all parts checked"
+        failureSignal: "In-scope items unchecked or parts missing"
+        recoveryAction: "Check parts coverage only if full scope check fails"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compile and deliver
+        desc: Compile scope coverage into completeness result and deliver with CP3 validation.
+        whyThisMatters: The scope completeness report enables decisions about whether the output adequately covers the intended scope.
+        inputNeeded: "ScopeCoverage results"
+        actionInstruction: "Compile results. Call validateOutput(). Format as CompletenessResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated CompletenessResult with scope coverage, gaps, creep, and score"
+        validationRule: "CP3 passed, scope data complete"
+        failureSignal: "CP3 flags or scope data missing"
+        recoveryAction: "Deliver scope gap list without full analysis"
+        handoffIfNeeded: null
+
+    mainOutput: "Scope completeness assessment with coverage map, scope gaps, scope creep, and recommendations"
+    secondaryOutputs:
+      - "scope_definition for reference"
+      - "scope_coverage_details for audit"
+      - "scope_metrics (coverage percentage, gap count, creep items)"
+    DoD:
+      - "Scope boundaries defined"
+      - "All in-scope items checked"
+      - "Scope gaps identified"
+      - "Scope creep noted"
+      - "CP3 passed"
+    qaChecklist:
+      - "Scope boundaries are reasonable"
+      - "In-scope coverage is comprehensive"
+      - "Scope creep is noted but not penalized harshly"
+      - "Multi-part queries have all parts checked"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "in_scope_coverage: all in-scope items checked"
+      - "part_coverage: all query parts addressed"
+      - "gap_identification: scope gaps clearly listed"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when scope completeness is needed)"
+    errorHandling: "If scope cannot be determined, check if output answers the literal query"
+    fallbackRoute: "Perform simple query-answer matching"
+    escalationRoute: "Report scope ambiguity to orchestrator for clarification"

@@ -1,0 +1,229 @@
+# Tracking Matrix XLSX Template Specification
+# Used by skill-engine to generate XLSX files on demand
+# Binary .xlsx rendered via xlsx-template-creator skill
+
+id: tracking-matrix
+name: Tracking Matrix
+purpose: Track workflow execution, findings, and action items
+format: xlsx
+version: "1.0.0"
+
+workbook:
+  defaultFont: Calibri
+  defaultFontSize: 11
+
+sheets:
+  - id: tracking
+    name: Tracking
+    purpose: Main tracking sheet for workflow steps and findings
+    frozen:
+      rows: 1
+      columns: 2
+    columns:
+      - id: id
+        header: ID
+        width: 8
+        type: string
+        format: "T-001"
+        description: Unique tracking identifier
+      - id: date
+        header: Date
+        width: 12
+        type: date
+        format: "YYYY-MM-DD"
+        description: Date of entry
+      - id: agent
+        header: Agent
+        width: 15
+        type: string
+        validation:
+          type: list
+          values: [pristino-orchestrator, timekeeper, analyst, researcher, synthesizer, validator]
+        description: Agent responsible for this item
+      - id: skill
+        header: Skill
+        width: 18
+        type: string
+        description: Skill being tracked
+      - id: workflow
+        header: Workflow
+        width: 20
+        type: string
+        description: Workflow being tracked
+      - id: step
+        header: Step
+        width: 8
+        type: number
+        description: Step number within workflow
+      - id: status
+        header: Status
+        width: 12
+        type: string
+        validation:
+          type: list
+          values: [Not Started, In Progress, Completed, Blocked, Failed]
+        conditionalFormatting:
+          - value: Completed
+            background: "#ecfdf5"
+            fontColor: "#059669"
+          - value: In Progress
+            background: "#fffbeb"
+            fontColor: "#d97706"
+          - value: Blocked
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+          - value: Failed
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+          - value: Not Started
+            background: "#f3f4f6"
+            fontColor: "#6b7280"
+        description: Current status of the item
+      - id: severity
+        header: Severity
+        width: 10
+        type: string
+        validation:
+          type: list
+          values: [Critical, High, Medium, Low, Info, N/A]
+        conditionalFormatting:
+          - value: Critical
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+            bold: true
+          - value: High
+            background: "#fff7ed"
+            fontColor: "#f97316"
+          - value: Medium
+            background: "#fffbeb"
+            fontColor: "#d97706"
+          - value: Low
+            background: "#eef2ff"
+            fontColor: "#6366f1"
+        description: Severity level for findings
+      - id: description
+        header: Description
+        width: 40
+        type: string
+        wordWrap: true
+        description: Detailed description of the item
+      - id: evidence
+        header: Evidence
+        width: 30
+        type: string
+        wordWrap: true
+        description: Supporting evidence or context
+      - id: recommendation
+        header: Recommendation
+        width: 30
+        type: string
+        wordWrap: true
+        description: Recommended action
+      - id: owner
+        header: Owner
+        width: 15
+        type: string
+        description: Person or agent responsible for resolution
+      - id: dueDate
+        header: Due Date
+        width: 12
+        type: date
+        format: "YYYY-MM-DD"
+        conditionalFormatting:
+          - rule: pastDue
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+        description: Target completion date
+      - id: resolution
+        header: Resolution
+        width: 30
+        type: string
+        wordWrap: true
+        description: How the item was resolved
+      - id: resolvedDate
+        header: Resolved Date
+        width: 12
+        type: date
+        format: "YYYY-MM-DD"
+        description: Actual resolution date
+    headerStyle:
+      background: "#2563eb"
+      fontColor: "#ffffff"
+      bold: true
+      fontSize: 11
+      border: thin
+
+  - id: summary
+    name: Summary
+    purpose: Dashboard summary with counts and charts
+    columns:
+      - id: metric
+        header: Metric
+        width: 25
+        type: string
+      - id: value
+        header: Value
+        width: 15
+        type: number
+    rows:
+      - [Total Items, "=COUNTA(Tracking!A:A)-1"]
+      - [Completed, "=COUNTIF(Tracking!G:G,\"Completed\")"]
+      - [In Progress, "=COUNTIF(Tracking!G:G,\"In Progress\")"]
+      - [Blocked, "=COUNTIF(Tracking!G:G,\"Blocked\")"]
+      - [Failed, "=COUNTIF(Tracking!G:G,\"Failed\")"]
+      - [Not Started, "=COUNTIF(Tracking!G:G,\"Not Started\")"]
+      - ["", ""]
+      - [Critical Findings, "=COUNTIF(Tracking!H:H,\"Critical\")"]
+      - [High Findings, "=COUNTIF(Tracking!H:H,\"High\")"]
+      - [Medium Findings, "=COUNTIF(Tracking!H:H,\"Medium\")"]
+      - [Low Findings, "=COUNTIF(Tracking!H:H,\"Low\")"]
+      - ["", ""]
+      - [Completion Rate, "=COUNTIF(Tracking!G:G,\"Completed\")/(COUNTA(Tracking!A:A)-1)"]
+      - [Overdue Items, "=COUNTIFS(Tracking!L:L,\"<\"&TODAY(),Tracking!G:G,\"<>Completed\")"]
+    headerStyle:
+      background: "#2563eb"
+      fontColor: "#ffffff"
+      bold: true
+    charts:
+      - type: pie
+        title: Status Distribution
+        dataRange: summary!A2:B6
+        position: D2
+        size: { width: 400, height: 300 }
+      - type: bar
+        title: Findings by Severity
+        dataRange: summary!A9:B12
+        position: D18
+        size: { width: 400, height: 300 }
+
+  - id: agents
+    name: By Agent
+    purpose: Breakdown by agent
+    columns:
+      - id: agent
+        header: Agent
+        width: 20
+      - id: total
+        header: Total Items
+        width: 12
+      - id: completed
+        header: Completed
+        width: 12
+      - id: pending
+        header: Pending
+        width: 12
+      - id: completionRate
+        header: Completion %
+        width: 14
+        format: "0%"
+    rows:
+      - [pristino-orchestrator, "=COUNTIF(Tracking!C:C,A2)", "=COUNTIFS(Tracking!C:C,A2,Tracking!G:G,\"Completed\")", "=B2-C2", "=IF(B2>0,C2/B2,0)"]
+      - [timekeeper, "=COUNTIF(Tracking!C:C,A3)", "=COUNTIFS(Tracking!C:C,A3,Tracking!G:G,\"Completed\")", "=B3-C3", "=IF(B3>0,C3/B3,0)"]
+      - [analyst, "=COUNTIF(Tracking!C:C,A4)", "=COUNTIFS(Tracking!C:C,A4,Tracking!G:G,\"Completed\")", "=B4-C4", "=IF(B4>0,C4/B4,0)"]
+      - [researcher, "=COUNTIF(Tracking!C:C,A5)", "=COUNTIFS(Tracking!C:C,A5,Tracking!G:G,\"Completed\")", "=B5-C5", "=IF(B5>0,C5/B5,0)"]
+      - [synthesizer, "=COUNTIF(Tracking!C:C,A6)", "=COUNTIFS(Tracking!C:C,A6,Tracking!G:G,\"Completed\")", "=B6-C6", "=IF(B6>0,C6/B6,0)"]
+      - [validator, "=COUNTIF(Tracking!C:C,A7)", "=COUNTIFS(Tracking!C:C,A7,Tracking!G:G,\"Completed\")", "=B7-C7", "=IF(B7>0,C7/B7,0)"]
+    headerStyle:
+      background: "#2563eb"
+      fontColor: "#ffffff"
+      bold: true

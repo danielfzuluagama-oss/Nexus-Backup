@@ -1,0 +1,642 @@
+id: consensus
+name: Consensus Building
+purpose: Find consensus across multiple perspectives while preserving important nuances, dissenting views, and the reasons behind disagreements.
+businessValue: Enables confident decision-making by clearly identifying where agreement exists, where it does not, and why, giving stakeholders a complete picture of multi-perspective alignment.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: synthesizer
+
+inputs:
+  - "perspectives: AgentResponse[] - Multiple perspectives to analyze for consensus"
+  - "originalQuery: string - The original question or task"
+  - "consensusMode: string - 'full'|'partial'|'disagreement'|'confidence'"
+  - "threshold: number - Minimum agreement percentage to declare consensus (default 0.75)"
+
+outputs:
+  - "consensusResult: ConsensusResult - Structured consensus finding"
+  - "agreementMap: AgreementMap - Point-by-point agreement mapping"
+  - "dissenterProfile: DissenterProfile[] - Characterization of dissenting positions"
+  - "consensusConfidence: string - Confidence in the consensus finding"
+
+dependencies:
+  - "agents/synthesizer/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task with perspectives from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - consensus_found
+  - partial_consensus_found
+  - no_consensus_found
+  - dissent_characterized
+  - confidence_assessed
+  - fallback_triggered
+
+failureHandling:
+  - "No consensus exists: Report honestly with characterization of divergence"
+  - "Single perspective: Return as-is, noting consensus is not applicable"
+  - "Perspectives on different topics: Report misalignment before attempting consensus"
+  - "Artificial consensus detected: Flag and report genuine state of disagreement"
+
+interoperabilityContract:
+  inputType: "ConsensusRequest { perspectives: AgentResponse[], originalQuery: string, consensusMode: string, threshold: number }"
+  outputType: "ConsensusResult { consensusResult: object, agreementMap: AgreementMap, dissenterProfile: DissenterProfile[], consensusConfidence: string }"
+
+wowCriteria:
+  - "Consensus claims backed by specific point-by-point evidence"
+  - "Dissenting views characterized with empathy and accuracy"
+  - "Partial consensus clearly distinguishes agreed from contested areas"
+  - "Confidence assessment reflects actual agreement depth, not just count"
+
+safeCriteria:
+  - "No false consensus fabricated"
+  - "Dissenting views preserved, not suppressed"
+  - "Consensus threshold transparently applied"
+  - "Silence from a perspective not counted as agreement"
+
+workflows:
+  - id: full-consensus-identification
+    title: Full Consensus Identification
+    objective: Determine whether full consensus exists across all perspectives and document the nature and strength of the agreement
+    trigger: "consensusMode === 'full' or initial consensus check requested"
+    designRationale: >
+      Consensus building prioritizes comprehensiveness over speed. All inputs
+      must be processed to avoid silently dropping minority viewpoints.
+    timeoutMs: 30000
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple perspectives provided"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[] (sanitized)"
+      - "originalQuery: string"
+      - "threshold: number"
+    steps:
+      - stepNumber: 1
+        title: Extract position statements
+        desc: Sanitize inputs and extract the core position statement from each perspective for precise comparison.
+        whyThisMatters: Comparing full responses introduces noise; extracting core positions enables precise agreement measurement.
+        inputNeeded: "All perspectives and original query"
+        actionInstruction: "Call sanitizeInput() on all inputs. Call llm.chat() with position extraction prompt."
+        promptToUse: |
+          You are the Synthesizer agent extracting core positions for consensus analysis.
+
+          Original query: {{originalQuery}}
+          Perspectives:
+          {{perspectives}}
+
+          For each perspective, extract:
+          1. Core position: The main conclusion or answer (1-2 sentences)
+          2. Key supporting points (what they base the position on)
+          3. Qualifications or conditions stated
+          4. Confidence expressed by the perspective
+
+          Be precise. Do not interpret — extract what each perspective actually states.
+        expectedOutput: "PositionStatements { positions: Position[], perspectiveCount: number }"
+        validationRule: "Position extracted for every perspective, each has core position"
+        failureSignal: "Perspectives missing or positions are vague summaries"
+        recoveryAction: "Use the first sentence of each perspective as the core position"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Compare positions systematically
+        desc: Compare all extracted positions against each other to determine the degree of agreement on each point.
+        whyThisMatters: Systematic comparison prevents declaring false consensus based on superficial similarity while missing substantive disagreements.
+        inputNeeded: "PositionStatements for all perspectives"
+        actionInstruction: "Call llm.chat() with systematic comparison prompt."
+        promptToUse: |
+          You are the Synthesizer agent performing systematic position comparison.
+
+          Positions:
+          {{positions}}
+          Threshold for consensus: {{threshold}} (percentage of perspectives that must agree)
+
+          Compare systematically:
+          1. Core positions: Do all perspectives reach the same conclusion?
+          2. Supporting points: Do they cite compatible evidence?
+          3. Qualifications: Are the conditions and caveats compatible?
+          4. Overall agreement score: What percentage of perspectives substantially agree?
+          5. Full consensus achieved? (agreement score >= threshold on ALL points)
+
+          Distinguish between:
+          - Substantive agreement (same conclusion, same reasoning)
+          - Surface agreement (same conclusion, different reasoning)
+          - Superficial agreement (similar language, actually different claims)
+
+          Be strict about what counts as agreement.
+        expectedOutput: "PositionComparison { coreAgreement: number, supportAgreement: number, qualificationCompatibility: string, overallScore: number, fullConsensus: boolean, consensusType: string }"
+        validationRule: "Scores are calculated, consensus boolean is determined against threshold"
+        failureSignal: "Consensus declared without meeting threshold or agreement types conflated"
+        recoveryAction: "Apply stricter definition (substantive agreement only) and re-compare"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Document consensus or divergence
+        desc: If consensus exists, document its nature and strength. If not, characterize where and why it breaks down.
+        whyThisMatters: The documentation is the primary deliverable; it must be precise enough to guide decision-making regardless of whether consensus was found.
+        inputNeeded: "PositionComparison results"
+        actionInstruction: "Call llm.chat() with documentation prompt."
+        promptToUse: |
+          You are the Synthesizer agent documenting consensus findings.
+
+          Comparison results:
+          {{comparison}}
+          Original query: {{originalQuery}}
+
+          If full consensus found:
+          1. State the consensus position clearly
+          2. Describe the nature of agreement (substantive/surface)
+          3. Note any minor variations that do not break consensus
+          4. Rate consensus strength: strong / moderate / fragile
+          5. What could break this consensus?
+
+          If consensus NOT found:
+          1. Where does agreement exist (partial consensus)?
+          2. Where does it break down?
+          3. Why do perspectives diverge?
+          4. Is consensus achievable with additional information?
+          5. Rate: How far from consensus are the perspectives?
+
+          Confidence in this assessment: alto / medio / bajo
+        expectedOutput: "ConsensusDocumentation { found: boolean, statement: string, nature: string, strength: string, breakdownPoints: string[], confidence: string }"
+        validationRule: "Clear found/not-found determination, documentation matches the finding"
+        failureSignal: "Ambiguous consensus status or documentation contradicts the comparison"
+        recoveryAction: "Default to 'partial consensus' and document both agreed and contested areas"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the consensus finding with full documentation.
+        whyThisMatters: Validated delivery ensures the consensus finding is safe and complete.
+        inputNeeded: "ConsensusDocumentation"
+        actionInstruction: "Call validateOutput(). Format as ConsensusResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsensusResult with consensus finding and documentation"
+        validationRule: "CP3 passed, consensus status clear in output"
+        failureSignal: "CP3 flags content or status is ambiguous"
+        recoveryAction: "Deliver simplified consensus statement"
+        handoffIfNeeded: null
+
+    mainOutput: "Full consensus assessment with documented agreement nature, strength, and fragility"
+    secondaryOutputs:
+      - "position_statements for reference"
+      - "position_comparison for detailed analysis"
+      - "consensus_metrics (agreement score, consensus type, perspective count)"
+    DoD:
+      - "All positions extracted and compared"
+      - "Consensus status determined against threshold"
+      - "Agreement nature documented"
+      - "Confidence assessed"
+      - "CP3 passed"
+    qaChecklist:
+      - "Consensus is genuine, not superficial"
+      - "Minor variations noted"
+      - "Comparison is strict and fair"
+      - "False consensus not declared"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "position_coverage: 100% of perspectives have extracted positions"
+      - "comparison_rigor: substantive vs. surface agreement distinguished"
+      - "threshold_compliance: consensus only declared when threshold met"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when full consensus check is needed)"
+    errorHandling: "If fewer than 2 perspectives, return 'consensus not applicable'"
+    fallbackRoute: "Redirect to partial-consensus-mapping if full consensus fails"
+    escalationRoute: "Report to orchestrator that perspectives require additional rounds of analysis for consensus"
+
+  - id: partial-consensus-mapping
+    title: Partial Consensus Mapping
+    objective: Map the landscape of partial consensus, identifying which specific points have agreement and which do not
+    trigger: "consensusMode === 'partial' or full consensus not achieved"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple perspectives with mixed agreement"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[] (sanitized)"
+      - "originalQuery: string"
+      - "threshold: number"
+    steps:
+      - stepNumber: 1
+        title: Decompose into consensus units
+        desc: Sanitize inputs and break each perspective into individual checkable claims or points that can be independently assessed for consensus.
+        whyThisMatters: Partial consensus analysis requires granular comparison; whole-perspective comparison would miss areas of agreement within overall disagreement.
+        inputNeeded: "All perspectives and original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with decomposition prompt."
+        promptToUse: |
+          You are the Synthesizer agent decomposing perspectives into consensus units.
+
+          Original query: {{originalQuery}}
+          Perspectives:
+          {{perspectives}}
+
+          Decompose each perspective into individual claims/points:
+          - Each unit should be a single checkable statement
+          - Units should be at the same granularity level across perspectives
+          - Group related units by topic/theme
+          - Identify units that are unique to one perspective
+
+          Goal: Enable point-by-point consensus checking.
+        expectedOutput: "ConsensusUnits { themes: Theme[], unitsPerPerspective: UnitSet[], totalUnits: number }"
+        validationRule: "Each perspective decomposed, themes identified, units are at consistent granularity"
+        failureSignal: "Units at different granularity levels or themes not identified"
+        recoveryAction: "Use paragraph-level decomposition as fallback"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Check per-unit consensus
+        desc: For each consensus unit or theme, determine the level of agreement across perspectives.
+        whyThisMatters: Per-unit consensus checking is the core of partial consensus mapping; it reveals the precise topology of agreement and disagreement.
+        inputNeeded: "ConsensusUnits with themes and per-perspective units"
+        actionInstruction: "Call llm.chat() with per-unit consensus checking prompt."
+        promptToUse: |
+          You are the Synthesizer agent checking per-unit consensus.
+
+          Themes and units:
+          {{consensusUnits}}
+          Threshold: {{threshold}}
+
+          For each theme/unit:
+          1. How many perspectives agree on this point?
+          2. Agreement ratio (agreeing / total)
+          3. Meets threshold? (ratio >= threshold)
+          4. Nature of disagreement if below threshold
+          5. Categorize: CONSENSUS / MAJORITY / SPLIT / LONE VOICE
+
+          Build a consensus map showing the topology of agreement.
+        expectedOutput: "ConsensusMap { perUnit: UnitConsensus[], consensusPoints: string[], majorityPoints: string[], splitPoints: string[], overallConsensusRatio: number }"
+        validationRule: "Every unit categorized, overall consensus ratio calculated"
+        failureSignal: "Units missing from map or categories inconsistent"
+        recoveryAction: "Mark uncategorized units as SPLIT and proceed"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate partial consensus report
+        desc: Generate a clear report showing where consensus exists, where it is partial, and where there is no agreement.
+        whyThisMatters: The partial consensus report enables targeted action on contested areas while building on areas of agreement.
+        inputNeeded: "ConsensusMap with per-unit analysis"
+        actionInstruction: "Call llm.chat() with partial consensus report prompt. Then call validateOutput()."
+        promptToUse: |
+          You are the Synthesizer agent generating a partial consensus report.
+
+          Consensus map:
+          {{consensusMap}}
+          Original query: {{originalQuery}}
+
+          Generate report:
+          1. Consensus areas: Where all/most perspectives agree (strongest foundation)
+          2. Majority areas: Where most but not all agree (usable with caveat)
+          3. Contested areas: Where perspectives are split (requires further analysis)
+          4. Overall consensus percentage: What fraction of total points have consensus?
+          5. Recommendation: What can be confidently acted on vs. what needs more work?
+
+          The report should be immediately actionable.
+        expectedOutput: "PartialConsensusReport { consensusAreas: string[], majorityAreas: string[], contestedAreas: string[], overallPercentage: number, recommendation: string, confidence: string }"
+        validationRule: "All three area types reported, percentage calculated, recommendation present"
+        failureSignal: "No consensus areas found or percentage calculation error"
+        recoveryAction: "Report predominantly contested with honest assessment"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the partial consensus report.
+        whyThisMatters: Validated delivery ensures the consensus mapping is safe and properly formatted.
+        inputNeeded: "PartialConsensusReport"
+        actionInstruction: "Call validateOutput(). Format as ConsensusResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsensusResult with partial consensus mapping"
+        validationRule: "CP3 passed, all areas represented"
+        failureSignal: "CP3 flags content or areas missing"
+        recoveryAction: "Deliver simplified consensus percentage with bullet points"
+        handoffIfNeeded: null
+
+    mainOutput: "Partial consensus map showing point-by-point agreement topology and actionable recommendations"
+    secondaryOutputs:
+      - "consensus_units for granular reference"
+      - "per_unit_analysis for detailed review"
+      - "consensus_metrics (total units, consensus ratio, contested count)"
+    DoD:
+      - "Perspectives decomposed into consensus units"
+      - "Per-unit consensus checked"
+      - "Areas categorized as consensus/majority/contested"
+      - "Overall percentage calculated"
+      - "CP3 passed"
+    qaChecklist:
+      - "Decomposition is at consistent granularity"
+      - "Threshold applied consistently"
+      - "Contested areas honestly reported"
+      - "Recommendation is actionable"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "unit_coverage: all perspectives decomposed"
+      - "categorization_completeness: all units categorized"
+      - "threshold_consistency: same threshold applied to all units"
+      - "response_time_p95: < 40s"
+    cadence: "Per-request (when partial consensus mapping is needed)"
+    errorHandling: "If decomposition yields too many units, consolidate at theme level"
+    fallbackRoute: "Return theme-level agreement assessment without unit-level detail"
+    escalationRoute: "Report to orchestrator that perspectives are too divergent for meaningful partial consensus"
+
+  - id: disagreement-characterization
+    title: Disagreement Characterization
+    objective: Deeply characterize the nature of disagreements between perspectives to understand why they disagree and what could resolve the disagreement
+    trigger: "consensusMode === 'disagreement' or significant disagreements detected"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Perspectives with known disagreements"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[] (sanitized)"
+      - "originalQuery: string"
+      - "knownDisagreements: string[] - pre-identified disagreements"
+    steps:
+      - stepNumber: 1
+        title: Catalog disagreements
+        desc: Sanitize inputs and build a comprehensive catalog of all disagreements including known ones and newly detected ones.
+        whyThisMatters: Complete disagreement cataloging prevents important disagreements from being overlooked in the characterization.
+        inputNeeded: "All perspectives, known disagreements, original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with disagreement cataloging prompt."
+        promptToUse: |
+          You are the Synthesizer agent cataloging disagreements between perspectives.
+
+          Original query: {{originalQuery}}
+          Perspectives:
+          {{perspectives}}
+          Known disagreements: {{knownDisagreements}}
+
+          Catalog ALL disagreements:
+          1. Factual disagreements (different claims about facts)
+          2. Interpretive disagreements (same facts, different interpretations)
+          3. Priority disagreements (agree on facts but differ on what matters most)
+          4. Methodological disagreements (different approaches to the question)
+          5. Value disagreements (different criteria for what constitutes a good answer)
+
+          For each: Which perspectives disagree, and what is the specific point of contention?
+        expectedOutput: "DisagreementCatalog { factual: Disagreement[], interpretive: Disagreement[], priority: Disagreement[], methodological: Disagreement[], value: Disagreement[], total: number }"
+        validationRule: "Known disagreements included plus any new ones, each categorized"
+        failureSignal: "Known disagreements missing from catalog"
+        recoveryAction: "Include known disagreements as-is and add any newly detected ones"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Analyze root causes
+        desc: For each disagreement, identify the root cause to understand whether it is resolvable and how.
+        whyThisMatters: Understanding root causes transforms disagreement from obstacle to information, revealing where additional analysis or evidence could help.
+        inputNeeded: "DisagreementCatalog"
+        actionInstruction: "For each significant disagreement, call llm.chat() with root cause analysis prompt."
+        promptToUse: |
+          You are the Synthesizer agent analyzing the root cause of a disagreement.
+
+          Disagreement: {{disagreement}}
+          Type: {{disagreement.type}}
+          Perspectives involved: {{involvedPerspectives}}
+
+          Root cause analysis:
+          1. What is the fundamental source of the disagreement?
+          2. Do the perspectives have different information?
+          3. Do they apply different analytical frameworks?
+          4. Do they have different implicit values or priorities?
+          5. Is this disagreement resolvable with additional information?
+          6. What would each side need to see to change their position?
+          7. Characterize: resolvable / partially resolvable / fundamental / irresolvable
+        expectedOutput: "RootCauseAnalysis { disagreement: string, rootCause: string, resolvability: string, resolutionPath: string, requiredEvidence: string }"
+        validationRule: "Root cause identified, resolvability assessed"
+        failureSignal: "Root cause is vague or resolvability not assessed"
+        recoveryAction: "Mark as 'root cause unclear' and assess resolvability as 'uncertain'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate disagreement report
+        desc: Compile all disagreement characterizations into a structured report with resolution recommendations.
+        whyThisMatters: The report transforms raw disagreement data into actionable guidance for resolving or working with disagreements.
+        inputNeeded: "All RootCauseAnalyses, DisagreementCatalog"
+        actionInstruction: "Call llm.chat() with report generation prompt. Then call validateOutput()."
+        promptToUse: |
+          You are the Synthesizer agent generating a disagreement characterization report.
+
+          Disagreement catalog: {{catalog}}
+          Root cause analyses: {{rootCauses}}
+          Original query: {{originalQuery}}
+
+          Generate report:
+          1. Summary: Nature and extent of disagreements (how serious are they?)
+          2. Resolvable disagreements: What can be resolved and how?
+          3. Fundamental disagreements: What cannot be resolved and why?
+          4. Impact assessment: How do these disagreements affect the answer to the original query?
+          5. Recommendations: Next steps to address disagreements
+          6. Decision guidance: How should the user proceed given these disagreements?
+        expectedOutput: "DisagreementReport { summary: string, resolvable: ResolvableItem[], fundamental: FundamentalItem[], impact: string, recommendations: string[], guidance: string, confidence: string }"
+        validationRule: "Both resolvable and fundamental categories addressed, guidance present"
+        failureSignal: "Only one category addressed or no guidance"
+        recoveryAction: "Provide simple categorization without deep analysis"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the disagreement characterization report.
+        whyThisMatters: Validated delivery ensures the disagreement report is safe and balanced.
+        inputNeeded: "DisagreementReport"
+        actionInstruction: "Call validateOutput(). Format as ConsensusResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsensusResult with disagreement characterization"
+        validationRule: "CP3 passed, all disagreement types represented"
+        failureSignal: "CP3 flags content or types missing"
+        recoveryAction: "Deliver simplified disagreement summary"
+        handoffIfNeeded: null
+
+    mainOutput: "Structured disagreement characterization with root causes, resolvability, and resolution recommendations"
+    secondaryOutputs:
+      - "disagreement_catalog for reference"
+      - "root_cause_analyses for detailed review"
+      - "disagreement_metrics (total, by type, resolvability distribution)"
+    DoD:
+      - "All disagreements cataloged and categorized"
+      - "Root causes analyzed"
+      - "Resolvability assessed"
+      - "Resolution recommendations provided"
+      - "CP3 passed"
+    qaChecklist:
+      - "All known disagreements included"
+      - "Categorization is accurate"
+      - "Root causes are specific, not generic"
+      - "Recommendations are actionable"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "catalog_completeness: all known disagreements plus new detections"
+      - "root_cause_specificity: causes are specific to each disagreement"
+      - "resolution_actionability: recommendations are concrete"
+      - "response_time_p95: < 40s"
+    cadence: "Per-request (when disagreement characterization is needed)"
+    errorHandling: "If no disagreements found, confirm consensus and redirect appropriately"
+    fallbackRoute: "Return simple disagreement list without deep analysis"
+    escalationRoute: "Report to orchestrator that disagreements require domain expert mediation"
+
+  - id: consensus-confidence-assessment
+    title: Consensus Confidence Assessment
+    objective: Assess the confidence level of an identified consensus, determining how robust it is and under what conditions it might break
+    trigger: "consensusMode === 'confidence' or consensus quality assessment needed"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Consensus or partial consensus already identified"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[] (sanitized)"
+      - "consensusStatement: string - the identified consensus"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Test consensus depth
+        desc: Sanitize inputs and test whether the consensus is deep (genuine understanding agreement) or shallow (surface-level wording agreement).
+        whyThisMatters: Shallow consensus can break under scrutiny; knowing the depth prevents overconfidence in apparent agreement.
+        inputNeeded: "Consensus statement, all perspectives, original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with depth testing prompt."
+        promptToUse: |
+          You are the Synthesizer agent testing consensus depth.
+
+          Consensus statement: {{consensusStatement}}
+          Perspectives that agree:
+          {{perspectives}}
+
+          Test depth:
+          1. Do perspectives agree on the conclusion AND the reasoning?
+          2. Do they define key terms the same way?
+          3. Would they apply the consensus to edge cases the same way?
+          4. Is the agreement based on evidence or on assumption?
+          5. Depth rating: deep (reasoning + conclusion align) / moderate (conclusion aligns, reasoning varies) / shallow (wording aligns, meaning may differ)
+
+          Be skeptical. Probe for hidden disagreements beneath apparent consensus.
+        expectedOutput: "DepthTest { depth: string, reasoningAlignment: string, definitionAlignment: string, edgeCaseAlignment: string, hiddenDisagreements: string[] }"
+        validationRule: "Depth rated with supporting evidence from the perspectives"
+        failureSignal: "Depth assessed without testing specific alignment areas"
+        recoveryAction: "Default to 'moderate' depth and note insufficient data for deep testing"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Assess consensus robustness
+        desc: Determine how robust the consensus is against new information, changed conditions, or different framings of the question.
+        whyThisMatters: Robust consensus survives stress testing; fragile consensus that breaks under minor perturbation should be treated with caution.
+        inputNeeded: "DepthTest results, consensus statement, perspectives"
+        actionInstruction: "Call llm.chat() with robustness assessment prompt."
+        promptToUse: |
+          You are the Synthesizer agent assessing consensus robustness.
+
+          Consensus: {{consensusStatement}}
+          Depth: {{depthTest.depth}}
+          Perspectives: {{perspectives}}
+
+          Stress test the consensus:
+          1. What new information could break this consensus?
+          2. If the question were framed differently, would consensus hold?
+          3. Are there unstated assumptions that, if challenged, would break consensus?
+          4. How many perspectives would need to change for consensus to collapse?
+          5. Robustness: robust (survives stress tests) / moderate (survives most) / fragile (easily broken)
+
+          Identify the single most likely factor that could break the consensus.
+        expectedOutput: "RobustnessAssessment { robustness: string, breakingFactors: string[], framingSensitivity: string, assumptionVulnerabilities: string[], collapseThreshold: string }"
+        validationRule: "Robustness rated, at least 1 breaking factor identified"
+        failureSignal: "No breaking factors identified (overconfident) or all factors are trivial"
+        recoveryAction: "Apply generic stress tests: assumption change, new evidence, reframing"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Produce confidence assessment
+        desc: Compile depth and robustness into a calibrated confidence assessment with actionable guidance on how to treat the consensus.
+        whyThisMatters: The confidence assessment is the key deliverable that tells decision-makers how much weight to place on the consensus finding.
+        inputNeeded: "DepthTest, RobustnessAssessment, consensus statement"
+        actionInstruction: "Call llm.chat() with confidence calibration prompt. Then call validateOutput()."
+        promptToUse: |
+          You are the Synthesizer agent producing a consensus confidence assessment.
+
+          Consensus: {{consensusStatement}}
+          Depth: {{depthTest}}
+          Robustness: {{robustnessAssessment}}
+
+          Produce calibrated confidence:
+          1. Overall confidence: alto (deep + robust) / medio (moderate depth or robustness) / bajo (shallow or fragile)
+          2. What the consensus can be used for at this confidence level
+          3. What it should NOT be used for at this confidence level
+          4. How to increase confidence (specific actions)
+          5. Risk of relying on this consensus
+
+          Be honest. Overconfidence in consensus is more dangerous than acknowledged uncertainty.
+        expectedOutput: "ConsensusConfidence { confidence: string, usableFor: string[], notUsableFor: string[], improvementActions: string[], relianceRisk: string }"
+        validationRule: "Confidence calibrated, both usable and not-usable categories populated"
+        failureSignal: "Confidence assigned without considering both depth and robustness"
+        recoveryAction: "Apply conservative confidence (one level lower than calculated)"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the confidence assessment.
+        whyThisMatters: Final validation ensures the confidence assessment is safe and complete.
+        inputNeeded: "ConsensusConfidence"
+        actionInstruction: "Call validateOutput(). Format as ConsensusResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsensusResult with confidence assessment and guidance"
+        validationRule: "CP3 passed, confidence assessment complete"
+        failureSignal: "CP3 flags content or assessment incomplete"
+        recoveryAction: "Deliver confidence rating with brief justification"
+        handoffIfNeeded: null
+
+    mainOutput: "Calibrated consensus confidence assessment with depth, robustness, and usage guidance"
+    secondaryOutputs:
+      - "depth_test for detailed analysis"
+      - "robustness_assessment for stress test results"
+      - "confidence_metrics (depth level, robustness level, breaking factors count)"
+    DoD:
+      - "Consensus depth tested"
+      - "Robustness stress-tested"
+      - "Confidence calibrated"
+      - "Usage guidance provided"
+      - "CP3 passed"
+    qaChecklist:
+      - "Depth test probed actual reasoning alignment"
+      - "Robustness test identified realistic breaking factors"
+      - "Confidence is conservative rather than optimistic"
+      - "Usage guidance is practical"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "depth_testing: reasoning and definition alignment tested"
+      - "robustness_testing: at least 1 realistic breaking factor identified"
+      - "confidence_calibration: rating reflects both depth and robustness"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when consensus confidence assessment is needed)"
+    errorHandling: "If consensus statement is vague, request clarification before assessing confidence"
+    fallbackRoute: "Return default 'medio' confidence with note about insufficient assessment data"
+    escalationRoute: "Report to orchestrator that consensus requires independent validation to confirm confidence"

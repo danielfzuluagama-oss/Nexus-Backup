@@ -1,0 +1,605 @@
+# =============================================================================
+# Skill: delegation
+# Agent: pristino-orchestrator
+# Purpose: Decide and execute delegation mode (single/terna/committee)
+# =============================================================================
+
+id: delegation
+name: Delegation Engine
+purpose: >
+  Analyze incoming requests and execute the appropriate delegation mode
+  (single, terna, or committee) to distribute work among specialized agents.
+businessValue: >
+  Intelligent work distribution ensures simple tasks stay fast while complex
+  tasks get multi-perspective analysis, optimizing both latency and quality.
+triggerTypes:
+  - user_message
+  - internal_routing
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "userMessage: string (sanitized, max 4096 chars)"
+  - "conversationHistory: Message[] (last 20 messages from SQLite)"
+  - "agentCatalog: AgentDefinition[] (available agents with status)"
+  - "routingHints: RoutingHints (optional domain/complexity hints)"
+
+outputs:
+  - "finalResponse: string (synthesized response for the user)"
+  - "routingLog: RoutingDecision { mode, agents[], reason, timestamp }"
+  - "delegationMetrics: { latency_ms, agents_used, mode }"
+
+dependencies:
+  - "security.ts (sanitizeInput, buildSecurePrompt, validateOutput)"
+  - "router.ts (route_request tool implementation)"
+  - "loader.ts (loadAgentDefinition for sub-agents)"
+  - "runner.ts (runAgent for delegation execution)"
+  - "memory.ts (SQLite conversation persistence)"
+  - "synthesizer agent (for terna/committee synthesis)"
+
+toolUsage:
+  - "route_request: Evaluate complexity and select delegation mode"
+  - "delegate_to_agent: Execute delegation to selected agent(s)"
+  - "get_current_time: Timestamp for logging and timeout tracking"
+
+memoryReadsWrites:
+  reads:
+    - "conversationHistory: last 20 messages for context"
+    - "agentCatalog: available agents and their capabilities"
+    - "routingHistory: past routing decisions for pattern detection"
+  writes:
+    - "routingLog: decision with mode, agents, reason"
+    - "assistantMessage: final response to conversation history"
+    - "delegationMetrics: latency and agent performance data"
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text before routing"
+  - "CP2: buildSecurePrompt() on all system prompts sent to sub-agents"
+  - "CP3: validateOutput() on all LLM responses before delivery to user"
+  - "Tool arg validation: verify agent IDs exist in catalog before delegation"
+  - "Whitelist check: verify userId in allowedUserIds before processing"
+
+observabilityEvents:
+  - "skill_activated: delegation skill triggered"
+  - "routing_decision_made: mode and agents selected"
+  - "delegation_started: agent(s) invoked"
+  - "delegation_completed: agent(s) responded"
+  - "synthesis_started: combining multiple responses"
+  - "synthesis_completed: unified response ready"
+  - "validation_passed: CP3 cleared output"
+  - "fallback_triggered: delegation failed, responding directly"
+
+failureHandling:
+  - "Agent timeout (60s): exclude timed-out agent, continue with available responses"
+  - "All agents fail: Pristino responds directly with honest limitation message"
+  - "LLM error on routing: default to single-agent with best-match agent"
+  - "Synthesis failure: return longest individual response with attribution"
+  - "CP3 flags output: log warning (log-but-dont-block policy), deliver response"
+
+interoperabilityContract:
+  inputType: "DelegationRequest { userMessage, history, agentCatalog, hints }"
+  outputType: "DelegationResult { response, routingLog, metrics }"
+  protocol: "Internal function call via runner.ts"
+
+wowCriteria:
+  - "Routing decision takes < 2s with clear reasoning"
+  - "Terna synthesis feels like one expert, not a collage of three"
+  - "Committee deliberation surfaces genuine disagreements productively"
+  - "User never perceives delegation overhead as latency"
+
+safeCriteria:
+  - "Every response passes CP3 validateOutput()"
+  - "Routing decision is logged with mode, agents, and reason"
+  - "No sub-agent prompt leaks into user-facing response"
+  - "Timeout fallback fires within 60s of delegation start"
+
+# =============================================================================
+# Workflows
+# =============================================================================
+
+workflows:
+  # ---------------------------------------------------------------------------
+  # Workflow 1: Single Agent Delegation
+  # ---------------------------------------------------------------------------
+  - id: single-agent-delegation
+    title: Single Agent Delegation
+    objective: Route a clear, focused task to one specialist agent and return its response
+    trigger: "routing_decision.mode === 'single'"
+    designRationale: >
+      Single-agent delegation is default because 80%+ of requests map to one domain.
+      Overhead of terna/committee not justified for simple queries.
+    timeoutMs: 15000
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Input sanitized through CP1
+      - At least one agent available in catalog
+      - Router determined single-agent mode
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "selectedAgent: AgentDefinition (chosen by router)"
+      - "routingDecision: RoutingDecision { mode: 'single' }"
+    steps:
+      - stepNumber: 1
+        title: Sanitize and validate input
+        desc: Apply CP1 security checkpoint to the user message and verify it is non-empty after cleaning.
+        whyThisMatters: Prevents prompt injection and malformed input from reaching any sub-agent.
+        inputNeeded: "Raw user message string (max 4096 chars from Telegram)"
+        actionInstruction: "Call sanitizeInput(userMessage) from security.ts. Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: boolean, cleaned: string, reason?: string } with control chars stripped"
+        validationRule: "cleaned.length > 0 and cleaned contains no chars in range U+0000-U+001F (except newline, tab)"
+        failureSignal: "cleaned is empty string after sanitization, or sanitizeInput throws exception"
+        recoveryAction: "Return early with 'I received an empty message. Could you try again?' to the user"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Evaluate and route request
+        desc: Use LLM with route_request tool to assess complexity and select the best single agent.
+        whyThisMatters: Correct agent selection is the primary determinant of response quality for single delegation.
+        inputNeeded: "Sanitized user message, agent catalog, conversation history"
+        actionInstruction: "Call llm.chat() with route_request tool and CP2-secured system prompt. Parse RoutingDecision."
+        promptToUse: |
+          You are the Pristino routing engine. Evaluate this request and select ONE specialist agent.
+          Choose the agent whose domain best matches the request.
+
+          Available agents: {{agentCatalog}}
+          Conversation context: {{recentHistory}}
+          User message: {{userMessage}}
+
+          Call the route_request tool with mode="single" and your selected agent.
+        expectedOutput: "RoutingDecision { mode: 'single', agents: [agentId], reason: string }"
+        validationRule: "mode === 'single' and agents.length === 1 and agents[0] exists in agentCatalog"
+        failureSignal: "LLM returns text without tool call, or selected agent ID not in catalog"
+        recoveryAction: "Default to mode='single' with agent='pristino-orchestrator' (self) and log warning"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Delegate to specialist
+        desc: Hand off the task to the selected agent using runAgent with the agent's system prompt.
+        whyThisMatters: Specialist agents have domain-specific prompts and tools that produce higher quality responses.
+        inputNeeded: "RoutingDecision with target agent ID, sanitized user message, agent definition"
+        actionInstruction: "Call runAgent(deps, userId, task, { depth: 1, systemPrompt: agent.systemPrompt, allowedTools: agent.tools })"
+        promptToUse: "Uses the target agent's agent.md as system prompt (loaded via loader.ts, secured by CP2)"
+        expectedOutput: "String response from the specialist agent"
+        validationRule: "Response is non-empty string and length <= 4096 chars"
+        failureSignal: "runAgent throws error, returns empty string, or exceeds 60s timeout"
+        recoveryAction: "Log error, fall back to Pristino orchestrator responding directly with honest limitation"
+        handoffIfNeeded: "Target agent specified in RoutingDecision.agents[0]"
+
+      - stepNumber: 4
+        title: Validate and deliver response
+        desc: Apply CP3 validation to the agent response, persist to memory, and send to the user.
+        whyThisMatters: Security and traceability are mandatory before any output reaches the user.
+        inputNeeded: "Agent response string, userId, conversation history handle"
+        actionInstruction: "Call validateOutput(response) from security.ts. Then memory.addMessage(userId, 'assistant', output). Send via Telegram."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Message sent to user via Telegram, conversation history updated"
+        validationRule: "CP3 passed (or logged warning), message persisted in SQLite, Telegram reply successful"
+        failureSignal: "CP3 flags critical issue, or Telegram API returns error"
+        recoveryAction: "CP3 uses log-but-dont-block policy. For Telegram error, retry send once after 2s."
+        handoffIfNeeded: null
+
+    mainOutput: "Specialist agent response delivered to user via Telegram"
+    secondaryOutputs:
+      - "routing_log with single-agent decision and reason"
+      - "delegation_metrics with latency and agent ID"
+      - "conversation_history updated in SQLite"
+    DoD:
+      - User received relevant response from specialist agent
+      - Routing decision logged with mode, agent, and reason
+      - CP1 applied on input, CP3 applied on output
+      - Conversation history updated in SQLite
+    qaChecklist:
+      - No leaked system prompts in output
+      - Response is relevant to the user question
+      - Response time < 15s total
+      - Memory updated with final response only
+    raci:
+      responsible: "Selected specialist agent"
+      accountable: "pristino-orchestrator"
+      consulted: "router (for agent selection)"
+      informed: "logger"
+    kpis:
+      - "total_response_time_p95: <15s"
+      - "routing_accuracy: agent domain matches request domain"
+      - "delegation_success_rate: >= 95% of delegations return valid response"
+    cadence: "Per-request (when router selects single mode)"
+    errorHandling: "If agent fails: Pristino responds directly with best-effort answer"
+    fallbackRoute: "pristino-orchestrator responds directly using its own LLM call"
+    escalationRoute: "Log error + send fallback message to user with honest limitation"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 2: Terna Parallel Delegation
+  # ---------------------------------------------------------------------------
+  - id: terna-parallel-delegation
+    title: Terna Parallel Delegation
+    objective: Execute 3 agents in parallel and synthesize their responses into a unified answer
+    trigger: "routing_decision.mode === 'terna'"
+    designRationale: >
+      Three parallel perspectives optimize quality/latency trade-off. More agents
+      add diminishing returns; fewer lose diversity benefit.
+    timeoutMs: 30000
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Input sanitized through CP1
+      - 3 agents selected by router
+      - Synthesizer agent available
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "selectedAgents: AgentDefinition[3]"
+      - "routingDecision: RoutingDecision { mode: 'terna' }"
+    steps:
+      - stepNumber: 1
+        title: Prepare parallel delegation
+        desc: Load all 3 agent definitions, build CP2-secured system prompts, and prepare task payloads.
+        whyThisMatters: Pre-validating all agents prevents mid-execution failures and ensures consistent prompt security.
+        inputNeeded: "3 agent IDs from RoutingDecision, sanitized user message"
+        actionInstruction: "For each agentId: loadAgentDefinition(agentId) via loader.ts, then buildSecurePrompt(agent.systemPrompt). Verify all 3 load successfully."
+        promptToUse: null (mechanical step)
+        expectedOutput: "3 prepared task payloads with secured system prompts and allowed tools"
+        validationRule: "All 3 agent definitions loaded and system prompts secured via CP2"
+        failureSignal: "One or more agent definitions fail to load, or CP2 rejects a system prompt"
+        recoveryAction: "If 1 agent fails to load: proceed with 2. If 2+ fail: fall back to single-agent delegation."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Launch parallel agents
+        desc: Execute all 3 agent loops concurrently via Promise.all with individual 60s timeouts.
+        whyThisMatters: Parallelism reduces total latency from 3x sequential to approximately 1x.
+        inputNeeded: "3 prepared task payloads with CP2-secured system prompts"
+        actionInstruction: "Promise.all([runAgent(deps, userId, task, agentA), runAgent(deps, userId, task, agentB), runAgent(deps, userId, task, agentC)]) with Promise.race timeout per agent."
+        promptToUse: "Each agent uses its own agent.md system prompt secured by CP2"
+        expectedOutput: "string[3] — three independent responses from specialist agents"
+        validationRule: "At least 2 of 3 promises resolved with non-empty responses"
+        failureSignal: "More than 1 promise rejected, or more than 1 response is empty"
+        recoveryAction: "Continue with successful responses (minimum 1). If all fail, fallback to direct response."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Synthesize responses
+        desc: Use Synthesizer agent to combine 2-3 perspectives into a single coherent response.
+        whyThisMatters: Raw concatenation is poor UX. Synthesis creates a unified answer that feels like one expert.
+        inputNeeded: "2-3 agent responses, original user message, agent names for attribution"
+        actionInstruction: "Call runAgent(deps, userId, synthesisTask, { depth: 1, systemPrompt: synthesizer.agent.md })"
+        promptToUse: |
+          You are the Synthesizer. Combine these specialist responses into one coherent answer.
+          Remove redundancy, highlight where perspectives agree, note meaningful differences.
+          Keep the tone direct and concise (chat format, not document).
+
+          Original question: {{userMessage}}
+          Response A ({{agentA.name}}): {{responseA}}
+          Response B ({{agentB.name}}): {{responseB}}
+          Response C ({{agentC.name}}): {{responseC}}
+        expectedOutput: "Single synthesized response string that integrates all perspectives"
+        validationRule: "Response is non-empty and shorter than the sum of all individual responses"
+        failureSignal: "Synthesizer timeout (60s) or returns empty response"
+        recoveryAction: "Return the longest individual response with note: '[Based on {{agentName}} analysis]'"
+        handoffIfNeeded: "synthesizer agent"
+
+      - stepNumber: 4
+        title: Validate and deliver synthesis
+        desc: Apply CP3 validation, persist the synthesized response to memory, and send to user.
+        whyThisMatters: Final security gate and traceability before output reaches the user.
+        inputNeeded: "Synthesized response string, userId, individual agent responses for audit log"
+        actionInstruction: "Call validateOutput(synthesized). Log all 3 individual responses for audit. Persist final to memory. Send via Telegram."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Synthesized message sent to user, all responses logged for audit"
+        validationRule: "CP3 passed, message persisted, Telegram reply successful, audit log written"
+        failureSignal: "CP3 flags critical issue, or Telegram API returns error"
+        recoveryAction: "CP3 uses log-but-dont-block. For Telegram error, retry once. Log all individual responses."
+        handoffIfNeeded: null
+
+    mainOutput: "Synthesized multi-perspective response sent to user via Telegram"
+    secondaryOutputs:
+      - "routing_log with terna decision and reason"
+      - "individual_agent_responses for audit trail"
+      - "synthesis_metrics: latency, agent count, response lengths"
+    DoD:
+      - User received synthesized response integrating multiple perspectives
+      - All agent responses logged for audit
+      - Routing decision logged with mode and reason
+      - CP1 on input, CP3 on output executed
+    qaChecklist:
+      - Synthesis does not contradict individual responses
+      - No leaked prompts or agent internals in output
+      - Response time < 30s total
+      - Memory updated with synthesized response only
+    raci:
+      responsible: "synthesizer"
+      accountable: "pristino-orchestrator"
+      consulted: "3 selected specialist agents"
+      informed: "logger"
+    kpis:
+      - "total_response_time_p95: <30s"
+      - "synthesis_coherence: no contradictions with individual responses"
+      - "agent_success_rate: >= 2/3 agents respond successfully"
+    cadence: "Per-request (when router selects terna mode)"
+    errorHandling: "If <2 agents respond: degrade to single-agent with best response"
+    fallbackRoute: "single-agent-delegation with the most relevant agent"
+    escalationRoute: "Log error + Pristino responds directly with apology"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 3: Committee Full Deliberation
+  # ---------------------------------------------------------------------------
+  - id: committee-full-deliberation
+    title: Committee Full Deliberation
+    objective: Execute 5 agents for full deliberation on critical decisions with consensus requirement
+    trigger: "routing_decision.mode === 'committee'"
+    designRationale: >
+      Full deliberation reserved for high-stakes decisions where consensus matters
+      more than speed. Tiebreaker ensures resolution even with conflicting views.
+    timeoutMs: 60000
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Input sanitized through CP1
+      - 5 agents selected by router
+      - Synthesizer available for final consensus
+      - Request classified as critical decision
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "selectedAgents: AgentDefinition[5]"
+      - "routingDecision: RoutingDecision { mode: 'committee' }"
+    steps:
+      - stepNumber: 1
+        title: Prepare committee members
+        desc: Load all 5 agent definitions, validate availability, and build secured prompts with deliberation instructions.
+        whyThisMatters: Committee mode requires all members to have explicit deliberation context to produce meaningfully different perspectives.
+        inputNeeded: "5 agent IDs from RoutingDecision, sanitized user message"
+        actionInstruction: "For each agentId: loadAgentDefinition(agentId), buildSecurePrompt(agent.systemPrompt + deliberation_context). Verify all 5 load."
+        promptToUse: null (mechanical step)
+        expectedOutput: "5 prepared task payloads with deliberation-enhanced system prompts"
+        validationRule: "All 5 agent definitions loaded and system prompts secured via CP2"
+        failureSignal: "One or more agent definitions fail to load"
+        recoveryAction: "If 1-2 agents fail: degrade to terna with 3 available. If 3+ fail: fall back to single."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Execute parallel deliberation
+        desc: Launch all 5 agents concurrently, each providing an independent analysis with explicit reasoning.
+        whyThisMatters: Independent parallel execution prevents groupthink and ensures genuine diversity of perspectives.
+        inputNeeded: "5 prepared task payloads with deliberation-enhanced prompts"
+        actionInstruction: "Promise.all(5 runAgent calls) with 60s timeout per agent. Each agent prompted to include reasoning chain."
+        promptToUse: |
+          You are participating in a committee deliberation. Provide your analysis with:
+          1. Your assessment of the request
+          2. Key considerations from your domain expertise
+          3. Your recommendation with explicit reasoning
+          4. Any risks or caveats you identify
+
+          User request: {{userMessage}}
+        expectedOutput: "string[5] — five independent deliberation responses with reasoning"
+        validationRule: "At least 3 of 5 promises resolved with non-empty responses containing reasoning"
+        failureSignal: "More than 2 promises rejected or responses lack reasoning structure"
+        recoveryAction: "Continue with available responses (min 3 for consensus). If <3: degrade to terna."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Synthesize with consensus check
+        desc: Use Synthesizer to combine 3-5 perspectives, checking for consensus threshold (>= 3/5 agreement).
+        whyThisMatters: Committee decisions require formal consensus. Disagreements must be surfaced, not hidden.
+        inputNeeded: "3-5 agent deliberation responses, original user message, consensus threshold (3/5)"
+        actionInstruction: "Call runAgent with synthesizer, including consensus detection instructions. Parse agreement/disagreement."
+        promptToUse: |
+          You are the Committee Synthesizer. Analyze these deliberation responses:
+          1. Identify areas of consensus (>= 3/5 agents agree)
+          2. Identify areas of disagreement with each position stated
+          3. Produce a final recommendation based on consensus
+          4. Flag any unresolved disagreements for the user
+
+          Original question: {{userMessage}}
+          {{#each responses}}
+          Member {{name}}: {{response}}
+          {{/each}}
+
+          If consensus >= 3/5: state the recommendation confidently.
+          If no consensus: present the strongest positions and let the user decide.
+        expectedOutput: "Synthesized committee response with consensus status and recommendation"
+        validationRule: "Response includes explicit consensus status (agreed/split) and a clear recommendation"
+        failureSignal: "Synthesizer timeout, or response lacks consensus status indicator"
+        recoveryAction: "Return structured summary of individual positions without consensus judgment"
+        handoffIfNeeded: "synthesizer agent"
+
+      - stepNumber: 4
+        title: Tiebreak if needed
+        desc: If no consensus is reached, Pristino acts as tiebreaker using its orchestrator perspective.
+        whyThisMatters: Users need a clear answer even when experts disagree. The orchestrator's broad view adds value.
+        inputNeeded: "Synthesis result with consensus status, all individual responses"
+        actionInstruction: "If consensus_status === 'split': call llm.chat() with Pristino tiebreaker prompt. Else: skip to next step."
+        promptToUse: |
+          The committee is split on this decision. As the orchestrator with broad context:
+          1. Review the disagreement
+          2. Apply the principle of least harm / most reversibility
+          3. Make a final recommendation with your reasoning
+          4. Acknowledge the dissenting views respectfully
+
+          User question: {{userMessage}}
+          Consensus summary: {{synthesisSummary}}
+          Dissenting positions: {{dissentingViews}}
+        expectedOutput: "Final tiebreaker recommendation (or pass-through if consensus was reached)"
+        validationRule: "If tiebreak needed: recommendation provided with reasoning. If not: original synthesis unchanged."
+        failureSignal: "Tiebreaker LLM call fails or returns empty"
+        recoveryAction: "Present the split positions to user with 'Experts disagree — here are the perspectives' framing"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver deliberation
+        desc: Apply CP3, persist committee result with full audit trail, send to user.
+        whyThisMatters: Committee decisions are critical and require the most thorough audit trail.
+        inputNeeded: "Final committee response, all individual deliberations, consensus status, tiebreak status"
+        actionInstruction: "validateOutput(finalResponse). Log all 5 deliberations + synthesis + tiebreak to audit. Persist to memory. Send via Telegram."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Committee response sent to user, full deliberation audit persisted"
+        validationRule: "CP3 passed, all deliberations logged, Telegram reply successful"
+        failureSignal: "CP3 flags critical issue, audit log write fails, Telegram error"
+        recoveryAction: "CP3 log-but-dont-block. Retry Telegram once. Ensure audit log is written even on send failure."
+        handoffIfNeeded: null
+
+    mainOutput: "Committee-deliberated response with consensus status delivered to user"
+    secondaryOutputs:
+      - "full_deliberation_audit: all 5 agent responses with reasoning"
+      - "consensus_report: agreement/disagreement breakdown"
+      - "tiebreak_log: if tiebreak was needed and reasoning"
+      - "committee_metrics: latency, consensus_level, agent_count"
+    DoD:
+      - User received committee response with consensus status
+      - All 5 deliberation responses logged for audit
+      - Consensus status explicitly determined
+      - Tiebreak applied if needed with reasoning logged
+      - Full CP1/CP3 security applied
+    qaChecklist:
+      - Synthesis accurately reflects individual positions
+      - Consensus status is correct (verified against individual responses)
+      - No leaked prompts or agent internals
+      - Response time < 60s total
+      - Full audit trail persisted
+    raci:
+      responsible: "synthesizer (synthesis), pristino-orchestrator (tiebreak)"
+      accountable: "pristino-orchestrator"
+      consulted: "5 selected specialist agents"
+      informed: "logger, audit system"
+    kpis:
+      - "total_response_time_p95: <60s"
+      - "consensus_rate: >= 60% of committees reach 3/5 consensus"
+      - "agent_participation_rate: >= 4/5 agents respond"
+      - "tiebreak_rate: <40% of committees need tiebreak"
+    cadence: "Per-request (when router selects committee mode, expected < 10% of requests)"
+    errorHandling: "If <3 agents respond: degrade to terna. If synthesis fails: present individual positions."
+    fallbackRoute: "terna-parallel-delegation with top 3 agents"
+    escalationRoute: "Log full audit + Pristino responds with structured summary of available positions"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 4: Fallback Direct Response
+  # ---------------------------------------------------------------------------
+  - id: fallback-direct-response
+    title: Fallback Direct Response
+    objective: Respond directly when no specialist agent is appropriate for the request
+    trigger: "routing_decision.mode === 'fallback' or all delegations failed"
+    designRationale: >
+      Direct response bypasses delegation for conversational messages (greetings,
+      meta-questions) where sub-agent overhead provides no value.
+    timeoutMs: 10000
+    preconditions:
+      - User authenticated via Telegram whitelist
+      - Input sanitized through CP1
+      - Router determined no specialist is appropriate, OR delegation attempts exhausted
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "routingDecision: RoutingDecision { mode: 'fallback', reason: string }"
+      - "failureContext: string (optional, why delegation failed)"
+    steps:
+      - stepNumber: 1
+        title: Assess fallback context
+        desc: Determine whether this is a planned fallback (no agent matches) or an emergency fallback (delegation failed).
+        whyThisMatters: The response tone and content differ between intentional routing and error recovery.
+        inputNeeded: "RoutingDecision with fallback reason, optional failure context from prior delegation"
+        actionInstruction: "Check if failureContext exists. Set fallback_type to 'planned' or 'recovery'. Log routing decision."
+        promptToUse: null (mechanical step)
+        expectedOutput: "fallback_type: 'planned' | 'recovery', with context for LLM prompt"
+        validationRule: "fallback_type is set and routing decision is logged"
+        failureSignal: "Routing decision cannot be determined or logged"
+        recoveryAction: "Default to fallback_type='recovery' and proceed with generic response"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Generate direct response
+        desc: Use Pristino's own LLM call to generate a helpful response within its general capabilities.
+        whyThisMatters: Even without specialists, the user deserves a useful response with honest scope acknowledgment.
+        inputNeeded: "Sanitized user message, fallback type, conversation history, failure context"
+        actionInstruction: "Call llm.chat() with Pristino's own system prompt (from agent.md) and CP2. Include fallback context."
+        promptToUse: |
+          You are Pristino, the orchestrator. No specialist agent was appropriate for this request.
+          Respond directly with your best knowledge. Be honest about limitations.
+          If this is a recovery from failed delegation, acknowledge briefly without details.
+
+          Fallback type: {{fallbackType}}
+          Conversation context: {{recentHistory}}
+          User message: {{userMessage}}
+        expectedOutput: "Direct response string from Pristino's own LLM call"
+        validationRule: "Response is non-empty, relevant to the question, and acknowledges scope if needed"
+        failureSignal: "LLM call fails, returns empty, or exceeds 60s timeout"
+        recoveryAction: "Send static fallback: 'I could not process your request right now. Please try again or rephrase.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Validate and deliver fallback
+        desc: Apply CP3 validation, persist to memory, and send the direct response to the user.
+        whyThisMatters: Even fallback responses must pass security validation and be tracked in conversation history.
+        inputNeeded: "Direct response string, userId, fallback type for logging"
+        actionInstruction: "validateOutput(response). memory.addMessage(userId, 'assistant', response). Send via Telegram. Log fallback event."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Fallback response sent to user, logged as fallback in routing history"
+        validationRule: "CP3 passed, message persisted, Telegram reply successful, fallback logged"
+        failureSignal: "Telegram API error after retry"
+        recoveryAction: "Log critical error. If Telegram fails twice, mark message as undelivered for retry queue."
+        handoffIfNeeded: null
+
+    mainOutput: "Direct response from Pristino delivered to user"
+    secondaryOutputs:
+      - "fallback_log: reason for fallback and type (planned/recovery)"
+      - "routing_log: decision with fallback mode recorded"
+    DoD:
+      - User received a helpful response despite no specialist being available
+      - Fallback reason logged for analysis
+      - CP1/CP3 applied
+      - Conversation history updated
+    qaChecklist:
+      - Response honestly acknowledges limitations when relevant
+      - No hallucinated specialist attribution
+      - Response time < 10s
+      - Fallback reason logged for routing improvement
+    raci:
+      responsible: "pristino-orchestrator"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "total_response_time_p95: <10s"
+      - "fallback_rate: <15% of all requests (lower is better)"
+      - "user_satisfaction_on_fallback: response is relevant despite no specialist"
+    cadence: "Per-request (when no specialist matches or delegation fails)"
+    errorHandling: "If direct LLM call also fails: send static fallback message"
+    fallbackRoute: "Static message: 'I could not process your request. Please try again.'"
+    escalationRoute: "Log critical error for ecosystem health monitoring"
+
+# ── Gap-Closing: 10× Quality Enhancement ──
+
+assumptions:
+  - "Delegation routing is based on skill-intent matching. The orchestrator's intent classifier must achieve ≥90% accuracy for routing to be effective."
+  - "Each specialist agent has a well-defined skill.yaml with clear triggers and capabilities. Ambiguous definitions degrade routing accuracy."
+  - "Fallback (orchestrator handles directly) is always available. No request goes unanswered even if no specialist matches."
+  - "Delegation is transparent to the user. The user does not need to know which agent handled their request."
+
+limits:
+  - "Cannot delegate to agents that are offline or unregistered. Delegation fails gracefully to fallback."
+  - "Cannot split a single request across multiple agents simultaneously. Multi-agent responses require sequential delegation."
+  - "Cannot guarantee specialist response quality. Delegation routes the request; quality depends on the specialist skill."
+  - "Maximum delegation chain depth: 2 (orchestrator → specialist → sub-specialist). Beyond 2, the request is too fragmented."
+
+edge_cases:
+  - scenario: "Multiple specialists match the user's intent with similar confidence scores."
+    handling: "Route to the specialist with the highest confidence. If tied, prefer the specialist with the narrower scope (specialization > generalization)."
+  - scenario: "Specialist agent crashes mid-response."
+    handling: "Timeout after 10s. Fall back to orchestrator direct response. Log the failure for self-diagnosis."
+  - scenario: "User explicitly asks for a specialist that doesn't exist."
+    handling: "Acknowledge the request, explain which specialists are available, and offer the closest match."
+  - scenario: "Delegation intent is ambiguous (could be coaching OR research)."
+    handling: "Ask the user one clarifying question before routing. Never guess when confidence is <70%."
+
+trade_offs:
+  - decision: "Intent-based routing over keyword-based routing."
+    justification: "Intent classification handles paraphrasing and context. Keywords fail on synonyms and novel phrasing."
+  - decision: "Transparent delegation over explicit agent selection by user."
+    justification: "Users care about answers, not routing. Transparent delegation reduces cognitive load."
+  - decision: "Fallback to orchestrator over error message on routing failure."
+    justification: "A generic but relevant response is always better than 'I don't know which agent to use.' Users see capability, not infrastructure."
+
+evaluation:
+  acceptance_criteria:
+    - "Delegation routing accuracy ≥90% (correct specialist selected)."
+    - "Fallback activates on 100% of unmatched requests (zero dropped requests)."
+    - "Total response time <10s including delegation overhead."
+    - "Fallback rate <15% of all requests."
+    - "Zero hallucinated specialist attributions."
+  success_metrics:
+    - "Routing accuracy: ≥90%."
+    - "Fallback rate: <15%."
+    - "Total response time P95: <10s."

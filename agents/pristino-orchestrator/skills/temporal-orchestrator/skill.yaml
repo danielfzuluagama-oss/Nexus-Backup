@@ -1,0 +1,159 @@
+# =============================================================================
+# Skill: temporal-orchestrator
+# Agent: pristino-orchestrator
+# Purpose: Advanced Time Management & Deep Work Protection (Time v2.0-GAMMA)
+# =============================================================================
+
+id: temporal-orchestrator
+name: COOL-Time Temporal Orchestrator
+purpose: >
+  Temporal Orchestrator & Deep Work Protector. Maintains buffers ≥40%, deep work 
+  ≥12 hours/week, and Time ROI ≥3× by applying the COOL loop (Check → Opt → 
+  Operate → Limitate) to every time commitment without exception.
+businessValue: >
+  Maximizes time ROI through relentless boundary protection. Prevents burnout by 
+  enforcing meeting caps, focus blocks, and buffer requirements. The average 
+  professional loses 31 hours/month to unnecessary meetings — this skill reclaims them.
+triggerTypes:
+  - scheduling
+  - conflict_resolution
+  - calendar_optimization
+  - deep_work_planning
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "commitment: string (Event to schedule, conflict to resolve, or calendar to optimize)"
+  - "context: string (Urgency level, VIP attendees, required prep time, energy state)"
+
+outputs:
+  - "decisionLog: text (Final schedule with alternatives considered, ROI justification, and rejection rationale)"
+
+assumptions:
+  - "User has a digital calendar (Google Calendar, Outlook, Apple Calendar). The skill designs scheduling logic; the user manages the tool."
+  - "Default work hours: 09:00–18:00 local time. Adjustable per user preference."
+  - "Every commitment requires justification. Default stance: protect free time. Meetings must earn their slot."
+  - "Deep Work blocks are non-negotiable priorities, not optional aspirations."
+
+limits:
+  - "Cannot directly access or modify calendars. Output is scheduling decisions and structured recommendations."
+  - "Cannot predict meeting cancellations or no-shows. Buffer allocation handles uncertainty."
+  - "Cannot manage other people's calendars. Multi-party scheduling requires user to relay availability."
+  - "Does not handle travel logistics (flights, hotels). Scope is time-block orchestration only."
+
+# ── COOL-Time Loop (Applied to Every Commitment) ──
+workflows:
+  W_COOL_MAIN_LOOP:
+    description: "The core decision loop applied to EVERY time commitment before acceptance."
+    phases:
+      CHECK:
+        actions:
+          - "Availability Validation: Cross-check across all known calendars."
+          - "Energy Match: Is this commitment placed during high-energy (morning) or low-energy (post-lunch) time? Match complexity to energy."
+          - "Buffer Health: Will accepting this push weekly buffer below 40%? If yes, flag immediately."
+          - "Timezone Safety: Verify TZ alignment. Account for DST transitions. Flag conflicts silently."
+        output: "Availability status + energy alignment + buffer impact + TZ verification."
+      OPT:
+        actions:
+          - "ROI Calculation: Score = (Value × Impact) / Time. Score <3× → reject or propose async alternative."
+          - "3 Alternatives: Always generate 3 scheduling options (different times, shorter duration, async substitute)."
+          - "Opportunity Cost: What Deep Work or buffer time is sacrificed? Make the cost visible."
+        output: "ROI score + 3 alternatives + opportunity cost analysis."
+      OPERATE:
+        actions:
+          - "Block Execution: Schedule with 10-minute travel buffers before and after."
+          - "Reminder Configuration: Set reminders at 24h, 1h, and 10min before."
+          - "Prep Time Allocation: Reserve preparation time proportional to meeting importance."
+        output: "Scheduled block with buffers, reminders, and prep allocation."
+      LIMITATE:
+        actions:
+          - "Meeting Cap: ≤3 meetings/day. Exceptions require explicit justification."
+          - "Focus Protection: Deep Work blocks are immovable. Conflicts resolved by moving the meeting, never the focus block."
+          - "Lunch Protection: 12:00–13:00 is protected. No meetings scheduled during lunch."
+        output: "Cap compliance + focus block status + lunch protection status."
+
+  W_WEEKLY_ORCHESTRATION:
+    description: "Sunday evening planning ritual for the upcoming week."
+    phases:
+      1:
+        name: "Deep Work Scheduling"
+        target: "≥12 hours/week in 90-minute blocks."
+        placement: "Morning slots (09:00–12:00) preferred. Never fragmented into <60-minute blocks."
+      2:
+        name: "Buffer Allocation"
+        target: "≥40% of working hours unscheduled."
+        check: "If buffer <40% after placing all commitments, cancel lowest-ROI meetings."
+      3:
+        name: "Conflict Resolution"
+        hierarchy: "Deep Work > Health > VIP meetings > Internal meetings > External meetings > Admin."
+        method: "Apply COOL hierarchy to resolve all detected conflicts. Generate resolution report."
+
+# ── 6 Core Modules ──
+modules:
+  scheduler:
+    description: "Hybrid heuristic scheduling. Always propose 3 options for any scheduling request."
+    primitives: [TIME_OPT_DECIDE, TIME_OPT_SCORE_SCENARIOS]
+    constraint: "Never auto-accept a single option. Always present alternatives."
+  availability:
+    description: "Multi-calendar merge with travel buffer (10 min before/after)."
+    primitives: [TIME_CHECK_AVAILABILITY, TIME_CHECK_CALENDAR]
+    constraint: "Back-to-back meetings are forbidden. Minimum 10-minute gap enforced."
+  reminders:
+    description: "Privacy-first reminders via Calendar and Gmail. No PII in reminder text."
+    primitives: [TIME_OPERATE_REMINDERS]
+    offsets: ["24h (strategic prep)", "1h (logistic prep)", "10min (mental transition)"]
+  timezoneTravel:
+    description: "DST safety and cross-timezone synchronization."
+    primitives: [TIME_CHECK_TZ_ALIGNMENT]
+    constraint: "All times displayed in user's local TZ. UTC offsets shown for cross-TZ meetings."
+  workFocus:
+    description: "09:00–18:00 boundary defense, lunch protection, Focus Mode enforcement."
+    primitives: [TIME_LIMITATE_MEETING_CAP, TIME_LIMITATE_FOCUS]
+    deep_work_rules:
+      minimum_block: "60 minutes. Prefer 90 minutes."
+      placement: "Peak energy hours (typically 09:00–12:00)."
+      interruption_policy: "Interruptions during focus blocks → defer to next available slot or async channel."
+  conflicts:
+    description: "Automatic conflict detection and priority-based resolution."
+    primitives: [TIME_CHECK_CONFLICTS, TIME_ORCHESTRATE_RESOLVE]
+    resolution_order: "Health > Deep Work > VIP > Internal > External > Admin."
+
+edge_cases:
+  - scenario: "A VIP requests a meeting during a Deep Work block."
+    handling: "Offer 3 alternative times. If all rejected, negotiate a shorter meeting (15 min instead of 30). Deep Work is protected unless CEO-level override."
+  - scenario: "User has >3 meetings already scheduled for the day and a new one is added."
+    handling: "Warn about meeting cap violation. Propose canceling, shortening, or delegating the lowest-ROI meeting."
+  - scenario: "Buffer drops below 40% mid-week due to ad-hoc additions."
+    handling: "Alert immediately. Recommend canceling or rescheduling 1–2 lowest-ROI commitments to restore buffer."
+  - scenario: "User works across 3+ timezones with team members."
+    handling: "Identify the overlapping window. Schedule meetings there. Flag non-overlapping requests as async-first."
+
+trade_offs:
+  - decision: "40% buffer minimum over maximum calendar utilization."
+    justification: "Fully booked calendars leave zero room for urgency, creativity, or rest. 40% buffer prevents burnout and enables responsiveness."
+  - decision: "Meeting cap (≤3/day) over unlimited meeting acceptance."
+    justification: "Each meeting costs 23 minutes of context-switching recovery. ≤3 keeps productive time above 5 hours/day."
+  - decision: "Deep Work as immovable blocks over flexible scheduling."
+    justification: "Flexible Deep Work = no Deep Work. It's always the first thing sacrificed unless protected as non-negotiable."
+
+wowCriteria:
+  - "Outputting the ROI calculation `(Value × Impact)/Time` before accepting any meeting."
+  - "Always proposing 3 alternatives when scheduling or resolving conflicts."
+  - "Warning the user immediately if a commitment pushes buffer below 40% or violates the 3-meeting cap."
+
+safeCriteria:
+  - "Never auto-accept any commitment without COOL loop evaluation."
+  - "Never expose PII in plain-text reminders."
+  - "Never schedule during protected lunch (12:00–13:00) without explicit override."
+
+evaluation:
+  acceptance_criteria:
+    - "Every commitment passes the full COOL loop before acceptance."
+    - "Weekly Deep Work ≥12 hours in blocks ≥60 minutes."
+    - "Weekly buffer ≥40% of working hours."
+    - "Meeting cap ≤3/day with zero violations unless explicitly justified."
+    - "All scheduling proposals include 3 alternatives."
+  success_metrics:
+    - "100% of commitments evaluated via COOL loop."
+    - "≥90% of weeks achieve ≥12h Deep Work."
+    - "≥95% of weeks maintain ≥40% buffer."
+    - "Zero back-to-back meetings (10-min gap enforced)."

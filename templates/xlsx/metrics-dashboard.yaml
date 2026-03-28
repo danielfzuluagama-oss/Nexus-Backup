@@ -1,0 +1,351 @@
+# Metrics Dashboard XLSX Template Specification
+# Used by skill-engine to generate XLSX files on demand
+# Binary .xlsx rendered via xlsx-template-creator skill
+
+id: metrics-dashboard
+name: Metrics Dashboard
+purpose: KPI and performance metrics for the agent ecosystem
+format: xlsx
+version: "1.0.0"
+
+workbook:
+  defaultFont: Calibri
+  defaultFontSize: 11
+
+sheets:
+  - id: dashboard
+    name: Dashboard
+    purpose: High-level KPI overview
+    frozen:
+      rows: 1
+    columns:
+      - id: kpi
+        header: KPI
+        width: 30
+        type: string
+      - id: target
+        header: Target
+        width: 15
+        type: string
+      - id: current
+        header: Current
+        width: 15
+        type: number
+      - id: status
+        header: Status
+        width: 12
+        type: string
+        conditionalFormatting:
+          - value: "On Track"
+            background: "#ecfdf5"
+            fontColor: "#059669"
+          - value: "At Risk"
+            background: "#fffbeb"
+            fontColor: "#d97706"
+          - value: "Off Track"
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+      - id: trend
+        header: Trend
+        width: 10
+        type: string
+        description: "Up/Down/Stable arrow indicator"
+      - id: notes
+        header: Notes
+        width: 35
+        type: string
+        wordWrap: true
+    headerStyle:
+      background: "#2563eb"
+      fontColor: "#ffffff"
+      bold: true
+    defaultRows:
+      # Response Performance
+      - [Response Time P50, "<5s", "", "", "", "Median response time across all modes"]
+      - [Response Time P95, "<10s", "", "", "", "95th percentile response time"]
+      - [Response Time P99, "<30s", "", "", "", "99th percentile response time"]
+      # Delegation Performance
+      - [Routing Decision Time, "<2s", "", "", "", "Time to decide single/terna/committee"]
+      - [Delegation Success Rate, ">95%", "", "", "", "Successful agent delegations / total"]
+      - [Terna Synthesis Quality, ">85/100", "", "", "", "Average synthesis quality score"]
+      - [Committee Consensus Rate, ">60%", "", "", "", "Committee decisions reaching consensus"]
+      # Reliability
+      - [Uptime, ">99.5%", "", "", "", "System availability"]
+      - [Error Rate, "<2%", "", "", "", "Errors / total requests"]
+      - [Fallback Rate, "<5%", "", "", "", "Requests hitting fallback / total"]
+      # Security
+      - [CP1 Pass Rate, "100%", "", "", "", "Input sanitization pass rate"]
+      - [CP2 Application Rate, "100%", "", "", "", "Prompt hardening applied rate"]
+      - [CP3 Pass Rate, ">99%", "", "", "", "Output validation pass rate"]
+      - [Prompt Leak Detection, "0 leaks", "", "", "", "Detected prompt leaks in outputs"]
+      # Quality
+      - [User Satisfaction, ">4.0/5", "", "", "", "Estimated response quality"]
+      - [Completion Rate, ">90%", "", "", "", "Requests fully completed / total"]
+
+  - id: routing
+    name: Routing Metrics
+    purpose: Detailed routing and delegation metrics
+    frozen:
+      rows: 1
+    columns:
+      - id: date
+        header: Date
+        width: 12
+        type: date
+        format: "YYYY-MM-DD"
+      - id: totalRequests
+        header: Total Requests
+        width: 15
+        type: number
+      - id: singleMode
+        header: Single Mode
+        width: 14
+        type: number
+      - id: ternaMode
+        header: Terna Mode
+        width: 14
+        type: number
+      - id: committeeMode
+        header: Committee Mode
+        width: 16
+        type: number
+      - id: directResponse
+        header: Direct Response
+        width: 16
+        type: number
+      - id: singlePct
+        header: Single %
+        width: 10
+        type: number
+        format: "0%"
+        formula: "=C{{row}}/B{{row}}"
+      - id: ternaPct
+        header: Terna %
+        width: 10
+        type: number
+        format: "0%"
+        formula: "=D{{row}}/B{{row}}"
+      - id: committeePct
+        header: Committee %
+        width: 12
+        type: number
+        format: "0%"
+        formula: "=E{{row}}/B{{row}}"
+      - id: avgResponseTime
+        header: Avg Response (s)
+        width: 16
+        type: number
+        format: "0.0"
+      - id: errorCount
+        header: Errors
+        width: 10
+        type: number
+        conditionalFormatting:
+          - rule: ">0"
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+    headerStyle:
+      background: "#2563eb"
+      fontColor: "#ffffff"
+      bold: true
+    charts:
+      - type: stackedBar
+        title: Routing Mode Distribution Over Time
+        dataRange: routing!A:F
+        position: M2
+        size: { width: 500, height: 350 }
+      - type: line
+        title: Average Response Time Trend
+        dataRange: routing!A:A,routing!J:J
+        position: M20
+        size: { width: 500, height: 250 }
+
+  - id: agents-perf
+    name: Agent Performance
+    purpose: Per-agent performance breakdown
+    frozen:
+      rows: 1
+    columns:
+      - id: agent
+        header: Agent
+        width: 22
+        type: string
+      - id: invocations
+        header: Invocations
+        width: 14
+        type: number
+      - id: successRate
+        header: Success Rate
+        width: 14
+        type: number
+        format: "0.0%"
+      - id: avgTime
+        header: Avg Time (s)
+        width: 14
+        type: number
+        format: "0.0"
+      - id: p95Time
+        header: P95 Time (s)
+        width: 14
+        type: number
+        format: "0.0"
+      - id: avgTokens
+        header: Avg Tokens
+        width: 14
+        type: number
+      - id: errors
+        header: Errors
+        width: 10
+        type: number
+      - id: qualityScore
+        header: Quality Score
+        width: 14
+        type: number
+        format: "0"
+        conditionalFormatting:
+          - rule: ">=80"
+            background: "#ecfdf5"
+            fontColor: "#059669"
+          - rule: ">=60"
+            background: "#fffbeb"
+            fontColor: "#d97706"
+          - rule: "<60"
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+    headerStyle:
+      background: "#2563eb"
+      fontColor: "#ffffff"
+      bold: true
+    defaultRows:
+      - [pristino-orchestrator, 0, 0, 0, 0, 0, 0, 0]
+      - [timekeeper, 0, 0, 0, 0, 0, 0, 0]
+      - [analyst, 0, 0, 0, 0, 0, 0, 0]
+      - [researcher, 0, 0, 0, 0, 0, 0, 0]
+      - [synthesizer, 0, 0, 0, 0, 0, 0, 0]
+      - [validator, 0, 0, 0, 0, 0, 0, 0]
+    charts:
+      - type: radar
+        title: Agent Quality Scores
+        dataRange: agents-perf!A:A,agents-perf!H:H
+        position: J2
+        size: { width: 400, height: 350 }
+
+  - id: security
+    name: Security Metrics
+    purpose: Security checkpoint monitoring
+    frozen:
+      rows: 1
+    columns:
+      - id: date
+        header: Date
+        width: 12
+        type: date
+        format: "YYYY-MM-DD"
+      - id: cp1Total
+        header: CP1 Total
+        width: 12
+        type: number
+      - id: cp1Pass
+        header: CP1 Pass
+        width: 12
+        type: number
+      - id: cp1Warn
+        header: CP1 Warn
+        width: 12
+        type: number
+      - id: cp2Total
+        header: CP2 Total
+        width: 12
+        type: number
+      - id: cp2Applied
+        header: CP2 Applied
+        width: 14
+        type: number
+      - id: cp3Total
+        header: CP3 Total
+        width: 12
+        type: number
+      - id: cp3Pass
+        header: CP3 Pass
+        width: 12
+        type: number
+      - id: cp3Warn
+        header: CP3 Warn
+        width: 12
+        type: number
+      - id: promptLeaks
+        header: Prompt Leaks
+        width: 14
+        type: number
+        conditionalFormatting:
+          - rule: ">0"
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+            bold: true
+      - id: sensitiveData
+        header: Sensitive Data
+        width: 14
+        type: number
+        conditionalFormatting:
+          - rule: ">0"
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+            bold: true
+    headerStyle:
+      background: "#dc2626"
+      fontColor: "#ffffff"
+      bold: true
+
+  - id: errors-log
+    name: Error Log
+    purpose: Detailed error tracking
+    frozen:
+      rows: 1
+    columns:
+      - id: timestamp
+        header: Timestamp
+        width: 20
+        type: datetime
+        format: "YYYY-MM-DD HH:mm:ss"
+      - id: agent
+        header: Agent
+        width: 20
+        type: string
+      - id: skill
+        header: Skill
+        width: 18
+        type: string
+      - id: errorType
+        header: Error Type
+        width: 18
+        type: string
+        validation:
+          type: list
+          values: [Timeout, LLM Error, Tool Error, Validation Error, Security Warning, Loop Exhausted, Unknown]
+      - id: message
+        header: Error Message
+        width: 45
+        type: string
+        wordWrap: true
+      - id: recovered
+        header: Recovered
+        width: 12
+        type: string
+        validation:
+          type: list
+          values: ["Yes", "No", "Partial"]
+        conditionalFormatting:
+          - value: "Yes"
+            background: "#ecfdf5"
+            fontColor: "#059669"
+          - value: "No"
+            background: "#fef2f2"
+            fontColor: "#dc2626"
+      - id: fallbackUsed
+        header: Fallback Used
+        width: 14
+        type: string
+    headerStyle:
+      background: "#f97316"
+      fontColor: "#ffffff"
+      bold: true
