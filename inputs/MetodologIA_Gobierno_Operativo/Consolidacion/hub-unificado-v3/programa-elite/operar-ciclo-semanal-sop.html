@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Operar Ciclo Semanal — SOP — Proceso de Delivery MetodologIA">
+    <title>Operar Ciclo Semanal — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Programa Elite</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Operar Ciclo Semanal — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Operar Ciclo Semanal — SOP</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">13</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">4</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-fdec8e')" aria-label="Ir a Propósito">Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-explcitos-bc218e')" aria-label="Ir a Supuestos Explícitos">Supuestos Explícitos</button>
+<button class="nav-btn" onclick="scrollToSection('lmites-del-sop-eec788')" aria-label="Ir a Límites del SOP">Límites del SOP</button>
+<button class="nav-btn" onclick="scrollToSection('calendario-por-franja-e73975')" aria-label="Ir a Calendario por Franja">Calendario por Franja</button>
+<button class="nav-btn" onclick="scrollToSection('proceso-paso-a-paso-051ff6')" aria-label="Ir a Proceso Paso a Paso">Proceso Paso a Paso</button>
+<button class="nav-btn" onclick="scrollToSection('criterios-de-aceptacin-binarios-8f04c9')" aria-label="Ir a Criterios de Aceptación (Binarios)">Criterios de Aceptación (Binarios)</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-e9bf77')" aria-label="Ir a Casos Borde">Casos Borde</button>
+<button class="nav-btn" onclick="scrollToSection('decisiones-de-diseo-ae194c')" aria-label="Ir a Decisiones de Diseño">Decisiones de Diseño</button>
+<button class="nav-btn" onclick="scrollToSection('antipatterns-12099b')" aria-label="Ir a Anti-Patterns">Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-operativos-eaa56d')" aria-label="Ir a Fallbacks Operativos">Fallbacks Operativos</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-del-ciclo-7cccef')" aria-label="Ir a Métricas del Ciclo">Métricas del Ciclo</button>
+<button class="nav-btn" onclick="scrollToSection('integraciones-adcece')" aria-label="Ir a Integraciones">Integraciones</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Nivel:</strong> Molécula de Delivery (orquestador de átomos)</div>
+<div class="bullet-item"><strong>Composición:</strong> Masterclass (1h) + Workshop (1h) + Clínica IA (1h) = 3h grupo/semana</div>
+<div class="bullet-item"><strong>Frecuencia:</strong> Semanal, 13 ciclos (Semanas 3-15 del Programa)</div>
+<div class="bullet-item"><strong>Franjas:</strong> Matutina (L-J 7-8am), Nocturna (L-J 7-8pm), Sabatina (Sab 9am-1pm o 2-6pm)</div>
+<div class="bullet-item"><strong>Owner:</strong> Coordinador de Programa</div>
+<div class="bullet-item"><strong>Última actualización:</strong> 2026-03-24</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-fdec8e" data-searchable aria-labelledby="head-propsito-fdec8e">
+            <div class="phase-header" id="head-propsito-fdec8e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Orquestar la ejecución secuencial de los 3 átomos de delivery (MC → WS → CL) que componen cada semana del Programa de Empoderamiento. Este SOP NO es sobre facilitar las sesiones (eso lo hacen los SOPs de cada átomo), sino sobre COORDINAR que las 3 piezas encajen correctamente en el tiempo.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-explcitos-bc218e" data-searchable aria-labelledby="head-supuestos-explcitos-bc218e">
+            <div class="phase-header" id="head-supuestos-explcitos-bc218e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> Supuestos Explícitos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Cada cohorte tiene 1 facilitador asignado para las 16 semanas</div>
+<div class="bullet-item">El contenido de los 13 módulos (M01-M13) ya existe y está validado</div>
+<div class="bullet-item">Los participantes están matriculados y pasaron G-READY (Sem 2)</div>
+<div class="bullet-item">La plataforma virtual está contratada y configurada para toda la duración</div>
+<div class="bullet-item">Máximo 3 cohortes simultáneas (una por franja horaria)</div>
+<div class="bullet-item">El coordinador de programa supervisa las 3 cohortes, el facilitador ejecuta 1</div>
+<div class="bullet-item">Los 3 átomos se ejecutan en orden estricto: MC primero, luego WS, luego CL</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="lmites-del-sop-eec788" data-searchable aria-labelledby="head-lmites-del-sop-eec788">
+            <div class="phase-header" id="head-lmites-del-sop-eec788" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> Límites del SOP</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>EMPIEZA:</strong> Lunes de cada semana (preparación del ciclo)</div>
+<div class="bullet-item"><strong>TERMINA:</strong> Domingo (reporte semanal completado)</div>
+<div class="bullet-item"><strong>NO CUBRE:</strong> Facilitación de cada sesión individual (eso es facilitar-masterclass-sop, adaptar-workshop-composable-sop, facilitar-clinica-ia-sop)</div>
+<div class="bullet-item"><strong>NO CUBRE:</strong> Gestión de cohorte a nivel programa (eso es gestionar-cohorte-sop)</div>
+<div class="bullet-item"><strong>CUBRE:</strong> Secuenciación, timing, coordinación entre átomos, reporte consolidado</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="calendario-por-franja-e73975" data-searchable aria-labelledby="head-calendario-por-franja-e73975">
+            <div class="phase-header" id="head-calendario-por-franja-e73975" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Calendario por Franja</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="franja-matutina-lunes-a-jueves-78am-0d7f53">Franja Matutina (Lunes a Jueves, 7-8am)</h3>
+<div class="bullet-item"><strong>Lunes:</strong> Masterclass (1h)</div>
+<div class="bullet-item"><strong>Martes:</strong> Workshop Parte 1 (1h) — nota: el WS se divide en 2 días en franjas diarias</div>
+<div class="bullet-item"><strong>Miércoles:</strong> Workshop Parte 2 (1h)</div>
+<div class="bullet-item"><strong>Jueves:</strong> Clínica IA (1h)</div>
+<div class="bullet-item"><strong>DECISIÓN DE DISEÑO:</strong> En franjas diarias de 1h, el Workshop se divide en 2 sesiones. Esto permite mayor digestión del contenido práctico.</div>
+<h3 class="subsection-title" id="franja-nocturna-lunes-a-jueves-78pm-16e392">Franja Nocturna (Lunes a Jueves, 7-8pm)</h3>
+<div class="bullet-item"><strong>Lunes:</strong> Masterclass (1h)</div>
+<div class="bullet-item"><strong>Martes:</strong> Workshop Parte 1 (1h)</div>
+<div class="bullet-item"><strong>Miércoles:</strong> Workshop Parte 2 (1h)</div>
+<div class="bullet-item"><strong>Jueves:</strong> Clínica IA (1h)</div>
+<h3 class="subsection-title" id="franja-sabatina-sbado-bloque-continuo-49be52">Franja Sabatina (Sábado, bloque continuo)</h3>
+<div class="bullet-item"><strong>Opción A:</strong> 9:00am - 1:00pm (4h con breaks)</div>
+<div class="bullet-item">9:00-10:00: Masterclass</div>
+<div class="bullet-item">10:00-10:15: Break</div>
+<div class="bullet-item">10:15-11:15: Workshop</div>
+<div class="bullet-item">11:15-11:30: Break</div>
+<div class="bullet-item">11:30-12:30: Clínica IA</div>
+<div class="bullet-item">12:30-1:00: Cierre semanal + networking informal</div>
+<div class="bullet-item"><strong>Opción B:</strong> 2:00pm - 6:00pm (misma estructura)</div>
+<div class="bullet-item"><strong>DECISIÓN DE DISEÑO:</strong> La franja sabatina incluye breaks de 15min (vs 5min en diarias) por ser bloque continuo. También incluye 30min de networking al final.</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="proceso-paso-a-paso-051ff6" data-searchable aria-labelledby="head-proceso-paso-a-paso-051ff6">
+            <div class="phase-header" id="head-proceso-paso-a-paso-051ff6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Proceso Paso a Paso</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="paso-1-preciclo-preparacin-lunes-t48h-o-jueves-ant-2d76a3">Paso 1: Pre-Ciclo — Preparación (Lunes T-48h o Jueves anterior)</h3>
+<div class="bullet-item">Coordinador verifica con Facilitador: &quot;¿Módulo N preparado?&quot;</div>
+<div class="bullet-item">☐ Slides MC listos</div>
+<div class="bullet-item">☐ Playbook WS listo</div>
+<div class="bullet-item">☐ Formulario de triaje CL enviado</div>
+<div class="bullet-item">☐ Pre-work enviado a participantes</div>
+<div class="bullet-item">Si falta algo: escalar inmediatamente. No hay margen.</div>
+<div class="bullet-item">Duración: 30min de sync (puede ser async por Slack/WhatsApp)</div>
+<h3 class="subsection-title" id="paso-2-ejecucin-masterclass-da-1-de-la-franja-4d953e">Paso 2: Ejecución — Masterclass (Día 1 de la franja)</h3>
+<div class="bullet-item">Facilitador ejecuta facilitar-masterclass-sop.md</div>
+<div class="bullet-item">Coordinador: verificar grabación iniciada, monitorear asistencia en background</div>
+<div class="bullet-item">Al cierre: Facilitador hace bridge a WS, coordinador actualiza tracker de asistencia</div>
+<h3 class="subsection-title" id="paso-3-ejecucin-workshop-da-23-en-diarias-o-da-1-b-dbbed0">Paso 3: Ejecución — Workshop (Día 2-3 en diarias, o Día 1 bloque 2 en sabatina)</h3>
+<div class="bullet-item">Facilitador ejecuta adaptar-workshop-composable-sop.md en modo 1h</div>
+<div class="bullet-item">En franjas diarias: WS se divide en Parte 1 (setup + inicio) y Parte 2 (completar + cierre)</div>
+<div class="bullet-item">Al cierre: Facilitador hace bridge a Clínica IA</div>
+<div class="bullet-item"><strong>ANTI-PATTERN:</strong> En la franja diaria, NO dejar la Parte 2 del WS como &quot;tarea&quot;. Ambas partes se ejecutan en sesión.</div>
+<h3 class="subsection-title" id="paso-4-ejecucin-clnica-ia-da-4-en-diarias-o-da-1-b-405f0d">Paso 4: Ejecución — Clínica IA (Día 4 en diarias, o Día 1 bloque 3 en sabatina)</h3>
+<div class="bullet-item">Facilitador ejecuta facilitar-clinica-ia-sop.md</div>
+<div class="bullet-item">Recordar: NO obligatoria para asistencia pero SÍ se ejecuta siempre</div>
+<div class="bullet-item">Al cierre: Facilitador cierra el ciclo semanal, preview del módulo siguiente</div>
+<h3 class="subsection-title" id="paso-5-postciclo-reporte-semanal-domingo-o-t24h-de-04a04a">Paso 5: Post-Ciclo — Reporte Semanal (Domingo o T+24h del último átomo)</h3>
+<div class="bullet-item">Facilitador envía reporte al Coordinador:</div>
+<div class="bullet-item">Asistencia por átomo (MC: X/Y, WS: X/Y, CL: X/Y)</div>
+<div class="bullet-item">Engagement cualitativo (1 párrafo: qué funcionó, qué no)</div>
+<div class="bullet-item">Casos resueltos en Clínica (count + top pattern)</div>
+<div class="bullet-item">Alertas: participantes en riesgo de deserción, gaps de contenido</div>
+<div class="bullet-item">Coordinador consolida si hay múltiples cohortes</div>
+<div class="bullet-item">Duración: 20min para Facilitador, 30min para Coordinador</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="criterios-de-aceptacin-binarios-8f04c9" data-searchable aria-labelledby="head-criterios-de-aceptacin-binarios-8f04c9">
+            <div class="phase-header" id="head-criterios-de-aceptacin-binarios-8f04c9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> Criterios de Aceptación (Binarios)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">☐ Los 3 átomos ejecutados en la semana (MC + WS + CL)</div>
+<div class="bullet-item">☐ Orden respetado: MC → WS → CL (nunca invertido)</div>
+<div class="bullet-item">☐ Grabaciones de las 3 sesiones subidas en &lt;24h post-última</div>
+<div class="bullet-item">☐ Reporte semanal enviado antes del siguiente lunes</div>
+<div class="bullet-item">☐ Asistencia agregada ≥70% (promedio de los 3 átomos)</div>
+<div class="bullet-item">☐ Cero sesiones canceladas sin reprogramación</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-e9bf77" data-searchable aria-labelledby="head-casos-borde-e9bf77">
+            <div class="phase-header" id="head-casos-borde-e9bf77" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> Casos Borde</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="cb01-semana-con-feriado-que-elimina-un-da-eabf31">CB-01: Semana con feriado que elimina un día</h3>
+<p class="key-value"><strong>Trigger:</strong> Feriado cae en día de sesión (ej: Lunes = MC no se puede dar)</p>
+<p class="key-value"><strong>Resolución por franja:</strong></p>
+<div class="bullet-item">Diaria: Comprimir en 3 días. MC el primer día disponible, luego WS (1 sola sesión de 1h comprimida), luego CL.</div>
+<div class="bullet-item">Sabatina: No afecta (es un solo día).</div>
+<p class="key-value"><strong>Fallback:</strong> Si no se puede comprimir: la sesión perdida se ofrece async (video + foro) y el ciclo se extiende 1 día.</p>
+<h3 class="subsection-title" id="cb02-facilitador-enfermo-a-mitad-del-ciclo-ej-dio--d44e35">CB-02: Facilitador enfermo a mitad del ciclo (ej: dio MC pero no puede dar WS)</h3>
+<p class="key-value"><strong>Trigger:</strong> Facilitador reporta imposibilidad entre átomos</p>
+<p class="key-value"><strong>Resolución:</strong> Activar facilitador backup para completar WS + CL del mismo módulo. Briefing de 30min del facilitador original al backup.</p>
+<p class="key-value"><strong>Fallback:</strong> Si no hay backup: WS async (video tutorial + playbook auto-guiado) + CL reagendada a la próxima semana como &quot;doble Clínica&quot;.</p>
+<h3 class="subsection-title" id="cb03-cohorte-sabatina-emergencia-tcnica-4h-en-un-s-b88f72">CB-03: Cohorte sabatina + emergencia técnica (4h en un solo día)</h3>
+<p class="key-value"><strong>Trigger:</strong> Caída de plataforma a mitad del bloque sabatino</p>
+<p class="key-value"><strong>Resolución:</strong> Los átomos ya ejecutados quedan. Los pendientes se reprograman al siguiente sábado. Si fue solo MC, el WS+CL se dan el miércoles/jueves de esa semana como &quot;sesión de recuperación&quot; en horario nocturno.</p>
+<h3 class="subsection-title" id="cb04-mdulo-n-requiere-ms-tiempo-del-asignado-conte-7c912c">CB-04: Módulo N requiere más tiempo del asignado (contenido denso)</h3>
+<p class="key-value"><strong>Trigger:</strong> El facilitador reporta en pre-ciclo que M07/M09/M11 (los más técnicos) no caben en 3h</p>
+<p class="key-value"><strong>Resolución:</strong> Pre-aprobado: extender la MC a 1.5h para módulos técnicos, compensando con CL de 30min en esa semana. Documentar en el tracker.</p>
+<p class="key-value"><strong>ANTI-PATTERN:</strong> No comprimir el WS. La práctica es innegociable.</p>
+<h3 class="subsection-title" id="cb05-desercin-alta-en-la-clnica-3-participantes-re-a89604">CB-05: Deserción alta en la Clínica (&lt;3 participantes recurrentes)</h3>
+<p class="key-value"><strong>Trigger:</strong> 3 semanas consecutivas con &lt;3 personas en la Clínica</p>
+<p class="key-value"><strong>Resolución:</strong> Encuesta de razón. Ajustar: cambiar horario de la CL, ofrecer formato async alternativo (foro de preguntas con video-respuesta), o integrar mini-clínica de 15min al final del WS.</p>
+<h3 class="subsection-title" id="cb06-una-cohorte-va-adelantadaatrasada-respecto-a--783840">CB-06: Una cohorte va adelantada/atrasada respecto a las otras</h3>
+<p class="key-value"><strong>Trigger:</strong> Por reprogramaciones, una cohorte lleva 1+ módulo de diferencia</p>
+<p class="key-value"><strong>Resolución:</strong> Aceptable hasta 1 módulo de diferencia. Más de 1: evaluar si se puede hacer &quot;semana doble&quot; (2 módulos en 1 semana). Máximo 1 semana doble por programa.</p>
+<h3 class="subsection-title" id="cb07-participante-se-une-tarde-al-programa-sem-5-25d5e9">CB-07: Participante se une tarde al programa (Sem 5+)</h3>
+<p class="key-value"><strong>Trigger:</strong> Participante que se matricula después de Sem 2</p>
+<p class="key-value"><strong>Resolución:</strong> Acceso a memorias de sesiones previas. Sesión de nivelación 1:1 (30min) con el facilitador. Incorporar en el siguiente ciclo semanal. No se admiten incorporaciones después de Sem 8 (50% del programa).</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="decisiones-de-diseo-ae194c" data-searchable aria-labelledby="head-decisiones-de-diseo-ae194c">
+            <div class="phase-header" id="head-decisiones-de-diseo-ae194c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> Decisiones de Diseño</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="dd01-orden-estricto-mc-ws-cl-875444">DD-01: Orden estricto MC → WS → CL</h3>
+<p class="key-value"><strong>Justificación:</strong> Ciclo cognitivo Fundamento → Aplicación → Profundización. Cada átomo depende del output del anterior.</p>
+<p class="key-value"><strong>Alternativa descartada:</strong> Orden flexible según disponibilidad. Rechazado por ruptura pedagógica.</p>
+<h3 class="subsection-title" id="dd02-workshop-dividido-en-2-sesiones-para-franjas--ae1806">DD-02: Workshop dividido en 2 sesiones para franjas diarias</h3>
+<p class="key-value"><strong>Justificación:</strong> 1h es poco para un WS completo. Dividirlo en 2 días permite: Día 1 = setup + inicio, Día 2 = completar + cierre. La noche intermedia permite digestión.</p>
+<p class="key-value"><strong>Alternativa descartada:</strong> WS comprimido en 1h para diarias. Rechazado porque sacrifica calidad de la práctica.</p>
+<h3 class="subsection-title" id="dd03-breaks-de-15min-en-sabatina-vs-5min-en-diaria-f73f02">DD-03: Breaks de 15min en sabatina vs 5min en diarias</h3>
+<p class="key-value"><strong>Justificación:</strong> 4h continuas requieren descansos reales. 5min no es suficiente para un break mental después de 1h de sesión intensa.</p>
+<h3 class="subsection-title" id="dd04-reporte-semanal-obligatorio-no-mensual-34d362">DD-04: Reporte semanal obligatorio (no mensual)</h3>
+<p class="key-value"><strong>Justificación:</strong> Ciclo semanal = feedback semanal. Esperar 1 mes para reportar pierde señales tempranas de deserción o insatisfacción.</p>
+<h3 class="subsection-title" id="dd05-clnica-ia-siempre-se-ejecuta-aunque-sea-optat-0aceca">DD-05: Clínica IA siempre se ejecuta aunque sea optativa</h3>
+<p class="key-value"><strong>Justificación:</strong> La Clínica es donde ocurre la transformación real. Que no sea &quot;obligatoria para asistencia&quot; no significa que no se ofrezca. Si nadie asiste, se convierte en sesión de práctica guiada.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="antipatterns-12099b" data-searchable aria-labelledby="head-antipatterns-12099b">
+            <div class="phase-header" id="head-antipatterns-12099b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap01-el-ciclo-desordenado-c3c218">AP-01: &quot;El ciclo desordenado&quot;</h3>
+<p>Ejecutar los átomos en orden diferente (ej: WS antes de MC). Resultado: participantes sin fundamento intentan aplicar, frustración y baja calidad.</p>
+<h3 class="subsection-title" id="ap02-cancelar-la-clnica-7bf570">AP-02: &quot;Cancelar la Clínica&quot;</h3>
+<p>Como es optativa, decidir no ejecutarla si &quot;pocos se inscriben&quot;. Resultado: se pierde el espacio de profundización, los bloqueos se acumulan.</p>
+<h3 class="subsection-title" id="ap03-semana-cargada-semana-vaca-948315">AP-03: &quot;Semana cargada, semana vacía&quot;</h3>
+<p>Comprimir 2 módulos en 1 semana para luego &quot;descansar&quot;. Resultado: sobrecarga cognitiva, los participantes no digieren.</p>
+<h3 class="subsection-title" id="ap04-reporte-ausente-c67917">AP-04: &quot;Reporte ausente&quot;</h3>
+<p>No enviar reporte semanal &quot;porque todo va bien&quot;. Resultado: se pierden señales tempranas de riesgo.</p>
+<h3 class="subsection-title" id="ap05-ignorar-la-franja-7d857d">AP-05: &quot;Ignorar la franja&quot;</h3>
+<p>No adaptar la ejecución al formato de la franja (ej: dar sabatina como si fuera diaria sin breaks). Resultado: fatiga y baja de calidad en las últimas sesiones.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-operativos-eaa56d" data-searchable aria-labelledby="head-fallbacks-operativos-eaa56d">
+            <div class="phase-header" id="head-fallbacks-operativos-eaa56d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario</th><th scope="col">Fallback</th><th scope="col">SLA</th></tr></thead><tbody><tr><td>Átomo cancelado</td><td>Reprogramar en la misma semana o dar async</td><td>&lt;48h</td></tr><tr><td>Facilitador ausente</td><td>Backup facilitador con briefing de 30min</td><td>&lt;24h</td></tr><tr><td>Feriado</td><td>Comprimir o sesión async</td><td>Pre-planificado</td></tr><tr><td>Plataforma caída</td><td>Migrar a backup, reanudar donde quedó</td><td>&lt;15min</td></tr><tr><td>Contenido no cabe en 3h</td><td>Extender MC a 1.5h, reducir CL a 30min</td><td>Pre-ciclo</td></tr><tr><td>Deserción masiva (&gt;50%)</td><td>Escalar a Coordinador, encuesta, plan de reenganche</td><td>&lt;48h</td></tr></tbody></table></div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-del-ciclo-7cccef" data-searchable aria-labelledby="head-mtricas-del-ciclo-7cccef">
+            <div class="phase-header" id="head-mtricas-del-ciclo-7cccef" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métricas del Ciclo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Frecuencia</th><th scope="col">Fuente</th></tr></thead><tbody><tr><td>Completitud del ciclo</td><td>3/3 átomos ejecutados</td><td>Semanal</td><td>Reporte</td></tr><tr><td>Asistencia promedio</td><td>≥70%</td><td>Semanal</td><td>Tracker</td></tr><tr><td>Puntualidad de ejecución</td><td>±10min del horario</td><td>Semanal</td><td>Reporte</td></tr><tr><td>Reporte semanal entregado</td><td>&lt;Lunes siguiente</td><td>Semanal</td><td>Coordinador</td></tr><tr><td>Sesiones canceladas</td><td>0 sin reprogramación</td><td>Acumulativo</td><td>Tracker</td></tr><tr><td>Gap entre cohortes</td><td>≤1 módulo</td><td>Mensual</td><td>Coordinador</td></tr></tbody></table></div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="integraciones-adcece" data-searchable aria-labelledby="head-integraciones-adcece">
+            <div class="phase-header" id="head-integraciones-adcece" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Integraciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Compone:</strong> facilitar-masterclass-sop + adaptar-workshop-composable-sop + facilitar-clinica-ia-sop</div>
+<div class="bullet-item"><strong>Upstream:</strong> gestionar-cohorte-sop (define qué módulo toca cada semana)</div>
+<div class="bullet-item"><strong>Downstream:</strong> Reporte semanal → gestionar-cohorte-sop (alertas, asistencia)</div>
+<div class="bullet-item"><strong>Lateral:</strong> escalar-horarios-sop (gestión de franjas y conflictos)</div>
+<div class="bullet-item"><strong>Lateral:</strong> grabar-y-distribuir-memorias-sop (asegura que las 3 grabaciones se suban)</div>
+<hr class="divider">
+<p>*SOP generado como parte de la replanificación arquitectural del Programa de Empoderamiento. Modelo Átomo-Molécula-Organismo v1.0.*</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

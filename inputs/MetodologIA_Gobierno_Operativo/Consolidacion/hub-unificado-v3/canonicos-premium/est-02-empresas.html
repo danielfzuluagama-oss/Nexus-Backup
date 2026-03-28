@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="ESTRATEGIA P2 — EstrategIA Personal para Empresas — Proceso de Delivery MetodologIA">
+    <title>ESTRATEGIA P2 — EstrategIA Personal para Empresas — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Premium</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">ESTRATEGIA P2 — EstrategIA Personal para Empresas</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>ESTRATEGIA P2 — EstrategIA Personal para Empresas</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: EST-02-EMPRESAS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">16</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-empresas-1651e9')" aria-label="Ir a Documento Canónico | Segmento: EMPRESAS">Documento Canónico | Segmento: EMPR</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-y-alcance-e4c27b')" aria-label="Ir a 2. Definición y Alcance">2. Definición y Alcance</button>
+<button class="nav-btn" onclick="scrollToSection('3-audiencia-corporativa-8698e4')" aria-label="Ir a 3. Audiencia Corporativa">3. Audiencia Corporativa</button>
+<button class="nav-btn" onclick="scrollToSection('4-propuesta-de-valor-2908ef')" aria-label="Ir a 4. Propuesta de Valor">4. Propuesta de Valor</button>
+<button class="nav-btn" onclick="scrollToSection('5-estructura-y-sesiones-1f6e7d')" aria-label="Ir a 5. Estructura y Sesiones">5. Estructura y Sesiones</button>
+<button class="nav-btn" onclick="scrollToSection('6-entregables-577231')" aria-label="Ir a 6. Entregables">6. Entregables</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-comercial-4c8ca0')" aria-label="Ir a 7. Modelo Comercial">7. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('8-canal-de-venta-b4c772')" aria-label="Ir a 8. Canal de Venta">8. Canal de Venta</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-b421c5')" aria-label="Ir a 9. Operación">9. Operación</button>
+<button class="nav-btn" onclick="scrollToSection('10-puente-educativo-82b145')" aria-label="Ir a 10. Puente Educativo">10. Puente Educativo</button>
+<button class="nav-btn" onclick="scrollToSection('11-soporte-dd2ef9')" aria-label="Ir a 11. Soporte">11. Soporte</button>
+<button class="nav-btn" onclick="scrollToSection('12-kpis-15e4c5')" aria-label="Ir a 12. KPIs">12. KPIs</button>
+<button class="nav-btn" onclick="scrollToSection('13-trminos-comerciales-be9cc2')" aria-label="Ir a 13. Términos Comerciales">13. Términos Comerciales</button>
+<button class="nav-btn" onclick="scrollToSection('adicionales-opcionales-9831ca')" aria-label="Ir a Adicionales (Opcionales)">Adicionales (Opcionales)</button>
+<button class="nav-btn" onclick="scrollToSection('diferenciales-del-programa-a25285')" aria-label="Ir a Diferenciales del Programa">Diferenciales del Programa</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-empresas-1651e9" data-searchable aria-labelledby="head-documento-cannico-segmento-empresas-1651e9">
+            <div class="phase-header" id="head-documento-cannico-segmento-empresas-1651e9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: EMPRESAS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> EST-02-EMPRESAS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Empresas (B2B — Corporativo)</p>
+<p class="key-value"><strong>Precio canónico:</strong> COP 12.000.000 | <strong>Duración:</strong> 4 meses (9 sesiones grupales + individuales)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Programa de desarrollo estratégico y liderazgo para ejecutivos clave de la empresa. Combina sesiones grupales (9 sesiones de 2.5-3 horas) con sesiones individuales 1:1 (1 por ejecutivo) a lo largo de 4 meses. Enfoque: alineación de carrera con estrategia empresarial, marca ejecutiva, liderazgo transformacional, fortalecimiento de capacidades en era IA.</p>
+<p class="key-value"><strong>Objetivo:</strong> Desarrollar líderes alineados con visión estratégica de empresa, fortalecer cohesión de liderazgo, mejorar impacto individual y colectivo.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-y-alcance-e4c27b" data-searchable aria-labelledby="head-2-definicin-y-alcance-e4c27b">
+            <div class="phase-header" id="head-2-definicin-y-alcance-e4c27b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición y Alcance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Programa de coaching ejecutivo grupal para empresas que desean desarrollar a sus líderes clave (ejecutivos, gerentes senior, especialistas en transformación) de manera integral. Combinación de sesiones colectivas de aprendizaje estratégico + coaching individual personalizado + fortalecimiento de equipo de liderazgo.</p>
+<p class="key-value"><strong>Duración:</strong> 4 meses calendario (16 semanas)</p>
+<p class="key-value"><strong>Cadencia:</strong> 1 sesión grupal cada 2 semanas (9 total de 2.5-3 horas) + 1 sesión individual por ejecutivo</p>
+<p class="key-value"><strong>Formato:</strong> Sesiones presenciales (preferente) o híbridas, facilitadas por coach/strategist senior</p>
+<p class="key-value"><strong>Participantes:</strong> 5-10 ejecutivos (gerentes, directores, VPs, especialistas clave)</p>
+<p class="key-value"><strong>Sponsorship:</strong> Patrocinada por CEO/C-suite con comunicación clara de alineación estratégica</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-audiencia-corporativa-8698e4" data-searchable aria-labelledby="head-3-audiencia-corporativa-8698e4">
+            <div class="phase-header" id="head-3-audiencia-corporativa-8698e4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Audiencia Corporativa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Decisor:</strong> CEO, COO, Chief People Officer (HR/Talento)</div>
+<div class="bullet-item"><strong>Participantes:</strong> Ejecutivos clave de empresa</div>
+<div class="bullet-item">Directores de áreas funcionales</div>
+<div class="bullet-item">Líderes de transformación/innovación</div>
+<div class="bullet-item">Gerentes senior responsables de resultados estratégicos</div>
+<div class="bullet-item">Especialistas con potencial de escalada a liderazgo</div>
+<div class="bullet-item"><strong>Rango empresarial:</strong> Grandes PYMES a medianas (150-500+ empleados)</div>
+<div class="bullet-item"><strong>Sectores:</strong> Todos (manufactureros, servicios, retail, financiero, tech, etc.)</div>
+<div class="bullet-item"><strong>Perfil empresa:</strong></div>
+<div class="bullet-item">En proceso de transformación digital/IA</div>
+<div class="bullet-item">Necesidad de alinear y fortalecer equipo ejecutivo</div>
+<div class="bullet-item">Presupuesto aprobado para desarrollo de liderazgo</div>
+<div class="bullet-item">Urgencia de retener y desarrollar talento clave</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-propuesta-de-valor-2908ef" data-searchable aria-labelledby="head-4-propuesta-de-valor-2908ef">
+            <div class="phase-header" id="head-4-propuesta-de-valor-2908ef" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Propuesta de Valor</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Alineación estratégica:</strong> Todos los líderes clave alineados en visión, prioridades, dirección</div>
+<div class="bullet-item"><strong>Desarrollo integral:</strong> Carrera, marca, liderazgo, capacidades digitales personalizadas</div>
+<div class="bullet-item"><strong>Cohesión de liderazgo:</strong> Fortalecimiento de equipo a través de aprendizaje compartido</div>
+<div class="bullet-item"><strong>Marca ejecutiva:</strong> Posicionamiento diferenciado de líderes como digitales, innovadores</div>
+<div class="bullet-item"><strong>Retención de talento:</strong> Inversión clara en desarrollo hace atractivo para talento clave</div>
+<div class="bullet-item"><strong>Impacto cascada:</strong> Líderes desarrollados multiplican aprendizaje en sus equipos</div>
+<div class="bullet-item"><strong>Confianza:</strong> Espacio seguro para reflexión estratégica, vulnerabilidad, aprendizaje colectivo</div>
+<div class="bullet-item"><strong>Acción:</strong> Planes ejecutables con accountability y seguimiento empresarial</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-estructura-y-sesiones-1f6e7d" data-searchable aria-labelledby="head-5-estructura-y-sesiones-1f6e7d">
+            <div class="phase-header" id="head-5-estructura-y-sesiones-1f6e7d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Estructura y Sesiones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="sesin-1-diagnstico-colectivo-y-visin-de-liderazgo--19bc2d">Sesión 1: Diagnóstico Colectivo y Visión de Liderazgo (Semana 1-2)</h3>
+<p class="key-value"><strong>Grupal:</strong> 3 horas</p>
+<div class="bullet-item">Reflexión sobre contexto de transformación de empresa</div>
+<div class="bullet-item">Diagnóstico compartido: fortalezas y gaps de liderazgo</div>
+<div class="bullet-item">Visión de liderazgo requerida para era digital/IA</div>
+<div class="bullet-item">Alineación en &quot;qué es ser líder&quot; en esta empresa</div>
+<div class="bullet-item">Definición de compromisos del grupo</div>
+<p class="key-value"><strong>Individual:</strong> 1.5 horas (durante esta semana o siguiente)</p>
+<div class="bullet-item">Diagnóstico personal: rol, satisfacción, aspiraciones</div>
+<div class="bullet-item">Evaluación de skills (liderazgo, técnicas, digitales)</div>
+<div class="bullet-item">Visión de futuro individual (3-5 años)</div>
+<div class="bullet-item">Identificación de gaps vs. visión de liderazgo empresarial</div>
+<h3 class="subsection-title" id="sesin-2-estrategia-digital-personal-y-carrera-alin-4bbd2c">Sesión 2: Estrategia Digital Personal y Carrera Alineada (Semana 3-4)</h3>
+<p class="key-value"><strong>Grupal:</strong> 2.5 horas</p>
+<div class="bullet-item">Cómo cada ejecutivo construye relevancia en era IA</div>
+<div class="bullet-item">Posicionamiento como líder digital (diferenciadores)</div>
+<div class="bullet-item">Estrategia de marca ejecutiva compartida</div>
+<div class="bullet-item">Visibilidad y presencia de liderazgo en empresa y externamente</div>
+<div class="bullet-item">Herramientas y plataformas para liderazgo moderno</div>
+<p class="key-value"><strong>Individual:</strong> Consejería personalizada</p>
+<div class="bullet-item">Definición de propuesta de valor ejecutiva</div>
+<div class="bullet-item">Análisis de fortalezas, diferenciadores únicos</div>
+<div class="bullet-item">Propuesta de marca personal diferenciada</div>
+<h3 class="subsection-title" id="sesin-3-transformacin-digital-y-upskilling-semana--ad6008">Sesión 3: Transformación Digital y Upskilling (Semana 5-6)</h3>
+<p class="key-value"><strong>Grupal:</strong> 2.5 horas</p>
+<div class="bullet-item">Tendencias y oportunidades de IA en industria</div>
+<div class="bullet-item">Skills prioritarios para liderazgo en transformación</div>
+<div class="bullet-item">Aprendizaje continuo y mantenerse relevante</div>
+<div class="bullet-item">Herramientas, cursos, comunidades para upskilling</div>
+<div class="bullet-item">Plan de desarrollo de capacidades (12 meses)</div>
+<p class="key-value"><strong>Individual:</strong> 1 hora</p>
+<div class="bullet-item">Mapa personalizado de upskilling</div>
+<div class="bullet-item">Priorización de skills por rol y ambición</div>
+<div class="bullet-item">Timeline de aprendizaje</div>
+<h3 class="subsection-title" id="sesin-4-liderazgo-transformacional-y-gestin-del-ca-58cf94">Sesión 4: Liderazgo Transformacional y Gestión del Cambio (Semana 7-8)</h3>
+<p class="key-value"><strong>Grupal:</strong> 3 horas</p>
+<div class="bullet-item">Estilos de liderazgo en contextos de transformación</div>
+<div class="bullet-item">Gestión del cambio desde perspectiva de líder</div>
+<div class="bullet-item">Comunicación efectiva en incertidumbre</div>
+<div class="bullet-item">Desarrollo de equipos en transformación</div>
+<div class="bullet-item">Construcción de confianza y retención de talento</div>
+<p class="key-value"><strong>Individual:</strong> Seguimiento</p>
+<div class="bullet-item">Reflexión sobre estilo de liderazgo personal</div>
+<div class="bullet-item">Aplicación a contexto específico de rol</div>
+<h3 class="subsection-title" id="sesin-5-visibilidad-influencia-y-marca-de-ejecutiv-99bf80">Sesión 5: Visibilidad, Influencia y Marca de Ejecutivo (Semana 9-10)</h3>
+<p class="key-value"><strong>Grupal:</strong> 2.5 horas</p>
+<div class="bullet-item">Estrategia de presencia ejecutiva (interna y externa)</div>
+<div class="bullet-item">Networking y construcción de influencia</div>
+<div class="bullet-item">Pensamiento visible: artículos, posts, speaking</div>
+<div class="bullet-item">Reputación y credibilidad en ecosistema</div>
+<div class="bullet-item">LinkedIn y redes como herramienta de liderazgo</div>
+<p class="key-value"><strong>Individual:</strong> 1.5 horas</p>
+<div class="bullet-item">Estrategia personalizada de visibilidad</div>
+<div class="bullet-item">Plan de contenidos y comunicación</div>
+<div class="bullet-item">Primeros pasos de presencia pública</div>
+<h3 class="subsection-title" id="sesin-6-carrera-movimientos-estratgicos-y-retencin-e00d2b">Sesión 6: Carrera, Movimientos Estratégicos y Retención (Semana 11-12)</h3>
+<p class="key-value"><strong>Grupal:</strong> 2.5 horas</p>
+<div class="bullet-item">Opciones de crecimiento en la empresa</div>
+<div class="bullet-item">Roles de escalada y responsabilidades futuras</div>
+<div class="bullet-item">Comunicación clara de trayectorias de carrera</div>
+<div class="bullet-item">Factores de retención de líderes en transformación</div>
+<div class="bullet-item">Plan de desarrollo del talento para los próximos 24 meses</div>
+<p class="key-value"><strong>Individual:</strong> 1 hora</p>
+<div class="bullet-item">Evaluación de rol actual (crecer en place vs. movimiento)</div>
+<div class="bullet-item">Opciones disponibles y timing</div>
+<div class="bullet-item">Negociación de desarrollo de carrera</div>
+<h3 class="subsection-title" id="sesin-7-accountability-y-progreso-q1q2-semana-1314-86a4f9">Sesión 7: Accountability y Progreso — Q1-Q2 (Semana 13-14)</h3>
+<p class="key-value"><strong>Grupal:</strong> 3 horas</p>
+<div class="bullet-item">Revisión de avances del grupo (objetivos personales)</div>
+<div class="bullet-item">Identificación de blockers y soluciones compartidas</div>
+<div class="bullet-item">Celebración de hitos alcanzados</div>
+<div class="bullet-item">Ajustes al plan</div>
+<div class="bullet-item">Fortalecimiento de cohesión de liderazgo</div>
+<p class="key-value"><strong>Individual:</strong> Seguimiento asincrónico</p>
+<div class="bullet-item">Revisión de progreso individual vs. plan</div>
+<div class="bullet-item">Reajustes según necesidad</div>
+<h3 class="subsection-title" id="sesin-8-escalado-de-impacto-y-multiplicacin-semana-d677ec">Sesión 8: Escalado de Impacto y Multiplicación (Semana 25-26)</h3>
+<p class="key-value"><strong>Grupal:</strong> 2.5 horas</p>
+<div class="bullet-item">Reflexión sobre progreso de 6 meses</div>
+<div class="bullet-item">Oportunidades de mentoring y desarrollo de otros</div>
+<div class="bullet-item">Ampliación de red e influencia del grupo</div>
+<div class="bullet-item">Impacto cascada en equipos (cómo multiplicar aprendizaje)</div>
+<div class="bullet-item">Ajustes de roadmap H2</div>
+<p class="key-value"><strong>Individual:</strong> Consejería específica</p>
+<div class="bullet-item">Oportunidades de liderazgo ampliado</div>
+<div class="bullet-item">Posibles pivots basados en aprendizajes</div>
+<h3 class="subsection-title" id="sesin-9-visin-a-largo-plazo-sostenibilidad-y-conti-ef2cbe">Sesión 9: Visión a Largo Plazo, Sostenibilidad y Continuidad (Semana 35-36)</h3>
+<p class="key-value"><strong>Grupal:</strong> 3 horas</p>
+<div class="bullet-item">Retrospectiva de 4 meses como equipo de liderazgo</div>
+<div class="bullet-item">Evaluación de impacto (empresa, equipos, carrera individual)</div>
+<div class="bullet-item">Visión compartida de liderazgo para próximos 12 meses</div>
+<div class="bullet-item">Definición de modelo de continuidad (community, mastermind, seguimiento)</div>
+<div class="bullet-item">Celebración de transformación del liderazgo</div>
+<div class="bullet-item">Próximos pasos y compromisos</div>
+<p class="key-value"><strong>Individual:</strong> 1.5 horas</p>
+<div class="bullet-item">Retrospectiva personal y reflexión de carrera</div>
+<div class="bullet-item">Plan de desarrollo profesional Y2</div>
+<div class="bullet-item">Opciones de coaching continuado</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-entregables-577231" data-searchable aria-labelledby="head-6-entregables-577231">
+            <div class="phase-header" id="head-6-entregables-577231" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Entregables</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Plan de Desarrollo Profesional Personalizado (por ejecutivo)</strong></span></div>
+<div class="bullet-item">Diagnóstico de situación actual (rol, carrera, satisfacción)</div>
+<div class="bullet-item">Visión y objetivos personales (3-5 años)</div>
+<div class="bullet-item">Análisis de gaps de skills</div>
+<div class="bullet-item">Plan de upskilling y desarrollo (12 meses)</div>
+<div class="bullet-item">Timeline con hitos de progreso</div>
+<div class="bullet-item">Métricas de éxito personalizadas</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Documentación de Sesiones Grupales</strong></span></div>
+<div class="bullet-item">Notas de decisiones, aprendizajes clave</div>
+<div class="bullet-item">Presentaciones y marcos de trabajo utilizados</div>
+<div class="bullet-item">Case studies y referencias compartidas</div>
+<div class="bullet-item">Acciones colectivas y responsables</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Estrategia de Marca Ejecutiva (por ejecutivo)</strong></span></div>
+<div class="bullet-item">Propuesta de valor personal (statement)</div>
+<div class="bullet-item">Estrategia de posicionamiento diferenciado</div>
+<div class="bullet-item">Plan de contenidos y presencia (6-12 meses)</div>
+<div class="bullet-item">Guía de presencia digital/LinkedIn</div>
+<div class="bullet-item">Primeros contenidos/publicaciones</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Mapa de Upskilling y Recursos</strong></span></div>
+<div class="bullet-item">Identificación de skills prioritarios (grupo + individual)</div>
+<div class="bullet-item">Cursos, plataformas, comunidades recomendadas</div>
+<div class="bullet-item">Plan de aprendizaje con timeline</div>
+<div class="bullet-item">Acceso a biblioteca de recursos educativos</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Reportes de Progreso Trimestral</strong></span></div>
+<div class="bullet-item">Seguimiento grupal de avances</div>
+<div class="bullet-item">Análisis de impacto (empresa, equipos, individual)</div>
+<div class="bullet-item">Ajustes al plan</div>
+<div class="bullet-item">Hitos celebrados</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Red y Comunidad de Liderazgo</strong></span></div>
+<div class="bullet-item">Acceso a masterminds de líderes en transformación</div>
+<div class="bullet-item">Conexiones con mentores/líderes de referencia</div>
+<div class="bullet-item">Comunidad post-programa (opcional)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-comercial-4c8ca0" data-searchable aria-labelledby="head-7-modelo-comercial-4c8ca0">
+            <div class="phase-header" id="head-7-modelo-comercial-4c8ca0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Precio:</strong> COP 12.000.000 (paquete para grupo de 5-10 ejecutivos)</p>
+<p class="key-value"><strong>Modelo:</strong> Retainer de coaching ejecutivo grupal + individual</p>
+<p class="key-value"><strong>Duración:</strong> 4 meses calendario con 9 sesiones grupales + sesiones individuales</p>
+<p class="key-value"><strong>Margin:</strong> 65-70% (trabajo de coach senior/strategist)</p>
+<p class="key-value"><strong>Escalabilidad:</strong></p>
+<div class="bullet-item">Grupo base (5-7 ejecutivos): COP 12M</div>
+<div class="bullet-item">Ejecutivos adicionales (8-10): COP 1.5M por persona</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-canal-de-venta-b4c772" data-searchable aria-labelledby="head-8-canal-de-venta-b4c772">
+            <div class="phase-header" id="head-8-canal-de-venta-b4c772" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Canal de Venta</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Prospectación:</strong> Empresas medianas en transformación digital, referrals de clientes estrategia</div>
+<div class="bullet-item"><strong>Validación:</strong> Conversación con CEO/CHRO confirmando necesidad (desarrollo liderazgo, retención, transformación)</div>
+<div class="bullet-item"><strong>Propuesta:</strong> Documento de propuesta (5-7 pp) + agenda de sesiones + perfil de coach + team</div>
+<div class="bullet-item"><strong>Cierre:</strong> Contrato de retainer + SOW detallado + listado de participantes confirmados</div>
+<div class="bullet-item"><strong>Activación:</strong> Kick-off grupal + sesiones individuales diagnóstico</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-b421c5" data-searchable aria-labelledby="head-9-operacin-b421c5">
+            <div class="phase-header" id="head-9-operacin-b421c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Equipo asignado:</strong></p>
+<div class="bullet-item">1 Coach/Strategist Senior (70% dedicación, 4 meses) — facilitador principal</div>
+<div class="bullet-item">1 Research/Support Manager (20% dedicación) — documentación, recursos, seguimiento</div>
+<div class="bullet-item">Acceso a assessments, frameworks, case studies, comunidad de liderazgo</div>
+<p class="key-value"><strong>Dedicación por sesión:</strong></p>
+<div class="bullet-item">Sesión grupal: 3 horas en vivo + 4 horas prep/follow-up = 7 horas</div>
+<div class="bullet-item">Sesión individual: 1.5 horas en vivo + 1 hora documentación = 2.5 horas</div>
+<div class="bullet-item">9 sesiones grupales: 63 horas</div>
+<div class="bullet-item">~10 sesiones individuales: 25 horas</div>
+<div class="bullet-item">Subtotal sesiones: 88 horas</div>
+<p class="key-value"><strong>Dedicación adicional:</strong></p>
+<div class="bullet-item">Análisis y documentación: 20 horas</div>
+<div class="bullet-item">Preparación de recursos/marcos: 15 horas</div>
+<div class="bullet-item">Comunicación con cliente/CHRO: 10 horas</div>
+<div class="bullet-item">Gestión de community post-programa: 5 horas</div>
+<p class="key-value"><strong>Dedicación total:</strong> ~150 horas (Coach: 110h, Manager: 40h)</p>
+<p class="key-value"><strong>Estructura:</strong> Coach dirige sesiones y coaching 1:1, Manager prepara análisis, documentación y soporte logístico</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-puente-educativo-82b145" data-searchable aria-labelledby="head-10-puente-educativo-82b145">
+            <div class="phase-header" id="head-10-puente-educativo-82b145" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Puente Educativo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Assessments:</strong> Evaluaciones de liderazgo, personalidad, estilos de comunicación (MBTI, Hogan, DiSC)</div>
+<div class="bullet-item"><strong>Frameworks:</strong> Modelos de liderazgo, transformación, gestión del cambio</div>
+<div class="bullet-item"><strong>Lecturas y recursos:</strong> Artículos, libros, podcasts sobre liderazgo digital y IA</div>
+<div class="bullet-item"><strong>Case studies:</strong> Documentos de casos de líderes/empresas en transformación similar</div>
+<div class="bullet-item"><strong>Workshops adicionales:</strong> Opcionales — digital literacy, AI fundamentals para ejecutivos (2-3 sesiones)</div>
+<div class="bullet-item"><strong>Comunidad:</strong> Acceso a masterminds de líderes en transformación (confidencial, peer-learning)</div>
+<div class="bullet-item"><strong>Mentoring:</strong> Posibilidad de conexión con mentores externos senior según perfil</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-soporte-dd2ef9" data-searchable aria-labelledby="head-11-soporte-dd2ef9">
+            <div class="phase-header" id="head-11-soporte-dd2ef9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Soporte</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Durante el programa:</strong> Disponibilidad del coach entre sesiones (email, máx. 24h respuesta)</div>
+<div class="bullet-item"><strong>Escalaciones:</strong> Soporte prioritario para temas críticos de liderazgo/carrera entre sesiones</div>
+<div class="bullet-item"><strong>Documentación:</strong> Notas, recursos, materiales enviados dentro de 5 días de cada sesión</div>
+<div class="bullet-item"><strong>Post-programa:</strong> Opción de 3 meses follow-up grupal (COP 3M) o coaching continuado trimestral (COP 5M/trimestre)</div>
+<div class="bullet-item"><strong>Comunidad post-programa:</strong> Acceso extendido a masterminds y recursos (opcional, COP 2M/año)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-kpis-15e4c5" data-searchable aria-labelledby="head-12-kpis-15e4c5">
+            <div class="phase-header" id="head-12-kpis-15e4c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. KPIs</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Ejecución:</strong></p>
+<div class="bullet-item">Cumplimiento de sesiones: 9/9 grupales (100%)</div>
+<div class="bullet-item">Cumplimiento de sesiones individuales: 10/10 (100%)</div>
+<div class="bullet-item">Entrega de documentos: On-time para cada milestone</div>
+<div class="bullet-item">Participación promedio de ejecutivos: 80%+ en sesiones grupales</div>
+<p class="key-value"><strong>Impacto de Liderazgo (Grupal):</strong></p>
+<div class="bullet-item">Alineación de equipo ejecutivo: 100% acuerdo sobre visión/dirección</div>
+<div class="bullet-item">Cohesión de grupo: Mejora medible (encuesta pre/post)</div>
+<div class="bullet-item">Planes de desarrollo: 100% de participantes con plan personalizado completo</div>
+<div class="bullet-item">Marca ejecutiva: 100% con estrategia definida, 80%+ con presencia pública iniciada</div>
+<p class="key-value"><strong>Impacto Profesional (Individual):</strong></p>
+<div class="bullet-item">Plan de carrera: Claro y ejecutable</div>
+<div class="bullet-item">Skills prioritarios: Mapa de upskilling definido por 100% de participantes</div>
+<div class="bullet-item">Network: 10+ conexiones nuevas con líderes relevantes en promedio</div>
+<div class="bullet-item">Visibilidad: Presencia digital/profesional mejorada</div>
+<p class="key-value"><strong>Impacto Empresarial:</strong></p>
+<div class="bullet-item">Retención de talento: Mantener 100% de ejecutivos programa (métrica post-12m)</div>
+<div class="bullet-item">Promociones internas: 30%+ de participantes con movimiento/escalada de rol</div>
+<div class="bullet-item">Transformación digital: Ejecución de iniciativas estratégicas en progreso</div>
+<div class="bullet-item">Satisfacción de equipo: Mejora en engagement de equipos reportadas por directores</div>
+<p class="key-value"><strong>Satisfacción:</strong></p>
+<div class="bullet-item">NPS del coach: Mín. 8/10</div>
+<div class="bullet-item">Utilidad percibida: Sí, directamente aplicable a rol y carrera</div>
+<div class="bullet-item">Net Promoter: Recomendarían programa a otros ejecutivos</div>
+<div class="bullet-item">Satisfacción CHRO/Sponsor: Mín. 8/10, valor claro para empresa</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-trminos-comerciales-be9cc2" data-searchable aria-labelledby="head-13-trminos-comerciales-be9cc2">
+            <div class="phase-header" id="head-13-trminos-comerciales-be9cc2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Términos Comerciales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Pago:</strong> 50% anticipo + 50% a mes 2</div>
+<div class="bullet-item"><strong>Duración:</strong> 4 meses calendarios (16 semanas)</div>
+<div class="bullet-item"><strong>Sesiones grupales:</strong> 9 sesiones de 2.5-3 horas (cadencia cada 2 semanas)</div>
+<div class="bullet-item"><strong>Sesiones individuales:</strong> 1 por ejecutivo (mín. 1 hora) durante programa</div>
+<div class="bullet-item"><strong>Participantes:</strong> 5-10 ejecutivos confirmados pre-programa</div>
+<div class="bullet-item"><strong>Horario:</strong> Acordado entre cliente y MetodologIA (preferentemente durante horas de trabajo)</div>
+<div class="bullet-item"><strong>Responsabilidades cliente:</strong></div>
+<div class="bullet-item">Disponibilidad de ejecutivos (3h cada 2 semanas mínimo)</div>
+<div class="bullet-item">Comunicación clara de patrocinio desde CEO (alineación con estrategia empresarial)</div>
+<div class="bullet-item">Espacio físico o plataforma virtual para sesiones</div>
+<div class="bullet-item">Información contextual de empresa (cultura, estrategia, transformaciones)</div>
+<div class="bullet-item">Feedback honesto en evaluaciones de programa</div>
+<div class="bullet-item">Asignación de owner de talento/HR para coordinación</div>
+<div class="bullet-item"><strong>Responsabilidades MetodologIA:</strong></div>
+<div class="bullet-item">9 sesiones de coaching grupal</div>
+<div class="bullet-item">Sesiones individuales diagnóstico + seguimiento</div>
+<div class="bullet-item">Planes de desarrollo personalizados</div>
+<div class="bullet-item">Documentación completa de sesiones</div>
+<div class="bullet-item">Evaluaciones y assessments</div>
+<div class="bullet-item">Reportes de progreso trimestral</div>
+<div class="bullet-item">Acceso a recursos educativos y frameworks</div>
+<div class="bullet-item">Soporte entre sesiones (limited)</div>
+<div class="bullet-item"><strong>Confidencialidad:</strong> Acuerdos de confidencialidad tanto para empresa como para ejecutivos individuales</div>
+<div class="bullet-item"><strong>Flexibilidad:</strong> Máx. 2 sesiones pueden reprogramarse (cambios de fecha/hora)</div>
+<div class="bullet-item"><strong>Reemplazo de participantes:</strong> Si ejecutivo sale empresa/rol antes de sesión 4, puede reemplazarse sin costo. Después, cobro de COP 1.5M por nuevo participante</div>
+<div class="bullet-item"><strong>Cancelación:</strong> Sin costo si se cancela antes de sesión 2; después, penalidad 50% de retainer restante</div>
+<div class="bullet-item"><strong>Continuidad post-programa:</strong></div>
+<div class="bullet-item">Follow-up grupal 3 meses: COP 3M</div>
+<div class="bullet-item">Coaching continuado trimestral: COP 5M/trimestre (3-4 sesiones + 1 individual por ejecutivo)</div>
+<div class="bullet-item">Comunidad post-programa: COP 2M/año (acceso masterminds, recursos)</div>
+<div class="bullet-item">Coaching individual continuado: COP 5M por ejecutivo/trimestre (opcional)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="adicionales-opcionales-9831ca" data-searchable aria-labelledby="head-adicionales-opcionales-9831ca">
+            <div class="phase-header" id="head-adicionales-opcionales-9831ca" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Adicionales (Opcionales)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Facilitación de reunión de liderazgo estruturada:</strong> COP 2M (diseño de governance, cadencia, agenda de equipo ejecutivo)</div>
+<div class="bullet-item"><strong>Assessments ejecutivos adicionales:</strong> COP 500K por persona (evaluaciones de 360°, liderazgo avanzado)</div>
+<div class="bullet-item"><strong>Workshop de capacitación digital:</strong> COP 3M (AI literacy, transformación digital fundamentals para grupo)</div>
+<div class="bullet-item"><strong>Facilitación de change management:</strong> COP 5M (diseño detallado de gestión del cambio, comunicación)</div>
+<div class="bullet-item"><strong>Extensión de coaching individual:</strong> COP 5M por ejecutivo/trimestre (más allá del programa base)</div>
+<div class="bullet-item"><strong>Community management post-programa:</strong> COP 2M/mes (facilitar masterminds, conexiones, recursos)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="diferenciales-del-programa-a25285" data-searchable aria-labelledby="head-diferenciales-del-programa-a25285">
+            <div class="phase-header" id="head-diferenciales-del-programa-a25285" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Diferenciales del Programa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Integral:</strong> Combina desarrollo individual + cohesión grupal + alineación estratégica</div>
+<div class="bullet-item"><strong>Personalizado:</strong> Planes únicos para cada ejecutivo, contextualizados a empresa</div>
+<div class="bullet-item"><strong>Holístico:</strong> Carrera + marca + skills + liderazgo + transformación digital</div>
+<div class="bullet-item"><strong>Práctico:</strong> No solo reflexión, sino planes ejecutables con accountability empresarial</div>
+<div class="bullet-item"><strong>Transformador:</strong> Cambio visible en liderazgo, cohesión de equipo, impacto en transformación</div>
+<div class="bullet-item"><strong>Red:</strong> Conexión con otros líderes en transformación, mentores, oportunidades</div>
+<div class="bullet-item"><strong>Sostenible:</strong> Modelo de continuidad post-programa para mantener momentum</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Second Brain — WS-03 — Proceso de Delivery MetodologIA">
+    <title>Second Brain — WS-03 — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Ws</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Second Brain — WS-03</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Second Brain — WS-03</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: WS-03-ALIADOS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-aliados-14e982')" aria-label="Ir a Documento Canónico | Segmento: ALIADOS">Documento Canónico | Segmento: ALIA</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-propuesta-de-valor-para-el-aliado-f974a2')" aria-label="Ir a 2. Propuesta de Valor para el Aliado">2. Propuesta de Valor para el Aliad</button>
+<button class="nav-btn" onclick="scrollToSection('3-modelo-de-codelivery-e59178')" aria-label="Ir a 3. Modelo de Co-Delivery">3. Modelo de Co-Delivery</button>
+<button class="nav-btn" onclick="scrollToSection('4-requisitos-de-certificacin-del-facilitador-f20f5f')" aria-label="Ir a 4. Requisitos de Certificación del Facilitador">4. Requisitos de Certificación del </button>
+<button class="nav-btn" onclick="scrollToSection('5-contenido-y-contextualizacin-24a42a')" aria-label="Ir a 5. Contenido y Contextualización">5. Contenido y Contextualización</button>
+<button class="nav-btn" onclick="scrollToSection('6-branding-y-materiales-f0c21e')" aria-label="Ir a 6. Branding y Materiales">6. Branding y Materiales</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-econmico-102070-05cded')" aria-label="Ir a 7. Modelo Económico (10/20/70)">7. Modelo Económico (10/20/70)</button>
+<button class="nav-btn" onclick="scrollToSection('8-calidad-y-auditora-7f2070')" aria-label="Ir a 8. Calidad y Auditoría">8. Calidad y Auditoría</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-y-logstica-09ab96')" aria-label="Ir a 9. Operación y Logística">9. Operación y Logística</button>
+<button class="nav-btn" onclick="scrollToSection('10-kpis-del-partnership-1a667b')" aria-label="Ir a 10. KPIs del Partnership">10. KPIs del Partnership</button>
+<button class="nav-btn" onclick="scrollToSection('11-trminos-de-la-alianza-d7cae6')" aria-label="Ir a 11. Términos de la Alianza">11. Términos de la Alianza</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-aliados-14e982" data-searchable aria-labelledby="head-documento-cannico-segmento-aliados-14e982">
+            <div class="phase-header" id="head-documento-cannico-segmento-aliados-14e982" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: ALIADOS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> WS-03-ALIADOS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Aliados Estratégicos (Co-delivery)</p>
+<p class="key-value"><strong>Modelo comercial:</strong> Co-branded, revenue share 10/20/70</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Duración:</strong> 5 horas</div>
+<div class="bullet-item"><strong>Modalidad:</strong> Presencial o híbrida</div>
+<div class="bullet-item"><strong>Participantes:</strong> 15-30 personas</div>
+<div class="bullet-item"><strong>Objetivo:</strong> Que los profesionales construyan un Second Brain (sistema personal de gestión de conocimiento) para capturar, organizar y acceder a información crítica</div>
+<div class="bullet-item"><strong>Precio mínimo cliente final:</strong> COP 2.5M</div>
+<div class="bullet-item"><strong>Comisión MetodologIA:</strong> 10% del valor bruto</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-propuesta-de-valor-para-el-aliado-f974a2" data-searchable aria-labelledby="head-2-propuesta-de-valor-para-el-aliado-f974a2">
+            <div class="phase-header" id="head-2-propuesta-de-valor-para-el-aliado-f974a2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Propuesta de Valor para el Aliado</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>El Aliado accede a metodología comprobada de gestión del conocimiento personal. Dirigido a ejecutivos, innovadores y profesionales de conocimiento. Complementa perfectamente a servicios de productividad. Genera demanda para integraciones con herramientas del cliente (Notion, Obsidian, Roam). Margen del 70% para ejecutor.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-modelo-de-codelivery-e59178" data-searchable aria-labelledby="head-3-modelo-de-codelivery-e59178">
+            <div class="phase-header" id="head-3-modelo-de-codelivery-e59178" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Modelo de Co-Delivery</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Venta:</strong> El Aliado vende a cliente final (dueño de relación)</div>
+<div class="bullet-item"><strong>Ejecución:</strong> Facilitador certificado del Aliado facilita, con soporte de MetodologIA</div>
+<div class="bullet-item"><strong>Contenido:</strong> Master deck, plantillas de segunda cerebro, guías de herramientas, workbook</div>
+<div class="bullet-item"><strong>Contextualización:</strong> Hasta 40% adaptación según herramientas disponibles en cliente (stack tech)</div>
+<div class="bullet-item"><strong>Branding:</strong> Co-branded en todo material entregable</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-requisitos-de-certificacin-del-facilitador-f20f5f" data-searchable aria-labelledby="head-4-requisitos-de-certificacin-del-facilitador-f20f5f">
+            <div class="phase-header" id="head-4-requisitos-de-certificacin-del-facilitador-f20f5f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Requisitos de Certificación del Facilitador</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Certificación &quot;Facilitador WS-03&quot; (10 horas, incluye setup personal)</div>
+<div class="bullet-item">Tener su propio Second Brain activo y productivo</div>
+<div class="bullet-item">Dominar 2+ herramientas de gestión del conocimiento (Notion, Obsidian, etc.)</div>
+<div class="bullet-item">Facilitación piloto con NPS ≥ 8.0</div>
+<div class="bullet-item">Renovación anual con actualización de herramientas</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-contenido-y-contextualizacin-24a42a" data-searchable aria-labelledby="head-5-contenido-y-contextualizacin-24a42a">
+            <div class="phase-header" id="head-5-contenido-y-contextualizacin-24a42a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Contenido y Contextualización</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Master Content (60%):</strong></p>
+<div class="bullet-item">Concepto PARA: Capture, Organize, Distill, Express</div>
+<div class="bullet-item">Arquitectura de Second Brain (inbox, areas, projects, archive)</div>
+<div class="bullet-item">Selección de herramientas según necesidad</div>
+<div class="bullet-item">Implementación paso a paso</div>
+<div class="bullet-item">Integración con IA (resumen automático, búsqueda semántica)</div>
+<div class="bullet-item">15+ plantillas reutilizables</div>
+<div class="bullet-item">Ejercicios de migración de datos</div>
+<p class="key-value"><strong>Contextualización Permitida (40%):</strong></p>
+<div class="bullet-item">Stack tecnológico específico del cliente</div>
+<div class="bullet-item">Flujos de información según rol/industria</div>
+<div class="bullet-item">Casos de uso locales</div>
+<div class="bullet-item">Automatizaciones customizadas</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-branding-y-materiales-f0c21e" data-searchable aria-labelledby="head-6-branding-y-materiales-f0c21e">
+            <div class="phase-header" id="head-6-branding-y-materiales-f0c21e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Branding y Materiales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Deck master: 90 slides, editable</div>
+<div class="bullet-item">Guía del facilitador: 45 páginas</div>
+<div class="bullet-item">Workbook para participantes: 30 páginas</div>
+<div class="bullet-item">15 plantillas descargables (Notion, Obsidian, Roam)</div>
+<div class="bullet-item">Video tutoriales: acceso a biblioteca de setup</div>
+<div class="bullet-item">Certificados de participación</div>
+<div class="bullet-item">Portal con actualizaciones de herramientas</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-econmico-102070-05cded" data-searchable aria-labelledby="head-7-modelo-econmico-102070-05cded">
+            <div class="phase-header" id="head-7-modelo-econmico-102070-05cded" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Económico (10/20/70)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Valor facturado cliente final: COP 2.5M (mínimo)</div>
+<div class="bullet-item"><strong>MetodologIA (10%):</strong> COP 250K</div>
+<div class="bullet-item"><strong>Aliado vendedor (20%):</strong> COP 500K</div>
+<div class="bullet-item"><strong>Aliado ejecutor (70%):</strong> COP 1.75M</div>
+<div class="bullet-item">Billing: Aliado factura y remite 10% a MetodologIA en 15 días</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-calidad-y-auditora-7f2070" data-searchable aria-labelledby="head-8-calidad-y-auditora-7f2070">
+            <div class="phase-header" id="head-8-calidad-y-auditora-7f2070" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Calidad y Auditoría</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Primer taller: auditado in-situ por Partner Success Manager</div>
+<div class="bullet-item">Encuesta NPS post-taller (meta: 8.0+)</div>
+<div class="bullet-item">Seguimiento a 30 días: ¿cuán activo es Second Brain del participante?</div>
+<div class="bullet-item">Auditoría semestral de herramientas usadas (validar actualización)</div>
+<div class="bullet-item">Baja de facilitador si NPS &lt; 7.5 en 2 talleres consecutivos</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-y-logstica-09ab96" data-searchable aria-labelledby="head-9-operacin-y-logstica-09ab96">
+            <div class="phase-header" id="head-9-operacin-y-logstica-09ab96" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación y Logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Aliado: sala, conexión a internet, soporte técnico</div>
+<div class="bullet-item">MetodologIA: contenido, training, plantillas, soporte pedagógico</div>
+<div class="bullet-item">Requisito: computadora por participante, cuenta en herramienta elegida</div>
+<div class="bullet-item">Lead time: 2 semanas</div>
+<div class="bullet-item">Reporte: NPS, tasa de adopción de Second Brain, feedback</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-kpis-del-partnership-1a667b" data-searchable aria-labelledby="head-10-kpis-del-partnership-1a667b">
+            <div class="phase-header" id="head-10-kpis-del-partnership-1a667b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. KPIs del Partnership</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">NPS promedio ≥ 8.0 por taller</div>
+<div class="bullet-item">Minimo 4 talleres/año por facilitador</div>
+<div class="bullet-item">Tasa de participantes que implementa Second Brain dentro 30 días ≥ 70%</div>
+<div class="bullet-item">Retención para próximos servicios ≥ 45%</div>
+<div class="bullet-item">Recomendación espontánea ≥ 60%</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-trminos-de-la-alianza-d7cae6" data-searchable aria-labelledby="head-11-trminos-de-la-alianza-d7cae6">
+            <div class="phase-header" id="head-11-trminos-de-la-alianza-d7cae6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Términos de la Alianza</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Duración:</strong> Anual, renovable</div>
+<div class="bullet-item"><strong>Volumen mínimo:</strong> 3 talleres/año por facilitador</div>
+<div class="bullet-item"><strong>Revisión:</strong> Trimestral (NPS, implementación de participantes)</div>
+<div class="bullet-item"><strong>Herramientas:</strong> MetodologIA mantiene relación con proveedores de herramientas para descuentos</div>
+<div class="bullet-item"><strong>Exclusividad:</strong> No hay exclusividad territorial</div>
+<div class="bullet-item"><strong>Terminación:</strong> 30 días por bajo desempeño o incumplimiento</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

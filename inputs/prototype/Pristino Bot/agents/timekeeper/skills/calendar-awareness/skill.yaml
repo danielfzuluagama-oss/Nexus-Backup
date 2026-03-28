@@ -1,0 +1,567 @@
+id: calendar-awareness
+name: Calendar Awareness
+purpose: >
+  Provide day-of-week, holiday, week number, and calendar event information
+  to give users contextual awareness of temporal events and calendar structure.
+businessValue: >
+  Delivers contextual awareness of temporal events, helping users understand what
+  day a date falls on, whether it is a holiday, and where it sits in the calendar year.
+triggerTypes:
+  - user_message
+owningAgent: timekeeper
+
+inputs:
+  - "userMessage: string (sanitized query about calendar information)"
+  - "targetDate: string | null (specific date or date range to query)"
+  - "country: string | null (country code for holiday lookup, e.g. US, MX, JP)"
+
+outputs:
+  - "calendarInfo: string (human-readable calendar context response)"
+  - "dayOfWeek: string (day name for the queried date)"
+  - "holidays: object[] | null (list of holidays if applicable)"
+  - "weekNumber: number | null (ISO week number if requested)"
+
+dependencies:
+  - "get_current_time tool (for resolving 'today' references)"
+  - "security.ts (CP1 sanitizeInput, CP3 validateOutput)"
+  - "LLM knowledge base (holiday data, calendar calculations)"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads: []
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text before processing"
+  - "CP2: buildSecurePrompt() applied to system prompt by orchestrator"
+  - "CP3: validateOutput() on all LLM responses before delivery to user"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - tool_invoked
+  - calendar_query_resolved
+  - holiday_lookup_performed
+  - validation_failed
+  - fallback_triggered
+  - skill_completed
+
+failureHandling:
+  - "Unknown holiday or country: inform user that holiday data is limited and suggest verifying"
+  - "Invalid date: request clarification with format examples"
+  - "get_current_time failure: use LLM knowledge of current date as fallback with warning"
+  - "Uncertain holiday data: explicitly mark as unverified and recommend official sources"
+
+interoperabilityContract:
+  inputType: "CalendarRequest { userMessage: string, targetDate?: string, country?: string }"
+  outputType: "CalendarResponse { calendarInfo: string, dayOfWeek: string, holidays?: Holiday[], weekNumber?: number }"
+
+wowCriteria:
+  - "Includes cultural context for holidays (e.g., 'Thanksgiving is a federal holiday in the US')"
+  - "Proactively mentions related dates (e.g., 'That is the day after Christmas')"
+  - "Handles moveable holidays correctly (Easter, Ramadan start, Chinese New Year)"
+  - "Provides week number in both ISO and US counting conventions"
+
+safeCriteria:
+  - "Day-of-week calculations are always mathematically correct"
+  - "Holiday information is explicitly marked as potentially incomplete"
+  - "Never states a non-holiday as a holiday or vice versa without qualification"
+  - "Recommends official sources for critical scheduling decisions"
+
+workflows:
+  - id: day-of-week-query
+    title: Day of Week Query
+    objective: Determine what day of the week a given date falls on
+    trigger: "User asks what day of the week a date is (e.g., 'What day is July 4th, 2026?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "A date reference is identified in the query"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "targetDate: string (date reference from user)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before date parsing begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Resolve target date
+        desc: Parse the user message to extract and resolve the date reference to an ISO 8601 date.
+        whyThisMatters: Natural language dates must be unambiguously resolved before the day-of-week calculation can proceed.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }) for 'today' reference. Use LLM to resolve the date."
+        promptToUse: |
+          Extract and resolve the date from this user message:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Rules:
+          - Convert natural language to ISO 8601 (YYYY-MM-DD)
+          - Handle relative references: "today", "tomorrow", "next Friday", etc.
+          - Handle named dates: "Christmas 2026", "New Year's Day", etc.
+          - If year not specified, assume the next occurrence from today
+          Return as YAML:
+          resolvedDate: YYYY-MM-DD
+          originalReference: "the user's original text"
+          yearAssumed: true | false
+        expectedOutput: "Resolved ISO 8601 date with original reference and year-assumption flag"
+        validationRule: "resolvedDate is valid ISO 8601 and represents a real calendar date"
+        failureSignal: "resolvedDate is invalid or cannot be parsed from the message"
+        recoveryAction: "Ask user to specify the date in a clear format (e.g., 'July 4, 2026')"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Calculate day of week
+        desc: Determine the day of the week for the resolved date using calendar arithmetic.
+        whyThisMatters: This is the core computation; day-of-week errors would make the entire response wrong.
+        inputNeeded: "Resolved ISO 8601 date"
+        actionInstruction: "Use LLM to calculate the day of week for the given date."
+        promptToUse: |
+          Determine the day of the week for this date:
+          Date: {{resolvedDate}}
+          Calculate the day of week and provide:
+          dayOfWeek: "Monday" through "Sunday"
+          dayNumber: 1 (Monday) through 7 (Sunday) per ISO 8601
+          isWeekend: true | false
+          Additional context:
+          - Is it the first/last day of the month?
+          - Is it a notable date? (quarter start/end, equinox, etc.)
+          Show your reasoning briefly.
+        expectedOutput: "Day of week name, ISO day number, weekend flag, and contextual notes"
+        validationRule: "Day of week is correct for the given date (verifiable by modular arithmetic)"
+        failureSignal: "Day of week does not match the actual calendar day"
+        recoveryAction: "Recalculate using Zeller's congruence formula explicitly"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format and deliver response
+        desc: Format the day-of-week result with context and validate via CP3 before delivery.
+        whyThisMatters: Clear formatting with context helps users quickly get the information they need.
+        inputNeeded: "Day of week calculation result and context"
+        actionInstruction: "Use LLM to format, then call validateOutput(), then return to orchestrator."
+        promptToUse: |
+          Format this day-of-week result:
+          Date: {{resolvedDate}} ({{originalReference}})
+          Day: {{dayOfWeek}}
+          Weekend: {{isWeekend}}
+          Year assumed: {{yearAssumed}}
+          Context: {{additionalContext}}
+          Format: "{{originalReference}} falls on a {{dayOfWeek}}."
+          Add relevant context:
+          - If weekend: note it
+          - If year was assumed: mention the assumption
+          - If notable date: mention it briefly
+        expectedOutput: "Formatted response with day of week and context"
+        validationRule: "Output contains the date reference, day of week name, and any relevant context"
+        failureSignal: "Output missing day of week or date reference"
+        recoveryAction: "Return minimal format: '{{resolvedDate}} is a {{dayOfWeek}}.'"
+        handoffIfNeeded: null
+
+    mainOutput: "Day of week information delivered to user"
+    secondaryOutputs:
+      - "calendar_query_resolved event with date and day details"
+    DoD:
+      - "User received correct day of week for the requested date"
+      - "Date reference clearly connected to the day name"
+      - "Weekend status noted if relevant"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Day of week calculation is correct"
+      - "Year assumption noted if applicable"
+      - "Weekend correctly identified"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <3s"
+      - "calculation_accuracy: 100% correct day of week"
+      - "context_completeness: weekend status always noted"
+    cadence: "Per-request (when user asks about day of week)"
+    errorHandling: "If date cannot be resolved, ask for clarification"
+    fallbackRoute: "Request explicit date from user"
+    escalationRoute: "Orchestrator logs parsing failure for analysis"
+
+  - id: holiday-check
+    title: Holiday Check
+    objective: Determine whether a given date is a public holiday and provide holiday details
+    trigger: "User asks about holidays on a date or asks when a specific holiday occurs"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "A date or holiday name is identified in the query"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "targetDate: string | null (date to check for holidays)"
+      - "holidayName: string | null (specific holiday to look up)"
+      - "country: string | null (country for holiday context)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before holiday data processing begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Parse holiday query
+        desc: Determine whether the user is asking if a date is a holiday, or when a specific holiday occurs, and identify the country context.
+        whyThisMatters: Holidays are country-specific; without country context the answer could be wrong or incomplete.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }) for date reference. Use LLM to parse the holiday query."
+        promptToUse: |
+          Parse this holiday query:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Determine the query type and extract parameters:
+          Return as YAML:
+          queryType: "is_holiday" | "when_is_holiday" | "holidays_on_date" | "upcoming_holidays"
+          targetDate: YYYY-MM-DD | null
+          holidayName: "string" | null
+          country: "ISO 3166-1 alpha-2 code" | null
+          year: integer
+          If country is not specified, try to infer from context or default to null (will provide general info).
+        expectedOutput: "Query type, target date or holiday name, country code, and year"
+        validationRule: "queryType is valid, and either targetDate or holidayName is present"
+        failureSignal: "Cannot determine query type or both date and holiday name are missing"
+        recoveryAction: "Ask user to clarify: 'Are you asking about a specific date or a specific holiday?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Look up holiday information
+        desc: Use LLM knowledge to provide holiday information for the given date or holiday name.
+        whyThisMatters: Holiday data must be accurate for scheduling; incorrect holiday info causes real-world scheduling problems.
+        inputNeeded: "Query type, target date or holiday name, country, year"
+        actionInstruction: "Use LLM to look up holiday information with explicit uncertainty marking."
+        promptToUse: |
+          Provide holiday information for this query:
+          Query type: {{queryType}}
+          {{#if targetDate}}Date: {{targetDate}}{{/if}}
+          {{#if holidayName}}Holiday: {{holidayName}}{{/if}}
+          Country: {{country}} (or "general" if null)
+          Year: {{year}}
+          Rules:
+          - For fixed-date holidays (e.g., Christmas Dec 25): provide with high confidence
+          - For moveable holidays (e.g., Easter, Thanksgiving): calculate the date for the given year
+          - For Islamic/lunar holidays: note that dates are approximate and vary by observation
+          - ALWAYS include a confidence level: "confirmed" for well-known fixed holidays, "calculated" for moveable, "approximate" for lunar/observational
+          - If unsure, say so explicitly
+          Return as YAML:
+          holidays:
+            - name: "Holiday Name"
+              date: YYYY-MM-DD
+              country: "country code"
+              type: "federal" | "public" | "religious" | "cultural" | "observance"
+              confidence: "confirmed" | "calculated" | "approximate"
+              notes: "additional context"
+          isPublicHoliday: true | false
+          disclaimer: "Holiday data is based on general knowledge and may not reflect recent changes. Verify with official sources for critical scheduling."
+        expectedOutput: "Holiday information with confidence levels and disclaimer"
+        validationRule: "Each holiday has a name, date, and confidence level. Disclaimer is present."
+        failureSignal: "No holiday data returned or missing confidence levels"
+        recoveryAction: "Return with explicit uncertainty: 'I am not confident about holiday data for this date. Please verify with an official source.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format and deliver response
+        desc: Format the holiday information into a clear response with confidence indicators and the verification disclaimer.
+        whyThisMatters: Users making scheduling decisions need to know the confidence level and limitations of the holiday data.
+        inputNeeded: "Holiday lookup results with confidence levels"
+        actionInstruction: "Use LLM to format, apply CP3, then return to orchestrator."
+        promptToUse: |
+          Format this holiday information:
+          Query: {{queryType}}
+          Holidays: {{holidays}}
+          Is public holiday: {{isPublicHoliday}}
+          Format:
+          - Lead with a direct answer to the user's question
+          - Include holiday name, date, and type
+          - Note confidence level for moveable/approximate holidays
+          - End with the verification disclaimer
+          Keep it concise but complete.
+        expectedOutput: "Formatted holiday response with confidence indicators and disclaimer"
+        validationRule: "Output answers the user's question, includes confidence level, and has disclaimer"
+        failureSignal: "Output missing the direct answer or disclaimer"
+        recoveryAction: "Return minimal answer with full disclaimer"
+        handoffIfNeeded: null
+
+    mainOutput: "Holiday information with confidence levels delivered to user"
+    secondaryOutputs:
+      - "holiday_lookup_performed event with query details"
+      - "calendar_query_resolved event"
+    DoD:
+      - "User received relevant holiday information"
+      - "Confidence levels clearly communicated"
+      - "Verification disclaimer included"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Fixed holidays have correct dates"
+      - "Moveable holidays are calculated for the correct year"
+      - "Approximate holidays are clearly marked"
+      - "Disclaimer is present"
+      - "No invented holidays"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <4s"
+      - "fixed_holiday_accuracy: 100% correct for well-known holidays"
+      - "disclaimer_compliance: 100% responses include verification note"
+    cadence: "Per-request (when user asks about holidays)"
+    errorHandling: "If holiday data is uncertain, clearly mark uncertainty and recommend verification"
+    fallbackRoute: "Inform user that holiday data is limited and recommend official government sources"
+    escalationRoute: "Orchestrator logs unknown holiday queries for knowledge base expansion"
+
+  - id: calendar-context
+    title: Calendar Context
+    objective: Provide rich calendar context for a date including quarter, season, and notable temporal context
+    trigger: "User asks about the calendar context of a date (e.g., 'What quarter is April in?' or 'Is it still Q1?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "A date or period reference is identified"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "targetDate: string (date to contextualize)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before calendar analysis begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Resolve date and gather context
+        desc: Resolve the target date and compute all calendar context attributes (quarter, season, day-of-year, etc.).
+        whyThisMatters: Rich calendar context requires multiple calculations; missing any produces an incomplete answer.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }) for reference. Use LLM to compute calendar context."
+        promptToUse: |
+          Provide full calendar context for this query:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Resolve the target date and compute:
+          Return as YAML:
+          targetDate: YYYY-MM-DD
+          dayOfWeek: "Monday" through "Sunday"
+          dayOfYear: integer (1-366)
+          weekNumber: integer (ISO 8601 week number)
+          quarter: "Q1" | "Q2" | "Q3" | "Q4"
+          quarterStartDate: YYYY-MM-DD
+          quarterEndDate: YYYY-MM-DD
+          daysRemainingInQuarter: integer
+          season: "Spring" | "Summer" | "Autumn" | "Winter" (Northern Hemisphere)
+          isLeapYear: true | false
+          daysRemainingInYear: integer
+          percentOfYearElapsed: "XX.X%"
+        expectedOutput: "Complete calendar context with all attributes computed"
+        validationRule: "All fields populated, quarter matches month, season matches date, leap year is correct"
+        failureSignal: "Missing fields or inconsistent values (e.g., Q2 for January)"
+        recoveryAction: "Recalculate each field independently and verify consistency"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Format calendar context
+        desc: Format the calendar context into a clear, organized response addressing the user's specific question.
+        whyThisMatters: Users ask about specific aspects; the response should lead with their answer while providing useful additional context.
+        inputNeeded: "Complete calendar context attributes"
+        actionInstruction: "Use LLM to format context, prioritizing the user's specific question."
+        promptToUse: |
+          Format this calendar context into a response:
+          User's question: {{cleanedMessage}}
+          Calendar data: {{calendarContext}}
+          Rules:
+          - Lead with the direct answer to the user's question
+          - Follow with 2-3 relevant context points
+          - Do not overwhelm with all data unless asked for a full overview
+          - Use natural language, not a data dump
+          Example: "March 6, 2026 is in Q1 (January-March). There are 25 days remaining in Q1, and we are 17.8% through the year."
+        expectedOutput: "Formatted response leading with the answer and including relevant context"
+        validationRule: "Output directly answers the user's question and includes at least 2 context points"
+        failureSignal: "Output does not address the user's specific question"
+        recoveryAction: "Return only the direct answer without additional context"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the calendar context to the orchestrator.
+        whyThisMatters: Final quality gate ensures calendar data accuracy before delivery.
+        inputNeeded: "Formatted calendar context response"
+        actionInstruction: "Call validateOutput(formattedResponse). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response delivered to orchestrator"
+        validationRule: "CP3 passed and response is non-empty"
+        failureSignal: "CP3 flags output or response is empty"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Calendar context information delivered to user"
+    secondaryOutputs:
+      - "calendar_query_resolved event with context attributes"
+    DoD:
+      - "User's specific question answered directly"
+      - "Relevant calendar context provided"
+      - "All computed values are accurate"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Quarter assignment is correct for the month"
+      - "Season matches the date (Northern Hemisphere)"
+      - "Leap year status is correct"
+      - "Week number follows ISO 8601"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <3s"
+      - "context_accuracy: 100% correct for quarter, season, leap year"
+      - "question_relevance: direct answer always leads the response"
+    cadence: "Per-request (when user asks about calendar context)"
+    errorHandling: "If date cannot be resolved, ask for clarification"
+    fallbackRoute: "Request explicit date from user"
+    escalationRoute: "Orchestrator logs complex calendar query for analysis"
+
+  - id: week-number-query
+    title: Week Number Query
+    objective: Determine the ISO 8601 week number for a given date and provide week context
+    trigger: "User asks about week numbers (e.g., 'What week number is this?' or 'What week is March 15?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "A date reference or 'current week' identified in the query"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "targetDate: string (date to find week number for)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before week number calculation begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Resolve date and calculate week number
+        desc: Resolve the target date and calculate the ISO 8601 week number, including the week's date range.
+        whyThisMatters: ISO week numbering has specific rules (weeks start on Monday, week 1 contains the first Thursday) that differ from casual usage.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }) for 'today'. Use LLM to calculate ISO week number."
+        promptToUse: |
+          Calculate the ISO 8601 week number for this date:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Resolve the target date and compute:
+          Return as YAML:
+          targetDate: YYYY-MM-DD
+          isoWeekNumber: integer (1-53)
+          isoWeekYear: integer (may differ from calendar year for dates near Jan 1)
+          weekStartDate: YYYY-MM-DD (Monday)
+          weekEndDate: YYYY-MM-DD (Sunday)
+          dayOfWeek: "Monday" through "Sunday"
+          dayInWeek: integer (1=Monday, 7=Sunday)
+          totalWeeksInYear: 52 | 53
+          ISO 8601 week rules:
+          - Weeks start on Monday
+          - Week 1 is the week containing the first Thursday of the year
+          - The week year may differ from the calendar year near Jan 1
+        expectedOutput: "ISO week number, week year, week date range, and position within the week"
+        validationRule: "Week number is 1-53, week dates span Monday to Sunday, week year is correct"
+        failureSignal: "Week number outside 1-53 or week range does not start on Monday"
+        recoveryAction: "Recalculate using the ISO 8601 algorithm step by step"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Format week number response
+        desc: Format the week number information into a clear response with the week's date range for context.
+        whyThisMatters: Raw week numbers are hard to contextualize; showing the week's date range makes the information actionable.
+        inputNeeded: "Week number calculation results"
+        actionInstruction: "Use LLM to format the response with week context."
+        promptToUse: |
+          Format this week number result:
+          Date: {{targetDate}} ({{dayOfWeek}})
+          ISO week: W{{isoWeekNumber}} of {{isoWeekYear}}
+          Week range: {{weekStartDate}} (Mon) to {{weekEndDate}} (Sun)
+          Week position: Day {{dayInWeek}} of 7
+          Format: "{{targetDate_formatted}} is in Week {{isoWeekNumber}} of {{isoWeekYear}} ({{weekStartDate_formatted}} - {{weekEndDate_formatted}})."
+          Add context:
+          - How far through the week (e.g., "midweek" or "start of the week")
+          - Percentage through the year based on week number
+          Note: Mention if this uses ISO 8601 week numbering (weeks start Monday).
+        expectedOutput: "Formatted week number with date range and context"
+        validationRule: "Output contains week number, year, date range, and ISO 8601 note"
+        failureSignal: "Output missing week number or date range"
+        recoveryAction: "Return minimal format: 'Week {{weekNumber}} of {{year}}'"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the week number response to the orchestrator.
+        whyThisMatters: Final quality gate ensures week number accuracy before delivery.
+        inputNeeded: "Formatted week number response"
+        actionInstruction: "Call validateOutput(formattedResponse). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response delivered to orchestrator"
+        validationRule: "CP3 passed and response is non-empty with week number"
+        failureSignal: "CP3 flags output or response is empty"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "ISO 8601 week number with context delivered to user"
+    secondaryOutputs:
+      - "calendar_query_resolved event with week details"
+    DoD:
+      - "User received correct ISO week number"
+      - "Week date range included for context"
+      - "ISO 8601 convention noted"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Week number follows ISO 8601 rules"
+      - "Week year is correct (especially near year boundaries)"
+      - "Week range starts on Monday and ends on Sunday"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <3s"
+      - "week_number_accuracy: 100% correct per ISO 8601"
+      - "context_completeness: date range always included"
+    cadence: "Per-request (when user asks about week numbers)"
+    errorHandling: "If date cannot be resolved, ask for clarification"
+    fallbackRoute: "Request explicit date from user"
+    escalationRoute: "Orchestrator logs unusual week number query for analysis"

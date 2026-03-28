@@ -1,5 +1,10 @@
 import * as getCurrentTime from "./get-current-time.js";
 import * as knowledge from "./knowledge.js";
+import * as searchOperationalKnowledge from "./search-operational-knowledge.js";
+import * as getProcessModule from "./get-process-module.js";
+import * as getOperationalKbStatus from "./get-operational-kb-status.js";
+import * as prepareProcessOnboarding from "./prepare-process-onboarding.js";
+import * as prepareProcessExecution from "./prepare-process-execution.js";
 import { getDelegateDefinition } from "./delegate.js";
 import { logger } from "../logger.js";
 import type { Logger } from "../logger.js";
@@ -49,6 +54,11 @@ export class ToolRegistry {
     // Register built-in tools
     this.register(getCurrentTime.definition, getCurrentTime.execute);
     this.register(knowledge.definition, knowledge.readCoreKnowledge);
+    this.register(searchOperationalKnowledge.definition, searchOperationalKnowledge.execute);
+    this.register(getProcessModule.definition, getProcessModule.execute);
+    this.register(getOperationalKbStatus.definition, getOperationalKbStatus.execute);
+    this.register(prepareProcessOnboarding.definition, prepareProcessOnboarding.execute);
+    this.register(prepareProcessExecution.definition, prepareProcessExecution.execute);
   }
 
   register(definition: ToolDefinition, executor: ToolExecutor): void {

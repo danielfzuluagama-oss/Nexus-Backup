@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Proceso: Gestionar Aliados GTM — Proceso de Delivery MetodologIA">
+    <title>Proceso: Gestionar Aliados GTM — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Aliados Comercial</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Proceso: Gestionar Aliados GTM</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Proceso: Gestionar Aliados GTM</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">13</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-propsito-dec948')" aria-label="Ir a 1. Propósito">1. Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-637d08')" aria-label="Ir a 2. Supuestos Explícitos">2. Supuestos Explícitos</button>
+<button class="nav-btn" onclick="scrollToSection('3-mbito-y-lmites-fecbb5')" aria-label="Ir a 3. Ámbito y Límites">3. Ámbito y Límites</button>
+<button class="nav-btn" onclick="scrollToSection('4-flujo-principal-207930')" aria-label="Ir a 4. Flujo Principal">4. Flujo Principal</button>
+<button class="nav-btn" onclick="scrollToSection('5-fases-y-responsabilidades-f597eb')" aria-label="Ir a 5. Fases y Responsabilidades">5. Fases y Responsabilidades</button>
+<button class="nav-btn" onclick="scrollToSection('6-criterios-de-aceptacin-binarios-ed51a1')" aria-label="Ir a 6. Criterios de Aceptación Binarios">6. Criterios de Aceptación Binarios</button>
+<button class="nav-btn" onclick="scrollToSection('7-casos-borde-y-manejo-208b7f')" aria-label="Ir a 7. Casos Borde y Manejo">7. Casos Borde y Manejo</button>
+<button class="nav-btn" onclick="scrollToSection('8-decisiones-de-diseo-2d7a12')" aria-label="Ir a 8. Decisiones de Diseño">8. Decisiones de Diseño</button>
+<button class="nav-btn" onclick="scrollToSection('9-antipatterns-df73d2')" aria-label="Ir a 9. Anti-Patterns">9. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('10-fallbacks-operativos-d46b4e')" aria-label="Ir a 10. Fallbacks Operativos">10. Fallbacks Operativos</button>
+<button class="nav-btn" onclick="scrollToSection('11-gates-de-control-deea6b')" aria-label="Ir a 11. Gates de Control">11. Gates de Control</button>
+<button class="nav-btn" onclick="scrollToSection('12-governance-25412b')" aria-label="Ir a 12. Governance">12. Governance</button>
+<button class="nav-btn" onclick="scrollToSection('13-referencias-992379')" aria-label="Ir a 13. Referencias">13. Referencias</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-propsito-dec948" data-searchable aria-labelledby="head-1-propsito-dec948">
+            <div class="phase-header" id="head-1-propsito-dec948" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Propósito</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Orquestar el ciclo de vida completo de asociaciones estratégicas (Aliados GTM) desde identificación inicial hasta auditoría periódica, garantizando alineación comercial, transferencia intelectual, ejecución conjunta de oportunidades y sostenibilidad del ecosistema.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-637d08" data-searchable aria-labelledby="head-2-supuestos-explcitos-637d08">
+            <div class="phase-header" id="head-2-supuestos-explcitos-637d08" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. Supuestos Explícitos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Evaluación de potencial relacional es determinística</strong>: Existe un conjunto finito de señales de viabilidad (track record, contexto vertical, capacidad de ejecución) que predicen con &gt;80% de certeza si un aliado alcanzará &gt;$500K ARR en 24 meses.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Transferencia de metodología requiere inmersión estructurada</strong>: No es posible certificar aliados sin 40-60 horas de capacitación intensiva, transferencia de templates, playbooks y participación en 3+ ciclos de venta reales.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Co-selling es co-presencia + co-riesgo</strong>: Toda oportunidad conjunta genera riesgo reputacional compartido; requiere acuerdos de calidad, SLAs explícitos y cláusulas de escalamiento antes de tomar deals.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>El ecosistema es finito en capacidad</strong>: MetodologIA puede soportar máximo 25-30 aliados en modo &quot;Alta Velocidad&quot; (&gt;$1M ARR target) sin saturar equipos de soporte/transferencia.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Alineación de incentivos es condición necesaria no suficiente</strong>: El modelo de comisión/margen debe estar alineado con ciclos de venta reales, pero la ejecución de calidad depende de selección rigurosa de partners.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>La auditoría debe ser predictiva, no punitiva</strong>: El monitoreo periódico busca identificar desviaciones temprano para intervención, no para sancionar; include métricas de salud del partner.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-mbito-y-lmites-fecbb5" data-searchable aria-labelledby="head-3-mbito-y-lmites-fecbb5">
+            <div class="phase-header" id="head-3-mbito-y-lmites-fecbb5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 3. Ámbito y Límites</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="31-incluido-en-este-proceso-efc2ef">3.1 Incluido en este proceso</h3>
+<div class="bullet-item">Scouting y evaluación inicial de potencial aliados</div>
+<div class="bullet-item">Decisión de fit estratégico y modelo de partnership</div>
+<div class="bullet-item">Onboarding y certificación en metodología MetodologIA</div>
+<div class="bullet-item">Gestión de pipeline conjunta y co-selling</div>
+<div class="bullet-item">Auditoría semestral de desempeño y ecosistema</div>
+<div class="bullet-item">Comunicación de cambios en policies, productos, pricing</div>
+<div class="bullet-item">Renovación/Exit de partnerships</div>
+<h3 class="subsection-title" id="32-excluido-de-este-proceso-826567">3.2 Excluido de este proceso</h3>
+<div class="bullet-item">Gestión operativa diaria de deals específicos (propiedad del VP Ventas)</div>
+<div class="bullet-item">Resolución de disputas contractuales (Legal)</div>
+<div class="bullet-item">Definición de modelos de pricing/comisión (Finanzas + Comercial)</div>
+<div class="bullet-item">Marketing de co-branding y campaña (Marketing)</div>
+<div class="bullet-item">Capacitación técnica en herramientas específicas (Delivery)</div>
+<h3 class="subsection-title" id="33-puntos-de-integracin-crticos-557334">3.3 Puntos de integración críticos</h3>
+<div class="bullet-item"><strong>Gate H-01 (Delivery Handoff)</strong>: Al pasar oportunidad a ejecución, aliado debe estar certificado en 100% de la metodología requerida</div>
+<div class="bullet-item"><strong>Gate R-01 (Recompra Loop)</strong>: Post-entrega, evaluamos si aliado puede ejecutar futuras expansiones con mismo cliente</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-flujo-principal-207930" data-searchable aria-labelledby="head-4-flujo-principal-207930">
+            <div class="phase-header" id="head-4-flujo-principal-207930" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Flujo Principal</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>[SCOUTING] → [EVALUAR FIT] → [DECISIÓN] → [ONBOARDING] → [CO-SELLING] → [AUDITORÍA] → [RENOVACIÓN/EXIT]
+    ↓
+Identificar
+potencial aliado
+    ↓
+Evaluar alineación
+estratégica, comercial,
+operacional
+    ↓
+¿Fit &gt; 70% &amp;
+ARR target viable?
+    ├─ No → [EXIT]
+    └─ Sí → [ONBOARDING]
+            ↓
+          Certificar en
+          metodología (40-60h)
+            ↓
+          ¿Certificación
+          exitosa?
+          ├─ No → [REMEDIAL / EXIT]
+          └─ Sí → [CO-SELLING]
+                  ↓
+                Gestión conjunta
+                de pipeline
+                  ↓
+                Auditoría Q2/Q4
+                  ↓
+                ¿KPIs aceptables?
+                ├─ No → [PLAN DE MEJORA]
+                └─ Sí → [RENOVACIÓN]</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-fases-y-responsabilidades-f597eb" data-searchable aria-labelledby="head-5-fases-y-responsabilidades-f597eb">
+            <div class="phase-header" id="head-5-fases-y-responsabilidades-f597eb" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Fases y Responsabilidades</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fase-1-scouting-semana-02-4cae30">Fase 1: SCOUTING (Semana 0-2)</h3>
+<p class="key-value"><strong>Propietario</strong>: VP Aliados | <strong>Inputs</strong>: CRM pipeline, inteligencia comercial, referencias</p>
+<p class="key-value"><strong>Actividades clave</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Identificar potenciales (vertical, geografía, capacidad)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Validación de viabilidad inicial (&lt;2h investigación)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Propuesta de esquema de partnership (Comisión/Marca Blanca/Co-Branding/B2B2B/B2B2C)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Presentación ejecutiva a candidato (pitch 30 min)</span></div>
+<p class="key-value"><strong>Criterio de Avance</strong>: Aliado expresa interés formal + firma NDA</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-2-evaluar-fit-semana-24-9e185b">Fase 2: EVALUAR FIT (Semana 2-4)</h3>
+<p class="key-value"><strong>Propietario</strong>: VP Aliados + VP Ventas | <strong>SOP</strong>: <code class="inline-code">evaluar-fit-aliado-sop.md</code></p>
+<p class="key-value"><strong>Evaluación 4D</strong>:</p>
+<div class="bullet-item"><strong>Comercial</strong>: TAM, GFY potential, ciclo de venta, competencia</div>
+<div class="bullet-item"><strong>Operacional</strong>: Infraestructura, capacidad de ejecución, madurez</div>
+<div class="bullet-item"><strong>Relacional</strong>: Liderazgo, cultura, compromiso, referencias</div>
+<div class="bullet-item"><strong>Financiera</strong>: Viabilidad de modelo, margen/comisión, flujo de caja</div>
+<p class="key-value"><strong>Criterio de Avance</strong>: Score &gt;70% en 4D + aprobación de VP Ventas + VP Finanzas</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-3-onboarding-certificacin-semana-412-6b5745">Fase 3: ONBOARDING &amp; CERTIFICACIÓN (Semana 4-12)</h3>
+<p class="key-value"><strong>Propietario</strong>: VP Aliados + Delivery Manager | <strong>SOP</strong>: <code class="inline-code">certificar-aliado-sop.md</code></p>
+<p class="key-value"><strong>Transferencia de IQ</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Módulo 1: Metodología core (16h) → Examen teórico</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Módulo 2: Sales playbook (12h) → Role-play ventas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Módulo 3: Delivery process (16h) → Shadow + Co-ejecución</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Módulo 4: Governance &amp; compliance (4h) → Políticas, SLAs, escalamiento</span></div>
+<p class="key-value"><strong>Criterio de Avance</strong>: Aprobar exámenes + ejecutar 1+ deal bajo supervisión + signoff de Delivery</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-4-coselling-semana-12-410eb2">Fase 4: CO-SELLING (Semana 12+)</h3>
+<p class="key-value"><strong>Propietario</strong>: VP Ventas + VP Aliados | <strong>SOP</strong>: <code class="inline-code">ejecutar-coselling-sop.md</code></p>
+<p class="key-value"><strong>Gestión de pipeline conjunta</strong>:</p>
+<div class="bullet-item">Pipeline review semanal (oportunidades identificadas por aliado)</div>
+<div class="bullet-item">Joint discovery &amp; proposal (cuando aplique)</div>
+<div class="bullet-item">Shared forecast (deals identificados, probabilidad, timeline)</div>
+<div class="bullet-item">Quality gate antes de entregar a execution</div>
+<p class="key-value"><strong>Criterio de Salud</strong>: ≥3 opportunities/mes identificadas, &gt;40% conversion, &lt;5% deal leakage</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-5-auditora-peridica-semestralmente-10b7d6">Fase 5: AUDITORÍA PERIÓDICA (Semestralmente)</h3>
+<p class="key-value"><strong>Propietario</strong>: VP Aliados + Controller | <strong>SOP</strong>: <code class="inline-code">auditar-ecosistema-sop.md</code></p>
+<p class="key-value"><strong>Dimensiones evaluadas</strong>:</p>
+<div class="bullet-item"><strong>Comercial</strong>: ARR, pipeline, conversion, referral quality</div>
+<div class="bullet-item"><strong>Operacional</strong>: NPS clientes finales, defect rate, SLA compliance</div>
+<div class="bullet-item"><strong>Relacional</strong>: Engagement, comunicación, conflictos</div>
+<div class="bullet-item"><strong>Financiera</strong>: Margen, comisión, ROI MetodologIA</div>
+<p class="key-value"><strong>Criterio de Decisión</strong>:</p>
+<div class="bullet-item">≥80% en todas dimensiones → Renovación automática</div>
+<div class="bullet-item">60-80% → Plan de mejora 90 días</div>
+<div class="bullet-item">&lt;60% → Evaluación de exit</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-criterios-de-aceptacin-binarios-ed51a1" data-searchable aria-labelledby="head-6-criterios-de-aceptacin-binarios-ed51a1">
+            <div class="phase-header" id="head-6-criterios-de-aceptacin-binarios-ed51a1" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 6. Criterios de Aceptación Binarios</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Hito</th><th scope="col">Criterio de Aceptación</th><th scope="col">Responsable</th><th scope="col">Evidencia</th></tr></thead><tbody><tr><td>Scouting</td><td>Aliado firma NDA + expresa interés escrito</td><td>VP Aliados</td><td>Email firmado</td></tr><tr><td>Fit Evaluation</td><td>Score ≥70% en 4D + aprobación VP Ventas + VP Finanzas</td><td>VP Aliados</td><td>Rúbrica firmada</td></tr><tr><td>Onboarding</td><td>Aprobar 4 exámenes + ejecutar 1 deal supervisado + Delivery signoff</td><td>Delivery Manager</td><td>Certificado emitido</td></tr><tr><td>Co-Selling Readiness</td><td>Metodología certificada en 100% + contrato firmado + SLA documentado</td><td>VP Aliados</td><td>Contrato + SLA signed</td></tr><tr><td>Auditoría Aprobada</td><td>≥80% en todas dimensiones OR plan de mejora aceptado</td><td>VP Aliados</td><td>Rúbrica completada</td></tr><tr><td>Renovación</td><td>Renovar contrato OR proponer exit + comunicación al aliado</td><td>VP Aliados</td><td>Contrato renovado O exit formal</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-casos-borde-y-manejo-208b7f" data-searchable aria-labelledby="head-7-casos-borde-y-manejo-208b7f">
+            <div class="phase-header" id="head-7-casos-borde-y-manejo-208b7f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 7. Casos Borde y Manejo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-1-aliado-promisorio-falla-certificacin-mdulo--e728bc">Caso 1: Aliado promisorio falla certificación (Módulo 3)</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner aprueba exámenes pero no puede ejecutar delivery bajo supervisión</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Remedial intensivo 2 semanas (pair delivery con Delivery Manager)</div>
+<div class="bullet-item">Si falla remedial: Exit formal + retención de transferencia (por cláusula NDA)</div>
+<div class="bullet-item">Opción: Downgrade a &quot;Comisión Pura&quot; (sin ejecución conjunta)</div>
+<h3 class="subsection-title" id="caso-2-aliado-identifica-oportunidad-de-gran-volum-4e0325">Caso 2: Aliado identifica oportunidad de gran volumen ($2M+) fuera de su certificación</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner trae deal que requiere verticales/metodologías no certificadas</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Opción A: MetodologIA ejecuta, aliado recibe % comisión menor (20% vs 30%)</div>
+<div class="bullet-item">Opción B: Aliado hace certificación acelerada 2 semanas, ejecuta con supervisión</div>
+<div class="bullet-item">Decisión basada en timeline/criticidad del deal</div>
+<h3 class="subsection-title" id="caso-3-auditora-detecta-nps-cliente-final-50-en-ve-47717f">Caso 3: Auditoría detecta NPS cliente final &lt;50 en vertical de aliado</h3>
+<p class="key-value"><strong>Escenario</strong>: Aliado entrega trabajo bajo calidad pese a certificación</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Investigación root cause (¿capacidad? ¿comprensión? ¿corners cutting?)</div>
+<div class="bullet-item">Plan correctivo 30 días: weekly coaching + co-ejecución de próximas oportunidades</div>
+<div class="bullet-item">Si persiste: Suspensión de nuevas oportunidades + revisión de contrato</div>
+<h3 class="subsection-title" id="caso-4-competidor-adquiere-a-aliado-durante-partne-5c9fc2">Caso 4: Competidor adquiere a aliado durante partnership</h3>
+<p class="key-value"><strong>Escenario</strong>: Aliado es comprado por enterprise competitor</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Revisión inmediata de términos contractuales (cláusula de no-competencia)</div>
+<div class="bullet-item">Evaluación de conflictos de interés existentes/futuros</div>
+<div class="bullet-item">Decisión: renegociar + restricciones exclusión territorial O exit negociado</div>
+<h3 class="subsection-title" id="caso-5-aliado-lleva-pipeline-a-competidor-luego-de-9d2fc1">Caso 5: Aliado lleva pipeline a competidor luego de 6 meses</h3>
+<p class="key-value"><strong>Escenario</strong>: Aliado intenta dual-source la metodología</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Revisión de NDA + cláusulas de transferencia de IQ</div>
+<div class="bullet-item">Comunicación formal de violación</div>
+<div class="bullet-item">Opción: reparación financiera + restricción de territorio O litigio</div>
+<h3 class="subsection-title" id="caso-6-demanda-de-mercado-creciente-partner-satura-48b4b3">Caso 6: Demanda de mercado creciente, partner saturado (&gt;$5M ARR potencial)</h3>
+<p class="key-value"><strong>Escenario</strong>: Aliado no tiene capacidad para ejecutar nuevas oportunidades</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Evaluación de expansión de equipo del aliado (inversión conjunta?)</div>
+<div class="bullet-item">Opción A: Partner invierte, MetodologIA apoya capacitación</div>
+<div class="bullet-item">Opción B: MetodologIA ejecuta directamente, aliado pasa a comisión pura</div>
+<div class="bullet-item">Opción C: Identificar aliado secundario para cobertura territorial</div>
+<h3 class="subsection-title" id="caso-7-aliado-reclama-modificacin-de-modelo-de-com-3ab4cd">Caso 7: Aliado reclama modificación de modelo de comisión post-firma</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner argumenta que modelo original no es viable economicamente</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Revisión de supuestos originales vs realidad (ciclo venta, TAM, conversión)</div>
+<div class="bullet-item">Si supuestos violados &gt;20%: Renegociación + ajuste limitado</div>
+<div class="bullet-item">Si supuestos conservadores: Comunicar que ciclo es de 18 meses antes de rentabilidad</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-decisiones-de-diseo-2d7a12" data-searchable aria-labelledby="head-8-decisiones-de-diseo-2d7a12">
+            <div class="phase-header" id="head-8-decisiones-de-diseo-2d7a12" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 8. Decisiones de Diseño</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="d1-por-qu-mximo-2530-aliados-en-alta-velocidad-5728a4">D1: Por qué máximo 25-30 aliados en Alta Velocidad</h3>
+<p class="key-value"><strong>Decisión</strong>: Limitar cartera de Aliados &quot;High Growth&quot; a 25-30 en paralelo</p>
+<p class="key-value"><strong>Justificación</strong>:</p>
+<div class="bullet-item">Cada onboarding consume 40-60h de Delivery Manager (recurso finito)</div>
+<div class="bullet-item">Cada auditoría semestral consume 8h de VP Aliados</div>
+<div class="bullet-item">Máxima supervisión de quality en co-selling requiere ratio 1:4 (VP Ventas:Aliados)</div>
+<div class="bullet-item">Capacidad de throughput de operaciones internas es ~$8-12M ARR anual distribuido</div>
+<p class="key-value"><strong>Trade-off</strong>: Rechazo de 15-20% de candidatos promisores; oportunidad de diferenciación en selección rigurosa</p>
+<hr class="divider">
+<h3 class="subsection-title" id="d2-por-qu-transferencia-de-iq-es-4060h-mandatoria--24e7c0">D2: Por qué transferencia de IQ es 40-60h mandatoria, no opcional</h3>
+<p class="key-value"><strong>Decisión</strong>: Certificación obligatoria antes de any co-selling, no &quot;learning on the job&quot;</p>
+<p class="key-value"><strong>Justificación</strong>:</p>
+<div class="bullet-item">Asimetría de información inicial es alta (aliado desconoce metodología)</div>
+<div class="bullet-item">Risk de reputación MetodologIA (cliente ve ejecución pobre)</div>
+<div class="bullet-item">Velocidad de aprendizaje aumenta 3x con módulos estructurados vs ad-hoc</div>
+<div class="bullet-item">Measurable assessment reduces downstream disputes</div>
+<p class="key-value"><strong>Trade-off</strong>: Tiempo-to-first-deal ~8-12 semanas vs 2-4 semanas; pero quality metrics mejoran 40%</p>
+<hr class="divider">
+<h3 class="subsection-title" id="d3-por-qu-auditora-es-semestralmente-no-trimestral-81071b">D3: Por qué auditoría es semestralmente, no trimestral ni anualmente</h3>
+<p class="key-value"><strong>Decisión</strong>: Auditoría cada 6 meses (Q2 &amp; Q4)</p>
+<p class="key-value"><strong>Justificación</strong>:</p>
+<div class="bullet-item">Trimestral (Q1, Q2, Q3, Q4) = over-monitoring, costo administrativo alto</div>
+<div class="bullet-item">Anual = ciclo demasiado largo para intervención temprana en desviaciones</div>
+<div class="bullet-item">6 meses = sufficient data point (3-6 deals ejecutados) para patterns confiables</div>
+<div class="bullet-item">Alineado con ciclos presupuestarios MetodologIA (H1/H2)</div>
+<p class="key-value"><strong>Trade-off</strong>: Menos agility para issues emergentes; requiere escalamiento ad-hoc para issues críticas</p>
+<hr class="divider">
+<h3 class="subsection-title" id="d4-por-qu-score-70-en-4d-evaluation-no-80-o-90-051be6">D4: Por qué score ≥70% en 4D evaluation, no 80% o 90%</h3>
+<p class="key-value"><strong>Decisión</strong>: Threshold de fit es &gt;70%, no perfección</p>
+<p class="key-value"><strong>Justificación</strong>:</p>
+<div class="bullet-item">70% capture 80% del value (Pareto)</div>
+<div class="bullet-item">80-90% threshold reduce candidates viable en 40%; ROI marginal bajo</div>
+<div class="bullet-item">Expectativas de partnerships son mutualmente bajas en inicio; improvement happens with time</div>
+<div class="bullet-item">Binario: Si score &lt;70%, probabilidad de exit &gt;60% en 12 meses</div>
+<p class="key-value"><strong>Trade-off</strong>: Aceptación de algunos &quot;false positives&quot; (aliados que underperform); mitigado con exit clauses</p>
+<hr class="divider">
+<h3 class="subsection-title" id="d5-por-qu-modelo-de-comisin-vs-equity-en-aliados-9f3671">D5: Por qué modelo de comisión vs equity en aliados</h3>
+<p class="key-value"><strong>Decisión</strong>: Comisión/margen (fee-based), no equity stakes</p>
+<p class="key-value"><strong>Justificación</strong>:</p>
+<div class="bullet-item">Simplifica governance, salida, conflictos de interés</div>
+<div class="bullet-item">Aliados son parcialmente independientes; equity implica control/visibilidad financiera</div>
+<div class="bullet-item">Cash flow predecible para partner (no esperar exit)</div>
+<div class="bullet-item">Escalabilidad: modelo funciona para 100+ aliados sin governance complexity</div>
+<div class="bullet-item">Reputacionalmente: aliados son partners, no holdings</div>
+<p class="key-value"><strong>Trade-off</strong>: Menos &quot;skin in the game&quot;; mitigado con performance-based incentives (bonus tiers)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-antipatterns-df73d2" data-searchable aria-labelledby="head-9-antipatterns-df73d2">
+            <div class="phase-header" id="head-9-antipatterns-df73d2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 9. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap1-multithreading-is-coselling-4aec21">AP1: &quot;Multi-threading is co-selling&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Asumir que porque aliado accede a múltiples personas MetodologIA, hay co-selling real</p>
+<p class="key-value"><strong>Realidad</strong>: Co-selling requiere joint pipeline planning, shared forecasting, coordinated discovery</p>
+<p class="key-value"><strong>Costo</strong>: Pipelines duplicados, customer confusion, desalineación de messaging</p>
+<p class="key-value"><strong>Prevención</strong>: Definir explícitamente roles de cada stakeholder antes de presentación a cliente</p>
+<hr class="divider">
+<h3 class="subsection-title" id="ap2-certificacin-es-cumplimiento-administrativo-no-79c696">AP2: &quot;Certificación es cumplimiento administrativo, no gatekeeping&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Emitir certificado si aliado &quot;completa módulos&quot; sin validar competencia real</p>
+<p class="key-value"><strong>Realidad</strong>: Certificación debe estar binaria: aliado puede o no puede ejecutar sin supervisión</p>
+<p class="key-value"><strong>Costo</strong>: Aliados publican certificación pero ejecutan pobre, cliente blames MetodologIA</p>
+<p class="key-value"><strong>Prevención</strong>: Exámenes con pass rate &lt;70% son design failure; revisar módulos</p>
+<hr class="divider">
+<h3 class="subsection-title" id="ap3-fit-evaluation-es-softer-que-hard-gates-67a598">AP3: &quot;Fit evaluation es softer que hard gates&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Permitir entrada de aliado con score &lt;70% si &quot;está growing&quot; o &quot;tiene buenas referencias&quot;</p>
+<p class="key-value"><strong>Realidad</strong>: Soft criteria son predictores pobres de performance en ecosistema especializado</p>
+<p class="key-value"><strong>Costo</strong>: High-effort onboarding de candidates marginales; low ROI</p>
+<p class="key-value"><strong>Prevención</strong>: Stick to 4D rubric; excepciones solo por VP Aliados + VP Ventas ambos</p>
+<hr class="divider">
+<h3 class="subsection-title" id="ap4-auditora-es-punitive-no-diagnostic-cb7739">AP4: &quot;Auditoría es punitive, no diagnostic&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Usar auditoría como excusa para exit aliado por underperformance sin prior warning</p>
+<p class="key-value"><strong>Realidad</strong>: Auditoría debe ser predictive; issues deben escalar antes de la evaluación formal</p>
+<p class="key-value"><strong>Costo</strong>: Perdida de relaciones recuperables; reputación de &quot;bait-and-switch&quot; en ecosistema</p>
+<p class="key-value"><strong>Prevención</strong>: Escalamientos ad-hoc mensuales (metrics trending down = conversación con VP Ventas/Aliados)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="ap5-modelo-de-comisin-es-setandforget-4a732c">AP5: &quot;Modelo de comisión es set-and-forget&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Fijar comisión en contrato original y no revisarla por 3+ años</p>
+<p class="key-value"><strong>Realidad</strong>: TAM, ciclo venta, conversión rates evolucionan; modelo pierde viabilidad</p>
+<p class="key-value"><strong>Costo</strong>: Aliados resentidos por &quot;no-compete&quot; inviable; motivation decreases</p>
+<p class="key-value"><strong>Prevención</strong>: Revisión anual de supuestos; renegociación transparente si deltas &gt;20%</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-fallbacks-operativos-d46b4e" data-searchable aria-labelledby="head-10-fallbacks-operativos-d46b4e">
+            <div class="phase-header" id="head-10-fallbacks-operativos-d46b4e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 10. Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fb1-aliado-no-responde-a-comunicacin-por-2-semanas-ac3a38">FB1: Aliado no responde a comunicación por 2+ semanas durante onboarding</h3>
+<p class="key-value"><strong>Trigger</strong>: No asistencia a 2 sesiones de capacitación sin aviso o reschedule</p>
+<p class="key-value"><strong>Fallback</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Comunicación escalada a sponsor ejecutivo del aliado (CEO/COO)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Pause onboarding clock + notificar that delay extends timeline</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si no re-engages en 1 semana: Opción de &quot;pause partnership&quot; (6 meses) vs exit formal</span></div>
+<hr class="divider">
+<h3 class="subsection-title" id="fb2-auditora-detecta-degradacin-rpida-30-das-en-kp-6dcaa8">FB2: Auditoría detecta degradación rápida (&lt;30 días) en KPI crítico (ARR drop &gt;40%)</h3>
+<p class="key-value"><strong>Trigger</strong>: Semestral audit o early signal en metrics mensual</p>
+<p class="key-value"><strong>Fallback</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Emergent call con leadership aliado + VP Aliados + VP Ventas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Root cause analysis (market change? execution issue? team churn?)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>30-day recovery plan o immediate review de viabilidad</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>No wait for next formal audit</span></div>
+<hr class="divider">
+<h3 class="subsection-title" id="fb3-contrato-de-aliado-est-vencido-pero-relacin-si-d3d06e">FB3: Contrato de aliado está vencido pero relación sigue operativa (deal in flight)</h3>
+<p class="key-value"><strong>Trigger</strong>: Auditoría o renewal date passed sin formal signature</p>
+<p class="key-value"><strong>Fallback</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Ambos parties continúan bajo términos originales (implied renewal)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Pero HALT new deal approvals hasta renovación formal</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Generar offer de renovación dentro de 5 días, target signature en 10 días</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Legal escalation si delays &gt;15 días</span></div>
+<hr class="divider">
+<h3 class="subsection-title" id="fb4-aliado-enfrenta-conflicto-de-inters-emergente--5c74d4">FB4: Aliado enfrenta conflicto de interés emergente (compra/venta/partnership competidor)</h3>
+<p class="key-value"><strong>Trigger</strong>: VP Aliados o VP Ventas identifica conflict en quarterly business review</p>
+<p class="key-value"><strong>Fallback</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Immediate legal review de cláusulas contractuales (non-compete, exclusion, etc)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Conversation with aliado within 3 business days</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Opción: renegociar términos (territorial restriction) O clean exit with settlement</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Timeline 30 días para resolución antes de restricciones operativas</span></div>
+<hr class="divider">
+<h3 class="subsection-title" id="fb5-capacidad-interna-delivery-est-saturada-no-hay-f56319">FB5: Capacidad interna (Delivery) está saturada; no hay bandwidth para onboarding nuevo aliado</h3>
+<p class="key-value"><strong>Trigger</strong>: Pipeline de aliados en scouting/fit stage pero Delivery Manager backlog &gt;60 days</p>
+<p class="key-value"><strong>Fallback</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Queue nuevo aliado en &quot;Standby&quot; list (NDA firmado, fit validated, en espera)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Target onboarding en próxima ventana de capacidad (next quarter)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>NO rechazar aliado si fit es exceptional; simplemente depende timing</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Comunicar transparentemente ETL to partner</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-gates-de-control-deea6b" data-searchable aria-labelledby="head-11-gates-de-control-deea6b">
+            <div class="phase-header" id="head-11-gates-de-control-deea6b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> 11. Gates de Control</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Gate</th><th scope="col">Condición</th><th scope="col">Owner</th><th scope="col">Bloquea</th><th scope="col">Escalamiento</th></tr></thead><tbody><tr><td><strong>G1-Scouting</strong></td><td>NDA + interés formal</td><td>VP Aliados</td><td>N/A</td><td>VP Comercial si candidate de $5M+ ARR</td></tr><tr><td><strong>G2-Fit</strong></td><td>Score ≥70% + approvals</td><td>VP Aliados</td><td>Onboarding</td><td>VP Ventas si score 60-69%</td></tr><tr><td><strong>G3-Cert</strong></td><td>Exámenes + 1 deal supervised</td><td>Delivery</td><td>Co-selling</td><td>VP Aliados si fails remedial</td></tr><tr><td><strong>G4-CoSell</strong></td><td>Contrato + SLA firmados</td><td>VP Aliados</td><td>Pipeline sharing</td><td>Legal si terms disputed</td></tr><tr><td><strong>G5-Audit</strong></td><td>≥80% OR improvement plan</td><td>VP Aliados</td><td>Renewal</td><td>CEO si decisión exit</td></tr><tr><td><strong>H-01</strong></td><td>Aliado certificado antes delivery</td><td>Delivery</td><td>Handoff cliente</td><td>VP Ventas if escalation</td></tr><tr><td><strong>R-01</strong></td><td>Post-delivery, aliado cleared para recompra</td><td>Delivery</td><td>Next opp</td><td>VP Aliados if issue</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-governance-25412b" data-searchable aria-labelledby="head-12-governance-25412b">
+            <div class="phase-header" id="head-12-governance-25412b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Governance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Decision Authority</strong>: VP Aliados (scouting, fit, certification); VP Ventas (co-selling); VP Finanzas (modelo comisión)</div>
+<div class="bullet-item"><strong>Escalation</strong>: CEO para exit decisiones &gt;$1M ARR potential</div>
+<div class="bullet-item"><strong>Cadencia</strong>: Weekly standup (aliados in active onboarding); Monthly review (pipeline); Semestral audit</div>
+<div class="bullet-item"><strong>Metrics</strong>: ARR per aliado, pipeline conversion, NPS cliente, certification pass rate, audit scores</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-referencias-992379" data-searchable aria-labelledby="head-13-referencias-992379">
+            <div class="phase-header" id="head-13-referencias-992379" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Referencias</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>SOP: Evaluar Fit Aliado</strong> → <code class="inline-code">evaluar-fit-aliado-sop.md</code></div>
+<div class="bullet-item"><strong>SOP: Certificar Aliado</strong> → <code class="inline-code">certificar-aliado-sop.md</code></div>
+<div class="bullet-item"><strong>SOP: Ejecutar Co-Selling</strong> → <code class="inline-code">ejecutar-coselling-sop.md</code></div>
+<div class="bullet-item"><strong>SOP: Auditar Ecosistema</strong> → <code class="inline-code">auditar-ecosistema-sop.md</code></div>
+<div class="bullet-item"><strong>Gate H-01</strong>: Delivery Handoff</div>
+<div class="bullet-item"><strong>Gate R-01</strong>: Recompra Loop</div>
+<div class="bullet-item"><strong>Policy</strong>: Partner Agreement Template (Legal)</div>
+<div class="bullet-item"><strong>Dashboard</strong>: Aliados GTM Performance (Tableau/Looker)</div>
+<hr class="divider">
+<p class="key-value"><strong>Aprobado por</strong>: VP Aliados | <strong>Versión siguiente</strong>: Q2 2026 | <strong>Próxima revisión</strong>: 2026-06-30</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

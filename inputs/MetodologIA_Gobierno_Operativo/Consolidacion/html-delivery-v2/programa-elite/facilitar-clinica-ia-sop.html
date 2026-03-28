@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v2.0">
+    <meta name="description" content="Facilitar Clínica IA — SOP — Proceso de Delivery MetodologIA">
+    <title>Facilitar Clínica IA — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f; --bg-2:#102346; --surface:#f7f4ec;
+            --accent:#00cde8; --gold:#ffd700; --green:#2ca56f;
+            --red:#dc5f5f; --orange:#e8a000; --purple:#9b59b6;
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0; --text-secondary:#999;
+            --border:#1a3a52; --hover-bg:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(0,205,232,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,205,232,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(0,205,232,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(0,205,232,.4);box-shadow:0 0 12px rgba(0,205,232,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(0,205,232,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(0,205,232,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(0,205,232,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(0,205,232,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(0,205,232,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(0,205,232,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Programa Elite</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Facilitar Clínica IA — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Facilitar Clínica IA — SOP</h1>
+        <div class="subtitle">MetodologIA — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-fdec8e')" aria-label="Ir a Propósito">Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('1-supuestos-explcitos-6dc4f1')" aria-label="Ir a 1. Supuestos Explícitos">1. Supuestos Explícitos</button>
+<button class="nav-btn" onclick="scrollToSection('2-lmites-del-sop-00de6c')" aria-label="Ir a 2. Límites del SOP">2. Límites del SOP</button>
+<button class="nav-btn" onclick="scrollToSection('3-proceso-paso-a-paso-ba3661')" aria-label="Ir a 3. Proceso Paso a Paso">3. Proceso Paso a Paso</button>
+<button class="nav-btn" onclick="scrollToSection('4-criterios-de-aceptacin-binarios-d4f823')" aria-label="Ir a 4. Criterios de Aceptación (Binarios)">4. Criterios de Aceptación (Binario</button>
+<button class="nav-btn" onclick="scrollToSection('5-casos-borde-1c6d72')" aria-label="Ir a 5. Casos Borde">5. Casos Borde</button>
+<button class="nav-btn" onclick="scrollToSection('6-decisiones-de-diseo-3f3f33')" aria-label="Ir a 6. Decisiones de Diseño">6. Decisiones de Diseño</button>
+<button class="nav-btn" onclick="scrollToSection('7-antipatterns-882165')" aria-label="Ir a 7. Anti-Patterns">7. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('8-fallbacks-operativos-cd3279')" aria-label="Ir a 8. Fallbacks Operativos">8. Fallbacks Operativos</button>
+<button class="nav-btn" onclick="scrollToSection('9-mtricas-a330c7')" aria-label="Ir a 9. Métricas">9. Métricas</button>
+<button class="nav-btn" onclick="scrollToSection('10-integraciones-8c2ebf')" aria-label="Ir a 10. Integraciones">10. Integraciones</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item">Vehículo: Átomo de Delivery (composable-only, nunca standalone)</div>
+<div class="bullet-item">Modo: Composable (1h, SIEMPRE después de Masterclass + Workshop)</div>
+<div class="bullet-item">Frecuencia: Semanal dentro de Programa de Empoderamiento (13 ciclos, Sem 3-15)</div>
+<div class="bullet-item">Owner: Coach IA / Facilitador</div>
+<div class="bullet-item">Última actualización: 2026-03-24</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-fdec8e" data-searchable aria-labelledby="head-propsito-fdec8e">
+            <div class="phase-header" id="head-propsito-fdec8e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Espacio interactivo para resolver dudas y trabajar retos reales con soporte experto, metodologías e IA. Es la TERCERA pieza del ciclo semanal (Masterclass → Workshop → Clínica IA). Aquí los participantes traen sus bloqueos concretos y salen con soluciones documentadas.</p>
+<p>NOTA IMPORTANTE: La Clínica IA NO cuenta para asistencia obligatoria del programa (política explícita), pero es el espacio donde ocurre la transformación real.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-supuestos-explcitos-6dc4f1" data-searchable aria-labelledby="head-1-supuestos-explcitos-6dc4f1">
+            <div class="phase-header" id="head-1-supuestos-explcitos-6dc4f1" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 1. Supuestos Explícitos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Los participantes ya asistieron a la Masterclass y el Workshop del mismo módulo (o al menos tienen acceso a las memorias)</div>
+<div class="bullet-item">Participantes envían casos/dudas 24h antes vía formulario de triaje</div>
+<div class="bullet-item">El facilitador es competente en IA generativa y las herramientas del módulo</div>
+<div class="bullet-item">Grupo de 5-10 participantes (mismo que MC y WS)</div>
+<div class="bullet-item">Formato 100% virtual con screen sharing habilitado</div>
+<div class="bullet-item">Los participantes tienen herramientas IA instaladas y funcionando (verificado en G-READY, Sem 2)</div>
+<div class="bullet-item">Se pueden resolver 3-5 casos en 1 hora dependiendo de complejidad</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-lmites-del-sop-00de6c" data-searchable aria-labelledby="head-2-lmites-del-sop-00de6c">
+            <div class="phase-header" id="head-2-lmites-del-sop-00de6c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 2. Límites del SOP</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">EMPIEZA: T-24h (triaje de casos)</div>
+<div class="bullet-item">TERMINA: T+2h (soluciones documentadas y subidas)</div>
+<div class="bullet-item">NO CUBRE: Enseñanza de fundamentos (eso es la Masterclass)</div>
+<div class="bullet-item">NO CUBRE: Construcción de playbooks (eso es el Workshop)</div>
+<div class="bullet-item">NO CUBRE: Mentoría 1:1 profunda (eso sería un átomo diferente)</div>
+<div class="bullet-item">REQUIERE: Que la Masterclass y Workshop del mismo módulo ya se hayan ejecutado</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-proceso-paso-a-paso-ba3661" data-searchable aria-labelledby="head-3-proceso-paso-a-paso-ba3661">
+            <div class="phase-header" id="head-3-proceso-paso-a-paso-ba3661" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Proceso Paso a Paso</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fase-1-presesin-triaje-de-casos-t24h-d72b1a">FASE 1: Pre-Sesión — Triaje de Casos (T-24h)</h3>
+<p class="key-value"><strong>Paso 1.1: Recoger casos</strong> (T-24h)</p>
+<div class="bullet-item">Enviar formulario de triaje al grupo: &quot;¿Con qué te quedaste trabado esta semana?&quot;</div>
+<div class="bullet-item">Campos: Nombre, Módulo/tema, Descripción del bloqueo (max 100 palabras), Screenshot/link si aplica, Nivel de urgencia (1-3)</div>
+<div class="bullet-item">Criterio: ☐ Formulario enviado ☐ Al menos 2 casos recibidos</div>
+<p class="key-value"><strong>Paso 1.2: Clasificar y priorizar</strong> (T-12h)</p>
+<div class="bullet-item">Agrupar por tema (es común que varios tengan el mismo bloqueo)</div>
+<div class="bullet-item">Priorizar: 1) Casos que bloquean avance del programa &gt; 2) Casos específicos de herramientas IA &gt; 3) Profundización conceptual</div>
+<div class="bullet-item">Preparar demos/soluciones parciales para los 3-5 top cases</div>
+<div class="bullet-item">Si no hay casos enviados: preparar 2-3 casos comunes del módulo como &quot;retos guiados&quot;</div>
+<div class="bullet-item">Criterio: ☐ Casos triageados ☐ Top 3-5 priorizados ☐ Demos preparadas</div>
+<p class="key-value"><strong>Paso 1.3: Setup técnico</strong> (T-30min)</p>
+<div class="bullet-item">Sala virtual verificada, grabación lista</div>
+<div class="bullet-item">Herramientas IA abiertas y listas para demo (ChatGPT, Claude, Gemini, etc.)</div>
+<div class="bullet-item">Documento compartido para documentar soluciones en vivo</div>
+<div class="bullet-item">Criterio: ☐ Sala OK ☐ Herramientas listas ☐ Doc compartido abierto</div>
+<h3 class="subsection-title" id="fase-2-ejecucin-1h-4ac372">FASE 2: Ejecución (1h)</h3>
+<p class="key-value"><strong>Paso 2.1: Apertura (0-5min)</strong></p>
+<div class="bullet-item">Agenda de casos priorizados: &quot;Hoy vamos a trabajar N casos. El primero es...&quot;</div>
+<div class="bullet-item">Reglas: cámara on, compartir pantalla cuando sea tu caso, todos pueden aportar</div>
+<div class="bullet-item">ANTI-PATTERN: No preguntar &quot;¿quién tiene dudas?&quot; de forma abierta. Trabajar con los casos pre-triageados.</div>
+<p class="key-value"><strong>Paso 2.2: Rondas de caso (5-50min)</strong></p>
+<div class="bullet-item">3-5 casos, 8-12 minutos cada uno</div>
+<div class="bullet-item">Formato por caso:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Contexto (2min):</strong> El participante explica su bloqueo + comparte pantalla</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Debugging colaborativo (5-7min):</strong> Facilitador + grupo trabajan la solución en vivo. Pair-prompting, live demo, troubleshooting.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Documentación (2min):</strong> Capturar la solución en el doc compartido (qué se hizo, por qué funcionó, prompt que resolvió)</span></div>
+<div class="bullet-item">REGLA: Si un caso se extiende &gt;12min, hacer &quot;parking lot&quot; y ofrecer seguimiento async.</div>
+<div class="bullet-item">DECISIÓN DE DISEÑO: Debugging COLABORATIVO, no solo el facilitador resolviendo. El grupo aprende viendo Y participando.</div>
+<p class="key-value"><strong>Paso 2.3: Cierre (50-58min)</strong></p>
+<div class="bullet-item">Patrones comunes del día: &quot;3 de 5 casos tenían el mismo patrón: [X]&quot;</div>
+<div class="bullet-item">Recurso bonus: tip, herramienta, o prompt que aplica a múltiples casos</div>
+<div class="bullet-item">Preview: &quot;La próxima semana en el Módulo N+1 veremos [tema], piensen en cómo conecta&quot;</div>
+<div class="bullet-item">ANTI-PATTERN: No cerrar sin síntesis de patrones. La Clínica no es solo Q&amp;A, es APRENDIZAJE de patrones.</div>
+<p class="key-value"><strong>Paso 2.4: Buffer (58-60min)</strong></p>
+<div class="bullet-item">Cierre informal, despedida</div>
+<div class="bullet-item">Facilitador: detener grabación</div>
+<h3 class="subsection-title" id="fase-3-postsesin-t0-a-t2h-83d85e">FASE 3: Post-Sesión (T+0 a T+2h)</h3>
+<p class="key-value"><strong>Paso 3.1: Documentar soluciones</strong> (T+30min)</p>
+<div class="bullet-item">Limpiar el documento compartido de la sesión</div>
+<div class="bullet-item">Formatear cada caso: Problema → Solución → Prompt/herramienta → Takeaway</div>
+<div class="bullet-item">Subir al repositorio del programa</div>
+<p class="key-value"><strong>Paso 3.2: Actualizar FAQ del módulo</strong> (T+1h)</p>
+<div class="bullet-item">Si un caso es recurrente, agregarlo al FAQ del módulo correspondiente</div>
+<div class="bullet-item">Esto alimenta la base de conocimiento para futuras cohortes</div>
+<p class="key-value"><strong>Paso 3.3: Enviar follow-up</strong> (T+2h)</p>
+<div class="bullet-item">Compartir link al documento de soluciones</div>
+<div class="bullet-item">Para casos en parking lot: enviar solución async o agendar 1:1</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-criterios-de-aceptacin-binarios-d4f823" data-searchable aria-labelledby="head-4-criterios-de-aceptacin-binarios-d4f823">
+            <div class="phase-header" id="head-4-criterios-de-aceptacin-binarios-d4f823" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 4. Criterios de Aceptación (Binarios)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">☐ Formulario de triaje enviado 24h antes</div>
+<div class="bullet-item">☐ Al menos 2 casos triageados antes de la sesión</div>
+<div class="bullet-item">☐ 3-5 casos trabajados durante la sesión</div>
+<div class="bullet-item">☐ Cada caso documentado (problema + solución + prompt)</div>
+<div class="bullet-item">☐ Patrones comunes sintetizados al cierre</div>
+<div class="bullet-item">☐ Documento de soluciones subido en &lt;2h</div>
+<div class="bullet-item">☐ Resolución de casos ≥80%</div>
+<div class="bullet-item">☐ Satisfacción de participantes ≥8/10</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-casos-borde-1c6d72" data-searchable aria-labelledby="head-5-casos-borde-1c6d72">
+            <div class="phase-header" id="head-5-casos-borde-1c6d72" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 5. Casos Borde</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="cb01-nadie-enva-casos-antes-de-la-sesin-3bf359">CB-01: Nadie envía casos antes de la sesión</h3>
+<p class="key-value"><strong>Trigger:</strong> T-12h y 0 casos recibidos en el formulario</p>
+<p class="key-value"><strong>Resolución:</strong> Preparar 3 &quot;retos guiados&quot; basados en bloqueos comunes del módulo. Al inicio de la sesión: &quot;No recibimos casos previos, así que preparamos estos retos típicos. ¿Alguien tiene algo urgente que prefiera traer?&quot; Casi siempre alguien levanta la mano en vivo.</p>
+<p class="key-value"><strong>ANTI-PATTERN:</strong> No cancelar la Clínica por falta de casos. Siempre hay valor en práctica guiada.</p>
+<h3 class="subsection-title" id="cb02-un-caso-requiere-acceso-a-herramienta-de-pago-20d3ef">CB-02: Un caso requiere acceso a herramienta de pago que el participante no tiene</h3>
+<p class="key-value"><strong>Trigger:</strong> La solución ideal requiere ChatGPT Plus, Claude Pro, etc.</p>
+<p class="key-value"><strong>Resolución:</strong> Mostrar la solución con herramienta de pago (para que vean el potencial) + dar alternativa con herramienta gratuita. SIEMPRE dar alternativa gratuita. Política del programa: &quot;diseñado para funcionar con recursos gratuitos.&quot;</p>
+<h3 class="subsection-title" id="cb03-el-caso-es-demasiado-especficopersonal-para-e-6b2a1e">CB-03: El caso es demasiado específico/personal para el grupo</h3>
+<p class="key-value"><strong>Trigger:</strong> Caso que solo aplica a la situación de 1 persona, sin valor para los demás</p>
+<p class="key-value"><strong>Resolución:</strong> Dar 3min de contexto rápido + dirección de solución, luego ofrecer seguimiento 1:1 async. &quot;Lo resolveremos por el canal de soporte. Para el grupo, el patrón aquí es [generalización].&quot;</p>
+<h3 class="subsection-title" id="cb04-participante-frustrado-porque-la-ia-no-funcio-fce230">CB-04: Participante frustrado porque &quot;la IA no funciona&quot;</h3>
+<p class="key-value"><strong>Trigger:</strong> Frustración visible, lenguaje negativo hacia la herramienta</p>
+<p class="key-value"><strong>Resolución:</strong> Validar la frustración (&quot;es normal, todos pasamos por esto&quot;). Hacer pair-prompting en vivo: el facilitador muestra CÓMO ajustar el prompt paso a paso. El 90% de los &quot;la IA no funciona&quot; son problemas de prompting.</p>
+<h3 class="subsection-title" id="cb05-caso-que-revela-gap-en-contenido-del-mastercl-bf5aeb">CB-05: Caso que revela gap en contenido del Masterclass/Workshop</h3>
+<p class="key-value"><strong>Trigger:</strong> El bloqueo existe porque el fundamento no se cubrió bien</p>
+<p class="key-value"><strong>Resolución:</strong> Documentar como feedback para mejorar la Masterclass del módulo. En la sesión: cubrir el gap de fundamento brevemente (3min) + resolver. Escalar al diseño curricular.</p>
+<h3 class="subsection-title" id="cb06-sesin-sabatina-bloque-continuo-despus-de-mcws-8e7627">CB-06: Sesión sabatina (bloque continuo después de MC+WS)</h3>
+<p class="key-value"><strong>Trigger:</strong> En formato sabatino, la Clínica es la 3ra hora consecutiva</p>
+<p class="key-value"><strong>Resolución:</strong> Empezar con energizer de 3min (no ir directo a casos). Priorizar casos HANDS-ON (compartir pantalla, hacer juntos) sobre explicaciones. Energía &gt; Profundidad en este formato.</p>
+<h3 class="subsection-title" id="cb07-participante-intenta-convertir-la-clnica-en-m-37e601">CB-07: Participante intenta convertir la Clínica en mentoría 1:1</h3>
+<p class="key-value"><strong>Trigger:</strong> Un participante quiere 15-20min de atención exclusiva</p>
+<p class="key-value"><strong>Resolución:</strong> &quot;Excelente profundidad en tu caso. Te propongo: trabajamos el patrón central aquí (5min) y agendamos 15min 1:1 esta semana para ir más profundo.&quot; Mantener equidad de tiempo.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-decisiones-de-diseo-3f3f33" data-searchable aria-labelledby="head-6-decisiones-de-diseo-3f3f33">
+            <div class="phase-header" id="head-6-decisiones-de-diseo-3f3f33" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 6. Decisiones de Diseño</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="dd01-composableonly-nunca-standalone-9dd352">DD-01: Composable-only (nunca standalone)</h3>
+<p class="key-value"><strong>Justificación:</strong> La Clínica IA requiere que los participantes lleguen con contexto del módulo (Masterclass) y experiencia de aplicación (Workshop). Sin esos insumos, no hay casos reales que resolver. Una &quot;Clínica IA standalone&quot; sería simplemente un workshop de IA genérico.</p>
+<p class="key-value"><strong>Alternativa descartada:</strong> Ofrecer Clínicas IA abiertas como eventos. Rechazado por baja calidad predictible.</p>
+<h3 class="subsection-title" id="dd02-pretriaje-obligatorio-de-casos-996e4f">DD-02: Pre-triaje obligatorio de casos</h3>
+<p class="key-value"><strong>Justificación:</strong> Permite al facilitador prepararse y agrupar temas. Sin triaje, la sesión se convierte en Q&amp;A improvisado con menor tasa de resolución.</p>
+<p class="key-value"><strong>Alternativa descartada:</strong> Casos 100% espontáneos en vivo. Rechazado porque reduce tasa de resolución a &lt;50%.</p>
+<h3 class="subsection-title" id="dd03-debugging-colaborativo-no-solo-el-facilitador-875c2e">DD-03: Debugging colaborativo (no solo el facilitador resuelve)</h3>
+<p class="key-value"><strong>Justificación:</strong> Alineado con la filosofía MetodologIA de empoderamiento. Si solo el facilitador resuelve, los participantes no desarrollan autonomía. El grupo aprende viendo, preguntando y contribuyendo.</p>
+<h3 class="subsection-title" id="dd04-no-cuenta-para-asistencia-obligatoria-ce1bf4">DD-04: No cuenta para asistencia obligatoria</h3>
+<p class="key-value"><strong>Justificación:</strong> Política explícita del programa. La Clínica es &quot;profundización voluntaria&quot;. Hacerla obligatoria aumentaría la presión en participantes ya comprometidos con 6h/semana. La asistencia voluntaria pero alta (target: &gt;70%) es señal de valor percibido.</p>
+<h3 class="subsection-title" id="dd05-documentacin-en-tiempo-real-en-doc-compartido-7074bf">DD-05: Documentación en tiempo real en doc compartido</h3>
+<p class="key-value"><strong>Justificación:</strong> La documentación en vivo crea un artefacto de valor para la cohorte. Los participantes que no asisten pueden revisar las soluciones. Además, alimenta la FAQ para futuras cohortes, creando un flywheel de conocimiento.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-antipatterns-882165" data-searchable aria-labelledby="head-7-antipatterns-882165">
+            <div class="phase-header" id="head-7-antipatterns-882165" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 7. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap01-la-clnica-fantasma-db5f5a">AP-01: &quot;La clínica fantasma&quot;</h3>
+<p>Ejecutar la Clínica sin casos pre-triageados y sin retos guiados de backup. Resultado: sesión improvisada, baja resolución, participantes decepcionados.</p>
+<h3 class="subsection-title" id="ap02-el-show-del-facilitador-a320bc">AP-02: &quot;El show del facilitador&quot;</h3>
+<p>El facilitador resuelve todos los casos solo, sin involucrar al grupo. Resultado: dependencia, no empoderamiento. Los participantes miran pero no aprenden a resolver.</p>
+<h3 class="subsection-title" id="ap03-qa-infinito-e6036d">AP-03: &quot;Q&amp;A infinito&quot;</h3>
+<p>Permitir preguntas sin estructura ni time-boxing. Resultado: 2 casos en 1h con profundidad excesiva para el grupo, participantes sin turno frustrados.</p>
+<h3 class="subsection-title" id="ap04-clnica-sin-cierre-24ab3d">AP-04: &quot;Clínica sin cierre&quot;</h3>
+<p>Terminar cuando se acaba el tiempo sin sintetizar patrones. Resultado: los participantes se llevan respuestas individuales pero no el meta-aprendizaje.</p>
+<h3 class="subsection-title" id="ap05-herramientacentrismo-85f24e">AP-05: &quot;Herramienta-centrismo&quot;</h3>
+<p>Enfocar la sesión en la herramienta (&quot;cómo usar ChatGPT&quot;) en vez del problema (&quot;cómo resolver tu bloqueo con IA&quot;). Resultado: los participantes aprenden botones, no estrategias.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-fallbacks-operativos-cd3279" data-searchable aria-labelledby="head-8-fallbacks-operativos-cd3279">
+            <div class="phase-header" id="head-8-fallbacks-operativos-cd3279" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 8. Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario</th><th scope="col">Fallback</th><th scope="col">SLA</th></tr></thead><tbody><tr><td>0 casos recibidos</td><td>Retos guiados del módulo</td><td>Pre-sesión</td></tr><tr><td>Facilitador ausente</td><td>Sesión asíncrona: video de resolución de 3 casos + foro</td><td>&lt;24h</td></tr><tr><td>Plataforma caída</td><td>Migrar a backup (Zoom→Meet→Teams)</td><td>&lt;15min</td></tr><tr><td>Caso irresolvible en vivo</td><td>Parking lot + seguimiento async 1:1</td><td>&lt;48h</td></tr><tr><td>Herramienta IA down (ej: OpenAI outage)</td><td>Usar alternativa (Claude si ChatGPT cae y viceversa) + documentar workaround</td><td>En vivo</td></tr><tr><td>Grabación fallida</td><td>Reconstruir con doc compartido + notas</td><td>&lt;24h</td></tr></tbody></table></div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-mtricas-a330c7" data-searchable aria-labelledby="head-9-mtricas-a330c7">
+            <div class="phase-header" id="head-9-mtricas-a330c7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Métricas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Frecuencia</th><th scope="col">Fuente</th></tr></thead><tbody><tr><td>Tasa de resolución</td><td>≥80%</td><td>Cada sesión</td><td>Casos resueltos / casos trabajados</td></tr><tr><td>Satisfacción</td><td>≥8/10</td><td>Cada 4 sesiones</td><td>Pulse survey</td></tr><tr><td>Asistencia voluntaria</td><td>≥70%</td><td>Cada sesión</td><td>Headcount (recordar: no obligatoria)</td></tr><tr><td>Casos pre-triageados</td><td>≥2</td><td>Cada sesión</td><td>Formulario</td></tr><tr><td>Tiempo de documentación</td><td>&lt;2h</td><td>Cada sesión</td><td>Timestamp de upload</td></tr><tr><td>FAQ items generados</td><td>≥1/sesión</td><td>Acumulativo</td><td>Repositorio FAQ</td></tr></tbody></table></div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-integraciones-8c2ebf" data-searchable aria-labelledby="head-10-integraciones-8c2ebf">
+            <div class="phase-header" id="head-10-integraciones-8c2ebf" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Integraciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Upstream:</strong> Workshop composable (participantes llegan con experiencia de aplicación)</div>
+<div class="bullet-item"><strong>Upstream:</strong> Masterclass (provee fundamento teórico de referencia)</div>
+<div class="bullet-item"><strong>Downstream:</strong> FAQ del módulo (alimenta base de conocimiento)</div>
+<div class="bullet-item"><strong>Downstream:</strong> Diseño Curricular (feedback sobre gaps de contenido → CB-05)</div>
+<div class="bullet-item"><strong>Lateral:</strong> gestionar-cohorte-sop (reporta asistencia y satisfacción)</div>
+<div class="bullet-item"><strong>Lateral:</strong> grabar-y-distribuir-memorias-sop (gestión de grabaciones)</div>
+<hr class="divider">
+<p>*SOP generado como parte de la replanificación arquitectural del Programa de Empoderamiento. Modelo Átomo-Molécula-Organismo v1.0.*</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>MetodologIA © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v2.0 Excellence Edition — Generado: 2026-03-24 13:53</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="PE-01 — Programa Empoderamiento (Aliados) — Proceso de Delivery MetodologIA">
+    <title>PE-01 — Programa Empoderamiento (Aliados) — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Premium</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">PE-01 — Programa Empoderamiento (Aliados)</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>PE-01 — Programa Empoderamiento (Aliados)</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: PE-01-ALIADOS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">18</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-aliados-14e982')" aria-label="Ir a Documento Canónico | Segmento: ALIADOS">Documento Canónico | Segmento: ALIA</button>
+<button class="nav-btn" onclick="scrollToSection('documento-restringido-c0cd5c')" aria-label="Ir a DOCUMENTO RESTRINGIDO">DOCUMENTO RESTRINGIDO</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-modelo-de-alianza-62bf0a')" aria-label="Ir a 2. Modelo de Alianza">2. Modelo de Alianza</button>
+<button class="nav-btn" onclick="scrollToSection('3-contenido-del-programa-671d15')" aria-label="Ir a 3. Contenido del Programa">3. Contenido del Programa</button>
+<button class="nav-btn" onclick="scrollToSection('4-metodologa-incluida-a4859e')" aria-label="Ir a 4. Metodología Incluida">4. Metodología Incluida</button>
+<button class="nav-btn" onclick="scrollToSection('5-modelo-econmico-partner-4e1e56')" aria-label="Ir a 5. Modelo Económico - PARTNER">5. Modelo Económico - PARTNER</button>
+<button class="nav-btn" onclick="scrollToSection('6-ciclo-de-venta-f21648')" aria-label="Ir a 6. Ciclo de Venta">6. Ciclo de Venta</button>
+<button class="nav-btn" onclick="scrollToSection('7-responsabilidades-368a80')" aria-label="Ir a 7. Responsabilidades">7. Responsabilidades</button>
+<button class="nav-btn" onclick="scrollToSection('8-certificacin-de-partners-6c69b6')" aria-label="Ir a 8. Certificación de Partners">8. Certificación de Partners</button>
+<button class="nav-btn" onclick="scrollToSection('9-soporte-a-partner-c0493c')" aria-label="Ir a 9. Soporte a Partner">9. Soporte a Partner</button>
+<button class="nav-btn" onclick="scrollToSection('10-territorios-c2b889')" aria-label="Ir a 10. Territorios">10. Territorios</button>
+<button class="nav-btn" onclick="scrollToSection('11-certificacin-de-participantes-b8ea07')" aria-label="Ir a 11. Certificación de Participantes">11. Certificación de Participantes</button>
+<button class="nav-btn" onclick="scrollToSection('12-trminos-134d1c')" aria-label="Ir a 12. Términos">12. Términos</button>
+<button class="nav-btn" onclick="scrollToSection('13-proceso-de-contratacin-5decfa')" aria-label="Ir a 13. Proceso de Contratación">13. Proceso de Contratación</button>
+<button class="nav-btn" onclick="scrollToSection('14-kpis-de-alianza-3e6b8c')" aria-label="Ir a 14. KPIs de Alianza">14. KPIs de Alianza</button>
+<button class="nav-btn" onclick="scrollToSection('15-escalabilidad-3244b5')" aria-label="Ir a 15. Escalabilidad">15. Escalabilidad</button>
+<button class="nav-btn" onclick="scrollToSection('16-restricciones-de-acceso-4050fc')" aria-label="Ir a 16. Restricciones de Acceso">16. Restricciones de Acceso</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-aliados-14e982" data-searchable aria-labelledby="head-documento-cannico-segmento-aliados-14e982">
+            <div class="phase-header" id="head-documento-cannico-segmento-aliados-14e982" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: ALIADOS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> PE-01-ALIADOS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Aliados (Co-entrega con partners)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documento-restringido-c0cd5c" data-searchable aria-labelledby="head-documento-restringido-c0cd5c">
+            <div class="phase-header" id="head-documento-restringido-c0cd5c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> DOCUMENTO RESTRINGIDO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>⚠️ Acceso limitado:</strong> Este documento describe el modelo de alianza para PE-01. El programa está disponible en alianza limitada (máx 3-5 partners globales). Contactar a MetodologIA para evaluar elegibilidad.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>Programa de transformación personal de elite</strong> de 60-100 horas (10 semanas) para empleados corporativos, co-entregado por partner facilitador + MetodologIA contenido.</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Duración</strong></td><td>10 semanas (6-8 horas/semana)</td></tr><tr><td><strong>Modalidad</strong></td><td>Híbrida (virtual + 2 sesiones presenciales)</td></tr><tr><td><strong>Capacidad</strong></td><td>Cohorte 20-50 participantes</td></tr><tr><td><strong>Público</strong></td><td>Empleados empresa patrocinadora</td></tr><tr><td><strong>Inversión cliente</strong></td><td>COP 30M-150M por cohorte (según tamaño)</td></tr><tr><td><strong>Modelo alianza</strong></td><td>Revenue share: Partner 70%, MetodologIA 30%</td></tr><tr><td><strong>Rol partner</strong></td><td>Facilitador principal de cohorte (con contenido MetodologIA)</td></tr><tr><td><strong>Rol MetodologIA</strong></td><td>Diseño de contenido, QA, certificación, soporte</td></tr><tr><td><strong>Certificación</strong></td><td>Certificación de partner facilitador requerida</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-modelo-de-alianza-62bf0a" data-searchable aria-labelledby="head-2-modelo-de-alianza-62bf0a">
+            <div class="phase-header" id="head-2-modelo-de-alianza-62bf0a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Modelo de Alianza</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Estructura de co-entrega:</strong></p>
+<p class="key-value"><strong>Partner (Facilitador):</strong></p>
+<div class="bullet-item">Lidera relación con empresa cliente.</div>
+<div class="bullet-item">Facilita todos los módulos del programa (10 semanas).</div>
+<div class="bullet-item">Actúa como punto de contacto diario (logística, preguntas, problemas).</div>
+<div class="bullet-item">Usa contenido y metodología de MetodologIA (sin modificaciones).</div>
+<div class="bullet-item">Co-diseña personalizaciones menores (énfasis sectorial, ejemplos locales).</div>
+<div class="bullet-item">Responsable de experiencia del participante.</div>
+<p class="key-value"><strong>MetodologIA (Contenido + QA):</strong></p>
+<div class="bullet-item">Proporciona contenido y metodología completa del programa.</div>
+<div class="bullet-item">Entrega plataforma LMS y materiales.</div>
+<div class="bullet-item">Realiza QA del programa (visitas, feedback a partner).</div>
+<div class="bullet-item">Emite certificación de participantes.</div>
+<div class="bullet-item">Provee soporte técnico y metodológico.</div>
+<div class="bullet-item">Captura learnings y mejoras de programa.</div>
+<p class="key-value"><strong>Empresa cliente:</strong></p>
+<div class="bullet-item">Patrocina programa para sus empleados (paga partner).</div>
+<div class="bullet-item">Provee logística (salas para sesiones presenciales, catering).</div>
+<div class="bullet-item">Participa en kick-off y cierre con partner + MetodologIA.</div>
+<div class="bullet-item">Facilita tiempo de empleados.</div>
+<p class="key-value"><strong>Relación comercial:</strong></p>
+<div class="bullet-item">Partner factura empresa cliente (paga partner y MetodologIA).</div>
+<div class="bullet-item">Partner transfiere a MetodologIA su porción (30%) mensualmente.</div>
+<div class="bullet-item">Alternativa: MetodologIA factura directamente (partner cobra referral).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-contenido-del-programa-671d15" data-searchable aria-labelledby="head-3-contenido-del-programa-671d15">
+            <div class="phase-header" id="head-3-contenido-del-programa-671d15" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Contenido del Programa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Módulo 1-2 (Semanas 1-2): Fundamentos de Transformación Personal</strong></p>
+<div class="bullet-item">Bienvenida y nivelación (propósito del programa, expectativas).</div>
+<div class="bullet-item">Rueda de la vida: Evaluación de balance en 8 dimensiones.</div>
+<div class="bullet-item">Carrera profesional</div>
+<div class="bullet-item">Familia y relaciones</div>
+<div class="bullet-item">Salud física y mental</div>
+<div class="bullet-item">Finanzas personales</div>
+<div class="bullet-item">Desarrollo y aprendizaje</div>
+<div class="bullet-item">Espíritu y propósito</div>
+<div class="bullet-item">Diversión y recreación</div>
+<div class="bullet-item">Contribución y legado</div>
+<div class="bullet-item">Valores y autenticidad: Identificación de valores core.</div>
+<div class="bullet-item">Visión personal: Definición de &quot;mejor versión de mí&quot;.</div>
+<div class="bullet-item">Entregable: Documento de propósito y rueda de vida visual.</div>
+<p class="key-value"><strong>Módulo 3-4 (Semanas 3-4): Planificación Estratégica Personal</strong></p>
+<div class="bullet-item">OKRs personales: Conversión de visión a objetivos (1-3 años).</div>
+<div class="bullet-item">Roadmap de desarrollo: Plan de 12-36 meses.</div>
+<div class="bullet-item">Plan de 90 días: Hitos específicos y acciones concretas.</div>
+<div class="bullet-item">Competencias clave: Identificación de gaps de desarrollo.</div>
+<div class="bullet-item">Métricas personales: Definición de KPIs de seguimiento.</div>
+<div class="bullet-item">Entregable: Roadmap visual + Plan de 90 días.</div>
+<p class="key-value"><strong>Módulo 5-6 (Semanas 5-6): Productividad y Ejecución</strong></p>
+<div class="bullet-item">Auditoría de tiempo: Análisis de dónde va el tiempo actual.</div>
+<div class="bullet-item">Gestión de prioridades: Matriz urgencia/importancia, time blocking.</div>
+<div class="bullet-item">Sistemas de productividad: Herramientas (IA, pomodoro, batching).</div>
+<div class="bullet-item">Gestión de energía: Balance, descanso, prevención de burnout.</div>
+<div class="bullet-item">Accountability: Sistemas de seguimiento y transparencia.</div>
+<div class="bullet-item">Entregable: Sistema personal de productividad + herramientas.</div>
+<p class="key-value"><strong>Módulo 7-8 (Semanas 7-8): Desarrollo de Liderazgo y Presencia</strong></p>
+<div class="bullet-item">Evaluación 360: Feedback de colegas, supervisores, reportes directos.</div>
+<div class="bullet-item">Estilo de liderazgo: Análisis (DISC, eneagrama, Myers-Briggs).</div>
+<div class="bullet-item">Presencia ejecutiva: Comunicación, influencia, networking.</div>
+<div class="bullet-item">Comunicación efectiva: Storytelling, presentaciones, escritura ejecutiva.</div>
+<div class="bullet-item">Marca personal: Posicionamiento profesional online y offline.</div>
+<div class="bullet-item">Entregable: Reporte 360 + Plan de liderazgo + Elevator pitch.</div>
+<p class="key-value"><strong>Módulo 9-10 (Semanas 9-10): Consolidación y Futuro</strong></p>
+<div class="bullet-item">Revisión de logros: Comparación vs. objetivos iniciales.</div>
+<div class="bullet-item">Consolidación de aprendizajes: Reflexión estructurada.</div>
+<div class="bullet-item">Proyecto final: Presentación de transformación personal ante pares.</div>
+<div class="bullet-item">Plan de continuidad: Próximos 12 meses post-programa.</div>
+<div class="bullet-item">Celebración: Cierre ceremonial con empresa cliente.</div>
+<div class="bullet-item">Comunidad alumni: Opciones de grupos de accountability, webinars.</div>
+<div class="bullet-item">Entregable: Certificado de completación + Plan de continuidad.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-metodologa-incluida-a4859e" data-searchable aria-labelledby="head-4-metodologa-incluida-a4859e">
+            <div class="phase-header" id="head-4-metodologa-incluida-a4859e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Metodología Incluida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Framework MetodologIA PE-01:</strong></p>
+<div class="bullet-item">Enfoque sistémico (rueda de vida, 8 dimensiones).</div>
+<div class="bullet-item">Teoría de propósito y autenticidad.</div>
+<div class="bullet-item">OKRs para planificación personal.</div>
+<div class="bullet-item">Modelos de liderazgo (DISC, eneagrama, liderazgo servant).</div>
+<div class="bullet-item">Productividad y gestión del tiempo.</div>
+<div class="bullet-item">Comunicación ejecutiva.</div>
+<p class="key-value"><strong>Entregables del programa:</strong></p>
+<div class="bullet-item">10 sesiones presenciales/virtuales (8 horas/semana en 10 semanas).</div>
+<div class="bullet-item">Plataforma LMS con materiales interactivos.</div>
+<div class="bullet-item">Workbook de participante (150+ páginas, editable).</div>
+<div class="bullet-item">Templates para cada módulo (OKRs, roadmap, plan 90 días).</div>
+<div class="bullet-item">Herramientas de diagnóstico (rueda de vida, DISC, 360, cuestionarios).</div>
+<div class="bullet-item">Videos introductorios de cada sesión.</div>
+<div class="bullet-item">Casos de éxito y testimonios anónimos.</div>
+<div class="bullet-item">Guía de facilitación (notas completas para partner).</div>
+<p class="key-value"><strong>Sesiones presenciales obligatorias:</strong></p>
+<div class="bullet-item">Sesión 1 (Semana 1): Kick-off presencial (8 horas).</div>
+<div class="bullet-item">Sesiones 2-9: Virtual (8 horas/semana).</div>
+<div class="bullet-item">Sesión 10 (Semana 10): Cierre presencial con presentación (8 horas).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-modelo-econmico-partner-4e1e56" data-searchable aria-labelledby="head-5-modelo-econmico-partner-4e1e56">
+            <div class="phase-header" id="head-5-modelo-econmico-partner-4e1e56" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Modelo Económico - PARTNER</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Estructura de ingresos:</strong></p>
+<p class="key-value"><strong>Opción 1: Revenue Share (Estándar)</strong></p>
+<div class="bullet-item">Empresa cliente paga a partner: COP 30M-150M (según tamaño cohorte).</div>
+<div class="bullet-item">Partner retiene: 70% de ingresos.</div>
+<div class="bullet-item">MetodologIA retiene: 30% de ingresos.</div>
+<div class="bullet-item">Esfuerzo partner: 70% facilitación y relación cliente.</div>
+<div class="bullet-item">Esfuerzo MetodologIA: 30% diseño, QA, contenido, certificación.</div>
+<p class="key-value"><strong>Ejemplo de facturación:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Tamaño cohorte</th><th scope="col">Inversión cliente</th><th scope="col">A partner (70%)</th><th scope="col">A MetodologIA (30%)</th></tr></thead><tbody><tr><td>20 personas</td><td>COP 50M</td><td>COP 35M</td><td>COP 15M</td></tr><tr><td>30 personas</td><td>COP 90M</td><td>COP 63M</td><td>COP 27M</td></tr><tr><td>40 personas</td><td>COP 120M</td><td>COP 84M</td><td>COP 36M</td></tr><tr><td>50 personas</td><td>COP 150M</td><td>COP 105M</td><td>COP 45M</td></tr></tbody></table></div>
+<p class="key-value"><strong>Opción 2: Fee Fixed (Alternativa)</strong></p>
+<div class="bullet-item">Partner paga a MetodologIA: COP 20M-30M por cohorte (fee flat).</div>
+<div class="bullet-item">Partner cobra al cliente lo que negocie.</div>
+<div class="bullet-item">Partner retiene resto de margen (típicamente 40-50%).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-ciclo-de-venta-f21648" data-searchable aria-labelledby="head-6-ciclo-de-venta-f21648">
+            <div class="phase-header" id="head-6-ciclo-de-venta-f21648" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Ciclo de Venta</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Partner:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Identifica oportunidad (empresa que necesita transformación de talento).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Propone a empresa: &quot;Ofreci programa de transformación personal con MetodologIA&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Partner contacta MetodologIA para validar oportunidad y disponibilidad.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Joint proposal: Partner + MetodologIA (si es necesario).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Descubrimiento conjunto: Partner + MetodologIA + empresa (tamaño cohorte, fechas, énfasis).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Firma de contrato: Partner factura empresa.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Inicio: Kick-off presencial semana 1.</span></div>
+<p class="key-value"><strong>Timeline típico:</strong> 4-8 semanas desde propuesta a inicio de programa.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-responsabilidades-368a80" data-searchable aria-labelledby="head-7-responsabilidades-368a80">
+            <div class="phase-header" id="head-7-responsabilidades-368a80" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Responsabilidades</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Partner facilitador:</strong></p>
+<div class="bullet-item">Prospección y cierre de empresa cliente.</div>
+<div class="bullet-item">Relación diaria con empresa (contact point).</div>
+<div class="bullet-item">Facilitación de todas las 10 sesiones (con contenido MetodologIA).</div>
+<div class="bullet-item">Logística (salas, catering, horarios, Zoom, LMS).</div>
+<div class="bullet-item">Feedback a participantes (sesión a sesión).</div>
+<div class="bullet-item">Manejo de problemas o drop-outs.</div>
+<div class="bullet-item">Seguimiento post-programa (3-6 meses, opcional).</div>
+<div class="bullet-item">Facturación y administración.</div>
+<p class="key-value"><strong>MetodologIA:</strong></p>
+<div class="bullet-item">Diseño de contenido y metodología.</div>
+<div class="bullet-item">Entrega de plataforma LMS pre-configurada.</div>
+<div class="bullet-item">Capacitación de partner (2 jornadas mínimo).</div>
+<div class="bullet-item">Visitas de QA (sesión 1 y sesión 5, típicamente).</div>
+<div class="bullet-item">Soporte técnico y respuesta de preguntas (48h SLA).</div>
+<div class="bullet-item">Certificación de participantes.</div>
+<div class="bullet-item">Reportería de impacto (NPS, completación, feedback).</div>
+<div class="bullet-item">Soporte post-programa (webinars, community, 6 meses).</div>
+<p class="key-value"><strong>Empresa cliente:</strong></p>
+<div class="bullet-item">Patrocinio (financia programa).</div>
+<div class="bullet-item">Comunicación interna y promoción.</div>
+<div class="bullet-item">Logística básica (salones presenciales).</div>
+<div class="bullet-item">Facilita tiempo de empleados.</div>
+<div class="bullet-item">Medición de impacto interno (eNPS, feedback).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-certificacin-de-partners-6c69b6" data-searchable aria-labelledby="head-8-certificacin-de-partners-6c69b6">
+            <div class="phase-header" id="head-8-certificacin-de-partners-6c69b6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Certificación de Partners</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Requisitos para ser partner PE-01:</strong></p>
+<p class="key-value"><strong>Perfil ideal:</strong></p>
+<div class="bullet-item">Experiencia mínima 5 años en coaching, desarrollo o HR.</div>
+<div class="bullet-item">Acreditación en coaching (ICF, ACSTH, o similar).</div>
+<div class="bullet-item">Network de empresas corporativas.</div>
+<div class="bullet-item">Capacidad logística para gestionar cohortes (20-50 personas).</div>
+<div class="bullet-item">Disponibilidad: 10 semanas dedicadas por cohorte.</div>
+<p class="key-value"><strong>Proceso de certificación:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Expresión de interés:</strong> Partner contacta MetodologIA.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Validación:</strong> MetodologIA revisa experiencia y credibilidad.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Propuesta:</strong> Términos, territorio, mínimos (negociable).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Firma de acuerdo:</strong> Contrato de alianza + NDA.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Capacitación:</strong></span></div>
+<div class="bullet-item">2 jornadas: Metodología PE-01, contenido, facilitación.</div>
+<div class="bullet-item">1 jornada: Gestión de cohorte, LMS, reportería.</div>
+<div class="bullet-item">Costo para partner: COP 10M (recuperable en primer enganche).</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Evaluación:</strong> Partner observado en sesiones 1 y 5 de primer cohorte.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Retroalimentación:</strong> Feedback estructurado y mejoras.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Recertificación:</strong> Anual (1 jornada, COP 3M) o cada 2 cohortes.</span></div>
+<p class="key-value"><strong>Acceso post-certificación:</strong></p>
+<div class="bullet-item">Plataforma LMS configurable para each cohorte.</div>
+<div class="bullet-item">Todos los materiales (workbook, templates, guías).</div>
+<div class="bullet-item">Herramientas de diagnóstico (licencia incluida).</div>
+<div class="bullet-item">Helpdesk de 48 horas.</div>
+<div class="bullet-item">Comunidad cerrada de partners.</div>
+<div class="bullet-item">Webinars de actualización (4x/año).</div>
+<div class="bullet-item">Datos y learnings de programa.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-soporte-a-partner-c0493c" data-searchable aria-labelledby="head-9-soporte-a-partner-c0493c">
+            <div class="phase-header" id="head-9-soporte-a-partner-c0493c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Soporte a Partner</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Incluido en alianza:</strong></p>
+<p class="key-value"><strong>Pre-programa:</strong></p>
+<div class="bullet-item">Templates de propuesta y contrato.</div>
+<div class="bullet-item">Guía de descubrimiento (preguntas clave para empresa).</div>
+<div class="bullet-item">Estimador de tamaño de cohorte y ROI.</div>
+<div class="bullet-item">Plan de comunicación interna (para partner usar con empresa).</div>
+<p class="key-value"><strong>Durante programa:</strong></p>
+<div class="bullet-item">Acceso a LMS (pre-cargado con contenido).</div>
+<div class="bullet-item">Guía de facilitación (notas detalladas para cada sesión).</div>
+<div class="bullet-item">Herramientas de diagnóstico (DISC, 360, rueda de vida).</div>
+<div class="bullet-item">Material descargable para participantes (workbooks, templates).</div>
+<div class="bullet-item">Helpdesk técnico (48h respuesta).</div>
+<div class="bullet-item">Visitas QA (sesión 1 y mitad de programa, de forma virtual).</div>
+<p class="key-value"><strong>Post-programa:</strong></p>
+<div class="bullet-item">Plantillas de medición de impacto.</div>
+<div class="bullet-item">Reportería de resultados (NPS, completación, feedback).</div>
+<div class="bullet-item">Webinars de alumni para participantes (mensuales, 6 meses).</div>
+<div class="bullet-item">Opciones de coaching avanzado (pago adicional).</div>
+<div class="bullet-item">Casos de éxito para marketing de partner.</div>
+<p class="key-value"><strong>Opcional (pago adicional):</strong></p>
+<div class="bullet-item">Co-facilitación de sesión específica.</div>
+<div class="bullet-item">Coaching de partner.</div>
+<div class="bullet-item">Customización de contenido (para industria/contexto específico).</div>
+<div class="bullet-item">Diseño de campus presencial (para cohortes grandes).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-territorios-c2b889" data-searchable aria-labelledby="head-10-territorios-c2b889">
+            <div class="phase-header" id="head-10-territorios-c2b889" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Territorios</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Derechos territoriales del partner:</strong></p>
+<p class="key-value"><strong>Definición:</strong></p>
+<div class="bullet-item">Partner tiene derecho de primer refusal en territorio asignado (país/región).</div>
+<div class="bullet-item">Territorio negociado en contrato.</div>
+<p class="key-value"><strong>Exclusividad:</strong></p>
+<div class="bullet-item">Típicamente: Exclusividad en territorio (negociable).</div>
+<div class="bullet-item">Si exclusivo: Partner asume mínimo de 2 cohortes/año.</div>
+<div class="bullet-item">MetodologIA no venderá directamente en territorio exclusivo de partner.</div>
+<p class="key-value"><strong>Expansión:</strong></p>
+<div class="bullet-item">Partner puede expandir a nuevos territorios (renegociar contrato).</div>
+<div class="bullet-item">MetodologIA puede vender en territorios no cubiertos (con notificación).</div>
+<p class="key-value"><strong>Conflictos:</strong></p>
+<div class="bullet-item">Si partner existente y llega nueva oportunidad en territorio: Partner tiene opción.</div>
+<div class="bullet-item">Si partner no puede atender: MetodologIA puede ejecutar directamente.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-certificacin-de-participantes-b8ea07" data-searchable aria-labelledby="head-11-certificacin-de-participantes-b8ea07">
+            <div class="phase-header" id="head-11-certificacin-de-participantes-b8ea07" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Certificación de Participantes</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Certificado MetodologIA:</strong></p>
+<div class="bullet-item">Emitido por MetodologIA para cada participante.</div>
+<div class="bullet-item">Válido 2 años.</div>
+<div class="bullet-item">Requisitos: Asistencia mínima 80% (8 de 10 sesiones).</div>
+<div class="bullet-item">Requisitos: Proyecto final completado.</div>
+<div class="bullet-item">Respaldate por empresa y partner.</div>
+<p class="key-value"><strong>Certificación digital:</strong></p>
+<div class="bullet-item">Badge / credencial digital para LinkedIn (opcional).</div>
+<div class="bullet-item">Constancia de asistencia descargable.</div>
+<div class="bullet-item">Acceso a alumni community (12 meses post-programa).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-trminos-134d1c" data-searchable aria-labelledby="head-12-trminos-134d1c">
+            <div class="phase-header" id="head-12-trminos-134d1c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Términos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Vigencia de alianza:</strong></p>
+<div class="bullet-item">Plazo mínimo: 2 años.</div>
+<div class="bullet-item">Renovación automática por 2 años más, a menos que notifique 90 días antes.</div>
+<div class="bullet-item">Sin compromisos de volumen (pero se espera 1-2 cohortes/año).</div>
+<p class="key-value"><strong>Cancelación:</strong></p>
+<div class="bullet-item">Antes de 2 años: 6 meses aviso (no recomendado, afecta relaciones).</div>
+<div class="bullet-item">Después de 2 años: 90 días aviso.</div>
+<div class="bullet-item">Incumplimiento de calidad: MetodologIA puede terminar con 30 días aviso.</div>
+<p class="key-value"><strong>Transición post-terminación:</strong></p>
+<div class="bullet-item">Partner puede completar cohortes en proceso.</div>
+<div class="bullet-item">No puede lanzar nuevas cohortes después de notificación.</div>
+<div class="bullet-item">Acceso a plataforma: Desactivado 30 días después de fin de contrato.</div>
+<div class="bullet-item">Datos de participantes: Partner puede exportar (confidencialidad obligatoria).</div>
+<p class="key-value"><strong>Propiedad intelectual:</strong></p>
+<div class="bullet-item">Metodología y contenido: Propiedad perpetua de MetodologIA.</div>
+<div class="bullet-item">Partner recibe licencia no-exclusiva (en territorio).</div>
+<div class="bullet-item">Planes de participantes: Propiedad del participante (partner retiene copia de trabajo).</div>
+<div class="bullet-item">Ejemplos y casos: MetodologIA puede usar anonimizados (con consentimiento).</div>
+<p class="key-value"><strong>Confidencialidad:</strong></p>
+<div class="bullet-item">Partner firma NDA estándar de MetodologIA.</div>
+<div class="bullet-item">Datos de empresa cliente: Confidenciales (no publicar sin permiso).</div>
+<div class="bullet-item">Datos de participantes: GDPR/HABEAS compliance obligatorio.</div>
+<p class="key-value"><strong>Responsabilidad:</strong></p>
+<div class="bullet-item">Partner: Responsable de relación con empresa y facilitación.</div>
+<div class="bullet-item">MetodologIA: Responsable de calidad de contenido y certificación.</div>
+<div class="bullet-item">Ambos: Responsables de cumplimiento legal y confidencialidad.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-proceso-de-contratacin-5decfa" data-searchable aria-labelledby="head-13-proceso-de-contratacin-5decfa">
+            <div class="phase-header" id="head-13-proceso-de-contratacin-5decfa" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Proceso de Contratación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Expresión de interés:</strong> Partner contacta MetodologIA.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Validación:</strong> Revisión de perfil, experiencia, network.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Propuesta:</strong> Términos de alianza, territorio, mínimos, revenue share.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Negociación:</strong> Ajuste de términos según contexto.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Firma de acuerdo:</strong> Contrato de alianza + NDA.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Capacitación:</strong> 3 jornadas de entrenamiento.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Go-live:</strong> Partner está listo para prospecting.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Primer enganche:</strong> Asignación de mentor MetodologIA para primer cohorte.</span></div>
+<p class="key-value"><strong>Timeline:</strong> 2-3 meses desde interés a primer cohorte iniciada.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-kpis-de-alianza-3e6b8c" data-searchable aria-labelledby="head-14-kpis-de-alianza-3e6b8c">
+            <div class="phase-header" id="head-14-kpis-de-alianza-3e6b8c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 14. KPIs de Alianza</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Para partner:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th></tr></thead><tbody><tr><td># cohortes/año</td><td>2-4</td></tr><tr><td>Tamaño promedio cohorte</td><td>30-40 personas</td></tr><tr><td>Ingresos por cohorte</td><td>COP 60M-100M (70% de 80M-150M)</td></tr><tr><td>NPS participante</td><td>8+</td></tr><tr><td>Tasa completación</td><td>85%+</td></tr><tr><td>Margen partner anual</td><td>COP 40M-200M</td></tr></tbody></table></div>
+<p class="key-value"><strong>Para MetodologIA:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th></tr></thead><tbody><tr><td># de partners aliados</td><td>3-5 global</td></tr><tr><td>Ingresos por partner</td><td>COP 25M-50M/año</td></tr><tr><td>Ingresos totales PE-01-aliados</td><td>COP 100M-250M/año</td></tr><tr><td>Tasa satisfacción partner</td><td>8+ NPS</td></tr><tr><td>Retención partner</td><td>80%+</td></tr><tr><td>Impacto en participantes (NPS)</td><td>8.5+</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="15-escalabilidad-3244b5" data-searchable aria-labelledby="head-15-escalabilidad-3244b5">
+            <div class="phase-header" id="head-15-escalabilidad-3244b5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 15. Escalabilidad</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Crecimiento del programa con aliados:</strong></p>
+<div class="bullet-item">Año 1: 1-2 partners, 2-4 cohortes, COP 60M-150M ingresos.</div>
+<div class="bullet-item">Año 2+: 3-5 partners, 5-10 cohortes, COP 150M-500M+ ingresos.</div>
+<div class="bullet-item">Expansión geográfica: Partners en LATAM, España, mercados selectos.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="16-restricciones-de-acceso-4050fc" data-searchable aria-labelledby="head-16-restricciones-de-acceso-4050fc">
+            <div class="phase-header" id="head-16-restricciones-de-acceso-4050fc" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 16. Restricciones de Acceso</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Este documento es RESTRINGIDO:</strong></p>
+<div class="bullet-item">Acceso: Socios estratégicos de MetodologIA evaluados.</div>
+<div class="bullet-item">No es públicamente disponible.</div>
+<div class="bullet-item">No se puede compartir sin autorización de MetodologIA.</div>
+<div class="bullet-item">Conversación confidencial (NDA requerida antes de detalles).</div>
+<p class="key-value"><strong>Próximo paso:</strong> Organización interesada contacta a MetodologIA (email: alianzas@metodologia.ai) para evaluar elegibilidad y discutir términos de alianza PE-01.</p>
+<hr class="divider">
+<p><strong>Fin del documento.</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

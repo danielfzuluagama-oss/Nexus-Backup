@@ -1,0 +1,517 @@
+# =============================================================================
+# Skill: memory-mgmt
+# Agent: pristino-orchestrator
+# Purpose: Manage conversational context and history
+# =============================================================================
+
+id: memory-mgmt
+name: Memory Management
+purpose: >
+  Manage conversational context and history in SQLite, including loading context
+  for requests, trimming old history, persisting state, and cleaning stale data.
+businessValue: >
+  Coherent multi-turn conversations with appropriate context. Without memory
+  management, every interaction starts from scratch, degrading user experience.
+triggerTypes:
+  - internal_event
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "userId: string (Telegram user identifier)"
+  - "conversationHistory: Message[] (current state in SQLite)"
+  - "memoryConfig: { maxMessages: number, maxAge: number, trimStrategy: string }"
+  - "internalEvent: { type: string, payload: any } (trigger event)"
+
+outputs:
+  - "loadedContext: ConversationContext (ready for use by other skills)"
+  - "trimReport: { messagesRemoved: number, reason: string }"
+  - "persistenceConfirmation: { success: boolean, timestamp: string }"
+  - "cleanupReport: { usersProcessed: number, messagesRemoved: number }"
+
+dependencies:
+  - "memory.ts (SQLite database operations)"
+  - "security.ts (sanitizeInput for context validation)"
+  - "config.ts (memory limits and trim thresholds)"
+
+toolUsage:
+  - "get_current_time: For timestamp comparisons in trimming and cleanup"
+
+memoryReadsWrites:
+  reads:
+    - "conversationHistory: full message history for user"
+    - "contextMetadata: topic tracking, clarification flags, entity references"
+    - "memoryConfig: max messages, max age, trim strategy settings"
+  writes:
+    - "conversationHistory: trimmed or updated message list"
+    - "contextMetadata: updated topic and state information"
+    - "cleanupLog: records of deleted messages and reasons"
+
+securityValidations:
+  - "CP1: sanitizeInput() on any context data loaded from storage (defense against stored injection)"
+  - "CP2: buildSecurePrompt() not directly used (no LLM calls in most workflows)"
+  - "CP3: validateOutput() on any context data exposed to other skills"
+  - "Whitelist check: verify userId before loading or modifying any conversation data"
+
+observabilityEvents:
+  - "skill_activated: memory-mgmt skill triggered"
+  - "context_loaded: conversation context successfully loaded"
+  - "history_trimmed: old messages removed"
+  - "context_persisted: state saved to SQLite"
+  - "memory_cleanup_completed: stale data removed"
+  - "memory_error: database operation failed"
+
+failureHandling:
+  - "SQLite read failure: return empty context, log error, allow request to proceed"
+  - "SQLite write failure: log critical error, retry once, continue with in-memory state"
+  - "Corrupted data: discard corrupted records, rebuild context from remaining messages"
+  - "Disk full: trigger emergency cleanup, alert via self-diagnosis skill"
+
+interoperabilityContract:
+  inputType: "MemoryRequest { userId, operation, config }"
+  outputType: "MemoryResult { context?, trimReport?, persistenceResult?, cleanupReport? }"
+  protocol: "Internal function call from other skills within pristino-orchestrator"
+
+wowCriteria:
+  - "Context loading adds < 100ms to request processing"
+  - "Trimming never loses messages that are contextually relevant to the current topic"
+  - "Memory cleanup runs without impacting active conversations"
+  - "User never notices memory management (seamless experience)"
+
+safeCriteria:
+  - "No conversation data is ever exposed across different user IDs"
+  - "Trimming preserves at least the last 5 messages as minimum context"
+  - "All deletions are logged with timestamp and reason"
+  - "SQLite failures never cause request processing to fail entirely"
+
+# =============================================================================
+# Workflows
+# =============================================================================
+
+workflows:
+  # ---------------------------------------------------------------------------
+  # Workflow 1: Context Loading
+  # ---------------------------------------------------------------------------
+  - id: context-loading
+    title: Context Loading
+    objective: Load and prepare conversation context for the current user request
+    trigger: "New user message received (pre-processing event)"
+    preconditions:
+      - userId available from Telegram message
+      - SQLite database accessible
+      - Memory config loaded
+    inputs:
+      - "userId: string (Telegram user ID)"
+      - "memoryConfig: { maxMessages: 20, trimOnLoad: boolean }"
+    steps:
+      - stepNumber: 1
+        title: Query conversation history
+        desc: Retrieve the last N messages for this user from SQLite ordered by timestamp.
+        whyThisMatters: All downstream skills depend on accurate conversation history for context-aware responses.
+        inputNeeded: "userId, maxMessages config value (default 20)"
+        actionInstruction: "Execute SQLite query: SELECT * FROM messages WHERE userId = ? ORDER BY timestamp DESC LIMIT ?. Parse into Message[] array."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Message[] array with up to 20 recent messages, ordered chronologically"
+        validationRule: "Result is a valid array (may be empty for new users). Each message has role, content, timestamp."
+        failureSignal: "SQLite query throws error or returns malformed data"
+        recoveryAction: "Return empty Message[] array. Log warning. Request proceeds without history."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Load context metadata
+        desc: Retrieve topic tracking, clarification flags, and entity references for this user.
+        whyThisMatters: Metadata enables follow-up detection and clarification state management.
+        inputNeeded: "userId for metadata lookup"
+        actionInstruction: "Execute SQLite query: SELECT * FROM context_metadata WHERE userId = ?. Parse into ConversationContext object."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ConversationContext { lastTopic, clarificationPending, referencedEntities, lastActiveTimestamp }"
+        validationRule: "Context object is valid (all fields present, even if null for new users)"
+        failureSignal: "SQLite query fails or returns corrupted metadata"
+        recoveryAction: "Initialize default context: { lastTopic: null, clarificationPending: false, referencedEntities: [] }"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Sanitize loaded context
+        desc: Apply CP1 sanitization to all loaded messages and metadata to prevent stored injection attacks.
+        whyThisMatters: Stored data could have been corrupted or injected. Re-sanitizing on load is defense-in-depth.
+        inputNeeded: "Loaded Message[] array and ConversationContext object"
+        actionInstruction: "For each message in history: sanitizeInput(message.content). For metadata: validate all string fields."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized Message[] and ConversationContext, safe for use by other skills"
+        validationRule: "All message content passes CP1, no control characters in metadata strings"
+        failureSignal: "One or more messages fail sanitization"
+        recoveryAction: "Remove failed messages from context (better to have less context than unsafe context)"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Assemble ready context
+        desc: Combine history and metadata into a unified context object ready for downstream consumption.
+        whyThisMatters: A single unified context object simplifies downstream skill interfaces.
+        inputNeeded: "Sanitized Message[] and ConversationContext"
+        actionInstruction: "Construct ReadyContext { history: Message[], metadata: ConversationContext, loadedAt: timestamp, messageCount: number }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ReadyContext object with all fields populated"
+        validationRule: "ReadyContext has non-null history array and metadata object, loadedAt is valid timestamp"
+        failureSignal: "Assembly produces null or incomplete object"
+        recoveryAction: "Return minimal ReadyContext with empty history and default metadata"
+        handoffIfNeeded: null
+
+    mainOutput: "ReadyContext loaded and available for current request processing"
+    secondaryOutputs:
+      - "context_loaded event with message count and load latency"
+    DoD:
+      - Conversation history loaded for the correct userId
+      - Context metadata loaded with topic and state info
+      - All loaded data sanitized via CP1
+      - Unified context object assembled
+    qaChecklist:
+      - History belongs to the correct user (no cross-user leakage)
+      - Messages are in chronological order
+      - Sanitization did not corrupt legitimate content
+      - Load time < 100ms
+    raci:
+      responsible: "pristino-orchestrator (memory-mgmt skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "context_load_latency_p95: <100ms"
+      - "load_success_rate: >= 99.5%"
+      - "sanitization_rejection_rate: <1% of loaded messages"
+    cadence: "Per-request (every incoming user message)"
+    errorHandling: "SQLite failure: proceed with empty context. Never block request processing."
+    fallbackRoute: "Empty context with defaults (every message treated as new conversation)"
+    escalationRoute: "Persistent SQLite failures escalate to self-diagnosis skill"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 2: History Trimming
+  # ---------------------------------------------------------------------------
+  - id: history-trimming
+    title: History Trimming
+    objective: Remove old messages that exceed the configured history limit to keep context relevant
+    trigger: "Message count exceeds maxMessages threshold after new message added"
+    preconditions:
+      - Message count > maxMessages (default 20)
+      - SQLite database accessible and writable
+      - User has active conversation history
+    inputs:
+      - "userId: string"
+      - "currentMessageCount: number"
+      - "memoryConfig: { maxMessages: 20, minMessages: 5, trimStrategy: 'oldest-first' }"
+    steps:
+      - stepNumber: 1
+        title: Calculate trim scope
+        desc: Determine how many messages to remove and which ones, respecting the minimum retention threshold.
+        whyThisMatters: Trimming too aggressively loses valuable context. Too conservatively wastes storage and adds noise.
+        inputNeeded: "currentMessageCount, maxMessages config, minMessages config"
+        actionInstruction: "Calculate excessCount = currentMessageCount - maxMessages. Ensure post-trim count >= minMessages."
+        promptToUse: null (mechanical step)
+        expectedOutput: "TrimPlan { messagesToRemove: number, strategy: 'oldest-first', retainMinimum: 5 }"
+        validationRule: "messagesToRemove > 0 and (currentMessageCount - messagesToRemove) >= minMessages"
+        failureSignal: "Calculation results in negative trim count or would go below minimum"
+        recoveryAction: "Skip trimming if already at or below maxMessages. Log info."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Identify messages to remove
+        desc: Select the oldest messages for removal, avoiding messages that are part of an active topic thread.
+        whyThisMatters: Removing messages from an active topic thread breaks conversational continuity.
+        inputNeeded: "TrimPlan, full message history, current topic metadata"
+        actionInstruction: "Select oldest N messages by timestamp. Exclude any messages tagged with the current active topic if within last 5 messages."
+        promptToUse: null (mechanical step)
+        expectedOutput: "MessageIds[] to remove, with reasons logged"
+        validationRule: "Selected messages are the oldest and none overlap with the last 5 messages"
+        failureSignal: "No messages eligible for removal (all within protected window)"
+        recoveryAction: "Skip trimming for this cycle. Log that history is at capacity with active context."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Execute trim deletion
+        desc: Delete identified messages from SQLite within a transaction for atomicity.
+        whyThisMatters: Atomic deletion prevents partial trim states that could corrupt conversation history.
+        inputNeeded: "MessageIds[] to remove"
+        actionInstruction: "BEGIN TRANSACTION. DELETE FROM messages WHERE id IN (?). COMMIT. Verify row count matches expected."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Deletion confirmation with count of removed messages"
+        validationRule: "Deleted row count matches messagesToRemove from TrimPlan"
+        failureSignal: "Transaction fails, row count mismatch, or SQLite error"
+        recoveryAction: "ROLLBACK transaction. Log error. Retry once. If still fails, defer to next cycle."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Log trim report
+        desc: Record the trim operation details for auditing and monitoring.
+        whyThisMatters: Trim audit trail is needed for debugging conversation continuity issues.
+        inputNeeded: "TrimPlan results, deleted message count, userId"
+        actionInstruction: "Write trim report to audit log: { userId, messagesRemoved, oldestRemoved, newestRetained, timestamp }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "TrimReport logged successfully"
+        validationRule: "Audit log entry written with all fields"
+        failureSignal: "Audit log write fails"
+        recoveryAction: "Log to stderr as backup. Trimming itself already succeeded."
+        handoffIfNeeded: null
+
+    mainOutput: "Conversation history trimmed to configured maximum"
+    secondaryOutputs:
+      - "trim_report with count and details"
+      - "history_trimmed observability event"
+    DoD:
+      - Message count is at or below maxMessages
+      - Oldest messages removed first
+      - Minimum 5 messages retained
+      - Trim operation logged
+    qaChecklist:
+      - No active topic messages were removed
+      - Post-trim count is within configured range
+      - Transaction completed atomically
+      - Audit log entry written
+    raci:
+      responsible: "pristino-orchestrator (memory-mgmt skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "trim_execution_time_p95: <50ms"
+      - "data_integrity: zero partial trims (atomic transactions)"
+      - "context_preservation: active topic messages never trimmed"
+    cadence: "Per-request (when message count exceeds threshold)"
+    errorHandling: "Transaction failure: rollback and defer to next cycle"
+    fallbackRoute: "Skip trimming, accept temporary over-limit history"
+    escalationRoute: "Persistent SQLite write failures escalate to self-diagnosis"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 3: Context Persistence
+  # ---------------------------------------------------------------------------
+  - id: context-persistence
+    title: Context Persistence
+    objective: Save conversation state (messages, metadata, routing decisions) to SQLite after processing
+    trigger: "Request processing complete (post-processing event)"
+    preconditions:
+      - Request has been fully processed
+      - Response has been sent to user
+      - SQLite database accessible and writable
+    inputs:
+      - "userId: string"
+      - "userMessage: Message (the original request)"
+      - "assistantResponse: Message (the final response)"
+      - "routingDecision: RoutingDecision (if delegation occurred)"
+      - "contextUpdates: { newTopic?, clearedClarification?, newEntities? }"
+    steps:
+      - stepNumber: 1
+        title: Persist user message
+        desc: Write the user's message to conversation history in SQLite with timestamp.
+        whyThisMatters: User messages are the foundation of conversation history. Missing messages break context.
+        inputNeeded: "userId, sanitized userMessage, timestamp"
+        actionInstruction: "INSERT INTO messages (userId, role, content, timestamp) VALUES (?, 'user', ?, ?). Verify insertion."
+        promptToUse: null (mechanical step)
+        expectedOutput: "User message row inserted successfully"
+        validationRule: "INSERT returns rowId and affected rows === 1"
+        failureSignal: "SQLite INSERT fails or returns unexpected result"
+        recoveryAction: "Retry once. If fails again, log critical error (message data held in memory for recovery)."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Persist assistant response
+        desc: Write the assistant's response to conversation history with metadata about how it was generated.
+        whyThisMatters: Response history enables context for follow-up questions and conversation continuity.
+        inputNeeded: "userId, assistant response string, routing mode used, timestamp"
+        actionInstruction: "INSERT INTO messages (userId, role, content, metadata, timestamp) VALUES (?, 'assistant', ?, ?, ?)."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Assistant response row inserted with routing metadata"
+        validationRule: "INSERT returns rowId and affected rows === 1"
+        failureSignal: "SQLite INSERT fails"
+        recoveryAction: "Retry once. Log critical if fails (response already delivered to user, persistence is for history)."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Update context metadata
+        desc: Persist topic changes, cleared flags, and entity updates to context metadata table.
+        whyThisMatters: Stale metadata causes incorrect follow-up detection and broken conversation flow.
+        inputNeeded: "userId, contextUpdates object with new topic, cleared flags, new entities"
+        actionInstruction: "UPSERT INTO context_metadata (userId, lastTopic, clarificationPending, referencedEntities, updatedAt) VALUES (?, ?, ?, ?, ?)."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Context metadata updated in SQLite"
+        validationRule: "UPSERT completed successfully, metadata readable back"
+        failureSignal: "UPSERT fails or read-back shows stale data"
+        recoveryAction: "Retry once. If fails, next request will use stale metadata (degraded but functional)."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Persist routing decision
+        desc: Write the routing decision to audit log for analysis and debugging.
+        whyThisMatters: Routing audit trail is essential for improving delegation accuracy over time.
+        inputNeeded: "routingDecision object (mode, agents, reason, timestamp)"
+        actionInstruction: "INSERT INTO routing_log (userId, mode, agents, reason, latency_ms, timestamp) VALUES (?, ?, ?, ?, ?, ?)."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Routing decision logged to audit table"
+        validationRule: "INSERT successful with all fields populated"
+        failureSignal: "INSERT fails"
+        recoveryAction: "Log to stderr as backup. Routing log is for analysis, not critical path."
+        handoffIfNeeded: null
+
+    mainOutput: "Full conversation state persisted to SQLite"
+    secondaryOutputs:
+      - "context_persisted event with message IDs"
+      - "routing_decision audit log entry"
+    DoD:
+      - User message persisted to history
+      - Assistant response persisted to history
+      - Context metadata updated
+      - Routing decision logged
+    qaChecklist:
+      - Messages belong to correct userId
+      - Timestamps are accurate
+      - Context metadata reflects current state
+      - Routing log includes mode and reason
+    raci:
+      responsible: "pristino-orchestrator (memory-mgmt skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger"
+    kpis:
+      - "persistence_latency_p95: <50ms for all writes"
+      - "write_success_rate: >= 99.9%"
+      - "data_consistency: read-after-write always reflects latest state"
+    cadence: "Per-request (after every completed request-response cycle)"
+    errorHandling: "Individual write failure: retry once. Multiple failures: log critical, defer to next request."
+    fallbackRoute: "In-memory state only (lost on restart but conversation continues)"
+    escalationRoute: "Persistent write failures escalate to self-diagnosis for disk/DB health check"
+
+  # ---------------------------------------------------------------------------
+  # Workflow 4: Memory Cleanup
+  # ---------------------------------------------------------------------------
+  - id: memory-cleanup
+    title: Memory Cleanup
+    objective: Remove stale conversation data for inactive users and reclaim storage
+    trigger: "Scheduled daily maintenance event or manual admin trigger"
+    preconditions:
+      - SQLite database accessible and writable
+      - Cleanup config available (max age, batch size)
+      - No active conversations being processed (or graceful handling)
+    inputs:
+      - "cleanupConfig: { maxAgeDays: 30, batchSize: 100, dryRun: boolean }"
+      - "currentTime: Date"
+    steps:
+      - stepNumber: 1
+        title: Identify stale conversations
+        desc: Query for users whose last activity exceeds the configured maximum age.
+        whyThisMatters: Unbounded data growth degrades query performance and wastes storage.
+        inputNeeded: "maxAgeDays config, current timestamp"
+        actionInstruction: "SELECT DISTINCT userId, MAX(timestamp) as lastActive FROM messages GROUP BY userId HAVING lastActive < (now - maxAgeDays). Limit to batchSize."
+        promptToUse: null (mechanical step)
+        expectedOutput: "StaleUser[] array with userId and lastActive timestamp"
+        validationRule: "All returned users have lastActive older than maxAgeDays threshold"
+        failureSignal: "SQLite query fails or returns users with recent activity"
+        recoveryAction: "Skip cleanup cycle. Log error. Try again next scheduled run."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Validate cleanup scope
+        desc: Verify no stale users have active sessions before proceeding with deletion.
+        whyThisMatters: Deleting data for a user who just became active again would destroy their context.
+        inputNeeded: "StaleUser[] array, active session list (if available)"
+        actionInstruction: "Cross-reference StaleUser[] with any active Telegram sessions. Remove any active users from cleanup list."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated cleanup list with active users excluded"
+        validationRule: "No user in cleanup list has an active session or message within last 24 hours"
+        failureSignal: "Active session check fails"
+        recoveryAction: "Apply conservative filter: only clean users with lastActive > 2x maxAgeDays"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Execute batch deletion
+        desc: Delete messages and metadata for stale users in batched transactions.
+        whyThisMatters: Batched deletion prevents long-running locks that could block active conversations.
+        inputNeeded: "Validated StaleUser[] list, batchSize config"
+        actionInstruction: "For each batch: BEGIN TRANSACTION. DELETE FROM messages WHERE userId IN (batch). DELETE FROM context_metadata WHERE userId IN (batch). COMMIT."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Deletion results: { usersProcessed, messagesRemoved, metadataRemoved }"
+        validationRule: "All transactions committed successfully, counts are positive"
+        failureSignal: "Any transaction fails to commit"
+        recoveryAction: "ROLLBACK failed batch. Continue with remaining batches. Log failed userIds for retry."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Generate cleanup report
+        desc: Compile and log a cleanup report with statistics for monitoring.
+        whyThisMatters: Cleanup reports enable capacity planning and help detect abnormal data growth patterns.
+        inputNeeded: "Deletion results, initial stale user count, execution time"
+        actionInstruction: "Compile CleanupReport { usersProcessed, messagesRemoved, executionTime_ms, errors[], timestamp }. Write to audit log."
+        promptToUse: null (mechanical step)
+        expectedOutput: "CleanupReport logged to audit system"
+        validationRule: "Report contains all fields and is written to audit log"
+        failureSignal: "Audit log write fails"
+        recoveryAction: "Log report to stderr as backup"
+        handoffIfNeeded: null
+
+    mainOutput: "Stale conversation data cleaned up, storage reclaimed"
+    secondaryOutputs:
+      - "cleanup_report with detailed statistics"
+      - "memory_cleanup_completed event"
+    DoD:
+      - All conversations older than maxAgeDays deleted
+      - No active user data accidentally removed
+      - Cleanup report generated and logged
+      - Database integrity maintained
+    qaChecklist:
+      - No active conversation data was deleted
+      - All deletions were transactional
+      - Cleanup report includes accurate counts
+      - Database remains queryable after cleanup
+    raci:
+      responsible: "pristino-orchestrator (memory-mgmt skill)"
+      accountable: "pristino-orchestrator"
+      consulted: "none"
+      informed: "logger, admin (via self-diagnosis if issues found)"
+    kpis:
+      - "cleanup_execution_time: <10s for standard batch"
+      - "stale_data_ratio: <20% of total stored conversations"
+      - "zero_active_data_loss: 0 active conversations affected by cleanup"
+    cadence: "Scheduled daily (low-traffic window) or on-demand admin trigger"
+    errorHandling: "Batch failure: skip failed batch, continue with others, report partial results"
+    fallbackRoute: "Skip cleanup entirely if database is under load, defer to next schedule"
+    escalationRoute: "Persistent cleanup failures or disk full -> self-diagnosis skill for ecosystem alert"
+
+# ── Gap-Closing: 10× Quality Enhancement ──
+
+assumptions:
+  - "Memory operates in 3 cognitive layers: Working (active thread context), Episodic (interaction logs, meetings, voice notes), Semantic (knowledge, RAG chunks)."
+  - "Firestore is the production backend. In-memory fallback is for local development only and does not persist across restarts."
+  - "TTL-based expiration (30 days) applies to Working memory (messages). Semantic memory (knowledge) has no automatic expiration."
+  - "Knowledge confidence scores are reinforced on repeated encounters. Higher confidence = higher priority in retrieval."
+
+limits:
+  - "Cannot perform semantic search natively. RAG chunk retrieval uses metadata filtering, not vector similarity (vector search requires a separate embedding pipeline)."
+  - "Cannot recover data deleted by TTL expiration. Expired data is gone permanently."
+  - "Maximum knowledge items per user: 500. Beyond that, lowest-confidence items are candidates for archival."
+  - "Cannot guarantee consistency during Firestore outages. In-memory fallback provides session-level durability only."
+
+edge_cases:
+  - scenario: "Two concurrent requests try to create a thread for the same user simultaneously."
+    handling: "Atomic Firestore transaction (runTransaction) prevents duplicate thread creation. The second request joins the existing thread."
+  - scenario: "Cleanup job runs during a high-traffic period."
+    handling: "Skip cleanup entirely. Defer to the next scheduled low-traffic window. Never degrade active request performance for maintenance."
+  - scenario: "Knowledge reinforcement creates a score >100 (due to many reinforcements)."
+    handling: "Cap confidence at 100. Reinforcement beyond cap increments a separate 'reinforcement count' for analytics without inflating the score."
+  - scenario: "User requests deletion of all their data (GDPR-style)."
+    handling: "Delete all documents across all collections where scopeUserId matches. Generate a deletion report. This is an admin-only action."
+
+trade_offs:
+  - decision: "3-layer cognitive architecture over flat key-value storage."
+    justification: "Cognitive layers enable different retention policies and access patterns per data type. Flat storage treats all data equally, losing semantic meaning."
+  - decision: "Firestore over SQLite for production."
+    justification: "Firestore provides managed scalability, multi-region replication, and real-time sync. SQLite requires self-managed backups and doesn't scale horizontally."
+  - decision: "TTL-based expiration over manual cleanup."
+    justification: "TTL is automatic and consistent. Manual cleanup is error-prone and often deferred indefinitely."
+
+evaluation:
+  acceptance_criteria:
+    - "Zero active data loss during cleanup operations."
+    - "Thread creation is atomic (zero duplicate threads under concurrent access)."
+    - "In-memory fallback activates transparently on Firestore unavailability."
+    - "Knowledge retrieval returns results sorted by confidence score."
+    - "Cleanup execution time <10s for standard batch."
+  success_metrics:
+    - "Zero active data loss: 0 active conversations affected by cleanup."
+    - "Stale data ratio: <20% of total stored conversations."
+    - "Cleanup execution time: <10s."
+    - "Thread atomicity: zero duplicates."

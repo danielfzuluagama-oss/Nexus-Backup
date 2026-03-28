@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA — B2B Customer Journeys | Segmentación Empresarial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Montserrat:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <style>
+        :root {
+            --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-secondary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-tertiary: 'Jost', 'Futura', 'Trebuchet MS', Arial, sans-serif;
+            --bg-primary: hsl(220, 34%, 18%);
+            --bg-surface: hsl(220, 30%, 23%);
+            --bg-body: hsl(222, 29%, 12%);
+            --bg-elevated: hsla(220, 34%, 18%, 0.8);
+            --bg-hover: hsla(220, 30%, 23%, 0.9);
+            --text-primary: #FFFFFF;
+            --text-secondary: #e2e8f0;
+            --text-muted: #cbd5e1;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.15);
+            --brand-gold: hsl(51, 100%, 50%);
+            --brand-gold-dark: hsl(45, 100%, 50%);
+            --brand-cyan: hsl(189, 94%, 53%);
+            --brand-emerald: hsl(158, 64%, 52%);
+            --brand-purple: hsl(271, 91%, 76%);
+            --brand-blue: hsl(221, 83%, 72%);
+            --brand-purple-text: hsl(271, 91%, 76%);
+            --brand-blue-text: hsl(221, 83%, 72%);
+            --brand-indigo-text: #a5b4fc;
+            --brand-gold-glow: hsla(51, 100%, 50%, 0.10);
+            --brand-cyan-glow: hsla(189, 94%, 53%, 0.10);
+            --brand-emerald-glow: hsla(158, 64%, 52%, 0.10);
+            --shadow-glow-gold: 0 0 25px rgba(255, 240, 51, 0.12);
+            --shadow-glow-cyan: 0 0 25px rgba(34, 211, 238, 0.12);
+            --brand-red: #ef4444;
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-secondary);
+            font-family: var(--font-secondary);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-primary);
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        a {
+            color: var(--brand-cyan);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--brand-gold);
+        }
+
+        .highlight-ia-premium {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .card-glass {
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-glass:hover {
+            border-color: var(--border-default);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .premium-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: hsla(220, 34%, 18%, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1rem 2rem;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-family: var(--font-primary);
+        }
+
+        .nav-cta-glow {
+            background: var(--gradient-gold);
+            color: #000;
+            padding: 0.65rem 1.5rem;
+            border-radius: 0.65rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .nav-cta-glow:hover {
+            box-shadow: var(--shadow-glow-gold);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            padding-top: 8rem;
+            padding-bottom: 4rem;
+            text-align: center;
+        }
+
+        header h1 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-family: var(--font-secondary);
+        }
+
+        .segment-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .segment-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .segment-card .card-glass {
+            height: 100%;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .segment-card.e1 .card-glass {
+            border-left: 4px solid var(--brand-emerald);
+        }
+
+        .segment-card.e2 .card-glass {
+            border-left: 4px solid var(--brand-cyan);
+        }
+
+        .segment-card.e3 .card-glass {
+            border-left: 4px solid var(--brand-gold);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .segment-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-family: var(--font-tertiary);
+        }
+
+        .segment-badge.e1 {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--brand-emerald);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+        }
+
+        .segment-badge.e2 {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--brand-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+
+        .segment-badge.e3 {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--brand-gold);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .segment-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .segment-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .tabs-container {
+            margin-bottom: 3rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: 600;
+            font-family: var(--font-primary);
+        }
+
+        .tab.active {
+            background: var(--bg-surface);
+            border-color: var(--brand-cyan);
+            color: var(--brand-cyan);
+        }
+
+        .tab:hover {
+            border-color: var(--brand-gold);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .journey-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .phase-timeline {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .phase-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .phase-box:hover {
+            border-color: var(--border-default);
+            transform: translateY(-4px);
+        }
+
+        .phase-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-family: var(--font-tertiary);
+        }
+
+        .phase-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .phase-content {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .complexity-meter {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .complexity-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-surface);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .complexity-fill {
+            height: 100%;
+            background: var(--gradient-gold);
+            transition: width 0.4s ease;
+            border-radius: 4px;
+        }
+
+        .complexity-label {
+            font-weight: 600;
+            font-family: var(--font-primary);
+            font-size: 0.95rem;
+        }
+
+        .raci-matrix {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .raci-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .raci-table th {
+            background: var(--bg-surface);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-default);
+        }
+
+        .raci-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: top;
+        }
+
+        .raci-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.3rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 0.25rem;
+        }
+
+        .raci-r {
+            background: rgba(34, 197, 94, 0.12);
+            color: #10b981;
+        }
+
+        .raci-a {
+            background: rgba(99, 102, 241, 0.12);
+            color: #a5b4fc;
+        }
+
+        .raci-c {
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--brand-gold);
+        }
+
+        .raci-i {
+            background: rgba(156, 163, 175, 0.12);
+            color: #d1d5db;
+        }
+
+        .list-box {
+            background: var(--bg-surface);
+            border-left: 4px solid var(--brand-cyan);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .list-box h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .list-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .list-box li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .list-box li:before {
+            content: "▸";
+            position: absolute;
+            left: 0.5rem;
+            color: var(--brand-cyan);
+            font-weight: 700;
+        }
+
+        .revenue-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-surface);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .revenue-table th {
+            background: var(--bg-primary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-default);
+        }
+
+        .revenue-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .bridge-flow {
+            background: var(--bg-surface);
+            border-left: 4px solid var(--brand-gold);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .bridge-arrow {
+            font-size: 2rem;
+            color: var(--brand-gold);
+            flex-shrink: 0;
+        }
+
+        .bridge-content {
+            flex: 1;
+        }
+
+        .bridge-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .bridge-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .bridge-metrics {
+            font-size: 0.9rem;
+            color: var(--brand-gold);
+            font-weight: 600;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            background: var(--bg-surface);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: var(--bg-primary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-default);
+        }
+
+        .comparison-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--bg-hover);
+        }
+
+        .metric-strong {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-subtle);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .scroll-hint {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--bg-surface);
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .phase-timeline {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .bridge-flow {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .premium-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+        }
+
+        .logo-svg {
+            width: 36px;
+            height: 36px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Premium Navigation -->
+    <nav class="premium-nav">
+        <div class="nav-logo">
+            <svg class="logo-svg" viewBox="0 0 36 36" fill="none">
+                <defs>
+                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#0A122A"/>
+                        <stop offset="100%" stop-color="#13315C"/>
+                    </linearGradient>
+                </defs>
+                <rect width="36" height="36" rx="10" fill="url(#logoGrad)"/>
+                <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+            </svg>
+            MetodologIA
+        </div>
+        <button class="nav-cta-glow">Contactar Ventas</button>
+    </nav>
+
+    <!-- Header -->
+    <header class="container">
+        <h1>B2B Customer Journeys</h1>
+        <p class="subtitle"><span class="highlight-ia-premium">3 segmentos, 3 niveles de complejidad</span></p>
+        <p style="color: var(--text-muted); font-size: 1rem;">Rutas de venta diferenciadas para Small Business, Enterprise y Corporate</p>
+    </header>
+
+    <!-- Segment Cards Introduction -->
+    <div class="container segment-cards">
+        <div class="segment-card e1">
+            <div class="card-glass">
+                <div class="segment-badge e1">E1 — SMALL BUSINESS</div>
+                <h3 class="segment-title">Café Digital</h3>
+                <p class="segment-subtitle">Agencia de marketing, 8 personas</p>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">Fundadora Laura, urgencia de supervivencia competitiva. Ciclo rápido (1-3 semanas), ticket $200k-$800k.</p>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Complejidad</span>
+                    <div class="complexity-meter" style="margin-top: 0.5rem;">
+                        <div class="complexity-bar"><div class="complexity-fill" style="width: 20%;"></div></div>
+                        <span style="font-weight: 600; color: var(--brand-emerald);">2/10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="segment-card e2">
+            <div class="card-glass">
+                <div class="segment-badge e2">E2 — ENTERPRISE</div>
+                <h3 class="segment-title">TechForce</h3>
+                <p class="segment-subtitle">Servicios TI, 85 empleados, 3 oficinas</p>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">Director Roberto, meta +30% revenue. Ciclo medio (4-8 semanas), ticket $2M-$8M.</p>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Complejidad</span>
+                    <div class="complexity-meter" style="margin-top: 0.5rem;">
+                        <div class="complexity-bar"><div class="complexity-fill" style="width: 60%;"></div></div>
+                        <span style="font-weight: 600; color: var(--brand-cyan);">6/10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="segment-card e3">
+            <div class="card-glass">
+                <div class="segment-badge e3">E3 — CORPORATE</div>
+                <h3 class="segment-title">GlobalManufactura</h3>
+                <p class="segment-subtitle">Manufactura, 400 empleados, 3 países</p>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">VP Diana, mandato board para IA. Ciclo largo (8-16 semanas), ticket $10M-$50M+.</p>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Complejidad</span>
+                    <div class="complexity-meter" style="margin-top: 0.5rem;">
+                        <div class="complexity-bar"><div class="complexity-fill" style="width: 90%;"></div></div>
+                        <span style="font-weight: 600; color: var(--brand-gold);">9/10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="container tabs-container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('e1')">E1 Small Biz</button>
+            <button class="tab" onclick="switchTab('e2')">E2 Enterprise</button>
+            <button class="tab" onclick="switchTab('e3')">E3 Corporate</button>
+            <button class="tab" onclick="switchTab('comparison')">Comparativa</button>
+            <button class="tab" onclick="switchTab('bridge')">B2C→B2B</button>
+        </div>
+
+        <!-- E1 Tab -->
+        <div id="e1" class="tab-content active">
+            <div class="journey-section">
+                <h2 style="color: var(--brand-emerald);">E1: "Café Digital"</h2>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Agencia de 8 personas. Laura (36 años, fundadora) urgencia de supervivencia. No tiene presupuesto corporativo pero sabe que IA ayuda.</p>
+
+                <h3>Journey Phases (F0-F5)</h3>
+                <div class="phase-timeline">
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 0</div>
+                        <div class="phase-title">Awareness</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Competidor le quitó cliente con IA</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 1</div>
+                        <div class="phase-title">Diagnóstico</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Express 30 min con ROI claro</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 2</div>
+                        <div class="phase-title">Diseño</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Playbook de automatización</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 3</div>
+                        <div class="phase-title">Práctica</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Workshop grupal + seguimiento</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 4</div>
+                        <div class="phase-title">Autonomía</div>
+                        <div class="phase-content"><strong>Trigger:</strong> 80% equipo usa IA diariamente</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 5</div>
+                        <div class="phase-title">Amplificación</div>
+                        <div class="phase-content">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #10b981;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="shield-check" style="width: 18px; height: 18px; color: #10b981;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-5: Puedo Sostenible</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Mantiene resultados sin apoyo externo<br/><em style="font-size: 0.75rem;">Autonomía > 80% · 30d+</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #93c5fd;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="trending-up" style="width: 18px; height: 18px; color: #93c5fd;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-6: Puedo Escalable</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Replica a más procesos/equipos<br/><em style="font-size: 0.75rem;">Expansión ≥ 2 áreas</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #c4b5fd;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="users" style="width: 18px; height: 18px; color: #c4b5fd;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-7: Puedo enseñar a otros</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Transfiere competencia<br/><em style="font-size: 0.75rem;">≥ 1 persona capacitada</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #f59e0b;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="megaphone" style="width: 18px; height: 18px; color: #f59e0b;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-8: Puedo ser embajador</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Evangeliza, refiere, crea comunidad<br/><em style="font-size: 0.75rem;">Referral > 25%</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Complejidad del Deal</h3>
+                <div class="complexity-meter">
+                    <div class="complexity-bar"><div class="complexity-fill" style="width: 20%;"></div></div>
+                    <span class="complexity-label">2/10</span>
+                </div>
+                <ul style="color: var(--text-secondary); margin-left: 2rem; margin-bottom: 1.5rem;">
+                    <li>1 decision maker (fundador/CEO)</li>
+                    <li>Aprobación financiera simple (sin comité)</li>
+                    <li>Implementación rápida (3-4 semanas)</li>
+                    <li>Bajo riesgo contractual</li>
+                    <li>Ciclo de venta corto (1-3 semanas)</li>
+                </ul>
+
+                <h3>Stakeholder Map (RACI)</h3>
+                <div class="raci-matrix">
+                    <table class="raci-table">
+                        <thead>
+                            <tr>
+                                <th>Rol</th>
+                                <th>Responsable</th>
+                                <th>Accountable</th>
+                                <th>Consulted</th>
+                                <th>Informed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Fundador/CEO</strong></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td>—</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Equipo operativo (2-3)</strong></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Contador</strong></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Socio (si existe)</strong></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Anti-Patrones (Evitar)</h3>
+                <div class="list-box">
+                    <ul>
+                        <li>Nunca presentar como programa corporativo — necesita formato ágil</li>
+                        <li>Nunca ignorar el tiempo de implementación — horarios after-hours obligatorio</li>
+                        <li>Nunca asumir que solo el fundador aprende — equipo entero debe entrenar</li>
+                        <li>Nunca mezclar E1 con E2 — sienten inferioridad</li>
+                        <li>Nunca olvidar el "conocimiento tribal" del fundador — documentar</li>
+                    </ul>
+                </div>
+
+                <h3>Disqualificación E1</h3>
+                <div class="list-box">
+                    <p style="margin-bottom: 1rem;"><strong>NO ES FIT si:</strong></p>
+                    <ul>
+                        <li>Empresa >15 empleados (escalar a E2)</li>
+                        <li>Negocio completamente estancado sin visión</li>
+                        <li>Fundador sin presupuesto mínimo (~$200k)</li>
+                        <li>No tiene acceso a computadora/internet</li>
+                        <li>Sector regulado con restricciones IA</li>
+                    </ul>
+                </div>
+
+                <h3>Revenue Model E1</h3>
+                <table class="revenue-table">
+                    <thead>
+                        <tr><th>Métrica</th><th>Valor</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Ticket inicial</strong></td><td>$200k-$800k COP</td></tr>
+                        <tr><td><strong>LTV estimado</strong></td><td>$1.2M-$2M COP</td></tr>
+                        <tr><td><strong>Upsell primario</strong></td><td>Bootcamp ($800k) o asesoría ($300k-$500k/mes)</td></tr>
+                        <tr><td><strong>Soporte recurrente</strong></td><td>$150k-$300k/mes para 40-50%</td></tr>
+                        <tr><td><strong>Escalación</strong></td><td>→ E2 cuando crece a 15+ empleados</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Win/Loss Scenarios</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card-glass" style="border-left: 4px solid #10b981;">
+                        <h4 style="color: #10b981;">Win (Éxito)</h4>
+                        <ul style="color: var(--text-secondary); margin-left: 2rem; margin-top: 1rem;">
+                            <li>Equipo completo capacitado</li>
+                            <li>+30-50% en propuestas mensuales</li>
+                            <li>Refiere 2+ negocios</li>
+                            <li>Solicita escalación a E2</li>
+                        </ul>
+                    </div>
+                    <div class="card-glass" style="border-left: 4px solid #ef4444;">
+                        <h4 style="color: #ef4444;">Loss (Fracaso)</h4>
+                        <ul style="color: var(--text-secondary); margin-left: 2rem; margin-top: 1rem;">
+                            <li>Solo fundador aprende</li>
+                            <li>Equipo resiste cambios</li>
+                            <li>Rotación de personal</li>
+                            <li>Presupuesto se agota</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- E2 Tab -->
+        <div id="e2" class="tab-content">
+            <div class="journey-section">
+                <h2 style="color: var(--brand-cyan);">E2: "TechForce"</h2>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Empresa de servicios TI, 85 empleados, 3 oficinas. Director Comercial Roberto con pipeline $2B COP pero win rate 18%.</p>
+
+                <h3>Journey Phases (F0-F5)</h3>
+                <div class="phase-timeline">
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 0</div>
+                        <div class="phase-title">Awareness</div>
+                        <div class="phase-content"><strong>Trigger:</strong> CEO establece meta +30% revenue</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 1</div>
+                        <div class="phase-title">Diagnóstico</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Discovery corporativo 2 sesiones</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 2</div>
+                        <div class="phase-title">Diseño</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Business case + deck board-ready</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 3</div>
+                        <div class="phase-title">Práctica</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Bootcamp + coaching 1:1</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 4</div>
+                        <div class="phase-title">Autonomía</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Pipeline +127%, win rate +40%</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 5</div>
+                        <div class="phase-title">Amplificación</div>
+                        <div class="phase-content">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #10b981;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="shield-check" style="width: 18px; height: 18px; color: #10b981;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-5: Puedo Sostenible</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Mantiene resultados sin apoyo externo<br/><em style="font-size: 0.75rem;">Autonomía > 80% · 30d+</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #93c5fd;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="trending-up" style="width: 18px; height: 18px; color: #93c5fd;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-6: Puedo Escalable</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Replica a más procesos/equipos<br/><em style="font-size: 0.75rem;">Expansión ≥ 2 áreas</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #c4b5fd;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="users" style="width: 18px; height: 18px; color: #c4b5fd;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-7: Puedo enseñar a otros</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Transfiere competencia<br/><em style="font-size: 0.75rem;">≥ 1 persona capacitada</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #f59e0b;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="megaphone" style="width: 18px; height: 18px; color: #f59e0b;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-8: Puedo ser embajador</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Evangeliza, refiere, crea comunidad<br/><em style="font-size: 0.75rem;">Referral > 25%</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Complejidad del Deal</h3>
+                <div class="complexity-meter">
+                    <div class="complexity-bar"><div class="complexity-fill" style="width: 60%;"></div></div>
+                    <span class="complexity-label">6/10</span>
+                </div>
+                <ul style="color: var(--text-secondary); margin-left: 2rem; margin-bottom: 1.5rem;">
+                    <li>Múltiples decision makers (Director, CEO, CFO)</li>
+                    <li>Aprobación financiera requiere comité/junta</li>
+                    <li>Implementación: 4-6 semanas</li>
+                    <li>Contrato formal con cláusulas</li>
+                    <li>Ciclo de venta: 4-8 semanas</li>
+                </ul>
+
+                <h3>Stakeholder Map (RACI)</h3>
+                <div class="raci-matrix">
+                    <table class="raci-table">
+                        <thead>
+                            <tr>
+                                <th>Rol</th>
+                                <th>Responsable</th>
+                                <th>Accountable</th>
+                                <th>Consulted</th>
+                                <th>Informed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Director Comercial</strong></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td>—</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CEO</strong></td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CFO/Finanzas</strong></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Director RRHH</strong></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Equipo comercial</strong></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Anti-Patrones (Evitar)</h3>
+                <div class="list-box">
+                    <ul>
+                        <li>Nunca saltarse el CEO — su aprobación es crítica</li>
+                        <li>Nunca ignorar resistencia de top sellers — "yo siempre gané así"</li>
+                        <li>Nunca presentar como "educación" — es un sistema de gestión</li>
+                        <li>Nunca asumir estabilidad de champions — planificar rotación</li>
+                        <li>Nunca olvidar ROI en $$$ de pipeline/deals — no "satisfacción"</li>
+                    </ul>
+                </div>
+
+                <h3>Disqualificación E2</h3>
+                <div class="list-box">
+                    <p style="margin-bottom: 1rem;"><strong>NO ES FIT si:</strong></p>
+                    <ul>
+                        <li>Empresa <30 empleados</li>
+                        <li>Win rate ya >50% y ciclo <4 semanas</li>
+                        <li>Presupuesto <$2M COP</li>
+                        <li>CEO/junta no está vendida en IA</li>
+                        <li>Estructura descentralizada sin autoridad clara</li>
+                    </ul>
+                </div>
+
+                <h3>Revenue Model E2</h3>
+                <table class="revenue-table">
+                    <thead>
+                        <tr><th>Métrica</th><th>Valor</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Ticket inicial</strong></td><td>$2M-$8M COP</td></tr>
+                        <tr><td><strong>LTV estimado</strong></td><td>$8M-$25M COP</td></tr>
+                        <tr><td><strong>Acompañamiento recurrente</strong></td><td>$300k-$500k/mes QBR trimestral para 60-70%</td></tr>
+                        <tr><td><strong>Expansión a otras áreas</strong></td><td>$5M-$20M adicional</td></tr>
+                        <tr><td><strong>Referral value</strong></td><td>2-4 empresas en ciclo de vida</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Win/Loss Scenarios</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card-glass" style="border-left: 4px solid #10b981;">
+                        <h4 style="color: #10b981;">Win (Éxito)</h4>
+                        <ul style="color: var(--text-secondary); margin-left: 2rem; margin-top: 1rem;">
+                            <li>Pipeline velocity +100-150% en 90 días</li>
+                            <li>Win rate: 18% → 25%+</li>
+                            <li>Expansión a otras áreas → E3</li>
+                            <li>Refiere 2-3 empresas similares</li>
+                        </ul>
+                    </div>
+                    <div class="card-glass" style="border-left: 4px solid #ef4444;">
+                        <h4 style="color: #ef4444;">Loss (Fracaso)</h4>
+                        <ul style="color: var(--text-secondary); margin-left: 2rem; margin-top: 1rem;">
+                            <li>Abandono en semana 3 (resistencia)</li>
+                            <li>Director cambió de rol</li>
+                            <li>CEO cambió prioridades</li>
+                            <li>Champions rotan sin documentación</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- E3 Tab -->
+        <div id="e3" class="tab-content">
+            <div class="journey-section">
+                <h2 style="color: var(--brand-gold);">E3: "GlobalManufactura"</h2>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Corporativo 400 empleados, 3 países, estructura matricial. VP de Innovación Diana con mandato board para adoptar IA en toda la organización.</p>
+
+                <h3>Journey Phases (F0-F5)</h3>
+                <div class="phase-timeline">
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 0</div>
+                        <div class="phase-title">Awareness</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Board mandató IA como prioridad</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 1</div>
+                        <div class="phase-title">Diagnóstico</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Discovery multi-area (3-5 sesiones)</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 2</div>
+                        <div class="phase-title">Diseño</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Propuesta ejecutiva + cronograma</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 3</div>
+                        <div class="phase-title">Práctica</div>
+                        <div class="phase-content"><strong>Trigger:</strong> Deploy multi-área coordinado</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 4</div>
+                        <div class="phase-title">Autonomía</div>
+                        <div class="phase-content"><strong>Trigger:</strong> >60% adopción, cultura AI-native</div>
+                    </div>
+                    <div class="phase-box">
+                        <div class="phase-label">Fase 5</div>
+                        <div class="phase-title">Amplificación</div>
+                        <div class="phase-content">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #10b981;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="shield-check" style="width: 18px; height: 18px; color: #10b981;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-5: Puedo Sostenible</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Mantiene resultados sin apoyo externo<br/><em style="font-size: 0.75rem;">Autonomía > 80% · 30d+</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #93c5fd;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="trending-up" style="width: 18px; height: 18px; color: #93c5fd;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-6: Puedo Escalable</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Replica a más procesos/equipos<br/><em style="font-size: 0.75rem;">Expansión ≥ 2 áreas</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #c4b5fd;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="users" style="width: 18px; height: 18px; color: #c4b5fd;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-7: Puedo enseñar a otros</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Transfiere competencia<br/><em style="font-size: 0.75rem;">≥ 1 persona capacitada</em></p>
+                                </div>
+                                <div style="background: var(--bg-glass); padding: 1rem; border-radius: 0.75rem; border-left: 3px solid #f59e0b;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i data-lucide="megaphone" style="width: 18px; height: 18px; color: #f59e0b;"></i>
+                                        <strong style="font-size: 0.9rem;">MOT-8: Puedo ser embajador</strong>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Evangeliza, refiere, crea comunidad<br/><em style="font-size: 0.75rem;">Referral > 25%</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Complejidad del Deal</h3>
+                <div class="complexity-meter">
+                    <div class="complexity-bar"><div class="complexity-fill" style="width: 90%;"></div></div>
+                    <span class="complexity-label">9/10</span>
+                </div>
+                <ul style="color: var(--text-secondary); margin-left: 2rem; margin-bottom: 1.5rem;">
+                    <li>Múltiples stakeholders sin alineación (TI, RRHH, COO, CFO, Board)</li>
+                    <li>Aprobación board-level + comité de inversión</li>
+                    <li>Implementación 6-12+ meses en múltiples fases</li>
+                    <li>Contrato complejo con cláusulas SLA, governance, IP</li>
+                    <li>Ciclo de venta: 8-16 semanas (muy largo)</li>
+                </ul>
+
+                <h3>Stakeholder Map (RACI)</h3>
+                <div class="raci-matrix">
+                    <table class="raci-table">
+                        <thead>
+                            <tr>
+                                <th>Rol</th>
+                                <th>Responsable</th>
+                                <th>Accountable</th>
+                                <th>Consulted</th>
+                                <th>Informed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>VP Innovación</strong></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td>—</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CEO</strong></td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CFO</strong></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CTO / VP TI</strong></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CHRO / VP RRHH</strong></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Board</strong></td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Anti-Patrones (Evitar)</h3>
+                <div class="list-box">
+                    <ul>
+                        <li>Nunca saltarse aprobación del board — sin mandate, no hay presupuesto</li>
+                        <li>Nunca mezclar TI + RRHH en misma sesión — agendas opuestas</li>
+                        <li>Nunca asumir un "champion" lo hace solo — requiere sponsor ejecutivo</li>
+                        <li>Nunca proponer simultáneo en múltiples áreas — piloto → escala</li>
+                        <li>Nunca ignorar procurement — pueden retrasar 8+ semanas</li>
+                    </ul>
+                </div>
+
+                <h3>Disqualificación E3</h3>
+                <div class="list-box">
+                    <p style="margin-bottom: 1rem;"><strong>NO ES FIT si:</strong></p>
+                    <ul>
+                        <li>Empresa <200 empleados</li>
+                        <li>Board no mandatró IA como prioridad</li>
+                        <li>Presupuesto <$5M COP</li>
+                        <li>CEO no está vendido en IA</li>
+                        <li>Regulación sectorial prohíbe IA</li>
+                    </ul>
+                </div>
+
+                <h3>Revenue Model E3</h3>
+                <table class="revenue-table">
+                    <thead>
+                        <tr><th>Métrica</th><th>Valor</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Ticket inicial</strong></td><td>$10M-$50M+ COP</td></tr>
+                        <tr><td><strong>LTV estimado</strong></td><td>$30M-$150M+ COP</td></tr>
+                        <tr><td><strong>Acompañamiento recurrente</strong></td><td>$1M-$3M/año para 70-80%</td></tr>
+                        <tr><td><strong>Expansión geográfica</strong></td><td>$15M-$50M adicional por site</td></tr>
+                        <tr><td><strong>Deal renewal</strong></td><td>60-70% renuevan año 2; 3-5 años típico</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Win/Loss Scenarios</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card-glass" style="border-left: 4px solid #10b981;">
+                        <h4 style="color: #10b981;">Win (Éxito)</h4>
+                        <ul style="color: var(--text-secondary); margin-left: 2rem; margin-top: 1rem;">
+                            <li>IA en 3-5 procesos críticos</li>
+                            <li>+40% productividad en 90 días</li>
+                            <li>Board aprueba expansión multi-área</li>
+                            <li>Refiere 2-3 corporativos similares</li>
+                        </ul>
+                    </div>
+                    <div class="card-glass" style="border-left: 4px solid #ef4444;">
+                        <h4 style="color: #ef4444;">Loss (Fracaso)</h4>
+                        <ul style="color: var(--text-secondary); margin-left: 2rem; margin-top: 1rem;">
+                            <li>CEO cambió o prioridades cambiaron</li>
+                            <li>TI bloqueó por seguridad/compliance</li>
+                            <li>Silos sabotean pilot</li>
+                            <li>Champions rotan sin sucesión</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparative Tab -->
+        <div id="comparison" class="tab-content">
+            <div class="journey-section">
+                <h2>Comparativa Consolidada: E1 vs E2 vs E3</h2>
+                <div style="overflow-x: auto;">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Dimensión</th>
+                                <th>E1 Small Biz</th>
+                                <th>E2 Enterprise</th>
+                                <th>E3 Corporate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="metric-strong">Tamaño empleados</span></td>
+                                <td>1-20</td>
+                                <td>21-200</td>
+                                <td>200+</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Ciclo de venta</span></td>
+                                <td>1-3 semanas</td>
+                                <td>4-8 semanas</td>
+                                <td>8-16 semanas</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Decision makers</span></td>
+                                <td>1 (Fundador)</td>
+                                <td>2-3 (Dir + CEO)</td>
+                                <td>6-10 (C-Suite + Board)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Ticket promedio</span></td>
+                                <td>$200k-$800k</td>
+                                <td>$2M-$8M</td>
+                                <td>$10M-$50M+</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Discovery</span></td>
+                                <td>Express 30 min</td>
+                                <td>Corporativo 2 sesiones</td>
+                                <td>Multi-área 3-5 sesiones</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Barrera principal</span></td>
+                                <td>Cashflow limitado</td>
+                                <td>Aprobación múltiple</td>
+                                <td>Procurement + governance</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Aha! Moment</span></td>
+                                <td>Día 2</td>
+                                <td>Semana 4</td>
+                                <td>Mes 2</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">LTV estimado</span></td>
+                                <td>$1.2M-$2M</td>
+                                <td>$8M-$25M</td>
+                                <td>$30M-$150M+</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Complejidad Index</span></td>
+                                <td style="color: var(--brand-emerald); font-weight: 700;">2/10</td>
+                                <td style="color: var(--brand-cyan); font-weight: 700;">6/10</td>
+                                <td style="color: var(--brand-gold); font-weight: 700;">9/10</td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-strong">Close Rate esperado</span></td>
+                                <td style="color: var(--brand-emerald); font-weight: 700;">60-70%</td>
+                                <td style="color: var(--brand-cyan); font-weight: 700;">40-50%</td>
+                                <td style="color: var(--brand-gold); font-weight: 700;">30-40%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- B2C→B2B Bridge Tab -->
+        <div id="bridge" class="tab-content">
+            <div class="journey-section">
+                <h2>Matriz de Escalación: B2C → B2B</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">Cómo los clientes B2C transitan a oportunidades B2B diferenciadas por segmento.</p>
+
+                <h3>Canales de Escalación Documentados</h3>
+
+                <div class="bridge-flow">
+                    <div class="bridge-arrow">⬆</div>
+                    <div class="bridge-content">
+                        <div class="bridge-label">P3 → E2/E3</div>
+                        <div class="bridge-title">Ejecutivo satisfecho menciona "mi equipo necesita"</div>
+                        <div class="bridge-metrics">40-50% convierten a oportunidad E2 en 7-60 días</div>
+                    </div>
+                </div>
+
+                <div class="bridge-flow">
+                    <div class="bridge-arrow">⬆</div>
+                    <div class="bridge-content">
+                        <div class="bridge-label">P1 → E1/E2</div>
+                        <div class="bridge-title">Profesional refiere a su jefe/empresa tras F4</div>
+                        <div class="bridge-metrics">20-30% generan lead B2B en 14 días</div>
+                    </div>
+                </div>
+
+                <div class="bridge-flow">
+                    <div class="bridge-arrow">⬆</div>
+                    <div class="bridge-content">
+                        <div class="bridge-label">P2 → E1</div>
+                        <div class="bridge-title">Estudiante se gradúa y lanza emprendimiento</div>
+                        <div class="bridge-metrics">10-15% de P2 fundador = E1 cliente en 30 días</div>
+                    </div>
+                </div>
+
+                <div class="bridge-flow">
+                    <div class="bridge-arrow">⬆</div>
+                    <div class="bridge-content">
+                        <div class="bridge-label">E1 → E2</div>
+                        <div class="bridge-title">Small business crece a 15+ empleados</div>
+                        <div class="bridge-metrics">30-40% de E1 con crecimiento → E2 en 60 días</div>
+                    </div>
+                </div>
+
+                <div class="bridge-flow">
+                    <div class="bridge-arrow">⬆</div>
+                    <div class="bridge-content">
+                        <div class="bridge-label">E2 → E3</div>
+                        <div class="bridge-title">Empresa quiere expandir IA a múltiples áreas</div>
+                        <div class="bridge-metrics">20-30% de E2 exitosos → E3 en 6-12 meses</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 3rem;">Flujo Detallado: P3 → E2 (Ejemplo)</h3>
+                <div class="card-glass" style="border-left: 4px solid var(--brand-gold);">
+                    <pre style="color: var(--text-secondary); font-family: var(--font-tertiary); font-size: 0.9rem; overflow-x: auto;">CLIENTE P3 SATISFECHO (F5: Amplificación - MOT-5/6/7/8 activos)
+     ↓
+¿MENCIONA "mi empresa necesita"?
+     ├─ NO: Mantener en mentoría VIP; retry próxima reunión
+     └─ SÍ: ↓
+          Sales (Enterprise) CONTACTA dentro de 7 días
+          ├─ Presenta Discovery E2
+          ├─ Incluye Director Comercial + CEO
+          └─ Deal típico: $4M-$8M COP
+               ↓ (40-50% conversion en 60-120 días)
+               ├─ CIERRA: P3 es champion interno
+               └─ PIERDE: Porque CEO no estaba "on board"</pre>
+                </div>
+
+                <h3 style="margin-top: 2rem;">Métricas de Escalación (KPIs)</h3>
+                <table class="revenue-table">
+                    <thead>
+                        <tr><th>Métrica</th><th>Target</th><th>Owner</th><th>Frecuencia</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>% P3 que generan lead B2B en 180 días</td><td>30-40%</td><td>Sales (Ent.)</td><td>Mensual</td></tr>
+                        <tr><td>Tiempo promedio P3→discovery E2</td><td>14-21 días</td><td>Sales (Ent.)</td><td>Por deal</td></tr>
+                        <tr><td>Conversion rate P3→E2 deal</td><td>40-50%</td><td>Sales (Ent.)</td><td>Trimestral</td></tr>
+                        <tr><td>% P1 que refieren a empresa</td><td>15-25%</td><td>Sales (SMB)</td><td>Trimestral</td></tr>
+                        <tr><td>% E1→E2 cuando empresa crece</td><td>30-40%</td><td>Success (SMB)</td><td>Anual</td></tr>
+                        <tr><td>Referral LTV (P3/P1 que traen empresa)</td><td>+$8M-$30M/cliente</td><td>Finance</td><td>Anual</td></tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 2rem;">Cuándo Vender a Cada Segmento</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr><th>Si ves esto...</th><th>Busca...</th><th>Vende a...</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Persona sola que menciona "mi jefe necesita"</td>
+                            <td>P3 hablando de su empresa</td>
+                            <td>E2/E3 (via P3)</td>
+                        </tr>
+                        <tr>
+                            <td>Pequeño negocio 5-10 personas, propietario "hace todo"</td>
+                            <td>Founder urgencia de supervivencia</td>
+                            <td><span class="segment-badge e1">E1</span></td>
+                        </tr>
+                        <tr>
+                            <td>Empresa 50+ personas, meta clara revenue, director con poder</td>
+                            <td>CEO/Director con presupuesto</td>
+                            <td><span class="segment-badge e2">E2</span></td>
+                        </tr>
+                        <tr>
+                            <td>Corporativo 200+, board mandatró IA, múltiples departamentos</td>
+                            <td>VP Innovación/Estrategia con CEO patrocinio</td>
+                            <td><span class="segment-badge e3">E3</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="container">
+        <p><strong>Documento:</strong> B2B Customer Journeys (CJ Diferenciados E1, E2, E3)</p>
+        <p><strong>Versión:</strong> 3.0 — Optimización Estratégica 2026</p>
+        <p><strong>Fecha:</strong> 2026-03-24</p>
+        <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.9rem;">Cada CJ B2B se revisa al modificar portfolio empresarial o cambios en SOP discovery/structuring. Métricas críticas: monitorear conversion en cada fase (F0→F1, F1→F2, etc.) para validar supuestos de deal complexity.</p>
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            const selectedContent = document.getElementById(tabName);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+
+</body>
+</html>

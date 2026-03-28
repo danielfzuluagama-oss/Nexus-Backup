@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Sitios Web — Amplificador de Marca — Proceso de Delivery MetodologIA">
+    <title>Sitios Web — Amplificador de Marca — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Tecnologia</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Sitios Web — Amplificador de Marca</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Sitios Web — Amplificador de Marca</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-del-servicio-5aefd6')" aria-label="Ir a Propósito del Servicio">Propósito del Servicio</button>
+<button class="nav-btn" onclick="scrollToSection('4-tipologas-de-sitios-web-163259')" aria-label="Ir a 4 Tipologías de Sitios Web">4 Tipologías de Sitios Web</button>
+<button class="nav-btn" onclick="scrollToSection('stack-tecnolgico-soportado-db119e')" aria-label="Ir a Stack Tecnológico Soportado">Stack Tecnológico Soportado</button>
+<button class="nav-btn" onclick="scrollToSection('proceso-de-entrega-paso-a-paso-8cb287')" aria-label="Ir a Proceso de Entrega (Paso a Paso)">Proceso de Entrega (Paso a Paso)</button>
+<button class="nav-btn" onclick="scrollToSection('10x-elevation-protocol-7-dimensiones-4efa9e')" aria-label="Ir a 10x Elevation Protocol: 7 Dimensiones">10x Elevation Protocol: 7 Dimension</button>
+<button class="nav-btn" onclick="scrollToSection('criterios-de-aceptacin-definition-of-done-1ad1bb')" aria-label="Ir a Criterios de Aceptación (Definition of Done)">Criterios de Aceptación (Definition</button>
+<button class="nav-btn" onclick="scrollToSection('5-antipatterns-trampas-comunes-b98562')" aria-label="Ir a 5+ Anti-Patterns (Trampas Comunes)">5+ Anti-Patterns (Trampas Comunes)</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-design-decisions-d5f9f7')" aria-label="Ir a 5 Decisiones de Diseño (Design Decisions)">5 Decisiones de Diseño (Design Deci</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-operativos-eaa56d')" aria-label="Ir a Fallbacks Operativos">Fallbacks Operativos</button>
+<button class="nav-btn" onclick="scrollToSection('integraciones-verticales-y-transversales-4d78ab')" aria-label="Ir a Integraciones Verticales y Transversales">Integraciones Verticales y Transver</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-lanzamiento-da704f')" aria-label="Ir a Checklist de Lanzamiento">Checklist de Lanzamiento</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vertical</strong>: TecnologIA</div>
+<div class="bullet-item"><strong>Tipo de Servicio</strong>: Amplificador</div>
+<div class="bullet-item"><strong>Palancas Conectadas</strong>: 3+4+6 (Redes Sociales + Multimedia + Tecnología)</div>
+<div class="bullet-item"><strong>Owner</strong>: Diseñador/Desarrollador Web</div>
+<div class="bullet-item"><strong>Versión</strong>: 1.0 | Última actualización: 2026-03-24</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-del-servicio-5aefd6" data-searchable aria-labelledby="head-propsito-del-servicio-5aefd6">
+            <div class="phase-header" id="head-propsito-del-servicio-5aefd6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito del Servicio</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Diseñar, construir y publicar presencia digital profesional que amplifica la marca personal o comercial del cliente. El sitio web es la <strong>BASE de la presencia digital</strong> — todo lo demás (redes, contenido, automatizaciones) se conecta aquí.</p>
+<p class="key-value"><strong>Filosofía Core</strong>: *&quot;Tu sitio web es tu sede digital. No es un gasto — es una inversión que trabaja 24/7.&quot;*</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-tipologas-de-sitios-web-163259" data-searchable aria-labelledby="head-4-tipologas-de-sitios-web-163259">
+            <div class="phase-header" id="head-4-tipologas-de-sitios-web-163259" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4 Tipologías de Sitios Web</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="landing-page-1-pgina-2175fa">Landing Page (1 página)</h3>
+<div class="bullet-item"><strong>Caso de uso</strong>: Validar oferta, lanzamiento de producto, evento puntual, lead capture</div>
+<div class="bullet-item"><strong>Alcance</strong>: 1 página con form de contacto</div>
+<div class="bullet-item"><strong>Tiempo</strong>: 1 semana | <strong>Inversión</strong>: COP ~$500K</div>
+<h3 class="subsection-title" id="sitio-institucional-510-pginas-793344">Sitio Institucional (5-10 páginas)</h3>
+<div class="bullet-item"><strong>Caso de uso</strong>: Marca personal, PYME, freelancer, startup early-stage</div>
+<div class="bullet-item"><strong>Alcance</strong>: Home + About + Servicios + Blog + Contacto + Legal</div>
+<div class="bullet-item"><strong>Tiempo</strong>: 3 semanas | <strong>Inversión</strong>: COP ~$3M</div>
+<h3 class="subsection-title" id="ecommerce-catlogo-pagos-d8b07e">E-Commerce (Catálogo + Pagos)</h3>
+<div class="bullet-item"><strong>Caso de uso</strong>: Venta de productos o servicios digitales</div>
+<div class="bullet-item"><strong>Alcance</strong>: Catálogo dinámico, carrito, pasarela de pago, inventario</div>
+<div class="bullet-item"><strong>Tiempo</strong>: 6 semanas | <strong>Inversión</strong>: COP ~$12M</div>
+<h3 class="subsection-title" id="portfoliocv-digital-3903eb">Portfolio/CV Digital</h3>
+<div class="bullet-item"><strong>Caso de uso</strong>: Profesional creativo (diseñador, fotógrafo, desarrollador)</div>
+<div class="bullet-item"><strong>Alcance</strong>: Galería de proyectos, testimonios, formulario de contacto</div>
+<div class="bullet-item"><strong>Tiempo</strong>: 2 semanas | <strong>Inversión</strong>: COP ~$1.5M</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="stack-tecnolgico-soportado-db119e" data-searchable aria-labelledby="head-stack-tecnolgico-soportado-db119e">
+            <div class="phase-header" id="head-stack-tecnolgico-soportado-db119e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Stack Tecnológico Soportado</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="nocode-menor-mantenimiento-903c85">No-Code (Menor mantenimiento)</h3>
+<div class="bullet-item"><strong>Framer</strong>: Excelente para portfolios, animaciones nativas</div>
+<div class="bullet-item"><strong>Webflow</strong>: Control total de diseño + hosting incluido</div>
+<div class="bullet-item"><strong>Carrd</strong>: Landing pages ultrarrápidas</div>
+<div class="bullet-item"><strong>WordPress + Elementor</strong>: Flexible, SEO nativo</div>
+<h3 class="subsection-title" id="ecommerce-especializado-fdba40">E-Commerce Especializado</h3>
+<div class="bullet-item"><strong>Shopify</strong>: Plataforma completa, pagos integrados, apps marketplace</div>
+<div class="bullet-item"><strong>WooCommerce</strong>: WordPress plugin, bajo costo, comunidad grande</div>
+<div class="bullet-item"><strong>TiendaNube</strong>: Plataforma LATAM, payment integrations locales</div>
+<h3 class="subsection-title" id="custom-control-mximo-e1c6b0">Custom (Control máximo)</h3>
+<div class="bullet-item"><strong>React / Next.js</strong>: SPAs, JAMstack, serverless functions</div>
+<div class="bullet-item"><strong>Astro</strong>: Static site generation, performance extrema</div>
+<div class="bullet-item"><strong>HTML/CSS/JS Puro</strong>: Máximo control, mínimas dependencias</div>
+<h3 class="subsection-title" id="hybrid-template-personalizacin-83ccb5">Hybrid (Template + Personalización)</h3>
+<div class="bullet-item">Comprar template premium (Themeforest) + customizar</div>
+<div class="bullet-item">IA genera estructura → Humano refina diseño</div>
+<div class="bullet-item">Stack híbrido: Webflow para diseño + Serverless functions para lógica compleja</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="proceso-de-entrega-paso-a-paso-8cb287" data-searchable aria-labelledby="head-proceso-de-entrega-paso-a-paso-8cb287">
+            <div class="phase-header" id="head-proceso-de-entrega-paso-a-paso-8cb287" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Proceso de Entrega (Paso a Paso)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="1-discovery-da-12-84defe">1. DISCOVERY (Día 1-2)</h3>
+<p><strong>Definir identidad y estrategia digital</strong></p>
+<div class="bullet-item">Marca: valores, story, diferenciador vs competencia</div>
+<div class="bullet-item">Público objetivo: persona, edad, qué busca, donde vive online</div>
+<div class="bullet-item">Competidores: analizar 3-5 sitios de referencia (estructura, copywriting, CTA)</div>
+<div class="bullet-item">Inspiración visual: mood board (colores, tipografía, imágenes)</div>
+<div class="bullet-item">Contenido existente: qué tiene el cliente, qué falta</div>
+<div class="bullet-item">Objetivos: leads, ventas, authority, reclutamiento</div>
+<p class="key-value"><strong>Entregable</strong>: Brief creativo (2-3 páginas) + moodboard + roadmap de contenido</p>
+<h3 class="subsection-title" id="2-diseo-visual-da-37-78f82c">2. DISEÑO VISUAL (Día 3-7)</h3>
+<p><strong>Aprobación visual antes de construir</strong></p>
+<div class="bullet-item">Moodboard: paleta de colores, tipografía, estilos</div>
+<div class="bullet-item">Wireframe: estructura de 3-5 páginas principales</div>
+<div class="bullet-item">Mockup: diseño visual completo (hero, cards, footer)</div>
+<div class="bullet-item">Versión mobile: verificar responsive</div>
+<div class="bullet-item">Gate: <strong>Cliente aprueba diseño antes de desarrollo</strong></div>
+<p class="key-value"><strong>Herramientas</strong>: Figma, Adobe XD, Sketch</p>
+<h3 class="subsection-title" id="3-contenido-en-paralelo-da-510-639c2a">3. CONTENIDO EN PARALELO (Día 5-10)</h3>
+<p><strong>Redacción + Assets</strong></p>
+<div class="bullet-item">Copywriting: homepage, servicios, about, FAQs (MetodologIA genera con IA + revisión)</div>
+<div class="bullet-item">Imágenes: fotos del cliente (profesional) O stock photos (Unsplash, Pexels)</div>
+<div class="bullet-item">Vídeos: hero video (10-15seg), testimonios, product demos</div>
+<div class="bullet-item">SEO keywords: investigación de términos por página</div>
+<p class="key-value"><strong>Socios</strong>: Fotógrafo (si needed), copywriter IA, stock asset library</p>
+<h3 class="subsection-title" id="4-desarrollo-sprint-1-core-da-814-43af9b">4. DESARROLLO SPRINT 1: CORE (Día 8-14)</h3>
+<p><strong>Construir home + páginas principales</strong></p>
+<div class="bullet-item">Home: hero + value props + CTA principal</div>
+<div class="bullet-item">Página de servicios / productos</div>
+<div class="bullet-item">Página About: historia, equipo, valores</div>
+<div class="bullet-item">Contacto: formulario con validación + envío a email</div>
+<div class="bullet-item">Navegación: header + footer + menu mobile</div>
+<div class="bullet-item">Demo con cliente: feedback inicial</div>
+<p class="key-value"><strong>Stack</strong>: Decidir entre no-code vs custom basado en complejidad</p>
+<h3 class="subsection-title" id="5-desarrollo-sprint-2-features-da-1521-d645a2">5. DESARROLLO SPRINT 2: FEATURES (Día 15-21)</h3>
+<p><strong>Completar funcionalidad para Institucional+</strong></p>
+<div class="bullet-item">Blog: posts, categorías, búsqueda, RSS</div>
+<div class="bullet-item">Formularios avanzados: testimonios, suscripción, newsletter</div>
+<div class="bullet-item">Integraciones: Google Analytics, Mailchimp, CRM</div>
+<div class="bullet-item">SEO: meta titles, descriptions, open graph, sitemap</div>
+<div class="bullet-item">Performance: image optimization, lazy loading, caché</div>
+<p class="key-value"><strong>Criterios</strong>: Todos los formularios funcionales, analytics activo</p>
+<h3 class="subsection-title" id="6-desarrollo-sprint-3-ecommerce-da-2235-solo-si-ec-b23ad9">6. DESARROLLO SPRINT 3: E-COMMERCE (Día 22-35, solo si E-Com)</h3>
+<p><strong>Catálogo dinámico + pasarela de pagos</strong></p>
+<div class="bullet-item">Catálogo de productos: imágenes, descripciones, precios, SKUs</div>
+<div class="bullet-item">Carrito de compras: agregar/quitar, actualizar cantidad</div>
+<div class="bullet-item">Pasarela de pago: Stripe, PayU, MercadoPago (según país)</div>
+<div class="bullet-item">Inventario: stock management, notificaciones bajas</div>
+<div class="bullet-item">Envíos: integración con carrier, calculador de costo</div>
+<div class="bullet-item">Confirmación de pedido: email + dashboard para cliente</div>
+<h3 class="subsection-title" id="7-testing-23-das-00a98e">7. TESTING (2-3 días)</h3>
+<p class="key-value"><strong>QA: Cross-browser, mobile, funcionalidad, seguridad</strong></p>
+<div class="bullet-item">Cross-browser: Chrome, Firefox, Safari, Edge (desktop + mobile)</div>
+<div class="bullet-item">Velocidad: PageSpeed Insights ≥80/100 (mobile)</div>
+<div class="bullet-item">Formularios: testing cada input, validaciones, edge cases</div>
+<div class="bullet-item">Links: 0 broken links, 0 404s</div>
+<div class="bullet-item">Pagos: transacciones test en sandbox</div>
+<div class="bullet-item">Accesibilidad: WCAG 2.1 nivel AA (botones grandes, contraste, alt text)</div>
+<p class="key-value"><strong>Criterios de aceptación</strong>: Ver sección &quot;Definition of Done&quot;</p>
+<h3 class="subsection-title" id="8-launch-1-da-cd3a45">8. LAUNCH (1 día)</h3>
+<p><strong>Go-live checklist</strong></p>
+<div class="bullet-item">Comprar/transferir dominio (si needed)</div>
+<div class="bullet-item">Configurar DNS (MX, A records, CNAME)</div>
+<div class="bullet-item">SSL: instalar certificado HTTPS (Let&#x27;s Encrypt gratis)</div>
+<div class="bullet-item">DNS propagation wait (24-48h)</div>
+<div class="bullet-item">Analytics: GA4 + Search Console configurados</div>
+<div class="bullet-item">Backup automático activado</div>
+<div class="bullet-item">Monitoreo: Uptime robot, error tracking (Sentry)</div>
+<p class="key-value"><strong>Go-live step-by-step</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>QA final en staging environment</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Backup de todo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>DNS apunta a nuevo hosting</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Verificar HTTPS, load test</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Notificar a cliente: sitio live</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Monitorear primeras 24h</span></div>
+<h3 class="subsection-title" id="9-training-1h-02580b">9. TRAINING (1h)</h3>
+<p><strong>Capacitar al cliente</strong></p>
+<div class="bullet-item">Cómo acceder al sitio (URL, credenciales admin si CMS)</div>
+<div class="bullet-item">Editar contenido: textos, imágenes (WordPress / Webflow admin)</div>
+<div class="bullet-item">Agregar productos (si e-commerce)</div>
+<div class="bullet-item">Ver analytics: GA4 dashboard</div>
+<div class="bullet-item">Reportar bugs: email support</div>
+<div class="bullet-item">Escalation: cuando contactar MetodologIA vs Soporte L1</div>
+<h3 class="subsection-title" id="10-soporte-30-das-043971">10. SOPORTE (30 días)</h3>
+<p class="key-value"><strong>Post-launch: ajustes y bug fixes</strong></p>
+<div class="bullet-item">Response time: bloqueante &lt;4h, normal &lt;24h</div>
+<div class="bullet-item">Alcance: bugs reales, cambios UI menores (&lt;1h), ajustes SEO</div>
+<div class="bullet-item">NO incluye: rediseño, nuevas features, cambios de estrategia</div>
+<div class="bullet-item">Hosting: incluido 3 meses. Después: cliente paga o MetodologIA cobra</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10x-elevation-protocol-7-dimensiones-4efa9e" data-searchable aria-labelledby="head-10x-elevation-protocol-7-dimensiones-4efa9e">
+            <div class="phase-header" id="head-10x-elevation-protocol-7-dimensiones-4efa9e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10x Elevation Protocol: 7 Dimensiones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="1-supuestos-explcitos-24ca9d">1. SUPUESTOS EXPLÍCITOS</h3>
+<p><strong>¿Qué damos por sentado?</strong></p>
+<div class="bullet-item">S1: Cliente tiene identidad visual clara (logo, paleta de colores)</div>
+<div class="bullet-item">Si NO → diseñar desde cero (+1 semana, +$500K)</div>
+<div class="bullet-item">S2: Cliente puede proporcionar contenido (textos, fotos) con calidad mínima</div>
+<div class="bullet-item">Si NO → MetodologIA genera con IA pero requiere aprobación</div>
+<div class="bullet-item">S3: El sitio web es canal de ATRACCIÓN, no único canal de venta</div>
+<div class="bullet-item">Si es e-commerce: requiere Google Ads, email marketing, redes sociales para conversión</div>
+<div class="bullet-item">S4: Dominio existente o cliente autoriza compra de dominio</div>
+<div class="bullet-item">S5: Volumen esperado: &lt;100K visitas/mes (para sitios institucionales)</div>
+<div class="bullet-item">Si &gt;100K: requiere arquitectura más robusta (caché, CDN)</div>
+<div class="bullet-item">S6: Cliente no requiere compliance regulatorio (GDPR, HIPAA, PCI)</div>
+<div class="bullet-item">Si sí → proyecto especial con arquitecta de seguridad</div>
+<div class="bullet-item">S7: Timeframe realista: cliente entiende que diseño web es 6-10 semanas, no 2</div>
+<p class="key-value"><strong>Validación</strong>: En Discovery, confirmar S1-S7. Si falla alguno → ajustar scope, tiempo o inversión.</p>
+<h3 class="subsection-title" id="2-lmites-93216c">2. LÍMITES</h3>
+<p><strong>¿Qué NO incluye un sitio web estándar?</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Límite</th><th scope="col">Razón</th></tr></thead><tbody><tr><td>App web compleja (CRM, ERP)</td><td>Requiere arquitecta diferente, no es &quot;sitio web&quot;</td></tr><tr><td>Más de 2 idiomas</td><td>Traducciones = 2x testing, 2x SEO</td></tr><tr><td>Integraciones complejas (100+ APIs)</td><td>Testing exponencial, mantenimiento insostenible</td></tr><tr><td>Pagos recurrentes/suscripción avanzada</td><td>Requiere compliance, webhooks, dunning</td></tr><tr><td>Datos sensibles sin encriptación</td><td>Compliance/GDPR, requiere auditoría seguridad</td></tr><tr><td>Machine learning / IA generativa</td><td>Requiere especialista diferente</td></tr><tr><td>Geo-targeting / multi-region</td><td>Requiere CDN distribuido, arquitecta</td></tr><tr><td>Support 24/7</td><td>No es alcance estándar, contrato especial</td></tr></tbody></table></div>
+<p class="key-value"><strong>Gate</strong>: Si cliente necesita algo de esta lista → proponer proyecto separado o rechazar.</p>
+<h3 class="subsection-title" id="3-criterios-binarios-77b365">3. CRITERIOS BINARIOS</h3>
+<p><strong>Sí / No. No hay grises.</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Criterio</th><th scope="col">Sí <span class="status-ok" aria-label="Completado">✅</span></th><th scope="col">No <span class="status-fail" aria-label="No completado">❌</span></th></tr></thead><tbody><tr><td><strong>PageSpeed ≥80 (mobile)?</strong></td><td>Acepta</td><td>Rechaza (optimizar)</td></tr><tr><td><strong>Responsive: mobile + desktop?</strong></td><td>Acepta</td><td>Rechaza (CSS media queries)</td></tr><tr><td><strong>SSL/HTTPS activo?</strong></td><td>Acepta</td><td>Rechaza (instalar certificado)</td></tr><tr><td><strong>0 broken links?</strong></td><td>Acepta</td><td>Rechaza (auditoría)</td></tr><tr><td><strong>Formularios funcionales?</strong></td><td>Acepta</td><td>Rechaza (testing)</td></tr><tr><td><strong>SEO básico presente?</strong> (meta tags, sitemap)</td><td>Acepta</td><td>Rechaza (SEO audit)</td></tr><tr><td><strong>Cliente puede editar contenido?</strong></td><td>Acepta</td><td>Rechaza (setup CMS)</td></tr><tr><td><strong>Backup automático activo?</strong></td><td>Acepta</td><td>Rechaza (configurar)</td></tr></tbody></table></div>
+<p class="key-value"><strong>Proceso</strong>: No entregar si alguno es No.</p>
+<h3 class="subsection-title" id="4-casos-borde-57-escenarios-crticos-4ea276">4. CASOS BORDE (5-7 Escenarios Críticos)</h3>
+<p class="key-value"><strong>CB-01: Cliente sin Identidad Visual</strong></p>
+<div class="bullet-item">Cliente no tiene logo, paleta de colores, o fuentes definidas</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;Diseña lo que creas que va mejor&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>: MetodologIA diseña identidad + sitio (costo extra ~$1.5M, tiempo +1 semana)</div>
+<div class="bullet-item"><strong>Alternativa</strong>: Usar template premium + minimal customization</div>
+<p class="key-value"><strong>CB-02: DNS / Dominio Inaccesible</strong></p>
+<div class="bullet-item">Cliente tiene dominio pero no sabe acceder panel de control de DNS</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;No tenemos acceso a GoDaddy&quot; O &quot;hosting expiró&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sitio se entrega con dominio temporal</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Cliente (o MetodologIA pagada) hace transferencia después</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Documentar steps de DNS migration</span></div>
+<div class="bullet-item"><strong>Salida</strong>: Go-live en URL temporal, migration task pending</div>
+<p class="key-value"><strong>CB-03: Pasarela de Pago Rechaza al Cliente</strong></p>
+<div class="bullet-item">E-commerce: cliente intenta registrarse en Stripe/PayU pero es rechazado</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;No califico para Stripe porque soy del país X&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>:</div>
+<div class="bullet-item">Ofrecer alternativa local (MercadoPago, Wompi, PSE)</div>
+<div class="bullet-item">O defer pagos a integraciones futuras, lanzar con &quot;contáctame para pedir&quot;</div>
+<div class="bullet-item"><strong>Salida</strong>: Sitio funcional sin pagos online temporalmente</div>
+<p class="key-value"><strong>CB-04: Contenido del Cliente es Insuficiente</strong></p>
+<div class="bullet-item">Cliente tiene 3 fotos y 2 párrafos para 10 páginas</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;Aquí dice todo lo que tenemos&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>MetodologIA genera copy con IA + placeholder images</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Scheduled review: cliente aprueba/ajusta</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Cliente proporciona fotos profesionales</span></div>
+<div class="bullet-item"><strong>Salida</strong>: Sitio live con contenido temporal, mejora iterativa</div>
+<p class="key-value"><strong>CB-05: Rediseño Mid-Project</strong></p>
+<div class="bullet-item">Cliente aprobó diseño viernes, lunes dice &quot;todo mal, empecemos de nuevo&quot;</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;He estado pensando... algo no cuadra&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Congelar proyecto</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Proponer change request formal: +2 semanas, +50% costo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Opción: cancelar, devolver 50% presupuesto</span></div>
+<div class="bullet-item"><strong>Salida</strong>: Contrato modificado + aprobación ejecutiva</div>
+<p class="key-value"><strong>CB-06: Migración SEO desde Sitio Antiguo</strong></p>
+<div class="bullet-item">Cliente tiene sitio viejo con 100 posts, keywords posicionadas en Google</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;No quiero perder mi SEO&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Auditoría SEO: mapear URLs viejas → nuevas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Setup 301 redirects</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Resubmit sitemap en Search Console</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Monitoring: 2-3 meses hasta estabilización</span></div>
+<div class="bullet-item"><strong>Salida</strong>: Preservar 80-90% del tráfico, mejorar a partir de ahí</div>
+<p class="key-value"><strong>CB-07: Cambio de Cliente / Rotación de Equipo</strong></p>
+<div class="bullet-item">Proyecto empieza con contacto X, a los 2 meses sale del cliente</div>
+<div class="bullet-item"><strong>Síntoma</strong>: Nuevo contacto desaprueba decisiones de X, quiere pivotar</div>
+<div class="bullet-item"><strong>Fallback</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Reunión con nuevos stakeholders</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Documentar cambios explícitamente en change request</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si scope aumenta &gt;20%: increase budget or timeline</span></div>
+<div class="bullet-item"><strong>Salida</strong>: Alignment formal, contrato actualizado</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="criterios-de-aceptacin-definition-of-done-1ad1bb" data-searchable aria-labelledby="head-criterios-de-aceptacin-definition-of-done-1ad1bb">
+            <div class="phase-header" id="head-criterios-de-aceptacin-definition-of-done-1ad1bb" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> Criterios de Aceptación (Definition of Done)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Antes de entregar, validar 100% de estos:</p>
+<div class="bullet-item">☐ PageSpeed Insights: Mobile ≥80/100, Desktop ≥85/100</div>
+<div class="bullet-item">☐ Responsive: testeado en 320px, 768px, 1024px, 1440px viewports</div>
+<div class="bullet-item">☐ Cross-browser: Chrome, Firefox, Safari, Edge (desktop + mobile)</div>
+<div class="bullet-item">☐ SSL/HTTPS: válido, sin warnings en navegador</div>
+<div class="bullet-item">☐ SEO básico: meta titles, descriptions, h1-h6 hierarchy, sitemap.xml, robots.txt</div>
+<div class="bullet-item">☐ 0 broken links: verificado con herramienta (Screaming Frog)</div>
+<div class="bullet-item">☐ 0 imágenes missing: 404s auditadas</div>
+<div class="bullet-item">☐ Formularios: todos funcionales, validaciones activas, emails se envían</div>
+<div class="bullet-item">☐ Analytics: GA4 instalado, eventos principales configurados</div>
+<div class="bullet-item">☐ Backup automático: verificado en hosting</div>
+<div class="bullet-item">☐ Cliente puede editar contenido: tested con credenciales reales</div>
+<div class="bullet-item">☐ Documentación: guía de uso + admin guide en Notion/PDF</div>
+<div class="bullet-item">☐ Performance: tiempo de carga &lt;3seg, Lighthouse green</div>
+<div class="bullet-item">☐ Accesibilidad: WCAG 2.1 AA (botones clickeables, contraste, alt text)</div>
+<div class="bullet-item">☐ Pagos (si e-com): transacciones test exitosas</div>
+<div class="bullet-item">☐ Seguridad básica: sin console errors, CORS configurado, headers de seguridad</div>
+<p class="key-value"><strong>Go/No-Go</strong>: Viernes. Si &lt;12/15 es <span class="status-ok" aria-label="Completado">✅</span> → no va a producción.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-antipatterns-trampas-comunes-b98562" data-searchable aria-labelledby="head-5-antipatterns-trampas-comunes-b98562">
+            <div class="phase-header" id="head-5-antipatterns-trampas-comunes-b98562" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 5+ Anti-Patterns (Trampas Comunes)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>AP-01: El Sitio Bonito Vacío</strong></p>
+<div class="bullet-item">Diseño premium, animaciones hermosas, pero contenido sin valor</div>
+<div class="bullet-item">Resultado: usuarios rebotan en 3 segundos, 0 conversión</div>
+<div class="bullet-item"><strong>Regla</strong>: Contenido primero (al menos estructura), diseño segundo</div>
+<p class="key-value"><strong>AP-02: WordPress sin Seguridad</strong></p>
+<div class="bullet-item">Plugins sin actualizar, credenciales débiles, sin backups</div>
+<div class="bullet-item">Resultado: pirateo, malware, pérdida de datos</div>
+<div class="bullet-item"><strong>Regla</strong>: Updates automáticas, backups diarios, firewall (Wordfence)</div>
+<p class="key-value"><strong>AP-03: Mobile Last</strong></p>
+<div class="bullet-item">Diseñar para desktop, &quot;adaptar&quot; a mobile como afterthought</div>
+<div class="bullet-item">Resultado: sitio se rompe en phone, 60% de usuarios ven basura</div>
+<div class="bullet-item"><strong>Regla</strong>: Mobile-first SIEMPRE (80% de tráfico en LATAM es mobile)</div>
+<p class="key-value"><strong>AP-04: SEO como Afterthought</strong></p>
+<div class="bullet-item">Terminar desarrollo, luego &quot;agregar SEO&quot;</div>
+<div class="bullet-item">Resultado: URLs sin palabras clave, títulos genéricos, estructura caótica</div>
+<div class="bullet-item"><strong>Regla</strong>: SEO desde la arquitectura (URLs, headings, meta, sitemap)</div>
+<p class="key-value"><strong>AP-05: Launch and Leave</strong></p>
+<div class="bullet-item">Publicar y no monitorear</div>
+<div class="bullet-item">Resultado: crash sin saber, errores no reportados, sitio lento después de 6 meses</div>
+<div class="bullet-item"><strong>Regla</strong>: Monitoreo obligatorio: uptime + performance + analytics</div>
+<p class="key-value"><strong>AP-06: Scope Creep Visual</strong></p>
+<div class="bullet-item">&quot;Solo un cambio más en el diseño&quot; x 20 iteraciones</div>
+<div class="bullet-item">Resultado: proyecto que debería 3 semanas → 12 semanas</div>
+<div class="bullet-item"><strong>Regla</strong>: Congelar diseño en Sprint 1. Change requests formales después.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-design-decisions-d5f9f7" data-searchable aria-labelledby="head-5-decisiones-de-diseo-design-decisions-d5f9f7">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-design-decisions-d5f9f7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5 Decisiones de Diseño (Design Decisions)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>DD-01: Mobile-First SIEMPRE</strong></p>
+<div class="bullet-item">&gt;75% del tráfico en LATAM es mobile</div>
+<div class="bullet-item">Wireframe: empezar en 320px, escalar a 1440px</div>
+<div class="bullet-item">Testing: mobile primero (Safari iPhone), desktop segundo</div>
+<div class="bullet-item">Resultado: sitio rápido, responsive natural, no &quot;hack&quot; de CSS</div>
+<p class="key-value"><strong>DD-02: PageSpeed ≥80 es Requisito No Negociable</strong></p>
+<div class="bullet-item">Impacta SEO (Google ranking) + conversión (cada 100ms = -1% conversión)</div>
+<div class="bullet-item">Técnicas: lazy loading, compresión imágenes, caché, CDN</div>
+<div class="bullet-item">Herramienta: Vercel, Netlify (auto-optimize) mejor que shared hosting</div>
+<p class="key-value"><strong>DD-03: No-Code Primera Opción para Landing e Institucional</strong></p>
+<div class="bullet-item">Razón: menor costo mantenimiento, cliente puede editar, no requiere dev</div>
+<div class="bullet-item">Webflow &gt; WordPress &gt; Custom React (orden de preferencia)</div>
+<div class="bullet-item">Escalar a código solo si requerimientos específicos (app web, integraciones complejas)</div>
+<p class="key-value"><strong>DD-04: E-Commerce = Plataforma Especializada</strong></p>
+<div class="bullet-item">NUNCA custom-build carrito + pagos</div>
+<div class="bullet-item">Shopify, WooCommerce, TiendaNube tienen todo listo</div>
+<div class="bullet-item">Custom solo si &gt;1000 SKUs + lógica específica (B2B, marketplaces)</div>
+<p class="key-value"><strong>DD-05: Copywriting = IA + Revisión Humana</strong></p>
+<div class="bullet-item">IA genera estructura + copy inicial (ChatGPT, Claude, Jasper)</div>
+<div class="bullet-item">Humano revisa tono, hace ajustes, agrega stories personales</div>
+<div class="bullet-item">No 100% IA (suena robótico) ni 100% humano (costo x10)</div>
+<p class="key-value"><strong>DD-06: Training Obligatorio</strong></p>
+<div class="bullet-item">Nunca entregar sin enseñar cliente a actualizar</div>
+<div class="bullet-item">1 hora mínimo: admin panel, editables, analytics</div>
+<div class="bullet-item">Video de 10min grabado para referencia futura</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-operativos-eaa56d" data-searchable aria-labelledby="head-fallbacks-operativos-eaa56d">
+            <div class="phase-header" id="head-fallbacks-operativos-eaa56d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario Crítico</th><th scope="col">Fallback Técnico</th><th scope="col">SLA Respuesta</th><th scope="col">Propietario</th></tr></thead><tbody><tr><td>PageSpeed &lt;60 post-launch</td><td>Image optimization + caché rules + CDN</td><td>&lt;24h</td><td>Dev</td></tr><tr><td>Formulario no envía emails</td><td>Debug SMTP + configure alternative (Zapier)</td><td>&lt;4h</td><td>Dev</td></tr><tr><td>Cliente no tiene contenido</td><td>Generate con IA + placeholder images + scheduled review</td><td>T+3 días</td><td>PM</td></tr><tr><td>DNS propagation delays</td><td>Temporary URL + migration documentation</td><td>24-48h</td><td>Ops</td></tr><tr><td>Pasarela rechaza cliente</td><td>Ofrecer alternativa local o defer pagos</td><td>&lt;48h</td><td>PM</td></tr><tr><td>Broken links descubiertos</td><td>Audit + fix all + retest</td><td>&lt;24h</td><td>QA</td></tr><tr><td>SSL certificate issues</td><td>Renew / reinstall (Let&#x27;s Encrypt auto-renewal)</td><td>&lt;2h</td><td>Ops</td></tr><tr><td>Rediseño mid-project</td><td>Congelar + change request formal</td><td>En reunión</td><td>PM</td></tr><tr><td>Sitio lento después de 6 meses</td><td>Performance audit + caching optimization</td><td>&lt;1 semana</td><td>Dev</td></tr><tr><td>Acesso admin credentials perdido</td><td>Password reset / panel recovery</td><td>&lt;1h</td><td>Ops</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="integraciones-verticales-y-transversales-4d78ab" data-searchable aria-labelledby="head-integraciones-verticales-y-transversales-4d78ab">
+            <div class="phase-header" id="head-integraciones-verticales-y-transversales-4d78ab" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Integraciones Verticales y Transversales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Upstream</strong>:</p>
+<div class="bullet-item">entregar-tecnologia-proceso.md (delivery gate)</div>
+<p class="key-value"><strong>Cross-Vertical</strong>:</p>
+<div class="bullet-item">Palanca 3 (Redes Sociales): botones de compartir, integración Instagram feed</div>
+<div class="bullet-item">Palanca 4 (Multimedia): embeds vídeo YouTube, galerías, hero videos</div>
+<div class="bullet-item">Mini Apps SOP: mini app puede integrarse como sección del sitio web</div>
+<div class="bullet-item">Asistentes IA SOP: chatbot embebido en sitio web para soporte 24/7</div>
+<div class="bullet-item">Comercial B2C: sitio como base de marca personal (Empoderamiento)</div>
+<p class="key-value"><strong>Downstream</strong>:</p>
+<div class="bullet-item">SEO + Analytics → métricas de tráfico → case study → referrals</div>
+<div class="bullet-item">E-commerce exitoso → upsell email marketing, automatización pedidos</div>
+<div class="bullet-item">Blog con tráfico → upsell a Agente de Contenido IA</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-lanzamiento-da704f" data-searchable aria-labelledby="head-checklist-de-lanzamiento-da704f">
+            <div class="phase-header" id="head-checklist-de-lanzamiento-da704f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Lanzamiento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">☐ Discovery + Brief aprobado</div>
+<div class="bullet-item">☐ Diseño aprobado por cliente</div>
+<div class="bullet-item">☐ Contenido completo (80% + improvements iterativas)</div>
+<div class="bullet-item">☐ Stack seleccionado y justificado</div>
+<div class="bullet-item">☐ Dominio + hosting configurados</div>
+<div class="bullet-item">☐ Testing cross-browser: 0 bloqueantes</div>
+<div class="bullet-item">☐ PageSpeed ≥80/100 mobile</div>
+<div class="bullet-item">☐ Analytics + Search Console configurados</div>
+<div class="bullet-item">☐ Backup automático activo</div>
+<div class="bullet-item">☐ SSL/HTTPS verified</div>
+<div class="bullet-item">☐ Documentación: guía de uso + admin guide</div>
+<div class="bullet-item">☐ Sesión de training completada</div>
+<div class="bullet-item">☐ Soporte 30 días asignado</div>
+<div class="bullet-item">☐ Monitoring activo (uptime + performance)</div>
+<div class="bullet-item">☐ Caso de éxito documentado (para referrals)</div>
+<p class="key-value"><strong>Owner</strong>: Diseñador/Desarrollador Web + PM de Proyecto</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

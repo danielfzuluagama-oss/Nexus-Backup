@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Preparar Workshop — Proceso de Delivery MetodologIA">
+    <title>SOP: Preparar Workshop — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Workshop</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Preparar Workshop</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Preparar Workshop</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 2.0 | Vigencia: 2026-01 | Dueño: Coordinador de Operaciones | Última Actualización: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">15</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('identificacin-del-documento-97abc4')" aria-label="Ir a Identificación del Documento">Identificación del Documento</button>
+<button class="nav-btn" onclick="scrollToSection('objetivo-d31a58')" aria-label="Ir a Objetivo">Objetivo</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-lmites-0c0363')" aria-label="Ir a Supuestos &amp; Límites">Supuestos &amp; Límites</button>
+<button class="nav-btn" onclick="scrollToSection('trigger-precondiciones-3bb0b2')" aria-label="Ir a Trigger &amp; Precondiciones">Trigger &amp; Precondiciones</button>
+<button class="nav-btn" onclick="scrollToSection('trigger-precondiciones-3bb0b2')" aria-label="Ir a Trigger &amp; Precondiciones">Trigger &amp; Precondiciones</button>
+<button class="nav-btn" onclick="scrollToSection('timeline-detallado-t14-a-t0-e17c24')" aria-label="Ir a Timeline Detallado: T-14 a T-0">Timeline Detallado: T-14 a T-0</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-handling-8998bb')" aria-label="Ir a Casos Borde (Handling)">Casos Borde (Handling)</button>
+<button class="nav-btn" onclick="scrollToSection('antipatterns-qu-no-hacer-31069f')" aria-label="Ir a Anti-Patterns (QUÉ NO HACER)">Anti-Patterns (QUÉ NO HACER)</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-operativos-eaa56d')" aria-label="Ir a Fallbacks Operativos">Fallbacks Operativos</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-preparacin-printable-c42c0e')" aria-label="Ir a Checklist de Preparación (Printable)">Checklist de Preparación (Printable</button>
+<button class="nav-btn" onclick="scrollToSection('decision-gate-readiness-approval-4be9d8')" aria-label="Ir a Decision Gate: Readiness Approval">Decision Gate: Readiness Approval</button>
+<button class="nav-btn" onclick="scrollToSection('risk-mitigation-b3b47d')" aria-label="Ir a Risk Mitigation">Risk Mitigation</button>
+<button class="nav-btn" onclick="scrollToSection('templates-resources-6bc482')" aria-label="Ir a Templates &amp; Resources">Templates &amp; Resources</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-de-xito-preparation-phase-4e181a')" aria-label="Ir a Métricas de Éxito (Preparation Phase)">Métricas de Éxito (Preparation Phas</button>
+<button class="nav-btn" onclick="scrollToSection('escalation-path-d20ec9')" aria-label="Ir a Escalation Path">Escalation Path</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="identificacin-del-documento-97abc4" data-searchable aria-labelledby="head-identificacin-del-documento-97abc4">
+            <div class="phase-header" id="head-identificacin-del-documento-97abc4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Identificación del Documento</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Código SOP</strong>: SOP-PREP-WS</div>
+<div class="bullet-item"><strong>Proceso Padre</strong>: Entregar Workshop (Ver: entregar-workshop-proceso.md)</div>
+<div class="bullet-item"><strong>Fase</strong>: Preparación (T-14 a T-1, 14 días calendario)</div>
+<div class="bullet-item"><strong>Responsable Principal</strong>: Coordinador de Operaciones (Delivery)</div>
+<div class="bullet-item"><strong>Stakeholders</strong>: Especialista Contenido, Account Manager, Facilitador, Cliente</div>
+<div class="bullet-item"><strong>Rituals ejecutados</strong>: Kick-off interno, Customización, Facilitator brief</div>
+<div class="bullet-item"><strong>Salida hacia</strong>: SOP-FAC-WS (Facilitar Workshop)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="objetivo-d31a58" data-searchable aria-labelledby="head-objetivo-d31a58">
+            <div class="phase-header" id="head-objetivo-d31a58" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Objetivo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Ejecutar actividades pre-workshop (content customization, facilitator briefing, logistics, participant confirmation) con estándar binario: GATE APPROVAL (GO) o ESCALAR (NO-GO) T-1.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-lmites-0c0363" data-searchable aria-labelledby="head-supuestos-lmites-0c0363">
+            <div class="phase-header" id="head-supuestos-lmites-0c0363" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> Supuestos &amp; Límites</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Supuestos</strong>:</p>
+<div class="bullet-item">Account Manager proporciona briefing cliente con 3+ pain points específicos (no genérico)</div>
+<div class="bullet-item">Facilitador asignado tiene certificación vigente + experiencia ≥2 workshops previos</div>
+<div class="bullet-item">Customización requerida ≤50% (si &gt;50% → cambio a modalidad consultoría)</div>
+<div class="bullet-item">Participantes roster validado incluye role + experiencia AI (para diferenciación pedagógica)</div>
+<p class="key-value"><strong>Límites (No cubierto por SOP)</strong>:</p>
+<div class="bullet-item">Customización profunda (&gt;60%): escalar a VP Contenido</div>
+<div class="bullet-item">Cambios T-0 (day-of): escalar a CEO Delivery</div>
+<div class="bullet-item">Traducción simultánea: coordinar con IT especializada (fuera SOP)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="trigger-precondiciones-3bb0b2" data-searchable aria-labelledby="head-trigger-precondiciones-3bb0b2">
+            <div class="phase-header" id="head-trigger-precondiciones-3bb0b2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Trigger &amp; Precondiciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="trigger-precondiciones-3bb0b2" data-searchable aria-labelledby="head-trigger-precondiciones-3bb0b2">
+            <div class="phase-header" id="head-trigger-precondiciones-3bb0b2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Trigger &amp; Precondiciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Trigger</strong>: Orden de compra recibida + Workshop agendado en calendario</p>
+<p class="key-value"><strong>Precondiciones</strong>:</p>
+<div class="bullet-item">Cliente ha proporcionado roster de participantes (mínimo 48h antes)</div>
+<div class="bullet-item">Facilitador está asignado y disponible</div>
+<div class="bullet-item">Presupuesto de customización aprobado</div>
+<div class="bullet-item">Template de contenido existente para workshop type</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="timeline-detallado-t14-a-t0-e17c24" data-searchable aria-labelledby="head-timeline-detallado-t14-a-t0-e17c24">
+            <div class="phase-header" id="head-timeline-detallado-t14-a-t0-e17c24" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Timeline Detallado: T-14 a T-0</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="t14-14-das-antes-237fc7">T-14 (14 días antes)</h3>
+<p class="key-value"><strong>Actividad 1: Kick-off internal + client call</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Coordinador Ops + Account Manager</div>
+<div class="bullet-item"><strong>Duración</strong>: 1 hora</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Internal kick-off call (30 min): Ops + Contenido + Facilitador</span></div>
+<div class="bullet-item">Revisar especificaciones de workshop (WS-XX)</div>
+<div class="bullet-item">Confirmar timeline, roles, dependencies</div>
+<div class="bullet-item">Identificar risks tempranos</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Client kick-off call (30 min): Account Manager + Cliente + Coordinador Ops</span></div>
+<div class="bullet-item">Confirmar objetivos específicos de workshop</div>
+<div class="bullet-item">Entender contexto organizacional, pain points, cultura</div>
+<div class="bullet-item">Recopilar feedback preliminary sobre customización</div>
+<div class="bullet-item"><strong>Outputs</strong>: Internal kick-off notes + Client context doc</div>
+<p class="key-value"><strong>Actividad 2: Crear project folder</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Coordinador Ops</div>
+<div class="bullet-item"><strong>Duración</strong>: 30 min</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Crear Google Drive folder: <code class="inline-code">/Workshops/2026/[Client Name]/[WS-XX]/</code></span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Crear subfolders:</span></div>
+<div class="bullet-item"><code class="inline-code">/contenido/</code> - Draft + final deck</div>
+<div class="bullet-item"><code class="inline-code">/logistica/</code> - Venue details, catering, AV specs</div>
+<div class="bullet-item"><code class="inline-code">/participantes/</code> - Roster, confirmations, pre-work</div>
+<div class="bullet-item"><code class="inline-code">/facilitador/</code> - Briefing docs, playbook, materials</div>
+<div class="bullet-item"><code class="inline-code">/ejecucion/</code> - Video, fotos, feedback (populated post)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Share con internal team (Contenido, Facilitador)</span></div>
+<div class="bullet-item"><strong>Outputs</strong>: Shared project folder structure</div>
+<hr class="divider">
+<h3 class="subsection-title" id="t12-a-t10-days-1210-28a180">T-12 a T-10 (Days 12-10)</h3>
+<p class="key-value"><strong>Actividad 3: Content customization brief</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Especialista Contenido</div>
+<div class="bullet-item"><strong>Duración</strong>: 2 horas</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Revisar contexto del cliente (briefing doc, industry, size)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Evaluar % customización requerida:</span></div>
+<div class="bullet-item"><strong>Ninguna</strong> (B2C open enrollment): Use template estándar</div>
+<div class="bullet-item"><strong>Ligera</strong> (20-30%): Ajustar examples + case studies</div>
+<div class="bullet-item"><strong>Moderada</strong> (40-50%): Customizar framework, agregar client context</div>
+<div class="bullet-item"><strong>Alta</strong> (60%+): Redesign parcial, co-crear elementos</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Crear customization checklist:</span></div>
+<div class="bullet-item">Company branding + logo en deck</div>
+<div class="bullet-item">Industry examples vs. generic</div>
+<div class="bullet-item">Pain points específicos mencionados</div>
+<div class="bullet-item">Language/tone alignment con cliente</div>
+<div class="bullet-item">Timeline internal vs. external</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Kick-off meeting con facilitador: explicar customizaciones</span></div>
+<div class="bullet-item"><strong>Outputs</strong>: Customization checklist + facilitator briefing</div>
+<p class="key-value"><strong>Actividad 4: Logística reservation</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Coordinador Ops</div>
+<div class="bullet-item"><strong>Duración</strong>: 1.5 horas</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Venue</strong>: Si presencial:</span></div>
+<div class="bullet-item">Confirmar tipo de espacio (classroom, open, hybrid)</div>
+<div class="bullet-item">Reservar en calendar (Google Calendar compartido)</div>
+<div class="bullet-item">Confirmar capacidad vs. roster size</div>
+<div class="bullet-item">Verificar AV setup (projector, screen, audio, WiFi)</div>
+<div class="bullet-item">Coordinar catering si aplica (coffee, snacks, lunch)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Hybrid/Virtual</strong>: Si aplica:</span></div>
+<div class="bullet-item">Reservar Zoom/Teams link + meeting room (si presencial + streaming)</div>
+<div class="bullet-item">Test de AV setup (camera, microphone, screen share)</div>
+<div class="bullet-item">Grabar sesión (setup recording)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Materials</strong>:</span></div>
+<div class="bullet-item">Ordenar impresión de canvases (si presencial) o prep digital copies</div>
+<div class="bullet-item">Preparar marker, sticky notes, name badges</div>
+<div class="bullet-item">Confirmar receipt de materiales 2 días antes</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Travel</strong>: Si facilitador requiere:</span></div>
+<div class="bullet-item">Book hotel + transporte</div>
+<div class="bullet-item">Confirm con facilitador</div>
+<div class="bullet-item"><strong>Outputs</strong>: Logística confirmation checklist</div>
+<hr class="divider">
+<h3 class="subsection-title" id="t9-a-t7-days-97-403fdc">T-9 a T-7 (Days 9-7)</h3>
+<p class="key-value"><strong>Actividad 5: Draft deck customization</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Especialista Contenido</div>
+<div class="bullet-item"><strong>Duración</strong>: 4-6 horas</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Abrir template de workshop (Google Slides, Figma, PowerPoint)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Customizar según checklist:</span></div>
+<div class="bullet-item">Replace logo, colors con client branding</div>
+<div class="bullet-item">Swap generic examples con industry-specific cases</div>
+<div class="bullet-item">Rewrite intro slide con client context</div>
+<div class="bullet-item">Adjust language tone si needed</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Agregar facilitator notes (minimal):</span></div>
+<div class="bullet-item">Timing per slide</div>
+<div class="bullet-item">Key talking points</div>
+<div class="bullet-item">Transition language</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Generate PDF draft version</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Crear shared doc para feedback</span></div>
+<div class="bullet-item"><strong>Outputs</strong>: Draft deck (Google Slides + PDF)</div>
+<p class="key-value"><strong>Actividad 6: Facilitator briefing package</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Especialista Contenido + Coordinador Ops</div>
+<div class="bullet-item"><strong>Duración</strong>: 1.5 horas</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Crear 1-page briefing doc:</span></div>
+<div class="bullet-item"><strong>Client context</strong>: Industria, tamaño, maturity level</div>
+<div class="bullet-item"><strong>Objetivos específicos</strong>: Qué quiere el cliente</div>
+<div class="bullet-item"><strong>Audiencia</strong>: Roles, seniority, pain points</div>
+<div class="bullet-item"><strong>Key messages</strong>: 3-5 puntos que DEBE quedar claro</div>
+<div class="bullet-item"><strong>Risks/sensitivities</strong>: Topics to avoid, cultural notes</div>
+<div class="bullet-item"><strong>Success criteria</strong>: What does good look like</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Incluir:</span></div>
+<div class="bullet-item">Deck (draft)</div>
+<div class="bullet-item">Facilitator&#x27;s playbook (minute-by-minute)</div>
+<div class="bullet-item">Canvas templates</div>
+<div class="bullet-item">Q&amp;A anticipated + answers</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Schedule briefing call (30 min) con facilitador</span></div>
+<div class="bullet-item"><strong>Outputs</strong>: Briefing doc + scheduled call</div>
+<hr class="divider">
+<h3 class="subsection-title" id="t6-a-t4-days-64-cca226">T-6 a T-4 (Days 6-4)</h3>
+<p class="key-value"><strong>Actividad 7: Facilitator briefing call</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Especialista Contenido</div>
+<div class="bullet-item"><strong>Duración</strong>: 30 min</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sync sobre briefing doc</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Walk-through de deck (high-level)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Discutir potential adaptations / flex points</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Q&amp;A from facilitator</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Confirm facilitator es &quot;ready to go&quot;</span></div>
+<div class="bullet-item"><strong>Outputs</strong>: Briefing call notes</div>
+<p class="key-value"><strong>Actividad 8: Client content review</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Coordinador Ops + Account Manager</div>
+<div class="bullet-item"><strong>Duración</strong>: 1 hour</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Enviar draft deck a cliente para review (48-72h window)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Email template:</span></div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>     Asunto: [Client] - Draft Workshop Deck for Review - [Date]
+     
+     Dear [Contact],
+     
+     Attached is the draft deck for [WS-XX] scheduled [Date].
+     
+     Please review for:
+     - Accuracy of company context/examples
+     - Any sensitive topics to address
+     - Language tone alignment
+     
+     Feedback by [T-3] appreciated.
+     
+     Best,
+     [Your name]</code></pre>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Recopilate feedback en shared doc</span></div>
+<div class="bullet-item"><strong>Outputs</strong>: Client feedback consolidated</div>
+<hr class="divider">
+<h3 class="subsection-title" id="t3-a-t1-days-31-cb169f">T-3 a T-1 (Days 3-1)</h3>
+<p class="key-value"><strong>Actividad 9: Final deck + materials</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Especialista Contenido</div>
+<div class="bullet-item"><strong>Duración</strong>: 2-3 horas</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Incorporate client feedback</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Finalize all visuals + text</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Add facilitator notes (hidden slides or separate doc)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Generate final PDF (presenter + participant versions)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Print materials if presencial:</span></div>
+<div class="bullet-item">Canvases (A1 o A2)</div>
+<div class="bullet-item">Handouts (1-page summary per canvas)</div>
+<div class="bullet-item">Name badges</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Prepare digital assets:</span></div>
+<div class="bullet-item">Deck link (read-only for participants if shared post)</div>
+<div class="bullet-item">Video/photo capture setup verified</div>
+<div class="bullet-item"><strong>Outputs</strong>: Final deck (PDF + source) + printed materials</div>
+<p class="key-value"><strong>Actividad 10: Participant confirmation email</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Coordinador Ops</div>
+<div class="bullet-item"><strong>Duración</strong>: 30 min</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Draft confirmation email:</span></div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>     Asunto: [WS-XX] - Confirmation + Agenda - [Date]
+     
+     Dear Participant,
+     
+     We&#x27;re excited to have you at [Workshop Title] on [Date] [Time].
+     
+     Location: [Address] / [Zoom Link]
+     Duration: 3 hours
+     Agenda:
+     - 00:00-00:15 Intro &amp; context
+     - 00:15-01:15 Module 1
+     - 01:15-01:30 Break
+     - 01:30-02:15 Module 2
+     - 02:15-03:00 Synthesis + action planning
+     
+     What to bring: Laptop (if hybrid), notebook
+     What to expect: Interactive, hands-on, co-creation
+     
+     Any questions: reply to this email.
+     
+     See you soon!</code></pre>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Attach: 1-page agenda, pre-work (if applicable), location map</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Send a T-5 (5 days before)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Send reminder a T-1 (1 day before)</span></div>
+<div class="bullet-item"><strong>Outputs</strong>: Confirmation emails sent (tracked in email log)</div>
+<p class="key-value"><strong>Actividad 11: Readiness Gate Review</strong></p>
+<div class="bullet-item"><strong>Responsable</strong>: Coordinador Ops</div>
+<div class="bullet-item"><strong>Duración</strong>: 1 hour</div>
+<div class="bullet-item"><strong>Pasos</strong>:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Completar readiness checklist:</span></div>
+<label class="checklist-item" for="chk-contenido-customizado-finalizado-18c337"><input type="checkbox" id="chk-contenido-customizado-finalizado-18c337" ><span>Contenido customizado + finalizado</span></label>
+<label class="checklist-item" for="chk-facilitador-briefed-confirmed-90450e"><input type="checkbox" id="chk-facilitador-briefed-confirmed-90450e" ><span>Facilitador briefed + confirmed</span></label>
+<label class="checklist-item" for="chk-logstica-venue-catering-av-reservada-confirmada-1483c1"><input type="checkbox" id="chk-logstica-venue-catering-av-reservada-confirmada-1483c1" ><span>Logística (venue, catering, AV) reservada + confirmada</span></label>
+<label class="checklist-item" for="chk-participantes-confirmados-70-35ae92"><input type="checkbox" id="chk-participantes-confirmados-70-35ae92" ><span>Participantes confirmados ≥ 70%</span></label>
+<label class="checklist-item" for="chk-materiales-impresosdigitales-listos-558416"><input type="checkbox" id="chk-materiales-impresosdigitales-listos-558416" ><span>Materiales impresos/digitales listos</span></label>
+<label class="checklist-item" for="chk-recording-setup-tested-si-aplica-2c00f1"><input type="checkbox" id="chk-recording-setup-tested-si-aplica-2c00f1" ><span>Recording setup tested (si aplica)</span></label>
+<label class="checklist-item" for="chk-account-manager-aligned-con-cliente-d39012"><input type="checkbox" id="chk-account-manager-aligned-con-cliente-d39012" ><span>Account Manager aligned con cliente</span></label>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si TODAS las casillas están checked: <strong>GATE APPROVAL</strong></span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si ALGUNA está missing: <strong>ESCALATE</strong> a CEO Delivery</span></div>
+<div class="bullet-item">Crear action plan para resolverla</div>
+<div class="bullet-item">Confirm nueva fecha de gate review (máx T-2)</div>
+<div class="bullet-item"><strong>Outputs</strong>: Signed readiness checklist</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-handling-8998bb" data-searchable aria-labelledby="head-casos-borde-handling-8998bb">
+            <div class="phase-header" id="head-casos-borde-handling-8998bb" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> Casos Borde (Handling)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Caso 1: Facilitador cambia requisitos de logística T-5</strong></p>
+<p>Scenario: Facilitador descubre que necesita equipamento especial (monitor grande para live demo)</p>
+<p>Handling: Coordinador Ops tiene 24h para resolver. Si no resolvible → facilitar sin equipamiento (fallback: narración + flipchart). Documentar para futuro.</p>
+<p class="key-value"><strong>Caso 2: Cliente solicita custom case study T-7 (&gt;2h trabajo)</strong></p>
+<p>Scenario: &quot;Queremos que uses ejemplo de nuestra industria específica&quot;</p>
+<p>Handling: Si ≤2h: aprobado. Si &gt;2h: usar template estándar + mencionar en apertura &quot;examples are illustrative&quot;. NO rechazar; ofrecer fallback rápido.</p>
+<p class="key-value"><strong>Caso 3: Pre-work dato incompleto (&lt;70% fornecido)</strong></p>
+<p>Scenario: Cliente no proporciona suficiente contexto para customización</p>
+<p>Handling: Usar template estándar (0% custom). Comunicar a cliente: &quot;Usaremos framework base; próximo workshop podemos customizar más con más contexto&quot;.</p>
+<p class="key-value"><strong>Caso 4: Confirmación de participantes baja T-3 (&lt;50%)</strong></p>
+<p>Scenario: Solo 8 de 20 confirmaron asistencia</p>
+<p>Handling: Account Manager hace 1:1 outreach T-4 (call, no email). Si sigue bajo: evaluar con cliente: ¿reschedule? ¿proceder con 8? Decidir T-2.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="antipatterns-qu-no-hacer-31069f" data-searchable aria-labelledby="head-antipatterns-qu-no-hacer-31069f">
+            <div class="phase-header" id="head-antipatterns-qu-no-hacer-31069f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> Anti-Patterns (QUÉ NO HACER)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">NO personalizar deck sin feedback del cliente (riesgo: ejemplo equivocado → confusión)</div>
+<div class="bullet-item">NO cambiar facilitador T-7 sin avisar 5+ días a cliente</div>
+<div class="bullet-item">NO hacer confirmación de logística sin test AV completo T-3</div>
+<div class="bullet-item">NO enviar 2 versiones de calendarios a participantes (causa confusión)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-operativos-eaa56d" data-searchable aria-labelledby="head-fallbacks-operativos-eaa56d">
+            <div class="phase-header" id="head-fallbacks-operativos-eaa56d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Falla</th><th scope="col">Fallback</th></tr></thead><tbody><tr><td>Deck no customizado T-5</td><td>Usar template + mencionar en apertura</td></tr><tr><td>Facilitador sin brief T-3</td><td>Call express 2h (prioritario)</td></tr><tr><td>Logística no confirmada T-2</td><td>Ejecutar con alternativa (venue backup, catering reducido)</td></tr><tr><td>&lt;50% participantes confirmados</td><td>Contacto directo 1:1 por Account Manager T-3</td></tr><tr><td>AV falla en test T-1</td><td>Plan B: flipchart + narración (no proyector)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-preparacin-printable-c42c0e" data-searchable aria-labelledby="head-checklist-de-preparacin-printable-c42c0e">
+            <div class="phase-header" id="head-checklist-de-preparacin-printable-c42c0e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Preparación (Printable)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>WORKSHOP PREPARATION CHECKLIST
+Client: _____________ | Workshop: _____________ | Date: _____________
+
+WEEK 2 (T-14 to T-10)
+☐ Internal kick-off meeting completed
+☐ Client kick-off call completed
+☐ Project folder created + shared
+☐ Content customization brief created
+☐ Logística reserved (venue, catering, AV, travel)
+
+WEEK 1 (T-9 to T-3)
+☐ Draft deck customized
+☐ Facilitator briefing doc created
+☐ Facilitator briefing call scheduled + completed
+☐ Client content review sent (48h window)
+☐ Client feedback incorporated
+☐ Final deck approved + printed/digital ready
+☐ Materials printed + QC&#x27;d
+
+PRE-WORKSHOP (T-2 to T-0)
+☐ Participant confirmation email sent (T-5)
+☐ Participants confirmed ≥ 70%
+☐ Reminder email sent (T-1)
+☐ Recording setup tested
+☐ AV test (projector, audio, WiFi)
+☐ Facilitator final check-in
+☐ Readiness gate approved ✓
+
+SIGN-OFF
+Coordinador Ops: _________________ | Date: _________
+Especialista Contenido: _________________ | Date: _________
+Facilitador: _________________ | Date: _________
+CEO Delivery: _________________ | Date: _________</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="decision-gate-readiness-approval-4be9d8" data-searchable aria-labelledby="head-decision-gate-readiness-approval-4be9d8">
+            <div class="phase-header" id="head-decision-gate-readiness-approval-4be9d8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Decision Gate: Readiness Approval</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Owner</strong>: Coordinador de Operaciones (with CEO Delivery approval if escalation)</p>
+<p class="key-value"><strong>Criteria for GO</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Content</strong>: ≥ 90% customized, facilitator briefed, deck finalized</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Logistics</strong>: Venue confirmed, AV tested, materials ready</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>People</strong>: Facilitator confirmed, ≥ 70% participants confirmed</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Communication</strong>: Confirmation email sent, reminder scheduled</span></div>
+<p class="key-value"><strong>If NOT met by T-1</strong>: Escalate to CEO Delivery within 2 hours</p>
+<div class="bullet-item">CEO Delivery decides: <strong>Proceed anyway</strong> (risk accepted) or <strong>Reschedule</strong> (push to next available date)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="risk-mitigation-b3b47d" data-searchable aria-labelledby="head-risk-mitigation-b3b47d">
+            <div class="phase-header" id="head-risk-mitigation-b3b47d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Risk Mitigation</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Risk</th><th scope="col">Probability</th><th scope="col">Impact</th><th scope="col">Mitigation</th></tr></thead><tbody><tr><td>Client feedback late / contradictory</td><td>Medium</td><td>High</td><td>T-3 hard deadline for feedback; clarify expectations at T-14</td></tr><tr><td>Facilitator unavailable last-minute</td><td>Low</td><td>High</td><td>Backup facilitator identified at T-12; on standby</td></tr><tr><td>Materials not ready</td><td>Low</td><td>Medium</td><td>Printer ordered T-7; digital backup prepared T-3</td></tr><tr><td>Low participant confirmation</td><td>Medium</td><td>High</td><td>Account Mgr does 1:1 outreach at T-5; offer virtual option if needed</td></tr><tr><td>Tech/AV failure</td><td>Low</td><td>Medium</td><td>Full test at T-1; manual backup (flipchart, handouts) prepared</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="templates-resources-6bc482" data-searchable aria-labelledby="head-templates-resources-6bc482">
+            <div class="phase-header" id="head-templates-resources-6bc482" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Templates &amp; Resources</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Template 1: Project Folder Structure</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>/Workshops/2026/ClientName/WS-XX/
+  ├── /contenido/
+  │   ├── WS-XX-Template.pptx
+  │   └── WS-XX-Final.pdf
+  ├── /logistica/
+  │   ├── Venue-Confirmation.pdf
+  │   └── AV-Specs.txt
+  ├── /participantes/
+  │   ├── Roster.xlsx
+  │   └── Pre-work-assignment.pdf
+  ├── /facilitador/
+  │   ├── Briefing-Doc.pdf
+  │   ├── Facilitator-Playbook.pdf
+  │   └── Materials/
+  │       ├── Canvas-A1.pdf (print)
+  │       └── Handouts.pdf
+  └── /ejecucion/ (post-workshop)
+      ├── Video-Raw.mp4
+      ├── Attendance-Sheet.pdf
+      └── NPS-Responses.xlsx</code></pre>
+<p class="key-value"><strong>Template 2: Facilitator Briefing Document (1-page)</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>FACILITATOR BRIEFING
+
+Workshop: WS-XX | Date: [Date] | Time: [Time] | Duration: 3h
+Location: [Address] | Participants: [N] | Client: [Name]
+
+CLIENT CONTEXT
+Industry: [Industry] | Company Size: [Size] | Maturity: [Early/Growth/Mature]
+Key Pain Points: [3 bullets]
+Organizational Culture: [Description]
+
+WORKSHOP OBJECTIVES (Client&#x27;s Goals)
+1. [Objective 1]
+2. [Objective 2]
+3. [Objective 3]
+
+AUDIENCE PROFILE
+Roles: [Mix of roles]
+Seniority: [Level]
+Prior Experience: [Low/Medium/High experience with AI]
+Expectations: [What they expect to leave with]
+
+KEY MESSAGES (MUST land these)
+1. [Message 1]
+2. [Message 2]
+3. [Message 3]
+
+SENSITIVITIES / RISKS
+- [Risk 1]: [How to handle]
+- [Risk 2]: [How to handle]
+- [Topic to avoid]: [Why]
+
+SUCCESS CRITERIA
+By end of workshop, participants should be able to:
+- [Outcome 1]
+- [Outcome 2]
+- [Outcome 3]
+
+FACILITATOR NOTES
+- Tone: [Tone - e.g., &quot;educational but accessible&quot;]
+- Energy: [How to manage]
+- Break timing: [Recommended at minute X]
+- Q&amp;A approach: [defer technical Qs if needed]</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-de-xito-preparation-phase-4e181a" data-searchable aria-labelledby="head-mtricas-de-xito-preparation-phase-4e181a">
+            <div class="phase-header" id="head-mtricas-de-xito-preparation-phase-4e181a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métricas de Éxito (Preparation Phase)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Ownership</th></tr></thead><tbody><tr><td><strong>Gate Approval Rate</strong></td><td>100% aprobados a T-1</td><td>Ops Manager</td></tr><tr><td><strong>Content Readiness</strong></td><td>Deck finalizado a T-2</td><td>Content Lead</td></tr><tr><td><strong>Participant Confirmation</strong></td><td>≥ 70% por T-1</td><td>Account Manager</td></tr><tr><td><strong>Facilitator Readiness</strong></td><td>Briefed + confirmed a T-1</td><td>Ops Manager</td></tr><tr><td><strong>Logística On-Time</strong></td><td>100% confirmado a T-1</td><td>Ops Coordinator</td></tr><tr><td><strong>Communication Compliance</strong></td><td>100% emails sent on schedule</td><td>Ops Coordinator</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="escalation-path-d20ec9" data-searchable aria-labelledby="head-escalation-path-d20ec9">
+            <div class="phase-header" id="head-escalation-path-d20ec9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Escalation Path</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>If issue arises during T-14 to T-1</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Ops Coordinator</strong> → attempts resolution within 4 hours</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>If unresolved</strong> → escalates to <strong>Ops Manager</strong> (8 hours to resolve)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>If still unresolved</strong> → escalates to <strong>CEO Delivery</strong> (decision: go/no-go)</span></div>
+<hr class="divider">
+<p class="key-value"><strong>Próximo Review</strong>: 2026-04-15 | <strong>Dueño</strong>: Coordinador de Operaciones</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

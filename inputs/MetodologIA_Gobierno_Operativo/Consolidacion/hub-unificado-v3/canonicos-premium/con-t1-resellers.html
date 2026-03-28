@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Consultoría T1: Diagnóstico — CON-T1 — Proceso de Delivery MetodologIA">
+    <title>Consultoría T1: Diagnóstico — CON-T1 — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Premium</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Consultoría T1: Diagnóstico — CON-T1</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Consultoría T1: Diagnóstico — CON-T1</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: CON-T1-RESELLERS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-resellers-0d051b')" aria-label="Ir a Documento Canónico | Segmento: RESELLERS">Documento Canónico | Segmento: RESE</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-propuesta-de-valor-para-el-reseller-261931')" aria-label="Ir a 2. Propuesta de Valor para el Reseller">2. Propuesta de Valor para el Resel</button>
+<button class="nav-btn" onclick="scrollToSection('3-modelo-de-codelivery-e59178')" aria-label="Ir a 3. Modelo de Co-Delivery">3. Modelo de Co-Delivery</button>
+<button class="nav-btn" onclick="scrollToSection('4-requisitos-de-certificacin-del-consultor-748f07')" aria-label="Ir a 4. Requisitos de Certificación del Consultor">4. Requisitos de Certificación del </button>
+<button class="nav-btn" onclick="scrollToSection('5-metodologa-de-diagnstico-1ebd98')" aria-label="Ir a 5. Metodología de Diagnóstico">5. Metodología de Diagnóstico</button>
+<button class="nav-btn" onclick="scrollToSection('6-branding-y-materiales-f0c21e')" aria-label="Ir a 6. Branding y Materiales">6. Branding y Materiales</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-econmico-805a96')" aria-label="Ir a 7. Modelo Económico">7. Modelo Económico</button>
+<button class="nav-btn" onclick="scrollToSection('8-calidad-y-auditora-7f2070')" aria-label="Ir a 8. Calidad y Auditoría">8. Calidad y Auditoría</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-y-logstica-09ab96')" aria-label="Ir a 9. Operación y Logística">9. Operación y Logística</button>
+<button class="nav-btn" onclick="scrollToSection('10-kpis-del-partnership-1a667b')" aria-label="Ir a 10. KPIs del Partnership">10. KPIs del Partnership</button>
+<button class="nav-btn" onclick="scrollToSection('11-trminos-de-la-alianza-d7cae6')" aria-label="Ir a 11. Términos de la Alianza">11. Términos de la Alianza</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-resellers-0d051b" data-searchable aria-labelledby="head-documento-cannico-segmento-resellers-0d051b">
+            <div class="phase-header" id="head-documento-cannico-segmento-resellers-0d051b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: RESELLERS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> CON-T1-RESELLERS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Resellers (Distribuidores certificados)</p>
+<p class="key-value"><strong>Modelo comercial:</strong> Marca compartida, revenue share 10/20/70</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Descripción</th></tr></thead><tbody><tr><td><strong>Duración</strong></td><td>20-40 horas (2-4 semanas, típicamente)</td></tr><tr><td><strong>Modalidad</strong></td><td>Presencial con entrevistas, observación, análisis</td></tr><tr><td><strong>Alcance</strong></td><td>Diagnóstico de madurez IA y capacidad transformación de empresa/área</td></tr><tr><td><strong>Objetivo</strong></td><td>Generar roadmap de transformación IA, identificar oportunidades, riesgos y primer proyecto (Tracción)</td></tr><tr><td><strong>Precio modelo</strong></td><td>Gratuito o GRATIS (pipeline tool, conversión a T2 es el objetivo)</td></tr><tr><td><strong>Comisión MetodologIA</strong></td><td>Crédito de conversión si se vende T2 subsecuente</td></tr><tr><td><strong>Certificación</strong></td><td>Obligatoria: Reseller T1</td></tr></tbody></table></div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-propuesta-de-valor-para-el-reseller-261931" data-searchable aria-labelledby="head-2-propuesta-de-valor-para-el-reseller-261931">
+            <div class="phase-header" id="head-2-propuesta-de-valor-para-el-reseller-261931" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Propuesta de Valor para el Reseller</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>El Reseller accede a herramienta de pipeline de alto valor, bajo protocolo estricto de MetodologIA. Diagnóstico gratuito genera confianza y entrada a cliente final. Facilita venta de servicios posteriores (T2 Tracción es típicamente COP 15-30M). Reseller retiene relación y vende T1 + T2 combinado bajo metodología probada. A diferencia de aliados, reseller sigue playbook más estructurado de MetodologIA para garantizar calidad y consistencia. Diferenciador competitivo: ofrecer diagnóstico certificado sin costo, con marca MetodologIA.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-modelo-de-codelivery-e59178" data-searchable aria-labelledby="head-3-modelo-de-codelivery-e59178">
+            <div class="phase-header" id="head-3-modelo-de-codelivery-e59178" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Modelo de Co-Delivery</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Venta:</strong> El Reseller vende diagnóstico (gratis) a cliente final SMB o empresas medianas</div>
+<div class="bullet-item"><strong>Ejecución:</strong> Consultor certificado del Reseller conduce diagnóstico, siguiendo playbook estricto de MetodologIA, con revisiones de calidad</div>
+<div class="bullet-item"><strong>Contenido:</strong> Framework de diagnóstico standardizado, entrevistas estructuradas, análisis de madurez, template de roadmap (pre-definido)</div>
+<div class="bullet-item"><strong>Contextualización:</strong> 80% pre-estructurado + 20% contextualizado al cliente (less flexibility que aliados)</div>
+<div class="bullet-item"><strong>Branding:</strong> Co-branded (MetodologIA + Reseller) en reportes, con logo MetodologIA prominente</div>
+<div class="bullet-item"><strong>Flexibilidad:</strong> Reseller tiene menos autonomía; sigue estrictamente plantillas y procesos de MetodologIA</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-requisitos-de-certificacin-del-consultor-748f07" data-searchable aria-labelledby="head-4-requisitos-de-certificacin-del-consultor-748f07">
+            <div class="phase-header" id="head-4-requisitos-de-certificacin-del-consultor-748f07" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Requisitos de Certificación del Consultor</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Certificación obligatoria &quot;Consultor Reseller CON-T1&quot; (20 horas, incluye practicum + auditoría de MetodologIA)</div>
+<div class="bullet-item">Experiencia mínima 2 años en consultoría (digital, IA, o transformación)</div>
+<div class="bullet-item">Capacidad de hacer preguntas estructuradas, escuchar activamente (per guía)</div>
+<div class="bullet-item">Facilitar diagnóstico piloto con cliente de prueba, validado por MetodologIA</div>
+<div class="bullet-item">Reportar hallazgos correctos y roadmap viable (según framework)</div>
+<div class="bullet-item">Score mínimo 85/100 en practicum</div>
+<div class="bullet-item">Renovación anual (con auditoría de caso)</div>
+<div class="bullet-item">Prohibido: desviarse del playbook o usar metodología propia</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-metodologa-de-diagnstico-1ebd98" data-searchable aria-labelledby="head-5-metodologa-de-diagnstico-1ebd98">
+            <div class="phase-header" id="head-5-metodologa-de-diagnstico-1ebd98" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Metodología de Diagnóstico</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Fases (20-40 horas total) — Playbook Estructurado:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Kickoff &amp; Contexto (4 horas):</strong> Entiende negocio, estrategia, presiones actuales (guía de preguntas proporcionada)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Entrevistas Stakeholders (8 horas):</strong> C-suite, líderes funcionales, equipos (20-30 personas, guión estructurado)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Observación de Procesos (6 horas):</strong> Visita equipos, entiende pain points, workflows (checklist de MetodologIA)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Análisis de Madurez (8 horas):</strong> Framework de 5 niveles (inicial, emergente, manejado, optimizado, innovador - rubrica estándar)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Identificación Oportunidades (6 horas):</strong> Priorizar usos de IA por impacto/esfuerzo (matriz pre-definida)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Roadmap &amp; Recomendaciones (8 horas):</strong> Plan 12-18 meses, proyecto inicial, próximos pasos (template)</span></div>
+<p class="key-value"><strong>Deliverables (estandarizados):</strong></p>
+<div class="bullet-item">Informe ejecutivo (10-15 páginas): hallazgos clave, top 3 oportunidades (template de 12 páginas)</div>
+<div class="bullet-item">Matriz de madurez: donde está hoy, donde puede estar (rubrica estandarizada)</div>
+<div class="bullet-item">Roadmap de transformación: roadmap 18 meses, con proyecto inicial (Tracción T2) — formato pre-definido</div>
+<div class="bullet-item">Business case del primer proyecto (template de MetodologIA)</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-branding-y-materiales-f0c21e" data-searchable aria-labelledby="head-6-branding-y-materiales-f0c21e">
+            <div class="phase-header" id="head-6-branding-y-materiales-f0c21e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Branding y Materiales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Framework de diagnóstico: documento de 20 páginas (estandarizado, Reseller puede co-marcar)</div>
+<div class="bullet-item">Guía del consultor: 50 páginas (preguntas exactas, dinámicas, análisis paso-a-paso)</div>
+<div class="bullet-item">Template de informe: ejecutivo + análisis detallado (12 páginas, con logos de Reseller + MetodologIA)</div>
+<div class="bullet-item">Rubrica de madurez: escala de 5 niveles por capacidad (estandarizada, no modificable)</div>
+<div class="bullet-item">Matriz de priorización: esfuerzo vs. impacto (template de MetodologIA)</div>
+<div class="bullet-item">Business case template: para primer proyecto (T2) — formato fijo</div>
+<div class="bullet-item">Presentación de resultados: deck de 20 slides (ejecutivo, co-branded)</div>
+<div class="bullet-item">Guía de marca: logos, colores, uso de MetodologIA name (restricciones aplicables)</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-econmico-805a96" data-searchable aria-labelledby="head-7-modelo-econmico-805a96">
+            <div class="phase-header" id="head-7-modelo-econmico-805a96" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Económico</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Precio cliente final:</strong> GRATIS (no hay precio, es tool de pipeline)</div>
+<div class="bullet-item"><strong>MetodologIA:</strong> Crédito de &quot;conversión&quot; si se cierra T2 (Tracción) posteriormente</div>
+<div class="bullet-item"><strong>Reseller:</strong> 100% del valor de implementación si cierra T2 (quien ejecuta T2 bajo playbook T2)</div>
+<div class="bullet-item"><strong>Nota:</strong> T1 gratis → objetivo es descubrir T2 (COP 15-30M) → Reseller vende T2 y recibe 70% (10/20/70)</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-calidad-y-auditora-7f2070" data-searchable aria-labelledby="head-8-calidad-y-auditora-7f2070">
+            <div class="phase-header" id="head-8-calidad-y-auditora-7f2070" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Calidad y Auditoría</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Primer diagnóstico: observado presencialmente por Partner Success Manager de MetodologIA</div>
+<div class="bullet-item">Auditoría de cumplimiento de playbook: ¿seguiste las preguntas? ¿usaste rubrica? ¿reportes correctos?</div>
+<div class="bullet-item">Cliente valida hallazgos (reunión de cierre: ¿diagnóstico es acertado?) — evaluación cliente mínimo 7.5/10</div>
+<div class="bullet-item">Evaluación de roadmap propuesto (¿es realista y viable según framework?)</div>
+<div class="bullet-item">Encuesta de satisfacción (meta ≥ 8.0/10)</div>
+<div class="bullet-item">Auditoría trimestral de consultor (casos aleatorios)</div>
+<div class="bullet-item">Si diagnóstico incumple playbook o cliente reporta insatisfacción: re-hacer sin costo + re-entrenamiento obligatorio</div>
+<div class="bullet-item">Penalty: 3+ auditorías fallidas = terminación de contrato</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-y-logstica-09ab96" data-searchable aria-labelledby="head-9-operacin-y-logstica-09ab96">
+            <div class="phase-header" id="head-9-operacin-y-logstica-09ab96" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación y Logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Reseller: gestiona acceso a cliente, coordina entrevistas, catering, comunicación</div>
+<div class="bullet-item">MetodologIA: proporciona framework, training (20 horas), playbook, soporte en análisis, revisión de roadmap</div>
+<div class="bullet-item">Reseller debe reportar: estado del diagnóstico, progreso, hallazgos preliminares (weekly check-in)</div>
+<div class="bullet-item">Requisito: acceso a 20-30 personas, observación de procesos, seguimiento de playbook</div>
+<div class="bullet-item">Lead time: 1 semana (para coordinar entrevistas)</div>
+<div class="bullet-item">Duración típica: 2-4 semanas (según complejidad de empresa)</div>
+<div class="bullet-item">Reporte: cliente recibe informe + presentación ejecutiva (co-branded)</div>
+<div class="bullet-item">Escalación: si cliente pide modificación a reportes, Reseller coordina con MetodologIA</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-kpis-del-partnership-1a667b" data-searchable aria-labelledby="head-10-kpis-del-partnership-1a667b">
+            <div class="phase-header" id="head-10-kpis-del-partnership-1a667b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. KPIs del Partnership</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Tasa de satisfacción con diagnóstico: ≥ 8.0/10</div>
+<div class="bullet-item">Exactitud de hallazgos (cliente valida): ≥ 85% de hallazgos confirmados</div>
+<div class="bullet-item">Cumplimiento de playbook: auditoría ≥ 90% (checklist compliance)</div>
+<div class="bullet-item">Conversión a T2 (Tracción): objetivo ≥ 60% de diagnósticos → T2</div>
+<div class="bullet-item">Tiempo promedio de cierre T2: ≤ 30 días post-diagnóstico</div>
+<div class="bullet-item">Valor promedio de T2 cerrado: COP 15-30M</div>
+<div class="bullet-item">NPS diagnóstico: ≥ 7.5/10</div>
+<div class="bullet-item">Consultores activos por reseller: mínimo 1, máximo 5 (escala controlada)</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-trminos-de-la-alianza-d7cae6" data-searchable aria-labelledby="head-11-trminos-de-la-alianza-d7cae6">
+            <div class="phase-header" id="head-11-trminos-de-la-alianza-d7cae6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Términos de la Alianza</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Duración:</strong> Anual, renovable (con evaluación de desempeño)</div>
+<div class="bullet-item"><strong>Volumen mínimo:</strong> 4 diagnósticos/año por consultor, 12 diagnósticos/año por Reseller</div>
+<div class="bullet-item"><strong>Revisión:</strong> Trimestral (tasa de conversión a T2, satisfacción, cumplimiento playbook)</div>
+<div class="bullet-item"><strong>Certificación:</strong> Renovación anual con auditoría de caso completado + formación actualizada</div>
+<div class="bullet-item"><strong>Propiedad del cliente:</strong> Diagnóstico es del cliente (puede ir a otro para T2, pero Reseller tiene derecho de tanteo)</div>
+<div class="bullet-item"><strong>Exclusividad:</strong> No hay exclusividad (cliente puede elegir otro para implementar T2)</div>
+<div class="bullet-item"><strong>No-compete:</strong> Reseller no puede usar metodología de diagnóstico similar a MetodologIA con otros socios IA</div>
+<div class="bullet-item"><strong>Confidencialidad:</strong> Hallazgos son confidenciales; se pueden compartir con cliente, pero no con competidores</div>
+<div class="bullet-item"><strong>Propiedad intelectual:</strong> Playbooks, frameworks, templates son propiedad de MetodologIA; uso limitado a servicios co-branded</div>
+<div class="bullet-item"><strong>Terminación:</strong> 30 días si tasa de conversión a T2 &lt; 40%, múltiples diagnósticos deficientes (&gt;20% auditorías fallidas), o incumplimiento de términos</div>
+<div class="bullet-item"><strong>Soporte:</strong> MetodologIA proporciona soporte técnico y metodológico (máximo 5 horas/mes por Reseller)</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

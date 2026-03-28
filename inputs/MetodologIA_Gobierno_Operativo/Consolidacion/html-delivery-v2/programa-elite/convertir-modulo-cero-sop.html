@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v2.0">
+    <meta name="description" content="Convertir Módulo Cero — SOP — Proceso de Delivery MetodologIA">
+    <title>Convertir Módulo Cero — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f; --bg-2:#102346; --surface:#f7f4ec;
+            --accent:#00cde8; --gold:#ffd700; --green:#2ca56f;
+            --red:#dc5f5f; --orange:#e8a000; --purple:#9b59b6;
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0; --text-secondary:#999;
+            --border:#1a3a52; --hover-bg:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(0,205,232,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,205,232,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(0,205,232,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(0,205,232,.4);box-shadow:0 0 12px rgba(0,205,232,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(0,205,232,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(0,205,232,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(0,205,232,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(0,205,232,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(0,205,232,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(0,205,232,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Programa Elite</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Convertir Módulo Cero — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Convertir Módulo Cero — SOP</h1>
+        <div class="subtitle">MetodologIA — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">4</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-supuestos-ef2247')" aria-label="Ir a 1. Supuestos">1. Supuestos</button>
+<button class="nav-btn" onclick="scrollToSection('2-lmites-585686')" aria-label="Ir a 2. Límites">2. Límites</button>
+<button class="nav-btn" onclick="scrollToSection('3-criterios-binarios-gates-809a28')" aria-label="Ir a 3. Criterios Binarios (Gates)">3. Criterios Binarios (Gates)</button>
+<button class="nav-btn" onclick="scrollToSection('4-casos-borde-57-47d53d')" aria-label="Ir a 4. Casos Borde (5-7)">4. Casos Borde (5-7)</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-0f7d5a')" aria-label="Ir a 5. Decisiones de Diseño">5. Decisiones de Diseño</button>
+<button class="nav-btn" onclick="scrollToSection('6-antipatterns-ff2cdd')" aria-label="Ir a 6. Anti-Patterns">6. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('7-fallbacks-3035d9')" aria-label="Ir a 7. Fallbacks">7. Fallbacks</button>
+<button class="nav-btn" onclick="scrollToSection('ejecucin-operativa-las-6-etapas-636672')" aria-label="Ir a Ejecución Operativa: Las 6 Etapas">Ejecución Operativa: Las 6 Etapas</button>
+<button class="nav-btn" onclick="scrollToSection('ecuacin-de-sostenibilidad-econmica-6200f6')" aria-label="Ir a Ecuación de Sostenibilidad Económica">Ecuación de Sostenibilidad Económic</button>
+<button class="nav-btn" onclick="scrollToSection('integraciones-adcece')" aria-label="Ir a Integraciones">Integraciones</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-ejecucin-4464ae')" aria-label="Ir a Checklist de Ejecución">Checklist de Ejecución</button>
+<button class="nav-btn" onclick="scrollToSection('documentos-relacionados-c15e25')" aria-label="Ir a Documentos Relacionados">Documentos Relacionados</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-supuestos-ef2247" data-searchable aria-labelledby="head-1-supuestos-ef2247">
+            <div class="phase-header" id="head-1-supuestos-ef2247" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 1. Supuestos</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Módulo 0 puede ofrecerse mensualmente</strong>: Contenido &quot;De Ocupado a Productivo&quot; es lo suficientemente atractivo y valioso para atraer &gt;15 personas/mes sin necesidad de riesking.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Contenido standalone funciona</strong>: El Módulo 0 entregado en 1.5h (MC) o 3h (WS) es suficiente para que asistentes experimenten valor real y demanda del programa completo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Nivel de tecnología base</strong>: Asistentes tienen al menos acceso a un navegador y a ChatGPT o Claude. No se presume experiencia previa con IA.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Precio es la principal objeción</strong>: COP $2.4M es alto para audiencia B2C colombiana. Módulo 0 gratuito reduce fricción de entrada. Sin demostración de valor previa, conversión sería &lt;10%.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Ventana de decisión de 7 días</strong>: Asistente toma decisión de matrícula dentro de 7 días post-Módulo 0. Después, pierde urgencia (sigue su vida, el momentum se esfuma).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Testimonios de egresados funcionan</strong>: Personas que vieron resultados de Programa de Empoderamiento tienen mayor credibilidad que Responsable Comercial. Incluir 1-2 testimonios en seguimiento.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Follow-up async es posible</strong>: No todos responden a email 1ero. Secuencia multicanal (email → WhatsApp → llamada → email) aumenta conversión sin ser spam.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-lmites-585686" data-searchable aria-labelledby="head-2-lmites-585686">
+            <div class="phase-header" id="head-2-lmites-585686" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 2. Límites</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Gratuidad total</strong>: Módulo 0 nunca tiene fee. Justificación: reduce fricción, alinea con filosofía &quot;dar primero&quot;, demuestra confianza en valor de MetodologIA.</div>
+<div class="bullet-item"><strong>No hay upsell dentro del M0</strong>: Sesión es 100% contenido. CTA de matrícula viene DESPUÉS (en seguimiento), no interrupción en vivo.</div>
+<div class="bullet-item"><strong>Máximo asistentes por sesión</strong>: 50 (por encima, dinámicas de grupo fracasan; por debajo de 15, no es costo-efectivo de facilitador).</div>
+<div class="bullet-item"><strong>Responsabilidad de facilitador</strong>: Ejecutar M0 con máxima calidad. NO es responsable de conversión (eso es de Comercial B2C).</div>
+<div class="bullet-item"><strong>Responsabilidad de Comercial B2C</strong>: Nutrición previa, captación de asistentes, seguimiento post-M0, conversión a matrícula.</div>
+<div class="bullet-item"><strong>No hay matrícula en vivo</strong>: Aceptar dinero durante la sesión degrada experiencia y señaliza que el programa es &quot;venta&quot;, no &quot;transformación&quot;.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-criterios-binarios-gates-809a28" data-searchable aria-labelledby="head-3-criterios-binarios-gates-809a28">
+            <div class="phase-header" id="head-3-criterios-binarios-gates-809a28" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 3. Criterios Binarios (Gates)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Gate</th><th scope="col">Momento</th><th scope="col">Definición</th><th scope="col">Pass</th><th scope="col">Fail</th></tr></thead><tbody><tr><td><strong>G-DEMANDA</strong></td><td>T-30 (planificación)</td><td>≥15 registros confirmados para M0.</td><td>Proceder a ejecución</td><td>Extender promoción. Si &lt;10 en T-7, cancelar sesión; ofrecer próximo mes</td></tr><tr><td><strong>G-ASISTENCIA</strong></td><td>T-0 (ejecución)</td><td>≥60% de registrados presentes en sesión.</td><td>Ejecutar como planeado</td><td>Documentar causa. Si &lt;40%, analisar por qué (inconveniente horario, promoción pobre, etc.)</td></tr><tr><td><strong>G-VALOR</strong></td><td>Post-M0 (feedback)</td><td>≥70% de asistentes responden &quot;aprendí algo nuevo&quot; en encuesta rápida (Likert 1-5, target ≥4).</td><td>Contenido está validado</td><td>Ajustar contenido, revisar facilitador, re-testar próximo mes</td></tr><tr><td><strong>G-CONV</strong></td><td>T+7 (cierre de ventana)</td><td>Conversión M0→Matrícula ≥20% de asistentes.</td><td>Meta alcanzada, continuar formato</td><td>&lt;20%: analizar objeciones, ajustar CTA, re-testar próximo ciclo</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-casos-borde-57-47d53d" data-searchable aria-labelledby="head-4-casos-borde-57-47d53d">
+            <div class="phase-header" id="head-4-casos-borde-57-47d53d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 4. Casos Borde (5-7)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Asistente quiere pagar pero no puede en este ciclo</strong>: Oferta: (a) Matrícula flexible: pago 50% ahora, 50% en próxima cohorte (siempre que la próxima cohorte sea &lt;3 meses), (b) Waitlist para próxima cohorte: se reserva su lugar, pago en Sem 0, (c) Plan de pagos 3x (negociar con Comercial B2C si es caso real de inability-to-pay). NO dejar que se pierda por puro tema de cash flow.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Empresa envía empleados al M0 gratuito pero negocia precio corporativo</strong>: Normal. M0 gratuito es gancho para exploración empresarial. Si empresa quiere cohorte B2B, Responsable Comercial B2B asume (no B2C). SOP de negotiación: M0 demuestra valor, empieza conversación. Precio final depende de scope (cohorte privada, contenido custom, mentoría post-programa).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>M0 con &gt;50 asistentes (overflow)</strong>: Dividir en 2 sesiones simultáneas (mismo día/hora, 2 facilitadores) o en 2 días distintos (Viernes y Sábado mismo contenido). Si overflow es señal de demanda alta, considerar aumentar frecuencia a 2 M0/mes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Asistente que ya tomó M0 antes quiere repetir</strong>: Permitido, pero baja prioridad. El M0 está diseñado para principiantes. Si alguien ya pasó, probablemente ya se decidió de matrícula o no. Preguntar: &quot;¿Por qué quieres repetir?&quot; Si respuesta es &quot;quería invitar a un amigo pero no me acuerdo de detalles&quot;, ofrecer: &quot;Invita al amigo a próximo M0; tú puedes mentorear en follow-up&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>M0 con 0 conversiones</strong> (todos los asistentes dijeron &quot;muy interesante&quot; pero nadie matriculó): Red flag. Analizar: ¿Qué fue el cuello de botella? ¿Precio ($2.4M)? ¿Timing (próxima cohorte está lejos)? ¿Facilitador (no generó confianza)? ¿Contenido (muy básico, no resonó)? ¿Seguimiento (emails cayeron en spam)? Ajustar variable más probable y re-testar próximo mes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Competidor asiste al M0 para espiar contenido</strong>: Bienvenida. Transparencia es fortaleza de MetodologIA. Si competidor quiere copiar, bien; la diferencia no es contenido sino ejecución + comunidad + facilitadores. Registrar asistencia, nada más.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>M0 bimodal: algunos asistentes quieren workshop colaborativo (3h), otros solo masterclass (1.5h)</strong>: Ofrecer ambos formatos en meses alternos, o mismo mes en horarios distintos. MC es para personas ocupadas (quick hit de valor). WS es para quien tiene tiempo y quiere explorar con otros. Ambos son válidos.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-0f7d5a" data-searchable aria-labelledby="head-5-decisiones-de-diseo-0f7d5a">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-0f7d5a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5. Decisiones de Diseño</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Formato dual (WS 3h / MC 1.5h)</strong>: No es &quot;elegir uno para siempre&quot;. Cada mes, Comercial B2C decide: ¿Qué público es más probable?</div>
+<div class="bullet-item">WS 3h: audiencia con tiempo (desempleados, freelancers, jubilados, sábados mañana)</div>
+<div class="bullet-item">MC 1.5h: audiencia ocupada (empleados activos, ejecutivos, horario 6-7.30pm)</div>
+<div class="bullet-item">Rotar para validar cuál convierte mejor.</div>
+<div class="bullet-item"><strong>Gratuidad total</strong>: Costo de facilitador + plataforma zoom (~COP $200k) se absorbe como inversión comercial. ROI: 20% conversión × 10 matriculados × $2.4M = $4.8M revenue por M0 ejecutado.</div>
+<div class="bullet-item"><strong>Ventana de conversión 7 días</strong>: Psicología de decisión. Si espera 14 días, el momento emocional se disipa. Si espera 2 días, conversión es más rápida pero algunos aún dicen &quot;déjame pensarlo&quot;. 7 días es el sweet spot.</div>
+<div class="bullet-item"><strong>No matrícula en vivo</strong>: Preserva la sesión como educación pura, no transacción. Si alguien dice &quot;quiero matricularme ahora&quot;, respuesta es: &quot;Excelente, nos contactamos mañana para cerrar los detalles y elegir tu cohorte&quot;. Eso mantiene el foco en contenido.</div>
+<div class="bullet-item"><strong>Testimonios de egresados en seguimiento (no en M0)</strong>: Razón: si traemos egresado a M0 en vivo, se transforma en testimonio de venta (visto como sesgo). En seguimiento, el egresado es &quot;una persona que ya pasó esto&quot;. Más creíble.</div>
+<div class="bullet-item"><strong>Responsabilidad compartida pero clara</strong>:</div>
+<div class="bullet-item">Comercial B2C: decisión de fecha, promoción, captación, seguimiento, conversión.</div>
+<div class="bullet-item">Facilitador: ejecución pedagógica, experiencia de calidad.</div>
+<div class="bullet-item">Coordinador Delivery: disponibilidad de facilitador, agenda de próximas cohortes, logística.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-antipatterns-ff2cdd" data-searchable aria-labelledby="head-6-antipatterns-ff2cdd">
+            <div class="phase-header" id="head-6-antipatterns-ff2cdd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 6. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>&quot;El M0 que vende demasiado&quot;</strong>: Sesión se convierte en pitch. Facilitador habla 80% de tiempo, gasta 20% en demo interactiva. Asistentes se sienten &quot;atrapados en webinar de venta&quot; → frustración, poca conversión. *Cura*: 40% facilitador, 40% demo/práctica con asistentes, 20% Q&amp;A. Medir satisfacción; si NPS &lt;8, revisar balance.</div>
+<div class="bullet-item"><strong>&quot;El M0 sin CTA&quot;</strong>: Contenido es excelente, pero al final nadie sabe cómo matricularse. &quot;¿Dónde me inscribo?&quot; Silencio. *Cura*: CTA clara al final (vía chat, link, email). Dar opción de WhatsApp directo + formulario de registro.</div>
+<div class="bullet-item"><strong>&quot;Follow-up robot&quot;</strong>: Secuencia es genérica (copypaste a todos). Asistente siente: &quot;Soy número de este funnel, no persona&quot;. Baja apertura. *Cura*: Follow-up personalizado: &quot;Hola [Nombre], viste que en el M0 trabajamos con [tema que tocaste en chat]. La próxima cohorte empieza [fecha] si te interesa profundizar.&quot;</div>
+<div class="bullet-item"><strong>&quot;La cohorte que no existe&quot;</strong>: Comercial promete &quot;próxima cohorte en 3 semanas&quot; pero pasan 8 semanas. Asistente pierde confianza. *Cura*: En seguimiento, compartir calendario de cohortes: &quot;Tenemos cohortes 15 abr, 13 may, 10 jun. ¿Cuál te acomoda?&quot;</div>
+<div class="bullet-item"><strong>&quot;El M0 como presión de venta&quot;</strong>: Seguimiento insistente, llamadas sin pausar, &quot;si no te matriculas ahora, pierdes descuento&quot;. Asistente bloquea. *Cura*: Máx 3 toques (email T+1, WhatsApp T+3, llamada T+5), luego pausa. Si no convierte en T+7, entrar a nurturing B2C general (no de venta agresiva, sino de educación).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-fallbacks-3035d9" data-searchable aria-labelledby="head-7-fallbacks-3035d9">
+            <div class="phase-header" id="head-7-fallbacks-3035d9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 7. Fallbacks</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Si facilitador no puede ejecutar M0 (enfermedad, imprevisto) &lt;T-7</strong>: Asignar facilitador backup con &lt;24h de prep. Si no hay backup, ofrecer &quot;Masterclass diferido: mismo contenido, próximo fin de semana&quot;. Compensar asistentes registrados con acceso a grabación + sesión de Q&amp;A adicional.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Si &lt;15 asistentes confirmados en T-7</strong>: Dos opciones:</span></div>
+<div class="bullet-item">(a) Cancelar M0, reprogramar a próximo mes, reasumir registros a nueva fecha.</div>
+<div class="bullet-item">(b) Ejecutar mini-M0 con &lt;15 (solo si facilita conversión, ej. leads corporativos de alto valor). Documentar si rentabilidad se ve afectada.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Si asistencia real es &lt;40% de registrados</strong>: Después de sesión, encuesta a no-asistentes (email T+1): &quot;Hubo un inconveniente, ¿quieres acceso a grabación y sesión privada de Q&amp;A?&quot; Oferta de valor sin presión. Rescatar algunos.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Si G-VALOR falla</strong> (&lt;70% dijeron &quot;aprendí algo nuevo&quot;): Sesión fue pobre. Análisis:</span></div>
+<div class="bullet-item">¿Facilitador fue poco dinámico? → Entrenar.</div>
+<div class="bullet-item">¿Contenido muy introductorio? → Subir dificultad.</div>
+<div class="bullet-item">¿Audiencia no era target? → Ajustar promoción (&quot;Si nunca usaste IA, este es para ti&quot; vs. &quot;Si usas IA pero quieres sistemas&quot;, etc.)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Si G-CONV falla</strong> (&lt;20%): Análisis de objeciones (email T+7: &quot;¿Qué fue lo que te hizo dudar? Queremos entender&quot;). Top objeciones esperadas:</span></div>
+<div class="bullet-item">&quot;Precio está alto, necesito reflexionar&quot; → Ofrecer plan de pagos.</div>
+<div class="bullet-item">&quot;No sé si tengo tiempo&quot; → Oferta: &quot;Muchos participantes trabajan full-time, el programa se adapta&quot;.</div>
+<div class="bullet-item">&quot;Quiero estar seguro de que es para mí&quot; → Ofrecer sesión de orientación 1-1 con facilitador (15 min, gratuito).</div>
+<div class="bullet-item">&quot;¿Garantía si no me gusta?&quot; → Política clara: dinero de vuelta hasta fin Sem 2 (100% - 15% gestión).</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Si conversión es consistentemente &lt;15%</strong>: M0 puede no ser vehículo eficiente de conversión. Alternativa: invertir en lead nurturing de larga cola vs. M0 de corto plazo. O: revizar si &quot;gratuito&quot; es realmente mejor que &quot;precio de entrada bajo pero real&quot; (ej. $50k introductorio).</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ejecucin-operativa-las-6-etapas-636672" data-searchable aria-labelledby="head-ejecucin-operativa-las-6-etapas-636672">
+            <div class="phase-header" id="head-ejecucin-operativa-las-6-etapas-636672" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ejecución Operativa: Las 6 Etapas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="etapa-1-planificacin-t30-das-7bd25f">Etapa 1: PLANIFICACIÓN (T-30 días)</h3>
+<p class="key-value"><strong>Owner</strong>: Responsable Comercial B2C + Coordinador Delivery</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Definir fecha y formato</strong>: ¿Semana del 15 de abril, 3h Workshop un sábado 9am? O ¿20 de abril, 1.5h Masterclass miércoles 6pm?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Reservar facilitador</strong>: Coordinador confirma disponibilidad de 1 facilitador para toda la sesión + grabación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Definir audiencia target</strong>: ¿A quién promocionamos? &quot;Si eres ocupado y quieres productividad con IA, este es tu M0&quot; vs. &quot;Desempleados en transición laboral, taller gratuito de 3h&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Crear landing page</strong>: Simple (1 página). Título, valor proposition (máx 100 palabras), agenda, testimonios (si existen), botón de registro.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Definir KPI de demanda</strong>: Meta: ≥15 registrados (mínimo), ideal ≥30. Cuándo decidimos cancelar vs. mantener: &lt;10 en T-7 = cancelar y reprogramar.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Preparar facilitador</strong>: Briefing 1-1 (30 min) con Coordinador: &quot;¿Qué audiencia esperamos? ¿Cuál es el objetivo de conversión post-M0?&quot; Revisar contenido, asegurarse que facilitador está alineado.</span></div>
+<p class="key-value"><strong>Salida</strong>: Fecha confirmada, formato definido, facilitador reservado, landing page lista, KPI definido.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="etapa-2-promocin-t30-a-t1-1d1231">Etapa 2: PROMOCIÓN (T-30 a T-1)</h3>
+<p class="key-value"><strong>Owner</strong>: Responsable Comercial B2C</p>
+<p class="key-value"><strong>Canales</strong> (según audiencia):</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Redes sociales</strong>: LinkedIn (para profesionales), Instagram/TikTok (para jóvenes), Facebook (para emprendedores). Contenido: snippets de IA (máx 1 min), &quot;La productividad que cambió mi vida&quot; + CTA. Retarget: si vieron landing page, ads recordatorios.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Email</strong>: A base de leads existentes (newsletter, leads de website). Asunto: &quot;Sesión gratuita: De Ocupado a Productivo (3h este sábado)&quot;. Tono: beneficio claro, no venta.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>WhatsApp</strong>: Grupos de Comunidad (si existen) o base de contactos antiguos. Mensaje: casual, emoji, &quot;Nos vemos el 15, es gratuito 😊&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Boca a boca</strong>: Pedir a egresados que inviten amigos. Incentivo: &quot;Si traes alguien, ambos entran a raffle de sesión de mentoría post-M0&quot; (pequeño incentivo, no coercitivo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Alianzas</strong>: Si hay partners (ej. comunidad de emprendedores, colegios profesionales), pedir recomendación.</span></div>
+<p class="key-value"><strong>Cadencia de mensajes</strong>:</p>
+<div class="bullet-item">T-30: Anuncio inicial. &quot;Nos llena de alegría invitarte al M0 gratuito...&quot;</div>
+<div class="bullet-item">T-20: Recordatorio + valor. &quot;¿Viste que hacemos un taller sobre IA práctico?&quot;</div>
+<div class="bullet-item">T-10: Recordatorio social proof. &quot;Ya somos 20, ¿tú vienes?&quot;</div>
+<div class="bullet-item">T-7: Último llamado. &quot;Finaliza registro (cupos limitados si aplica).&quot;</div>
+<div class="bullet-item">T-2: Confirmación. &quot;Nos vemos en 2 días, 9am en Zoom, link...&quot;</div>
+<div class="bullet-item">T-1: Recordatorio final. &quot;Mañana nos vemos, prepara papel y lápiz 😊&quot;</div>
+<p class="key-value"><strong>Métricas de promoción</strong>:</p>
+<div class="bullet-item">Reach (personas vistas): ≥500</div>
+<div class="bullet-item">Registrados: ≥15 (min), ≥30 (ideal)</div>
+<div class="bullet-item">CTR (click-through rate): ≥3%</div>
+<p class="key-value"><strong>Salida</strong>: ≥15 registrados confirmados. Asistentes añadidos a lista de espera del M0.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="etapa-3-ejecucin-t0-759041">Etapa 3: EJECUCIÓN (T-0)</h3>
+<p class="key-value"><strong>Owner</strong>: Facilitador (ejecución), Coordinador Delivery (logística)</p>
+<p class="key-value"><strong>Pre-sesión (T-30min)</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Verificar conexión Zoom, pantalla compartida, grabación activada.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Facilitador ingresa 10 min antes. Música de fondo, ambiente acogedor.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Chat abierto para preguntas tempranas.</span></div>
+<p class="key-value"><strong>Sesión (3h Workshop o 1.5h Masterclass)</strong>:</p>
+<p>Usar <strong>facilitar-masterclass-sop.md</strong> como referencia de estructura. Adaptación para M0 standalone:</p>
+<div class="bullet-item"><strong>Bloque 1 (10-15 min)</strong>: Bienvenida, propósito del M0, cómo participar (chat, preguntas).</div>
+<div class="bullet-item"><strong>Bloque 2 (30-40 min)</strong>: Problema &quot;ocupado pero improductivo&quot;. Historias de 3 personas reales (ficts ok). &quot;¿Cuál eres tú?&quot; Generar identificación.</div>
+<div class="bullet-item"><strong>Bloque 3 (40-60 min)</strong>: Introducción a IA como herramienta de productividad. Demo en vivo: &quot;Voy a usar ChatGPT/Claude para [tarea real]&quot;. Muestra resultado. Asistentes sienten &quot;wow, eso es posible&quot;.</div>
+<div class="bullet-item"><strong>Bloque 4 (40-60 min)</strong>: Mini-práctica. Asistentes abren ChatGPT en su máquina. Facilitador da prompt guiado. &quot;Copia esto en tu IA: &#x27;Ayúdame a estructurar un email a mi jefe sobre...&#x27; &quot; Asistentes generan. Comparten en chat. Facilitador da feedback rápido (&quot;Excelente, ahora prueba cambiar el tono a más formal&quot;).</div>
+<div class="bullet-item"><strong>Bloque 5 (15 min)</strong>: Q&amp;A abierto. &quot;¿Dudas? Chat o cámara&quot;. Responder todo.</div>
+<div class="bullet-item"><strong>Bloque 6 (5-10 min)</strong>: Cierre emocional. &quot;Hoy experimentaste cómo IA puede transformar tu productividad. Si quieres profundizar, tenemos el Programa de Empoderamiento...&quot; (SUAVE, no agresivo). Compartir link de seguimiento (vía chat + email post).</div>
+<p class="key-value"><strong>Métricas en vivo</strong> (capturadas en chat/polls):</p>
+<div class="bullet-item">Engagement: % que responde polls/preguntas.</div>
+<div class="bullet-item">Satisfacción: &quot;En una escala 1-5, ¿aprendiste algo nuevo?&quot; (esperar respuestas).</div>
+<p class="key-value"><strong>Post-sesión (T+5min)</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Facilitar cierre técnico (grabar, descargar).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Capturar lista de participantes (Zoom data).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Nota mental: ¿Quiénes fueron más activos en chat? ¿Cuáles fueron las preguntas top?</span></div>
+<p class="key-value"><strong>Salida</strong>: M0 ejecutado, grabación lista, lista de asistentes + engagement data.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="etapa-4-validacin-de-valor-t1-189551">Etapa 4: VALIDACIÓN DE VALOR (T+1)</h3>
+<p class="key-value"><strong>Owner</strong>: Coordinador Delivery + Facilitador</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Encuesta de satisfacción</strong> (vía email + link a Google Form): 2-3 preguntas máx.</span></div>
+<div class="bullet-item">&quot;Escala 1-5: ¿aprendiste algo nuevo en el M0?&quot;</div>
+<div class="bullet-item">&quot;Escala 1-5: ¿Cómo fue el facilitador?&quot;</div>
+<div class="bullet-item">&quot;¿Qué fue lo que MÁS te gustó? (textarea libre).&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Análisis</strong>:</span></div>
+<div class="bullet-item">Si ≥70% dice &quot;aprendí algo nuevo&quot; (score ≥4): G-VALOR cumplido. Contenido está validado.</div>
+<div class="bullet-item">Si &lt;70%: Revisar feedback. ¿Demasiado introductorio? ¿Facilitador poco dinámico? Ajustar para próximo M0.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Tabular resultados</strong> en Google Sheets. Guardar para retroalimentación.</span></div>
+<p class="key-value"><strong>Salida</strong>: G-VALOR pass/fail, insights sobre calidad de contenido.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="etapa-5-seguimiento-de-conversin-t1-a-t7-415259">Etapa 5: SEGUIMIENTO DE CONVERSIÓN (T+1 a T+7)</h3>
+<p class="key-value"><strong>Owner</strong>: Responsable Comercial B2C</p>
+<p class="key-value"><strong>Secuencia de 3 toques</strong> (multicanal):</p>
+<p class="key-value"><strong>Toque 1: Email (T+1, 24h post-M0)</strong></p>
+<div class="bullet-item">Asunto: &quot;¿Te gustó el M0? Aquí está la grabación + próximos pasos&quot;</div>
+<div class="bullet-item">Contenido:</div>
+<div class="bullet-item">Resumen de 200 palabras: &quot;En el M0 vimos cómo IA puede transformar tu productividad...&quot;</div>
+<div class="bullet-item">Link a grabación (para quien no asistió en vivo).</div>
+<div class="bullet-item">Testimonios cortos de 1-2 egresados: &quot;Yo pasé del caos a tener un sistema, ahora dedico 2h/semana a admin&quot; — Juan, certificado 2025.</div>
+<div class="bullet-item">CTA suave: &quot;Entiendo que $2.4M es inversión. Pero si lo prorrateas en 16 semanas, es $150k/semana. ¿Vale eso la productividad de por vida? Agendar llamada de 15min con [Responsable].&quot;</div>
+<div class="bullet-item">Link de calendario para agendar (Calendly simplemente).</div>
+<p class="key-value"><strong>Toque 2: WhatsApp (T+3, 3 días post-M0)</strong></p>
+<div class="bullet-item">Mensaje personal de Responsable Comercial B2C (no automático):</div>
+<div class="bullet-item">&quot;Hola [Nombre], soy [Responsable de MetodologIA]. En el M0 vi que participaste, ¿te gustó? Me encantaría hablar 15min de cómo el programa puede ayudarte 😊&quot;</div>
+<div class="bullet-item">Si responde positivo: &quot;Perfecto. Te paso los detalles y elegimos tu cohorte: opciones 15 abr, 13 may, 10 jun 📅&quot;</div>
+<div class="bullet-item">Si responde con objeción (&quot;Está caro&quot;, &quot;No sé si tengo tiempo&quot;): Directo al Fallback de G-CONV falla (arriba).</div>
+<p class="key-value"><strong>Toque 3: Llamada o video (T+5, 5 días post-M0)</strong></p>
+<div class="bullet-item">Solo si no hubo respuesta positiva a Email/WhatsApp.</div>
+<div class="bullet-item">Llamada 15min. Objetivo: resolver objeciones principales.</div>
+<div class="bullet-item">&quot;¿Qué te hace dudar?&quot; Listen.</div>
+<div class="bullet-item">&quot;Entiendo. Muchos tuvieron esa duda. Aquí te cuento cómo otros lo resolvieron...&quot;</div>
+<div class="bullet-item">Ofrecer opciones reales (plan de pagos, siguiente cohorte, auditar una sesión primero).</div>
+<p class="key-value"><strong>Toque 4: Email final (T+7, cierre de ventana)</strong></p>
+<div class="bullet-item">Si aún no convierte: &quot;Respeto tu decisión. Aquí están todos los recursos del M0 para que uses en tu cuenta. Cuando estés listo, nos encuentras 🙌&quot;</div>
+<div class="bullet-item">Pasar a nurturing general (B2C) si es lead valioso, sino pausar.</div>
+<p class="key-value"><strong>Métricas de conversión</strong> (T+7):</p>
+<div class="bullet-item">Tasa de conversión M0→Matrícula = (Matriculados / Asistentes) × 100.</div>
+<div class="bullet-item">Target: ≥20%. Ideal: ≥25%.</div>
+<div class="bullet-item">Objeciones top 3 (capturadas en llamadas/chat): Documentar para futura iteración.</div>
+<p class="key-value"><strong>Salida</strong>: Conversiones registradas. R-02 (leads sin matrícula) pasados a Comercial B2C para nurturing largo plazo.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="etapa-6-anlisis-y-ajuste-t14-abda37">Etapa 6: ANÁLISIS Y AJUSTE (T+14)</h3>
+<p class="key-value"><strong>Owner</strong>: Responsable Comercial B2C + Coordinador Delivery + Facilitador</p>
+<p class="key-value"><strong>Reunión retro</strong> (30 min, semanal):</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Resultados</strong>:</span></div>
+<div class="bullet-item">Registrados: [número]</div>
+<div class="bullet-item">Asistentes: [número]</div>
+<div class="bullet-item">Asistencia %: [%]</div>
+<div class="bullet-item">G-VALOR (satisfacción): [%] dijeron aprendieron.</div>
+<div class="bullet-item">G-CONV (conversión): [%] matriculados.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Qué funcionó bien</strong>:</span></div>
+<div class="bullet-item">&quot;El bloque de demo en vivo generó muchas preguntas, fue el momento de mayor engagement.&quot;</div>
+<div class="bullet-item">&quot;Testimonios resonaron, varias personas preguntaron sobre egresados.&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Qué no funcionó</strong>:</span></div>
+<div class="bullet-item">&quot;Conversión fue 15%, bajo del target 20%. Objeción #1 fue precio.&quot;</div>
+<div class="bullet-item">&quot;Promoción en Instagram tuvo muy poco CTR, alto costo por click.&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Ajustes para próximo M0</strong>:</span></div>
+<div class="bullet-item">Si G-CONV &lt;20%: plan de pagos + auditar sesión en vivo (ofrecer primera clase del programa como &quot;prueba&quot;).</div>
+<div class="bullet-item">Si G-VALOR &lt;70%: revisar contenido (¿muy intro?), cambiar facilitador o entrenar al actual.</div>
+<div class="bullet-item">Si asistencia &lt;60%: promoción fue pobre o inconveniente horario. Testar otro horario/canal.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Documentar</strong>: Crear spreadsheet &quot;M0 Monthly Tracker&quot; (una fila por M0, columnas: fecha, registrados, asistentes, conversión %, feedback top, ajustes).</span></div>
+<p class="key-value"><strong>Salida</strong>: Insights capturados, ajustes definidos para próximo ciclo. Ciclo reinicia en T-30 para próximo M0.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ecuacin-de-sostenibilidad-econmica-6200f6" data-searchable aria-labelledby="head-ecuacin-de-sostenibilidad-econmica-6200f6">
+            <div class="phase-header" id="head-ecuacin-de-sostenibilidad-econmica-6200f6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ecuación de Sostenibilidad Económica</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>Costo M0 = Facilitador (~$150k) + Plataforma Zoom (~$20k) = ~$170k por sesión
+
+Beneficio M0:
+  - 20 asistentes × 20% conversión = 4 matriculados
+  - 4 matriculados × $2.4M = $9.6M revenue
+  - ROI = ($9.6M - $170k) / $170k ≈ 5,500% 🚀
+
+Sostenibilidad:
+  - 1 M0/mes = 4-5 matriculados/mes (en promedio)
+  - 5-10 cohortes activas/mes (dependiendo de duración actual)
+  - 1 coordinador puede supervisar este ritmo</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="integraciones-adcece" data-searchable aria-labelledby="head-integraciones-adcece">
+            <div class="phase-header" id="head-integraciones-adcece" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Integraciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Upstream</strong>:</p>
+<div class="bullet-item"><strong>Comercial B2C</strong>: Proporciona leads, audiencias, canales de promoción. Responsable de nutrición previa al M0 si es lead warm (no frío).</div>
+<p class="key-value"><strong>Downstream</strong>:</p>
+<div class="bullet-item"><strong>gestionar-cohorte-sop.md</strong>: Matriculados del M0 entran al proceso de gestión de cohorte. Coordinador Delivery forma cohorte, asigna facilitador, ejecuta programa.</div>
+<p class="key-value"><strong>Cross-functional</strong>:</p>
+<div class="bullet-item"><strong>R-02</strong>: Leads que asistieron M0 pero no matricularon. Vuelven a Comercial B2C para nurturing general (email semanal, educacional, no agresivo).</div>
+<div class="bullet-item"><strong>R-03</strong>: Egresados certificados. Información de impacto (qué lograron, cómo cambió su productividad) va a Comercial como caso de éxito para testimonios futuros.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-ejecucin-4464ae" data-searchable aria-labelledby="head-checklist-de-ejecucin-4464ae">
+            <div class="phase-header" id="head-checklist-de-ejecucin-4464ae" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Ejecución</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-formato-y-fecha-definidos-t30-f31878"><input type="checkbox" id="chk-formato-y-fecha-definidos-t30-f31878" ><span>Formato y fecha definidos (T-30)</span></label>
+<label class="checklist-item" for="chk-facilitador-confirmado-t30-bfce83"><input type="checkbox" id="chk-facilitador-confirmado-t30-bfce83" ><span>Facilitador confirmado (T-30)</span></label>
+<label class="checklist-item" for="chk-landing-page-publicada-t30-cd2bbe"><input type="checkbox" id="chk-landing-page-publicada-t30-cd2bbe" ><span>Landing page publicada (T-30)</span></label>
+<label class="checklist-item" for="chk-promocin-iniciada-t30-a-t1-085d88"><input type="checkbox" id="chk-promocin-iniciada-t30-a-t1-085d88" ><span>Promoción iniciada (T-30 a T-1)</span></label>
+<label class="checklist-item" for="chk-15-registrados-confirmados-t7-3837ed"><input type="checkbox" id="chk-15-registrados-confirmados-t7-3837ed" ><span>≥15 registrados confirmados (T-7)</span></label>
+<label class="checklist-item" for="chk-facilitador-tiene-briefing-t7-87bf1d"><input type="checkbox" id="chk-facilitador-tiene-briefing-t7-87bf1d" ><span>Facilitador tiene briefing (T-7)</span></label>
+<label class="checklist-item" for="chk-zoom-setup-probado-t1-d3fb00"><input type="checkbox" id="chk-zoom-setup-probado-t1-d3fb00" ><span>Zoom setup probado (T-1)</span></label>
+<label class="checklist-item" for="chk-m0-ejecutado-con-grabacin-t0-942630"><input type="checkbox" id="chk-m0-ejecutado-con-grabacin-t0-942630" ><span>M0 ejecutado con grabación (T-0)</span></label>
+<label class="checklist-item" for="chk-encuesta-de-satisfaccin-enviada-t1-f0057a"><input type="checkbox" id="chk-encuesta-de-satisfaccin-enviada-t1-f0057a" ><span>Encuesta de satisfacción enviada (T+1)</span></label>
+<label class="checklist-item" for="chk-seguimiento-comercial-iniciado-t1-c90454"><input type="checkbox" id="chk-seguimiento-comercial-iniciado-t1-c90454" ><span>Seguimiento comercial iniciado (T+1)</span></label>
+<label class="checklist-item" for="chk-conversiones-registradas-t7-d40134"><input type="checkbox" id="chk-conversiones-registradas-t7-d40134" ><span>Conversiones registradas (T+7)</span></label>
+<label class="checklist-item" for="chk-retro-y-ajustes-documentados-t14-0791c0"><input type="checkbox" id="chk-retro-y-ajustes-documentados-t14-0791c0" ><span>Retro y ajustes documentados (T+14)</span></label>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documentos-relacionados-c15e25" data-searchable aria-labelledby="head-documentos-relacionados-c15e25">
+            <div class="phase-header" id="head-documentos-relacionados-c15e25" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documentos Relacionados</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">facilitar-masterclass-sop.md (estructura pedagógica del M0)</div>
+<div class="bullet-item">gestionar-cohorte-sop.md (siguiente paso post-matrícula)</div>
+<div class="bullet-item">H-02 (handoff de Comercial B2C, leads M0)</div>
+<div class="bullet-item">R-02 (reporte de leads sin conversión)</div>
+<div class="bullet-item">R-03 (reporte de egresados certificados para casos de éxito)</div>
+<hr class="divider">
+<p class="key-value"><strong>Versión</strong>: 1.0 | <strong>Fecha</strong>: 2026-03-24 | <strong>Estado</strong>: Publicado</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>MetodologIA © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v2.0 Excellence Edition — Generado: 2026-03-24 13:53</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

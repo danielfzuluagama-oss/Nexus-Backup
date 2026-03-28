@@ -1,0 +1,103 @@
+========================================
+REPORTE DE AUDITORÍA UX/UI
+Archivo: personas/bootcamp-amplificacion-profesional.html
+Fecha: 2026-01-23
+Auditor: Gemini + UX Specialist Capabilities
+Metodología: Red-Team Testing, Heurísticas H1-H10, Krug's Laws
+========================================
+
+## RESUMEN EJECUTIVO
+Página EXTREMADAMENTE EXTENSA (2449 líneas) - la más larga del sitio.
+Estructura bien organizada pero exceso de información. Múltiples modales,
+datos JS embebidos, y secciones que podrían ser páginas separadas.
+Patrón "Paso 2: El Buy" continúa con terminología inglesa.
+
+--------------------------------------------------------------------------------
+## MÉTRICAS CLAVE
+
+- Secciones: 12+ (Hero, Porque, Programa, Coach, Inversión, FAQ, etc.)
+- CTAs: 10+
+- Complejidad estructural: MUY ALTA ⚠️⚠️
+- Trunk Test: 4/6
+- Tiempo lectura: 20-25 minutos (!!)
+- Datos JS embebidos: 500+ líneas de scripts
+
+--------------------------------------------------------------------------------
+## HALLAZGOS POR SEVERIDAD
+
+### 🔴 CRÍTICOS
+
+1. **Página de 2449 líneas** [Líneas 1-2449]
+   - Demasiado larga para una sola página
+   - Viola: UP07 (Reduce cognitive load), Krug Law #3
+   - Recomendación: Dividir en múltiples páginas o tabs
+
+2. **"Paso 2: El Buy"** [Línea 246]
+   - Terminología inglesa en badge hero
+   - Violación: Brand Voice v2.0
+   - Recomendación: "Paso 2: Compromiso"
+
+3. **Datos y funciones JS embebidos** [Líneas 1341-2449]
+   - impactsData, modulesData - 500+ líneas de datos en HTML
+   - Debería estar en archivo JS externo
+   - Impacto: Rendimiento y mantenibilidad
+
+4. **Precios en COP sin conversión** [Línea 1187]
+   - "$3.200.000 COP" sin referencia USD/EUR
+   - Usuario internacional: "¿Cuánto es eso?"
+   - Recomendación: Agregar equivalente (ej: ~$900 USD)
+
+### 🟠 ALTOS
+
+5. **"Alta Costura", "Alianza Estratégica", "Célula de Élite"** [Líneas 1139-1162]
+   - Nombres creativos pero abstractos para configuraciones
+   - Usuario: "¿Cuál me conviene?"
+   - Recomendación: Agregar comparador más claro
+
+6. **9 Hitos de Co-creación** [Líneas 305-390]
+   - Muchos clicks para ver detalles (openHitoModal)
+   - Descubrimiento progresivo OK, pero puede abrumar
+
+7. **"Habit Partner"** en inglés [Línea 1151]
+
+8. **Sección de Inversión muy compleja** [Líneas 1024-1257]
+   - Value stack, facilidades, garantías todo junto
+   - Recomendación: Simplificar pricing
+
+### 🟡 MEDIOS
+
+9. **Modales de audiencia bien implementados** ✓
+10. **FAQ y Glosario bien estructurados** ✓
+11. **JSON-LD Course bien implementado** ✓
+12. **Header premium-nav homologado** ✓
+
+### 🟢 BAJOS
+
+13. Breadcrumbs OK ✓
+14. CTA principal visible ✓
+
+--------------------------------------------------------------------------------
+## PUNTUACIÓN HEURÍSTICA
+
+| Heurística | Puntuación |
+|------------|------------|
+| H1. Visibilidad | 3/4 |
+| H2. Correspondencia | 2/4 |
+| H3. Control | 3/4 |
+| H4. Consistencia | 3/4 |
+| H5-H9 | 3/4 |
+| H10. Ayuda | 3/4 |
+
+**PROMEDIO: 2.8/4.0** (Target: >3.5) 🔴
+
+--------------------------------------------------------------------------------
+## RECOMENDACIONES
+
+1. **URGENTE**: Dividir en múltiples páginas o crear tabs/acordeones
+2. **URGENTE**: Traducir "Buy", "Habit Partner", terminología inglesa
+3. **ALTA**: Externalizar datos JS a archivos separados
+4. **ALTA**: Agregar conversión USD/EUR a precios COP
+5. **MEDIA**: Simplificar sección de Inversión
+6. **BAJA**: Agregar comparador de configuraciones
+
+================================================================================

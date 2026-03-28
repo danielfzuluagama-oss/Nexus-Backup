@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Liquidar Comisiones de Aliados — SOP — Proceso de Delivery MetodologIA">
+    <title>Liquidar Comisiones de Aliados — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Aliados Comercial</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Liquidar Comisiones de Aliados — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Liquidar Comisiones de Aliados — SOP</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">- Versión: 1.0</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">7</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">19</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-ejecutivo-78a77e')" aria-label="Ir a Propósito Ejecutivo">Propósito Ejecutivo</button>
+<button class="nav-btn" onclick="scrollToSection('10x-elevation-protocol-7-secciones-normativas-fecca7')" aria-label="Ir a 10x Elevation Protocol — 7 Secciones Normativas">10x Elevation Protocol — 7 Seccione</button>
+<button class="nav-btn" onclick="scrollToSection('flujos-operacionales-6-workflows-e42b1c')" aria-label="Ir a Flujos Operacionales (6 Workflows)">Flujos Operacionales (6 Workflows)</button>
+<button class="nav-btn" onclick="scrollToSection('calendario-de-liquidacin-ciclo-fijo-2fe575')" aria-label="Ir a Calendario de Liquidación (Ciclo Fijo)">Calendario de Liquidación (Ciclo Fi</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-de-xito-9519c5')" aria-label="Ir a Métricas de Éxito">Métricas de Éxito</button>
+<button class="nav-btn" onclick="scrollToSection('diferencias-clave-comisin-vs-marca-blanca-6da271')" aria-label="Ir a Diferencias Clave: Comisión vs. Marca Blanca">Diferencias Clave: Comisión vs. Mar</button>
+<button class="nav-btn" onclick="scrollToSection('conexiones-sistmicas-0b0399')" aria-label="Ir a Conexiones Sistémicas">Conexiones Sistémicas</button>
+<button class="nav-btn" onclick="scrollToSection('ecuacin-metodologia-rentabilidad-comisiones-0cef0f')" aria-label="Ir a Ecuación MetodologIA (Rentabilidad Comisiones)">Ecuación MetodologIA (Rentabilidad </button>
+<button class="nav-btn" onclick="scrollToSection('anexos-operacionales-369a22')" aria-label="Ir a Anexos Operacionales">Anexos Operacionales</button>
+<button class="nav-btn" onclick="scrollToSection('escalation-gobierno-4f52e2')" aria-label="Ir a Escalation &amp; Gobierno">Escalation &amp; Gobierno</button>
+<button class="nav-btn" onclick="scrollToSection('seguridad-compliance-408522')" aria-label="Ir a Seguridad &amp; Compliance">Seguridad &amp; Compliance</button>
+<button class="nav-btn" onclick="scrollToSection('control-de-cambios-12ae9d')" aria-label="Ir a Control de Cambios">Control de Cambios</button>
+<button class="nav-btn" onclick="scrollToSection('preguntas-frecuentes-faq-2073b8')" aria-label="Ir a Preguntas Frecuentes (FAQ)">Preguntas Frecuentes (FAQ)</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vehículo:</strong> Gobierno Financiero — Liquidación Quincenal</div>
+<div class="bullet-item"><strong>Proceso Padre:</strong> Proceso Comercial → Aliados GTM × Proceso Financiero</div>
+<div class="bullet-item"><strong>Owners:</strong> Katherine (C-Level Enablement) + Germán (C-Level Ecosystem)</div>
+<div class="bullet-item"><strong>Versión:</strong> 1.0</div>
+<div class="bullet-item"><strong>Última Actualización:</strong> 2026-03-24</div>
+<div class="bullet-item"><strong>Clasificación:</strong> Operativo — Crítico (Impacto financiero alto)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-ejecutivo-78a77e" data-searchable aria-labelledby="head-propsito-ejecutivo-78a77e">
+            <div class="phase-header" id="head-propsito-ejecutivo-78a77e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito Ejecutivo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Proceso operativo de liquidación <strong>quincenal</strong> de comisiones para Resellers y Embajadores Comerciales. Implementa el principio canónico: <strong>&quot;Pago por Recaudo&quot;</strong> — las comisiones se liquidan <strong>SOLO cuando el cliente final ha pagado</strong> en efectivo.</p>
+<p class="key-value"><strong>Flujo Canónico:</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Recaudo Cliente Final → Auditoría Automática (CRM) → Liquidación Quincenal Aliado → Pago</code></pre>
+<p class="key-value"><strong>Regla Oro:</strong> Sin adelantos sobre expectativas. Sin especulación sobre pagos futuros. Sin crédito a aliados por ventas no pagadas.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10x-elevation-protocol-7-secciones-normativas-fecca7" data-searchable aria-labelledby="head-10x-elevation-protocol-7-secciones-normativas-fecca7">
+            <div class="phase-header" id="head-10x-elevation-protocol-7-secciones-normativas-fecca7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10x Elevation Protocol — 7 Secciones Normativas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="1-nueve-9-supuestos-foundacionales-01a0d9">1. Nueve (9) Supuestos Foundacionales</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Recaudo = Liquidación:</strong> Comisión deviene derecho SOLO cuando cliente ha pagado. Venta (contrato firmado) ≠ comisión devengada.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>CRM es Fuente Única:</strong> Sistema CRM de MetodologIA registra entrada de recaudo (fecha, monto, método, cliente, aliado atribuido). No hay excepciones manuales sin auditoria.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Aliado Reporta; Sistema Valida:</strong> Aliado notifica recaudo, sistema CRM valida, auditoría automática confirma. Discrepancias &gt; 5% disparan investigación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Ciclo Fijo de 15 Días:</strong> Liquidación ocurre cada 2 viernes (cortes en jueves de cada 2 semanas). No hay liquidaciones ad-hoc ni fuera de ciclo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Comisión Base + Upselling:</strong> Comisión se compone de (a) tasa fija sobre venta base, (b) bonificación sobre upselling/add-on. Ambas sujetas a recaudo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Devoluciones Restan Comisión:</strong> Si cliente devuelve/cancela, comisión se deduce retroactivamente de próxima liquidación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Aliado Desactivado = Congelación:</strong> Si aliado es desactivado (incumplimiento, rescisión), comisiones pendientes quedan congeladas hasta resolución legal/contractual.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Transparencia Total:</strong> Aliado accede a portal donde ve cada transacción, comisión asociada, estado de liquidación. No hay &quot;comisiones ocultas&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Compatibilidad de Modelos:</strong> Un aliado puede ser simultáneamente revendedor comisionado Y Marca Blanca (si son segmentos diferentes). Liquidaciones se calculan separadamente.</span></div>
+<h3 class="subsection-title" id="2-lmites-operacionales-lo-que-no-se-permite-bdef99">2. Límites Operacionales (Lo Que NO Se Permite)</h3>
+<div class="bullet-item"><strong>No Adelantos sin Garantía:</strong> MetodologIA NO adelanta comisión sobre venta no pagada, incluso si cliente tiene &quot;reputación de pago&quot;.</div>
+<div class="bullet-item"><strong>No Descuento por Plazo:</strong> Si cliente paga atrasado (45d, 90d), comisión NO se reduce. Pero sí se retrasa su liquidación al próximo ciclo.</div>
+<div class="bullet-item"><strong>No Comisión en Cascada:</strong> Comisión NO se calcula sobre comisión. Solo sobre venta neta (sin impuestos, con devoluciones descontadas).</div>
+<div class="bullet-item"><strong>No Comisión Post-Rescisión:</strong> Si aliado rescinde o es desactivado, SOLO recibe comisión de transacciones liquidadas antes de fecha de corte. Transacciones posteriores NO generan derecho.</div>
+<div class="bullet-item"><strong>No Modificación Retroactiva:</strong> Tasas de comisión NO se cambian retroactivamente. Cambios aplican a futuras transacciones con efectividad inmediata (próximo ciclo).</div>
+<div class="bullet-item"><strong>No Pago Sin Validación:</strong> Aliado debe estar activo, con cuenta bancaria validada, sin disputas pendientes. Si cualquiera falla, pago se retiene.</div>
+<h3 class="subsection-title" id="3-diez-10-criterios-de-validacin-para-liquidacin-71fc64">3. Diez (10) Criterios de Validación para Liquidación</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Aliado Activo en CRM:</strong> Status ≠ &quot;Desactivado&quot;, &quot;Suspendido&quot; o &quot;En Rescisión&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Contrato de Comisión Vigente:</strong> Acuerdo Revendedor/Embajador firmado y válido en rango de fechas de transacción.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Cliente Pagó (Evidencia Documental):</strong> Comprobante de pago en CRM (factura pagada, depósito bancario, transferencia, etc.).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Tasa de Comisión Correcta:</strong> Transacción aplica tasa vigente en fecha de venta (no comisión futura ni histórica).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Atribución Validada:</strong> Aliado registrado como &quot;fuente&quot; o &quot;origin&quot; de lead en CRM. Sin ambigüedades.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Monto Recaudado Auditable:</strong> Recaudo ingresa a cuenta de MetodologIA (no a cuenta de aliado) y se registra en asiento contable.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Ausencia de Disputas:</strong> No hay reclamo pendiente de cliente vs. aliado, ni de aliado vs. MetodologIA sobre esa transacción.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Documento de Comisión Generado:</strong> Sistema CRM auto-genera &quot;Liqudation Line Item&quot; con desglose: Venta Bruta, Devoluciones, Neto, Tasa, Comisión.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Firma Digital de Validación:</strong> Auditor de Katherine valida cada línea. Si OK, genera &quot;Approved for Payment&quot; flag.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">10</span><span><strong>Datos Bancarios del Aliado Vigentes:</strong> Cuenta bancaria del aliado en CRM, no suspendida, no marcada como fraude.</span></div>
+<h3 class="subsection-title" id="4-siete-7-casos-borde-crticos-dd8a42">4. Siete (7) Casos Borde Críticos</h3>
+<p class="key-value"><strong>Caso Borde 1: Cliente Paga Parcialmente (Ej. 30% de $100k)</strong></p>
+<div class="bullet-item">*Escenario:* Cliente negocia pago en cuotas. Primera cuota = $30k. ¿Se liquida comisión sobre $30k o espera al 100%?</div>
+<div class="bullet-item">*Regla:* Comisión se liquida <strong>incrementalmente sobre cada cuota recibida</strong>. Si PdR era $100k con comisión 15% = $15k total, comisión sobre $30k cuota = $4.5k. Resto se liquida cuando clientes pague cuota siguiente.</div>
+<div class="bullet-item">*Implicancia:* Ciclos de liquidación pueden tener comisiones parciales. Aliado recibe múltiples pagos para un cliente.</div>
+<p class="key-value"><strong>Caso Borde 2: Cliente Devuelve/Cancela Post-Cierre de Quincena</strong></p>
+<div class="bullet-item">*Escenario:* Aliado A vende cliente en semana 1. Quincena cierra, se liquida comisión a aliado. Cliente devuelve en día 10 de siguiente quincena.</div>
+<div class="bullet-item">*Regla:* Comisión se <strong>deduce de próxima liquidación</strong> de aliado (puede ser negativa si comisión &gt; ingresos nuevos). Si aliado rechaza, se retiene de saldo adeudado a MetodologIA por Marca Blanca u otro concepto.</div>
+<div class="bullet-item">*Fallback:* Si aliado no tiene saldo futuro, acuerdo de cuotas negativas por 2-3 quincenas.</div>
+<p class="key-value"><strong>Caso Borde 3: Disputa de Atribución entre Dos Aliados</strong></p>
+<div class="bullet-item">*Escenario:* Aliado A reclama haber traído cliente. Aliado B reclama haber hecho venta. Ambos piden comisión.</div>
+<div class="bullet-item">*Regla:* <strong>Sistema CRM es fuente única.</strong> Lead origin (campo &quot;Originated By&quot;) determina atribución. Si hay ambigüedad (lead ingresó manualmente, sin source), escalada a Germán en &lt;48h. Mientras, comisión se retiene.</div>
+<div class="bullet-item">*Resolución:* Germán arbitra basándose en evidencia (emails, llamadas, documentos). Comisión va al ganador. Perdedor no recibe nada (salvo si hay co-venta documentada).</div>
+<p class="key-value"><strong>Caso Borde 4: Aliado Desactivado con Comisiones Pendientes de Liquidación</strong></p>
+<div class="bullet-item">*Escenario:* Aliado A tiene 5 transacciones no liquidadas. Aliado rescinde o es desactivado por incumplimiento. ¿Qué pasa?</div>
+<div class="bullet-item">*Regla:* Comisiones devengadas (recaudos ya ocurridos, pre-desactivación) se liquidan normalmente en próximo ciclo. Comisiones futuras (transacciones post-desactivación) NO se generan.</div>
+<div class="bullet-item">*Excepción:* Si hay litigio con aliado, comisiones pueden retenerse hasta resolución legal.</div>
+<p class="key-value"><strong>Caso Borde 5: Error en Liquidación (Sistema Calcula Mal Comisión)</strong></p>
+<div class="bullet-item">*Escenario:* Sistema CRM calcula comisión en $10k, pero tasa correcta produce $12k. Error detectado tras pago a aliado.</div>
+<div class="bullet-item">*Regla:* Auditoría detecta error antes de pago (validación manual). Si error pasa a pago, se notifica aliado en &lt;24h. Diferencia (falta de $2k) se abona en próxima quincena con explicación clara.</div>
+<div class="bullet-item">*Fallback:* Si aliado se niega a aceptar corrección, escalada legal (posible fraude).</div>
+<p class="key-value"><strong>Caso Borde 6: Comisión sobre Servicio con Descuento</strong></p>
+<div class="bullet-item">*Escenario:* Venta base = $100k con comisión 15% ($15k). Cliente negocia descuento de 20% → Precio Final = $80k. ¿Comisión es 15% de $100k o de $80k?</div>
+<div class="bullet-item">*Regla:* Comisión se calcula sobre <strong>monto final recaudado</strong>, no sobre lista. Si se vende $80k, comisión = 15% × $80k = $12k.</div>
+<div class="bullet-item">*Justificación:* Aliado participó en negociación de descuento; riesgo de margen es compartido.</div>
+<p class="key-value"><strong>Caso Borde 7: Bonus de Abundancia (Cupo de Curso, Timing de Liquidación)</strong></p>
+<div class="bullet-item">*Escenario:* MetodologIA ofrece &quot;bonus de abundancia&quot;: si aliado vende 5+ cursos en trimestre, obtiene bonus de $5k adicional. ¿Cuándo se liquida?</div>
+<div class="bullet-item">*Regla:* Bonus se liquida <strong>al cierre del trimestre</strong>, no antes. Req: todos los 5+ cursos deben tener recaudo confirmado al último día del trimestre.</div>
+<div class="bullet-item">*Fallback:* Si uno de los cursos se devuelve post-bonus, bonus no se afecta (es descuento acumulativo, no transaccional).</div>
+<hr class="divider">
+<h3 class="subsection-title" id="5-cinco-5-decisiones-de-diseo-crticas-68e558">5. Cinco (5) Decisiones de Diseño Críticas</h3>
+<p class="key-value"><strong>Decisión 1: CRM como Fuente Única de Verdad (No Negociable)</strong></p>
+<div class="bullet-item">*Decisión:* MetodologIA no mantiene registros de comisión externos (Excel, emails, etc.). CRM es la verdad. Si discrepancia, CRM gana.</div>
+<div class="bullet-item">*Rationale:* Evita corrupción de datos, falsificación de registros, disputas infundadas.</div>
+<p class="key-value"><strong>Decisión 2: Liquidación Semanal vs. Quincenal</strong></p>
+<div class="bullet-item">*Decisión:* Adoptamos <strong>quincenal</strong> (cada 2 viernes), no semanal, porque:</div>
+<div class="bullet-item">Reduce fricción operativa (menos procesamiento).</div>
+<div class="bullet-item">Ciclo contable más limpio.</div>
+<div class="bullet-item">Aliados tienen &quot;horizonte visible&quot; de cuando cobran.</div>
+<div class="bullet-item">*Trade-off:* Aliado espera máx 15d para pago. Es razonable.</div>
+<p class="key-value"><strong>Decisión 3: Retención de Impuestos y Responsabilidad Fiscal</strong></p>
+<div class="bullet-item">*Decisión:* MetodologIA retiene impuestos según ley local (ej. 10% Ganancias en Argentina). Aliado recibe neto. MetodologIA reporta a autoridades.</div>
+<div class="bullet-item">*Rationale:* Compliance; claridad; MetodologIA asume responsabilidad.</div>
+<p class="key-value"><strong>Decisión 4: Adelantos, Nunca. Atrasos, Rara Vez.</strong></p>
+<div class="bullet-item">*Decisión:* Aliado NO recibe comisión adelantada (antes de recaudo cliente). Si cliente atrasa pago, comisión se atrasa también.</div>
+<div class="bullet-item">*Excepción:* Aliados &quot;Oro&quot; (&gt;$500k recaudos/año histórico) pueden solicitar &quot;póliza de anticipación&quot; (asegurado por tercero). Máx 30d anticipo.</div>
+<div class="bullet-item">*Rationale:* Riesgo de mora queda con aliado (incentivo de cobranza).</div>
+<p class="key-value"><strong>Decisión 5: Modelo de Comisión Base + Bonificación (No Comisión Escalonada)</strong></p>
+<div class="bullet-item">*Decisión:* Comisión = Tasa Fija + Bonificación Condicional, no modelo escalonado (15% de 0-100k, 20% de 100k+).</div>
+<div class="bullet-item">*Rationale:* Simplicidad; predictibilidad; menos disputas por &quot;qué tasa aplica&quot;.</div>
+<div class="bullet-item">*Ejemplo:* Comisión = 12% + Bonus 3% si cliente paga en &lt;30d.</div>
+<hr class="divider">
+<h3 class="subsection-title" id="6-cinco-5-antipatterns-identificados-qu-evitar-a10658">6. Cinco (5) Anti-Patterns Identificados (¿Qué Evitar?)</h3>
+<p class="key-value"><strong>Anti-Pattern 1: &quot;Comisión Esperada&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado asume comisión sobre venta contratada (aún sin pago) y planifica gastos sobre ello.</div>
+<div class="bullet-item">*Impacto:* Si cliente no paga, aliado tiene obligación de gastos impagos → reclamos a MetodologIA.</div>
+<div class="bullet-item">*Mitigación:* Contrato claro: &quot;Comisión solo por recaudo efectivo&quot;. Portal muestra solo &quot;Comisiones Liquidadas&quot;, no &quot;Comisiones Esperadas&quot;.</div>
+<p class="key-value"><strong>Anti-Pattern 2: &quot;Liquidación Manual Frecuente&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado solicita liquidación urgente (fuera de ciclo) por casos especiales → fricción operativa.</div>
+<div class="bullet-item">*Impacto:* Proceso se vuelve artesanal; aumenta riesgo de error.</div>
+<div class="bullet-item">*Mitigación:* Ciclo fijo, inamovible. Excepciones solo con aprobación CFO + Germán (raro).</div>
+<p class="key-value"><strong>Anti-Pattern 3: &quot;Comisión en Cascada&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado A vende a Aliado B (reseller de reseller). Ambos quieren comisión → costo prohibitivo.</div>
+<div class="bullet-item">*Impacto:* Margen MetodologIA se erosiona; cliente paga más sin valor agregado.</div>
+<div class="bullet-item">*Mitigación:* Cláusula contractual: &quot;No subcontratación de derechos de comisión sin autorización&quot;. Incumplimiento = rescisión.</div>
+<p class="key-value"><strong>Anti-Pattern 4: &quot;Comisión sin Auditoría de Atribución&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado reporta comisiones; sistema paga sin validar &quot;¿Realmente trajo este cliente?&quot;.</div>
+<div class="bullet-item">*Impacto:* Fraude posible; comisiones ficticias.</div>
+<div class="bullet-item">*Mitigación:* Auditoría pre-pago: cada transacción validada vs. lead origin en CRM.</div>
+<p class="key-value"><strong>Anti-Pattern 5: &quot;Cierre Contable Sucio&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Comisiones pendientes + disputas + devoluciones no se cierran limpiamente al fin de mes → reconciliación imposible.</div>
+<div class="bullet-item">*Impacto:* Auditoría externa rechaza números.</div>
+<div class="bullet-item">*Mitigación:* Cierre riguroso cada quincena: todas las transacciones resueltas (liquidadas, devueltas, congeladas) antes de generar reporte.</div>
+<hr class="divider">
+<h3 class="subsection-title" id="7-cinco-5-fallbacks-plan-b-d1275b">7. Cinco (5) Fallbacks / Plan B</h3>
+<p class="key-value"><strong>Fallback 1: &quot;Aliado Rechaza Comisión Calculada (Reclama Más)&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Aliado notifica que comisión está baja, solicita revisión.</div>
+<div class="bullet-item">*Escalation:* Katherine revisa cálculo en CRM. Si error de sistema, se corrige. Si es discrepancia legítima (ej. atribución), escalada a Germán en &lt;2 días.</div>
+<div class="bullet-item">*Plan B:* Si aliado insiste, retiene pago en escrow (cuenta de tercero) mientras se resuelve. Aliado puede apelar formalmente en 10 días.</div>
+<p class="key-value"><strong>Fallback 2: &quot;Cliente No Paga; Aliado Exige Comisión de Todas Formas&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Aliado reclama &quot;No es mi culpa que cliente no pague&quot;.</div>
+<div class="bullet-item">*Respuesta:* Contrato es claro: &quot;Comisión por recaudo&quot;. Si cliente no paga, no hay comisión. MetodologIA puede ofrecer auxiliar aliado en cobranza (sin costo).</div>
+<div class="bullet-item">*Plan B:* Si cliente paga &gt;90d tarde, aliado recibe comisión en próximo ciclo tras recaudo efectivo.</div>
+<p class="key-value"><strong>Fallback 3: &quot;Sistema CRM Cae; No Hay Datos de Liquidación&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Downtime de CRM en semana de liquidación.</div>
+<div class="bullet-item">*Respuesta:* Liquidación se atrasa al ciclo siguiente (máx 7d). Se usa backup de base de datos. Si no hay backup válido, comisión se calcula desde evidencia documental (facturas, depósitos).</div>
+<div class="bullet-item">*Plan B:* Aliados afectados reciben notificación y cronograma claro. Pago se realiza con interés del 0.5% por semana de atraso.</div>
+<p class="key-value"><strong>Fallback 4: &quot;Aliado Desaparece; No Sabemos Dónde Mandar Comisión&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Aliado no responde; no hay cuenta bancaria actualizada en CRM.</div>
+<div class="bullet-item">*Respuesta:* Se intentan 3 contactos (email, teléfono, LinkedIn) en 5 días. Si no responde, comisión se congela en cuenta de MetodologIA.</div>
+<div class="bullet-item">*Plan B:* Si aliado reaparece &lt;180d, se libera comisión + interés 2% anual. Si &gt;180d sin contacto, comisión se dedica a fondo de empresa (según auditoría fiscal local).</div>
+<p class="key-value"><strong>Fallback 5: &quot;Auditoria Externa Detecta Comisión Potencialmente Fraudulenta&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Auditoria externa nota transacción inusual (ej. venta a dirección de aliado, cliente ficticio).</div>
+<div class="bullet-item">*Respuesta:* Investigación inmediata (Germán + Katherine + Auditor). Si es fraude confirmado, comisión se revoca, aliado se desactiva, caso se escala a autoridades.</div>
+<div class="bullet-item">*Plan B:* Si hay dudas (no fraude confirmado), comisión se retiene en escrow x 60d hasta resolución. Si se confirma legitimidad, se libera + interés de atraso.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="flujos-operacionales-6-workflows-e42b1c" data-searchable aria-labelledby="head-flujos-operacionales-6-workflows-e42b1c">
+            <div class="phase-header" id="head-flujos-operacionales-6-workflows-e42b1c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Flujos Operacionales (6 Workflows)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="wf01-corte-quincenal-identificar-comisiones-deveng-68715f">WF-01: Corte Quincenal — Identificar Comisiones Devengadas</h3>
+<p class="key-value"><strong>Entrada:</strong> Cada jueves (fin de semana laboral Argentina/LatAm), sistema CRM inicia corte quincenal.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sistema CRM genera reporte de &quot;Recaudos Completados&quot; en período (jueves previo - jueves actual).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Reporte agrupa por: Aliado, Cliente, Producto, Monto, Tasa de Comisión, Fecha de Recaudo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Sistema calcula automáticamente: Comisión = Monto × Tasa.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Sistema identifica devoluciones/cancelaciones en período. Resta comisión.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Sistema identifica descuentos (cliente negoció precio). Ajusta base de cálculo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Resultado: lista de &quot;Comisiones Devengadas por Aliado&quot; (borrador).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Katherine revisa lista (30 min). Si hay inconsistencias, marca para investigación.</span></div>
+<p class="key-value"><strong>Salida:</strong> Draft de &quot;Comisiones Devengadas&quot; listo para auditoría.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf02-auditar-evidencia-en-crm-4cbd95">WF-02: Auditar Evidencia en CRM</h3>
+<p class="key-value"><strong>Entrada:</strong> Draft de comisiones devengadas + lista de transacciones subyacentes.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Auditor de Katherine (o sistema automático) valida cada transacción:</span></div>
+<div class="bullet-item">¿Existe contrato cliente vigente? ✓</div>
+<div class="bullet-item">¿Aliado está en CRM como &quot;origen&quot;? ✓</div>
+<div class="bullet-item">¿Recaudo registrado con comprobante (factura pagada, depósito)? ✓</div>
+<div class="bullet-item">¿Tasa de comisión es la vigente en fecha de venta? ✓</div>
+<div class="bullet-item">¿No hay disputa pendiente sobre esta transacción? ✓</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si todas marcan ✓, transacción pasa a &quot;Approved for Commission&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si hay ?, auditor investiga (email a aliado, revisión de emails, llamadas a cliente).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si hay X (no cumple), transacción se marca &quot;Pending&quot; o &quot;Rejected&quot;. Se notifica aliado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Auditoría completa en &lt;4h. Status actualizado en CRM.</span></div>
+<p class="key-value"><strong>Salida:</strong> Comisiones &quot;Approved for Payment&quot; + lista de transacciones &quot;Pending&quot; (con motivo).</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf03-calcular-montos-base-upselling-47cabd">WF-03: Calcular Montos (Base + Upselling)</h3>
+<p class="key-value"><strong>Entrada:</strong> Comisiones aprobadas + desglose de upselling (si aplica).</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sistema CRM separa: Venta Base vs. Upselling/Add-on.</span></div>
+<div class="bullet-item">Venta Base: servicio principal contratado.</div>
+<div class="bullet-item">Upselling: módulos, extensiones, servicios adicionales vendidos post-cierre.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Comisión Base = Venta Base × Tasa Comisión Base (ej. 12%).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Comisión Upselling = Upselling × Tasa Comisión Upselling (ej. 8%, menor incentivo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Sistema suma: Comisión Total = Comisión Base + Comisión Upselling.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Sistema aplica deducciones:</span></div>
+<div class="bullet-item">Retención de impuestos (%) según jurisdicción.</div>
+<div class="bullet-item">Adelantos previos no liquidados (si aplica).</div>
+<div class="bullet-item">Saldos adeudados de quincena anterior (devoluciones, errores, etc.).</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Resultado: Comisión Neta por Aliado = Comisión Total − Deducciones.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Sistema genera &quot;Liquidation Detail Sheet&quot; por aliado (Excel descargable).</span></div>
+<p class="key-value"><strong>Salida:</strong> Montos finales listos para aprobación.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf04-aprobar-liquidacin-b1f9f0">WF-04: Aprobar Liquidación</h3>
+<p class="key-value"><strong>Entrada:</strong> Liquidation Detail Sheet con montos netos por aliado.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Katherine revisa montos finales. Si grandes discrepancias vs. mes anterior (±20%), solicita explicación a Germán.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si OK, Katherine aprueba en sistema CRM (&quot;Liquidation Approved&quot; flag).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Sistema genera &quot;Liquidation Report&quot; (resumen ejecutivo + detalle por aliado).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Germán revisa reporte final (10 min). Firma digitalmente (aprobación final).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Sistema genera &quot;Payment Orders&quot; = instrucciones de transferencia bancaria.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Payment Orders enviadas a Tesorería (o CFO) para ejecución.</span></div>
+<p class="key-value"><strong>Salida:</strong> Liquidación aprobada, órdenes de pago generadas.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf05-ejecutar-pago-ac7adc">WF-05: Ejecutar Pago</h3>
+<p class="key-value"><strong>Entrada:</strong> Payment Orders aprobadas.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Tesorería/CFO revisa órdenes. Valida:</span></div>
+<div class="bullet-item">Cuentas bancarias de aliados están actualizadas y no marcadas como fraudulentas.</div>
+<div class="bullet-item">Montos match con liquidación aprobada.</div>
+<div class="bullet-item">No hay restricciones legales (embargo, etc.).</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si OK, procede transferencia bancaria masiva (batch processing si son &gt;10 aliados).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Transferencias procesadas en &lt;4h (mismo viernes).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Sistema CRM registra confirmación de pago (fecha, referencia bancaria, monto).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Notificación automática a aliados: &quot;Comisión liquidada. Esperá transferencia en 1-2 días hábiles&quot;.</span></div>
+<p class="key-value"><strong>Salida:</strong> Pagos ejecutados, confirmaciones registradas.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf06-notificar-aliado-detalle-797165">WF-06: Notificar Aliado + Detalle</h3>
+<p class="key-value"><strong>Entrada:</strong> Pago confirmado en CRM.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sistema genera &quot;Liquidation Statement&quot; por aliado (PDF descargable en portal).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Statement incluye:</span></div>
+<div class="bullet-item">Fecha de liquidación.</div>
+<div class="bullet-item">Período cubierto (ej. 10-24 de marzo).</div>
+<div class="bullet-item">Detalle de transacciones (cliente, venta, comisión, fecha recaudo).</div>
+<div class="bullet-item">Deducciones (impuestos, adelantos, saldos previos).</div>
+<div class="bullet-item">Comisión Neta.</div>
+<div class="bullet-item">Método y fecha de pago.</div>
+<div class="bullet-item">Link a portal para descargar comprobante.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Email automático a aliado con statement adjunto. CC a Germán (audit trail).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Portal actualizado: aliado ve &quot;Comisión Liquidada&quot; en dashboard.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Si aliado tiene dudas, puede iniciar ticket de soporte con screenshot del statement.</span></div>
+<p class="key-value"><strong>Salida:</strong> Aliado notificado, documentación completa, ciclo cerrado.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="calendario-de-liquidacin-ciclo-fijo-2fe575" data-searchable aria-labelledby="head-calendario-de-liquidacin-ciclo-fijo-2fe575">
+            <div class="phase-header" id="head-calendario-de-liquidacin-ciclo-fijo-2fe575" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Calendario de Liquidación (Ciclo Fijo)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Fase</th><th scope="col">Día</th><th scope="col">Hora</th><th scope="col">Owner</th><th scope="col">Duración</th></tr></thead><tbody><tr><td>Corte Quincenal</td><td>Jueves</td><td>18:00</td><td>CRM automático</td><td>30 min</td></tr><tr><td>Auditoría</td><td>Viernes</td><td>09:00-13:00</td><td>Katherine + Auditor</td><td>4h</td></tr><tr><td>Cálculo de Montos</td><td>Viernes</td><td>13:00-14:00</td><td>Sistema CRM</td><td>1h</td></tr><tr><td>Aprobación Katherine</td><td>Viernes</td><td>14:00-14:30</td><td>Katherine</td><td>30 min</td></tr><tr><td>Aprobación Germán</td><td>Viernes</td><td>14:30-14:45</td><td>Germán</td><td>15 min</td></tr><tr><td>Ejecución de Pagos</td><td>Viernes</td><td>15:00-16:00</td><td>Tesorería/CFO</td><td>1h</td></tr><tr><td>Notificación Aliados</td><td>Viernes</td><td>16:30</td><td>Sistema automático</td><td>15 min</td></tr><tr><td>Pago Efectivo en Cuenta</td><td>Lunes-Martes (L+2)</td><td>—</td><td>Banco</td><td>—</td></tr></tbody></table></div>
+<p class="key-value"><strong>Frecuencia:</strong> Cada 2 viernes. Próximas liquidaciones: 24-mar, 7-abr, 21-abr, 5-may, 19-may, etc.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-de-xito-9519c5" data-searchable aria-labelledby="head-mtricas-de-xito-9519c5">
+            <div class="phase-header" id="head-mtricas-de-xito-9519c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métricas de Éxito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Precisión de Cálculo:</strong> Errores en liquidación &lt;0.5% (auditoria vs. manual). Target: 99.5%.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>On-Time Payment:</strong> % de pagos ejecutados dentro de ciclo programado. Target: 100%.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Dispute Rate:</strong> Reclamos de aliados vs. liquidación / total liquidaciones. Target: &lt;2%.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Audit Completion Time:</strong> Promedio de horas para auditar todas las transacciones. Target: &lt;4h.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>CRM Data Quality:</strong> % de transacciones con atribución clara (no &quot;pending&quot;). Target: &gt;98%.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Recaudo en Ciclo:</strong> % de comisiones liquidadas basado en recaudos del período vs. comisiones esperadas. Target: &gt;85%.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Adelantos Solicitados:</strong> # de solicitudes de adelanto / total aliados. Target: &lt;5%.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="diferencias-clave-comisin-vs-marca-blanca-6da271" data-searchable aria-labelledby="head-diferencias-clave-comisin-vs-marca-blanca-6da271">
+            <div class="phase-header" id="head-diferencias-clave-comisin-vs-marca-blanca-6da271" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Diferencias Clave: Comisión vs. Marca Blanca</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Modelo Comisión</th><th scope="col">Marca Blanca</th></tr></thead><tbody><tr><td><strong>Liquidación</strong></td><td>Quincenal; por recaudo cliente</td><td>Ad-hoc; aliado paga PdR cuando cobra</td></tr><tr><td><strong>Trigger</strong></td><td>Recaudo del cliente</td><td>Recaudo del cliente</td></tr><tr><td><strong>Tasa</strong></td><td>% fijo (ej. 12%)</td><td>Margen libre (PdR → Precio Final)</td></tr><tr><td><strong>Frecuencia</strong></td><td>Fija: cada 2 viernes</td><td>Flexible; alias controla timing</td></tr><tr><td><strong>Responsabilidad Recaudo</strong></td><td>MetodologIA persigue cliente</td><td>Aliado persigue su cliente</td></tr><tr><td><strong>Adelantos</strong></td><td>Excepcional; raro</td><td>No aplica (aliado es dueño)</td></tr><tr><td><strong>Disputas</strong></td><td>MetodologIA arbitra</td><td>Aliado negocia con su cliente</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="conexiones-sistmicas-0b0399" data-searchable aria-labelledby="head-conexiones-sistmicas-0b0399">
+            <div class="phase-header" id="head-conexiones-sistmicas-0b0399" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Conexiones Sistémicas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Proceso Comercial — Aliados GTM:</strong> Aliados comisionados son parte de estrategia de distribución. Liquidación es incentivo.</div>
+<div class="bullet-item"><strong>Proceso Financiero:</strong> Ingresos de MetodologIA dependen del recaudo; comisiones salen del margen neto.</div>
+<div class="bullet-item"><strong>CRM Central:</strong> Fuente única de verdad para leads, transacciones, recaudos, atribuciones.</div>
+<div class="bullet-item"><strong>Cumplimiento &amp; Auditoría:</strong> Cada liquidación es auditable ante autoridades fiscales.</div>
+<div class="bullet-item"><strong>Tesorería:</strong> Gestiona pagos; coordina con Katherine en timing.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ecuacin-metodologia-rentabilidad-comisiones-0cef0f" data-searchable aria-labelledby="head-ecuacin-metodologia-rentabilidad-comisiones-0cef0f">
+            <div class="phase-header" id="head-ecuacin-metodologia-rentabilidad-comisiones-0cef0f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ecuación MetodologIA (Rentabilidad Comisiones)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>Ingresos_MetodologIA = Venta_Cliente − Comisión_Aliado − Costo_Delivery
+
+Comisión_Aliado = Recaudo_Cliente × Tasa_Comisión (ej. 12%)
+
+Margen_MetodologIA = (Recaudo − Comisión − Costo_Delivery) / Recaudo
+
+Ejemplo:
+  Venta Cliente: $100k
+  Recaudo: $100k (100% pago)
+  Comisión Aliado: 12% × $100k = $12k
+  Costo Delivery: $15k
+  Ingresos Netos MetodologIA: $100k − $12k − $15k = $73k
+  Margen MetodologIA: 73%
+
+Punto de Quiebre (Min Recaudo para Liquidar):
+  Si Costo Auditoría = $200
+  Comisión Mínima para justificar liquidación = $500
+  Recaudo Mínimo = $500 / 12% = $4.2k (cliente muy pequeño; se liquida igual pero low ROI)
+
+Elasticidad (Aliado de Alto Volumen):
+  Si aliado trae &gt;$1M/año recaudos
+  → Se puede negociar tasa comisión reducida (ej. 10% en lugar de 12%)
+  → Ahorro para MetodologIA: 2% × $1M = $20k/año</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="anexos-operacionales-369a22" data-searchable aria-labelledby="head-anexos-operacionales-369a22">
+            <div class="phase-header" id="head-anexos-operacionales-369a22" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Anexos Operacionales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Anexo A:</strong> Plantilla de &quot;Liquidation Detail Sheet&quot;.</div>
+<div class="bullet-item"><strong>Anexo B:</strong> Tasas de Comisión por Producto/Modelo (vigentes).</div>
+<div class="bullet-item"><strong>Anexo C:</strong> Template de Email de Notificación a Aliados.</div>
+<div class="bullet-item"><strong>Anexo D:</strong> Rúbrica de Auditoría de Atribución (preguntas de validación).</div>
+<div class="bullet-item"><strong>Anexo E:</strong> Procedimiento de Escalation para Disputas de Comisión.</div>
+<div class="bullet-item"><strong>Anexo F:</strong> Calendario de Liquidación (12 meses siguiente).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="escalation-gobierno-4f52e2" data-searchable aria-labelledby="head-escalation-gobierno-4f52e2">
+            <div class="phase-header" id="head-escalation-gobierno-4f52e2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Escalation &amp; Gobierno</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escala de Decisión</th><th scope="col">Owner</th><th scope="col">Timing</th></tr></thead><tbody><tr><td>Aprobación liquidación normal</td><td>Katherine</td><td>30 min</td></tr><tr><td>Aprobación final (Germán)</td><td>Germán</td><td>15 min</td></tr><tr><td>Disputas de comisión (&lt;$10k)</td><td>Katherine</td><td>&lt;2 días</td></tr><tr><td>Disputas de comisión (&gt;$10k)</td><td>Germán + CFO</td><td>&lt;5 días</td></tr><tr><td>Fraude sospechado</td><td>Germán + Auditor Externo</td><td>&lt;10 días</td></tr><tr><td>Cambio de tasa de comisión</td><td>Katherine + Germán</td><td>&lt;1 semana</td></tr><tr><td>Revisión trimestral</td><td>CFO + Germán</td><td>Fin de trimestre</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="seguridad-compliance-408522" data-searchable aria-labelledby="head-seguridad-compliance-408522">
+            <div class="phase-header" id="head-seguridad-compliance-408522" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Seguridad &amp; Compliance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Confidencialidad:</strong> Datos de comisiones son confidenciales. No se comparten entre aliados.</div>
+<div class="bullet-item"><strong>Auditoría Fiscal:</strong> Cada liquidación es registrada en libros contables. Disponible para auditoría externa.</div>
+<div class="bullet-item"><strong>Retención Impositiva:</strong> MetodologIA retiene según ley. Responsabilidad de MetodologIA.</div>
+<div class="bullet-item"><strong>RGPD/Privacidad:</strong> Datos bancarios de aliados encriptados en CRM. No se transfieren terceros.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="control-de-cambios-12ae9d" data-searchable aria-labelledby="head-control-de-cambios-12ae9d">
+            <div class="phase-header" id="head-control-de-cambios-12ae9d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Control de Cambios</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Versión</th><th scope="col">Fecha</th><th scope="col">Cambio</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>1.0</td><td>2026-03-24</td><td>Creación inicial</td><td>Katherine, Germán</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="preguntas-frecuentes-faq-2073b8" data-searchable aria-labelledby="head-preguntas-frecuentes-faq-2073b8">
+            <div class="phase-header" id="head-preguntas-frecuentes-faq-2073b8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Preguntas Frecuentes (FAQ)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>P: ¿Cuánto espero para cobrar comisión?</strong></p>
+<p>R: Máximo 15 días desde recaudo del cliente. Sistema CRM dispara liquidación en próximo corte quincenal.</p>
+<p class="key-value"><strong>P: ¿Si cliente paga atrasado, se retrasa mi comisión?</strong></p>
+<p>R: Sí. Comisión se liquida cuando cliente paga. Si cliente paga en día 90, tu comisión en ciclo de 90+ días.</p>
+<p class="key-value"><strong>P: ¿Puedo solicitar comisión adelantada?</strong></p>
+<p>R: No, salvo si eres aliado &quot;Oro&quot; ($500k+/año). Póliza de adelanto disponible con aseguradora.</p>
+<p class="key-value"><strong>P: ¿Qué pasa si me equivoco en el reporte de comisión?</strong></p>
+<p>R: Sistema CRM valida. Si hay error tuyo, auditor contacta. Corrección manual en próxima quincena (no penalidad).</p>
+<p class="key-value"><strong>P: ¿Cómo disputo una comisión que creo es incorrecta?</strong></p>
+<p>R: Abre ticket en portal. Katherine revisa en &lt;2 días. Si aceptamos error, se corrige. Si es correcta, explicamos desglose.</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Onboarding Cohorte — Proceso de Delivery MetodologIA">
+    <title>SOP: Onboarding Cohorte — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Bootcamp</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Onboarding Cohorte</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Onboarding Cohorte</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 2.0 | Vigencia: 2026-01 | Dueño: Facilitador Lead | Última Actualización: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">9</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('identificacin-557cb8')" aria-label="Ir a Identificación">Identificación</button>
+<button class="nav-btn" onclick="scrollToSection('objetivo-binario-1c51fd')" aria-label="Ir a Objetivo Binario">Objetivo Binario</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-lmites-0c0363')" aria-label="Ir a Supuestos &amp; Límites">Supuestos &amp; Límites</button>
+<button class="nav-btn" onclick="scrollToSection('proceso-pasoapaso-t7-a-t0-035b93')" aria-label="Ir a Proceso Paso-a-Paso (T-7 a T-0)">Proceso Paso-a-Paso (T-7 a T-0)</button>
+<button class="nav-btn" onclick="scrollToSection('cohort-readiness-checklist-756d64')" aria-label="Ir a Cohort Readiness Checklist">Cohort Readiness Checklist</button>
+<button class="nav-btn" onclick="scrollToSection('kpis-for-onboarding-phase-f35634')" aria-label="Ir a KPIs for Onboarding Phase">KPIs for Onboarding Phase</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-onboarding-360a1e')" aria-label="Ir a Casos Borde (Onboarding)">Casos Borde (Onboarding)</button>
+<button class="nav-btn" onclick="scrollToSection('antipatterns-qu-no-hacer-31069f')" aria-label="Ir a Anti-Patterns (QUÉ NO HACER)">Anti-Patterns (QUÉ NO HACER)</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-operativos-eaa56d')" aria-label="Ir a Fallbacks Operativos">Fallbacks Operativos</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="identificacin-557cb8" data-searchable aria-labelledby="head-identificacin-557cb8">
+            <div class="phase-header" id="head-identificacin-557cb8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Identificación</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Código SOP</strong>: SOP-OC-BC</div>
+<div class="bullet-item"><strong>Proceso Padre</strong>: Entregar Bootcamp (Ver: entregar-bootcamp-proceso.md)</div>
+<div class="bullet-item"><strong>Fase</strong>: Onboarding Cohorte (T-7 a T-0, 7 días intensivos)</div>
+<div class="bullet-item"><strong>Responsable Principal</strong>: Facilitador Lead (community builder, psychologically-safe culture setter)</div>
+<div class="bullet-item"><strong>Responsable Secundario</strong>: Coordinador Ops (logistics, tech access, communications)</div>
+<div class="bullet-item"><strong>Stakeholders</strong>: Tech Ops (platform), Squad participants, Account Manager (client)</div>
+<div class="bullet-item"><strong>Input desde</strong>: SOP-DC-BC (curriculum + project brief)</div>
+<div class="bullet-item"><strong>Output hacia</strong>: SOP-FS-BC (Facilitación Semanal)</div>
+<div class="bullet-item"><strong>Gate</strong>: Cohort Readiness (T-0) - ≥95% kick-off attendance, ≥90% pre-work completion</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="objetivo-binario-1c51fd" data-searchable aria-labelledby="head-objetivo-binario-1c51fd">
+            <div class="phase-header" id="head-objetivo-binario-1c51fd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Objetivo Binario</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Convertir grupo de individuos dispersos en COHORT COHESIVO con:</p>
+<label class="checklist-item" for="chk-squads-formados-34-personas-balanced-skills-person-314f93"><input type="checkbox" id="chk-squads-formados-34-personas-balanced-skills-person-314f93" ><span>Squads formados (3-4 personas, balanced skills + personalities)</span></label>
+<label class="checklist-item" for="chk-psychological-safety-established-safe-to-struggle--0ef31b"><input type="checkbox" id="chk-psychological-safety-established-safe-to-struggle--0ef31b" ><span>Psychological safety established (safe to struggle, ask questions)</span></label>
+<label class="checklist-item" for="chk-prework-completed-90-cc19d4"><input type="checkbox" id="chk-prework-completed-90-cc19d4" ><span>Pre-work completed ≥90%</span></label>
+<label class="checklist-item" for="chk-platform-access-100-funcional-8ff8ca"><input type="checkbox" id="chk-platform-access-100-funcional-8ff8ca" ><span>Platform access 100% funcional</span></label>
+<label class="checklist-item" for="chk-kickoff-event-95-asistencia-45d8c1"><input type="checkbox" id="chk-kickoff-event-95-asistencia-45d8c1" ><span>Kick-off event ≥95% asistencia</span></label>
+<label class="checklist-item" for="chk-momentum-alto-hacia-week-1-e4f75a"><input type="checkbox" id="chk-momentum-alto-hacia-week-1-e4f75a" ><span>Momentum alto hacia Week 1</span></label>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-lmites-0c0363" data-searchable aria-labelledby="head-supuestos-lmites-0c0363">
+            <div class="phase-header" id="head-supuestos-lmites-0c0363" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> Supuestos &amp; Límites</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Supuestos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Roster validada T-7 (nombres, roles, emails activos, experience levels)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Curriculum finalizado T-7 (project brief, learning objectives claros)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Slack workspace pre-created, Notion database ready</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Facilitador Lead ha participado en ≥1 bootcamp anterior</span></div>
+<p class="key-value"><strong>Límites (No cubierto)</strong>:</p>
+<div class="bullet-item">Resolución de tech issues profundas (IT support domain)</div>
+<div class="bullet-item">Coaching pre-bootcamp (out of scope)</div>
+<div class="bullet-item">Pre-onboarding for prerequisite knowledge (assumimos ya lo saben o facilitador lo cover in Week 1)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="proceso-pasoapaso-t7-a-t0-035b93" data-searchable aria-labelledby="head-proceso-pasoapaso-t7-a-t0-035b93">
+            <div class="phase-header" id="head-proceso-pasoapaso-t7-a-t0-035b93" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Proceso Paso-a-Paso (T-7 a T-0)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="t7-cohort-formation-welcome-package-a70022">T-7: Cohort Formation + Welcome Package</h3>
+<p class="key-value"><strong>Responsable</strong>: Facilitador Lead + Coordinador Ops (4 hours)</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Form squads</strong> (1.5 hours):</span></div>
+<div class="bullet-item">Analyze cohort profile (roles, skills, personalities, backgrounds)</div>
+<div class="bullet-item">Create 3-4 squads of 3-4 people each (balanced):</div>
+<div class="bullet-item">Mix skills (not all strong, not all weak)</div>
+<div class="bullet-item">Mix personality types (not all introverts, not all extroverts)</div>
+<div class="bullet-item">Mix backgrounds/companies (if B2C)</div>
+<div class="bullet-item">Assign squad names (fun names create identity)</div>
+<div class="bullet-item">Document assignments (sheet with names, squads, emails)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Create welcome email</strong> (1 hour):</span></div>
+<div class="bullet-item">Subject: &quot;You&#x27;re In! Welcome to [Bootcamp Name] 🚀&quot;</div>
+<div class="bullet-item">Content:</div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>     Hi [Name],
+
+     Welcome to the cohort! We&#x27;re thrilled to have you here.
+
+     HERE&#x27;S YOUR SQUAD
+     [Squad name]: [Names + roles]
+     Your squad lead: [Name] (the one with most experience)
+
+     WHAT&#x27;S NEXT
+     1. Join Slack workspace [link] (accept invite today)
+     2. Complete pre-work [link to assignment] by [T-5]
+     3. Attend kick-off event [date/time/link] (T-3)
+
+     PRE-WORK: 5 hours, self-paced
+     - Baseline assessment (what do you know today?)
+     - Intro module (get your mind ready)
+     - Optional: Tool setup/familiarization
+
+     EXPECTATIONS
+     - Show up (sync sessions Mon/Fri at [time])
+     - Engage (ask questions, share ideas)
+     - Support squad (we succeed together)
+     - Build something real (capstone project matters)
+
+     Questions? Reply to this email.
+
+     See you soon,
+     [Facilitador Lead]</code></pre>
+<div class="bullet-item">Attach: Squad assignments, calendar (all 3 weeks), pre-work link</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Send welcome package</strong> (1 hour):</span></div>
+<div class="bullet-item">Individual welcome emails (personalized with squad)</div>
+<div class="bullet-item">Batch email to all (squad assignments, calendar, community guidelines)</div>
+<div class="bullet-item">Create Slack workspace if not already</div>
+<div class="bullet-item">Add all participants to Slack</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Document baseline</strong> (0.5 hours):</span></div>
+<div class="bullet-item">Create roster with: name, email, squad, role, prior experience</div>
+<div class="bullet-item">Share with facilitator team</div>
+<div class="bullet-item">Set expectations: track attendance, engagement, progress</div>
+<p class="key-value"><strong>Output</strong>: Welcome emails sent, squads assigned, roster created</p>
+<hr class="divider">
+<h3 class="subsection-title" id="t6-to-t5-prework-assignments-baseline-assessment-531181">T-6 to T-5: Pre-work Assignments + Baseline Assessment</h3>
+<p class="key-value"><strong>Responsable</strong>: Facilitador Lead + Tech Ops (2 hours daily monitoring)</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Pre-work design</strong> (async, self-paced, 5 hours total):</span></div>
+<div class="bullet-item">Module 1: Bootcamp mindset (30 min video)</div>
+<div class="bullet-item">What is this bootcamp?</div>
+<div class="bullet-item">Why it matters</div>
+<div class="bullet-item">What success looks like</div>
+<div class="bullet-item">Module 2: Baseline assessment (1.5 hours):</div>
+<div class="bullet-item">Skills quiz (where are you today?)</div>
+<div class="bullet-item">Self-reflection (goals, challenges, commitments)</div>
+<div class="bullet-item">Module 3: Tool familiarization (2 hours):</div>
+<div class="bullet-item">If technical bootcamp: get environment set up</div>
+<div class="bullet-item">If not: familiarity with learning platform</div>
+<div class="bullet-item">Module 4: Optional deep-dive (1.5 hours):</div>
+<div class="bullet-item">Reading or video on bootcamp topic</div>
+<div class="bullet-item">Get curious, not comprehensive</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Monitor completion</strong> (T-5 evening):</span></div>
+<div class="bullet-item">Check who completed pre-work (target ≥ 90%)</div>
+<div class="bullet-item">For non-completers: friendly nudge email or Slack DM</div>
+<div class="bullet-item">&quot;Hey [name], we haven&#x27;t seen your pre-work yet. All good? Need help?&quot;</div>
+<div class="bullet-item">Offer: &quot;We can sync on [time] if you&#x27;re stuck&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Analyze baseline assessment data</strong>:</span></div>
+<div class="bullet-item">Skills distribution (who&#x27;s strong, who needs support?)</div>
+<div class="bullet-item">Identify low-skill participants (mark for extra mentoring)</div>
+<div class="bullet-item">Look for engagement patterns (who&#x27;s excited, who&#x27;s uncertain?)</div>
+<div class="bullet-item">Document findings (for facilitator team)</div>
+<p class="key-value"><strong>Output</strong>: ≥90% pre-work completion, baseline skills data, facilitator debrief</p>
+<hr class="divider">
+<h3 class="subsection-title" id="t4-to-t3-community-building-kickoff-prep-748645">T-4 to T-3: Community Building + Kick-off Prep</h3>
+<p class="key-value"><strong>Responsable</strong>: Facilitador Lead + Coordinador Ops (6 hours)</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Activate Slack community</strong> (1 hour):</span></div>
+<div class="bullet-item">Post welcome message to #general (set tone: enthusiastic, supportive)</div>
+<div class="bullet-item">Intro posts from facilitator team (who we are, what we care about)</div>
+<div class="bullet-item">Squad intro threads (squads introduce themselves to each other)</div>
+<div class="bullet-item">Encourage 1:1 Slack intros between squad members</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Plan kick-off event</strong> (2 hours):</span></div>
+<div class="bullet-item">Logistics: Date/time, venue (in-person preferred) or Zoom link</div>
+<div class="bullet-item">Agenda:</div>
+<div class="bullet-item">0-30 min: Welcome, ice breaker, bootcamp vision</div>
+<div class="bullet-item">30-60 min: Participant intros (squad by squad, 2 min per squad)</div>
+<div class="bullet-item">60-90 min: Capstone project overview + examples</div>
+<div class="bullet-item">90-120 min: Expectations, norms, team photo, breakout bonding</div>
+<div class="bullet-item">Materials: Slides, ice-breaker activity, team photo backdrop (if in-person)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Send kick-off reminder</strong> (1 hour):</span></div>
+<div class="bullet-item">T-4: Calendar invite (if not already sent)</div>
+<div class="bullet-item">T-3: Email reminder (logistics, what to bring, what to expect)</div>
+<div class="bullet-item">Optional: short video of facilitator (personal touch, builds connection)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Prepare squad breakout sessions</strong> (2 hours):</span></div>
+<div class="bullet-item">Post squad-specific guide to Slack (squad leads get copy):</div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>     SQUAD INTRO BREAKOUT (30 min)
+
+     1. Intros (10 min): Name, role, company, 1 fun fact
+     2. Goals (10 min): Why you&#x27;re here, what you want to build
+     3. Commitment (10 min): How you&#x27;ll show up, what you need from squad
+
+     Squad lead: Take notes, share back with team after</code></pre>
+<p class="key-value"><strong>Output</strong>: Kick-off event ready, community activated on Slack, squad breakout guides prepared</p>
+<hr class="divider">
+<h3 class="subsection-title" id="t2-final-logistics-platform-verification-107740">T-2: Final Logistics + Platform Verification</h3>
+<p class="key-value"><strong>Responsable</strong>: Coordinador Ops + Tech Ops (2 hours)</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Verify platform access</strong> (1 hour):</span></div>
+<div class="bullet-item">Check all participants have:</div>
+<label class="checklist-item" for="chk-slack-workspace-access-dcf703"><input type="checkbox" id="chk-slack-workspace-access-dcf703" ><span>Slack workspace access</span></label>
+<label class="checklist-item" for="chk-notiongoogle-drive-access-08e63d"><input type="checkbox" id="chk-notiongoogle-drive-access-08e63d" ><span>Notion/Google Drive access</span></label>
+<label class="checklist-item" for="chk-zoom-link-for-monday-sync-142644"><input type="checkbox" id="chk-zoom-link-for-monday-sync-142644" ><span>Zoom link for Monday sync</span></label>
+<label class="checklist-item" for="chk-lmsmaterials-access-09a470"><input type="checkbox" id="chk-lmsmaterials-access-09a470" ><span>LMS/materials access</span></label>
+<div class="bullet-item">For anyone missing access: Fix immediately, send confirmation</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Confirm participant info</strong> (30 min):</span></div>
+<div class="bullet-item">Send confirmation email with all logistics:</div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>     BOOTCAMP STARTS TOMORROW!
+
+     ✓ Kick-off event: [Date/Time] [Zoom link or address]
+     ✓ First session: [Monday, exact time] [Zoom link]
+     ✓ Schedule: [Link to full calendar]
+     ✓ Platform access: [Links to Slack, Notion, etc.]
+     ✓ Squad: [Squad name + members]
+
+     Come as you are. Bring curiosity. Leave anxiety at the door.
+
+     See you in 24 hours!</code></pre>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Facilitator team final prep</strong> (30 min):</span></div>
+<div class="bullet-item">Facilitador Lead + Asistente(s) sync (15 min):</div>
+<div class="bullet-item">Review final roster</div>
+<div class="bullet-item">Discuss any known challenges or needs</div>
+<div class="bullet-item">Confirm roles/responsibilities</div>
+<div class="bullet-item">Tech test (15 min):</div>
+<div class="bullet-item">Zoom call test (audio, video, screen share)</div>
+<div class="bullet-item">Slack + Notion access verify</div>
+<div class="bullet-item">Recording setup test</div>
+<div class="bullet-item">Backup plan if tech fails</div>
+<p class="key-value"><strong>Output</strong>: Platform access confirmed, tech tested, team aligned</p>
+<hr class="divider">
+<h3 class="subsection-title" id="t0-kickoff-event-live-61d7b4">T-0: Kick-off Event (Live)</h3>
+<p class="key-value"><strong>Responsable</strong>: Facilitador Lead (2-3 hours in-person/sync)</p>
+<p class="key-value"><strong>Session Agenda</strong>:</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Time</th><th scope="col">Activity</th><th scope="col">Facilitator</th><th scope="col">Participant Role</th></tr></thead><tbody><tr><td>0:00-0:05</td><td>Welcome</td><td>Principal</td><td>Settle, attention</td></tr><tr><td>0:05-0:15</td><td>Bootcamp vision</td><td>Principal</td><td>Listen, absorb why</td></tr><tr><td>0:15-0:25</td><td>Ice breaker</td><td>Principal</td><td>Share, laugh, connect</td></tr><tr><td>0:25-1:00</td><td>Squad intros</td><td>Facilitator per squad</td><td>Introduce self, share goals</td></tr><tr><td>1:00-1:30</td><td>Capstone overview</td><td>Principal</td><td>Understand the project</td></tr><tr><td>1:30-1:45</td><td>Expectations + norms</td><td>Principal</td><td>Agree to commitments</td></tr><tr><td>1:45-2:00</td><td>Team photo + breakout</td><td>Asistente</td><td>Build squad bonds</td></tr></tbody></table></div>
+<p class="key-value"><strong>Facilitator Talking Points</strong>:</p>
+<div class="bullet-item">&quot;This is not a course; it&#x27;s a co-creation&quot;</div>
+<div class="bullet-item">&quot;You&#x27;ll build something real in 3 weeks&quot;</div>
+<div class="bullet-item">&quot;Your squad is your support system&quot;</div>
+<div class="bullet-item">&quot;Failure is learning; we celebrate it&quot;</div>
+<p class="key-value"><strong>Expected Outcomes</strong>:</p>
+<div class="bullet-item">Participants feel welcomed + excited</div>
+<div class="bullet-item">Squads have bonded (at least initial connection)</div>
+<div class="bullet-item">Project is understood</div>
+<div class="bullet-item">Psychological safety established (safe to struggle, ask questions)</div>
+<p class="key-value"><strong>Post-event</strong>:</p>
+<div class="bullet-item">Take photos (with permission)</div>
+<div class="bullet-item">Post group photo to Slack (#wins)</div>
+<div class="bullet-item">Send recording to Slack (for those who missed)</div>
+<div class="bullet-item">Squad leads post reflection to Slack</div>
+<p class="key-value"><strong>Output</strong>: Kick-off event completed, community activated, Week 1 momentum established</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="cohort-readiness-checklist-756d64" data-searchable aria-labelledby="head-cohort-readiness-checklist-756d64">
+            <div class="phase-header" id="head-cohort-readiness-checklist-756d64" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Cohort Readiness Checklist</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Owner</strong>: Facilitador Lead</p>
+<p class="key-value"><strong>Pre-Week 1 sign-off</strong>:</p>
+<label class="checklist-item" for="chk-95-attended-kickoff-event-4df9e7"><input type="checkbox" id="chk-95-attended-kickoff-event-4df9e7" ><span>95%+ attended kick-off event</span></label>
+<label class="checklist-item" for="chk-90-completed-prework-1c52b7"><input type="checkbox" id="chk-90-completed-prework-1c52b7" ><span>90%+ completed pre-work</span></label>
+<label class="checklist-item" for="chk-squads-formed-bonded-team-photo-fcbce8"><input type="checkbox" id="chk-squads-formed-bonded-team-photo-fcbce8" ><span>Squads formed + bonded (team photo)</span></label>
+<label class="checklist-item" for="chk-all-platform-access-confirmed-tested-517bd2"><input type="checkbox" id="chk-all-platform-access-confirmed-tested-517bd2" ><span>All platform access confirmed + tested</span></label>
+<label class="checklist-item" for="chk-participants-understand-project-expectations-2b958a"><input type="checkbox" id="chk-participants-understand-project-expectations-2b958a" ><span>Participants understand project + expectations</span></label>
+<label class="checklist-item" for="chk-facilitator-team-briefed-confident-60b3e8"><input type="checkbox" id="chk-facilitator-team-briefed-confident-60b3e8" ><span>Facilitator team briefed + confident</span></label>
+<label class="checklist-item" for="chk-tech-setup-verified-zoom-recording-slack-notion-e4e0b1"><input type="checkbox" id="chk-tech-setup-verified-zoom-recording-slack-notion-e4e0b1" ><span>Tech setup verified (Zoom, recording, Slack, Notion)</span></label>
+<label class="checklist-item" for="chk-schedule-confirmed-no-conflicts-all-know-meeting-t-d26033"><input type="checkbox" id="chk-schedule-confirmed-no-conflicts-all-know-meeting-t-d26033" ><span>Schedule confirmed (no conflicts, all know meeting times)</span></label>
+<p class="key-value"><strong>If any box unchecked</strong>: Escalate to Facilitador Lead for resolution (delay start if needed, but max 2-day slip)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="kpis-for-onboarding-phase-f35634" data-searchable aria-labelledby="head-kpis-for-onboarding-phase-f35634">
+            <div class="phase-header" id="head-kpis-for-onboarding-phase-f35634" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> KPIs for Onboarding Phase</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Owner</th></tr></thead><tbody><tr><td><strong>Pre-work completion</strong></td><td>≥ 90%</td><td>Facilitador</td></tr><tr><td><strong>Kick-off attendance</strong></td><td>≥ 95%</td><td>Ops</td></tr><tr><td><strong>Platform adoption</strong></td><td>≥ 80% active on Slack/Notion by T-0</td><td>Tech Ops</td></tr><tr><td><strong>Squad cohesion</strong></td><td>≥ 3/5 initial bonding</td><td>Facilitador</td></tr><tr><td><strong>Participant confidence</strong></td><td>Survey ≥ 3/5 &quot;ready to start&quot;</td><td>Ops</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-onboarding-360a1e" data-searchable aria-labelledby="head-casos-borde-onboarding-360a1e">
+            <div class="phase-header" id="head-casos-borde-onboarding-360a1e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> Casos Borde (Onboarding)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Caso 1: Participante &quot;ghost&quot; (inscrito, no responde a comunicaciones T-5)</strong></p>
+<p>Trigger: Welcome email enviado, sin respuesta, pre-work no iniciado</p>
+<p>Decision: T-5: Follow-up call (Account Manager o Facilitador Lead)</p>
+<div class="bullet-item">&quot;Hi [name], we haven&#x27;t seen you yet. Everything OK?&quot;</div>
+<div class="bullet-item">Si no responde T-4: Check in con Account Manager/client contact (&quot;Is [person] still coming?&quot;)</div>
+<div class="bullet-item">Si no confirmed T-2: Marca como &quot;tentative&quot;, proceed sin asumir presencia</div>
+<p>Principle: Don&#x27;t wait; surface issues early</p>
+<p class="key-value"><strong>Caso 2: Squad formed, pero uno es &quot;outsider&quot; (lenguaje, background, skills muy diferente)</strong></p>
+<p>Trigger: Facilitador nota en kick-off que uno no encaja con su squad</p>
+<p>Decision: Monitor Week 1, si tension visible:</p>
+<div class="bullet-item">Option A: Mentoring pairing (mentor + outsider, para aceleración)</div>
+<div class="bullet-item">Option B: Rebalance to another squad (week 1 only window)</div>
+<div class="bullet-item">Option C: 1:1 coaching para onboarding acelerado</div>
+<p>Principle: Inclusión es importante, pero squad cohesion también</p>
+<p class="key-value"><strong>Caso 3: Tech platform access falla para &gt;2 personas T-2</strong></p>
+<p>Trigger: Slack bot no invitó, Notion permissions wrong, etc.</p>
+<p>Decision: IT triage inmediata (sameday)</p>
+<div class="bullet-item">Ops coordinator troubleshoots en paralelo</div>
+<div class="bullet-item">If &lt;2h fix: proceed como planeado</div>
+<div class="bullet-item">If &gt;2h fix: manual onboarding (video walk-through alternative)</div>
+<p>Escalate: Si sigue broken T-0: notify Facilitador Lead</p>
+<p class="key-value"><strong>Caso 4: Pre-work completion baja (&lt;70% por T-5)</strong></p>
+<p>Trigger: Menos del 70% completó pre-work assignment</p>
+<p>Decision: T-5: Nudge email/message</p>
+<div class="bullet-item">No-judgment reminder</div>
+<div class="bullet-item">Offer async extension (hasta T-6 23:59)</div>
+<div class="bullet-item">Offer tech support si es blocker</div>
+<div class="bullet-item">Facilitador prepared para Week 1 without assuming pre-work done (reteach if needed)</div>
+<p class="key-value"><strong>Caso 5: Kick-off event attendance drops to 80% (4 de 20 missing T-0)</strong></p>
+<p>Trigger: Algunos no pueden asistir a última hora</p>
+<p>Decision: Proceed con 16 (80% is acceptable)</p>
+<div class="bullet-item">Facilitador sends recording + kick-off notes a no-shows</div>
+<div class="bullet-item">Personal follow-up: &quot;Sorry you missed it. Here&#x27;s what you need to know...&quot;</div>
+<div class="bullet-item">Not dealbreaker, pero documentar reason (work, tech, personal)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="antipatterns-qu-no-hacer-31069f" data-searchable aria-labelledby="head-antipatterns-qu-no-hacer-31069f">
+            <div class="phase-header" id="head-antipatterns-qu-no-hacer-31069f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> Anti-Patterns (QUÉ NO HACER)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">NO auto-select squads (permite clustering de skill/personality; Facilitador debe balancear)</div>
+<div class="bullet-item">NO ignorar participante &quot;ghost&quot; pre-kick-off (escalate temprano)</div>
+<div class="bullet-item">NO permitir participante optar out of kick-off (&quot;I&#x27;ll read notes later&quot;) - asistencia non-negotiable</div>
+<div class="bullet-item">NO sobre-personalize pre-work (complexity frena completitud; keep simple)</div>
+<div class="bullet-item">NO perder roster durante onboarding (single source of truth en shared sheet)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-operativos-eaa56d" data-searchable aria-labelledby="head-fallbacks-operativos-eaa56d">
+            <div class="phase-header" id="head-fallbacks-operativos-eaa56d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Falla</th><th scope="col">Fallback</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>Tech access fail &gt;2 personas</td><td>Manual onboarding (video guide + personal support)</td><td>Tech Ops + Ops</td></tr><tr><td>Pre-work completion &lt;70%</td><td>Extend deadline T-6, reteach in Week 1 if needed</td><td>Facilitador Lead</td></tr><tr><td>Kick-off attendance 80%</td><td>Proceed, send recording + notes to no-shows</td><td>Facilitador Lead</td></tr><tr><td>Squad formation incomplete T-7</td><td>Facilitador forms manually (no esperes autoselección)</td><td>Facilitador Lead</td></tr><tr><td>Participants &quot;ghosting&quot; pre-T-0</td><td>Account Manager 1:1 call ASAP</td><td>Account Manager</td></tr></tbody></table></div>
+<hr class="divider">
+<p class="key-value"><strong>Próximo Review</strong>: 2026-04-15 | <strong>Dueño</strong>: Facilitador Lead</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

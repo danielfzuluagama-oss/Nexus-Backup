@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acta Oficial: Discovery Prolipa | MetodologIA</title>
+    <!-- Favicon Replica (SVG) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg width='36' height='36' viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='bgGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%230A122A'/><stop offset='100%25' stop-color='%231E293B'/></linearGradient></defs><rect width='36' height='36' rx='10' fill='url(%23bgGrad)'/><line x1='10' y1='12' x2='10' y2='24' stroke='white' stroke-width='2' stroke-linecap='round'/><line x1='16' y1='12' x2='16' y2='20' stroke='white' stroke-width='2' stroke-linecap='round'/><line x1='16' y1='22' x2='16' y2='24' stroke='white' stroke-width='2' stroke-linecap='round'/><line x1='22' y1='12' x2='22' y2='18' stroke='white' stroke-width='2' stroke-linecap='round'/><line x1='22' y1='20' x2='22' y2='24' stroke='white' stroke-width='2' stroke-linecap='round'/><circle cx='18' cy='8' r='2' fill='%23FFD700'/></svg>">
+    
+    <!-- Typographies: Poppins, Montserrat, Jost as requested by vision page -->
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #2A3B52;
+            --bg-surface: #1A2130;
+            --bg-card: rgba(26, 33, 48, 0.6);
+            --text-primary: #F8FAFC;
+            --text-secondary: #CBD5E1;
+            --brand-main: #122562;
+            --brand-gold: #FFD700;
+            --brand-blue: #38BDF8;
+            --brand-purple: #E2E8F0;
+            
+            --font-display: 'Poppins', sans-serif;
+            --font-headings: 'Jost', sans-serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--text-primary);
+            margin-top: 0;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 { font-family: var(--font-headings); font-size: 2rem; font-weight: 600; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+        h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: var(--brand-gold); }
+        p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Nav/Brand Component */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .brand-logo {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .golden-accent { color: var(--brand-gold); }
+        .blue-accent { color: var(--brand-blue); }
+
+        .meta-tag {
+            font-family: var(--font-headings);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--brand-gold);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--bg-card);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .info-block span {
+            display: block;
+            font-family: var(--font-headings);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--brand-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-block strong {
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        th {
+            font-family: var(--font-headings);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            background: rgba(255,255,255,0.02);
+        }
+
+        td {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        /* Checklists & Lists */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li.action-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        li.action-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--brand-gold);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Highlight box */
+        .highlight-box {
+            background: linear-gradient(90deg, rgba(19, 125, 197, 0.15) 0%, rgba(26, 33, 48, 0) 100%);
+            border-left: 3px solid var(--brand-blue);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .footer {
+            margin-top: 6rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            font-family: var(--font-headings);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        /* Utility Classes for Lint Fixes */
+        .brand-logo-custom { text-transform: none; letter-spacing: -0.5px; }
+        .logo-svg { filter: drop-shadow(0 0 12px rgba(255,215,0,0.3)); }
+        .flex-col { display: flex; flex-direction: column; }
+        .brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; line-height: 1; }
+        .brand-tagline { font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--brand-gold); }
+        .section-spacer { margin-bottom: 4rem; }
+        .h3-blue { color: var(--brand-blue); margin-bottom: 0.5rem; }
+        .p-lead { font-size: 1.2rem; max-width: 800px; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .text-left { text-align: left; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .footer-logo-container { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+        .purple-highlight { border-left-color: var(--brand-purple); background: linear-gradient(90deg, rgba(187, 160, 204, 0.1) 0%, rgba(26, 33, 48, 0) 100%); }
+        .purple-tag { color: var(--brand-purple); font-family: var(--font-headings); font-size: 0.9rem; text-transform: uppercase; }
+        .white-text { color: white; }
+        .mt-05 { margin-top: 0.5rem; }
+        .fz-095 { font-size: 0.95rem; }
+        .mt-2 { margin-top: 2rem; }
+        .footer-logo-svg { opacity: 0.8; }
+        .footer-brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; text-transform: uppercase; }
+        .footer-tagline { margin: 0; font-size: 0.7rem; }
+        .footer-code-box { text-align: right; }
+        .footer-code-text { color: white; font-weight: 600; }
+        .fz-09 { font-size: 0.9rem; }
+        .fw-600 { font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="site-header">
+        <div class="brand-logo brand-logo-custom">
+            <svg width="42" height="42" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+              <defs>
+                <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#0A122A" />
+                  <stop offset="100%" stop-color="#1E293B" />
+                </linearGradient>
+              </defs>
+              <rect width="36" height="36" rx="10" fill="url(#bgGrad2)"></rect>
+              <line x1="10" y1="12" x2="10" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16" y1="12" x2="16" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16" y1="22" x2="16" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="22" y1="12" x2="22" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="22" y1="20" x2="22" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="18" cy="8" r="2" fill="#FFD700" />
+            </svg>
+            <div class="flex-col">
+                <span class="brand-name">Metodolog<span class="golden-accent">IA</span></span>
+                <span class="brand-tagline">Success as a Service</span>
+            </div>
+        </div>
+        <div>
+            <span class="meta-tag">Acta Oficial Confidencial</span>
+        </div>
+    </header>
+
+    <div class="section-spacer">
+        <h3 class="h3-blue">Documentación Estratégica</h3>
+        <h1>Acta de Discovery B2B: Prolipa</h1>
+        <p class="p-lead">Registro y certificación oficial de los acuerdos, levantamiento de requerimientos técnicos y próximos pasos para la automatización editorial agéntica.</p>
+    </div>
+
+    <!-- Metadatos de la sesión -->
+    <div class="glass-card grid-2">
+        <div class="info-block">
+            <span>Cliente</span>
+            <strong>Editorial Prolipa</strong>
+        </div>
+        <div class="info-block">
+            <span>Fecha de Sesión</span>
+            <strong>Marzo, 2026</strong>
+        </div>
+        <div class="info-block">
+            <span>Asistentes Cliente</span>
+            <strong>José Luis Calderón (Presidente del Grupo), Jorge Luis Montoya, Equipo Editorial y Directivo</strong>
+        </div>
+        <div class="info-block">
+            <span>Asistentes MetodologIA</span>
+            <strong>Javier Montaño (GenAI Champion & Coach Empresarial), Cristian Jarrín (Director Comercial)</strong>
+        </div>
+    </div>
+
+    <!-- 1. Contexto y Desafío -->
+    <h2>1. Contexto Operativo y El Desafío Central</h2>
+    <div class="glass-card mb-2">
+        <p>El desafío central radicado por el cliente es la <strong>escalabilidad de la producción editorial</strong>. El tiempo medio histórico para entregar un bloque curricular es de <strong>6 meses</strong>, requiriéndose <strong>2 bloques</strong> para completar el ciclo de producción completo (12 meses totales).</p>
+        <p>Ante la urgencia de actualizaciones curriculares dictadas por el Ministerio de Educación, el equipo cuenta con una ventana operativa ineficiente. El objetivo estratégico (North Star) es lograr una <strong>aceleración de al menos un 50%</strong> en estos tiempos de entrega.</p>
+        <div class="highlight-box">
+            <p><strong>La Estrategia (Human-and-AI Workflow):</strong> Apalancar las tecnologías emergentes (agentes operacionales IA) para ejecutar autónomamente <strong>9 de cada 10 tareas</strong> del proceso completo. El talento humano mantiene la gobernanza absoluta: define el norte, establece las pautas pedagógicas (Taxonomía de Marzano, Bloom, Neuroeducación) y <strong>confirma la idoneidad y calidad final</strong>.</p>
+        </div>
+    </div>
+
+    <!-- 2. Arquitectura de Solución -->
+    <h2>2. Resolución de Arquitectura: Workflow Multi-Agente</h2>
+    <div class="glass-card">
+        <p>Se acordó rechazar el paradigma tradicional de "Chat" por su ineficiencia e inconsistencia, y construir una orquestación formal de Agentes Autónomos basada en Entradas y Salidas estandarizadas.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Agente Especializado</th>
+                    <th>Artefacto de Entrada (Input)</th>
+                    <th>Entregable Esperado (Output)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Agente 1 (Orquestador)</strong></td>
+                    <td>Currículo Crudo (Ministerio)</td>
+                    <td>Matriz de Alcance y Secuencia Curricular</td>
+                </tr>
+                <tr>
+                    <td><strong>Agente 2 (Redactor)</strong></td>
+                    <td>Matriz Mapeada + Manual de Voz</td>
+                    <td>Maqueta / Unidad Modelo Redactada para Alumno</td>
+                </tr>
+                <tr>
+                    <td><strong>Agente 3 (Pedagogo)</strong></td>
+                    <td>Unidad Modelo Base</td>
+                    <td>Guía Metodológica para Docente (Derivada)</td>
+                </tr>
+                <tr>
+                    <td><strong>Agente 4 (Code/Programmer)</strong></td>
+                    <td>Unidad Modelo Base</td>
+                    <td>JSONs/Lógica para minijuegos digitales & Banco Preguntas</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box purple-highlight">
+            <p class="purple-tag">Aporte de Valor Transversal</p>
+            <p class="white-text mt-05 fz-095"><strong>Simuladores de Estudiantes:</strong> Agentes adicionales con un "Prompt Persona" de niño de edad específica, configurados para probar lectura, auditar autovalidaciones y reportar incomprensión de textos antes de que lleguen a Diseño.</p>
+        </div>
+    </div>
+
+    <!-- 3. Acuerdos y Próximos Pasos -->
+    <h2>3. Definition of Done y Próximos Pasos</h2>
+    <div class="glass-card">
+        <p>Se confirma el patrocinio (Buy-in) del más alto nivel directivo y la necesidad de ejecutar un MVP ("Show & Prove") rápido y tangible.</p>
+        
+        <ul class="mt-2">
+            <li class="action-item">
+                <span class="golden-accent fw-600">Data Lake & Fuentes Oficiales:</span> **Editorial Prolipa** es responsable de proveer e indicar las fuentes, normas, documentos técnicos y referencias oficiales de su jurisdicción. Esto incluye la provisión autónoma del SharePoint con toda su propiedad intelectual bruta (libros, matrices, manuales).
+            </li>
+            <li class="action-item">
+                <span class="golden-accent fw-600">Investigación e Innovación:</span> **MetodologIA** investigará tendencias globales, normas internacionales, frameworks pedagógicos de vanguardia y tecnologías emergentes, pero siempre en beneficio del enriquecimiento estratégico y la innovación del modelo agéntico, no como sustituto de la provisión de fuentes base del cliente.
+            </li>
+            <li class="action-item">
+                <span class="golden-accent fw-600">Alcance POC (Prueba de Concepto):</span> Se ancla la PoC en una unidad para **Quinto Año de Básica**. Este entregable es un showcase interactivo para demostrar potencial y **no constituye una implementación final** ni técnica de producción en vivo.
+            </li>
+            <li class="action-item">
+                <span class="golden-accent fw-600">Sesión Showcase:</span> Agendada para el **Próximo Jueves**. (Insumos del SharePoint entregados por el cliente a más tardar el martes 10 de Marzo).
+            </li>
+        </ul>
+    </div>
+
+    <!-- 4. Gobernanza 10x: Parámetros y Calidad -->
+    <h2>4. Gobernanza 10x: Supuestos, Límites y Calidad</h2>
+    <div class="glass-card grid-2">
+        <div>
+            <h3>Supuestos y Riesgos</h3>
+            <p class="fz-09">• <strong>Adopción (UX):</strong> Se asume que la interfaz agéntica debe ser invisible; el éxito depende de una "Fricción Cero" para el equipo editorial Senior.<br>
+            • <strong>Continuidad:</strong> El cumplimiento del cronograma depende de la entrega íntegra del repositorio SharePoint el martes 10 de Marzo.</p>
+        </div>
+        <div>
+            <h3>Criterios de Aceptación</h3>
+            <p class="fz-09">• Generación de **Draft V1.0** alineado a metodología "Sinapsis" en menos de 60 segundos.<br>
+            • Trazabilidad: Cada párrafo generado debe citar el origen exacto en la fuente ministerial provista por Prolipa.</p>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <h3>Trade-offs Estratégicos Justificados</h3>
+        <p><strong>Velocidad vs. Inercia:</strong> Sacrificamos intencionalmente el control micro del "lienzo en blanco" en favor de un volumen masivo de borradores de alta fidelidad. La intervención humana se desplaza estratégicamente del *hacer* al *auditar*.</p>
+        <p><strong>Innovación vs. Estabilidad:</strong> MetodologIA priorizará el uso de modelos de razonamiento avanzado para la estructuración pedagógica, asumiendo una ejecución más densa a cambio de una fidelidad estructural del 95% a la metodología Sinapsis.</p>
+    </div>
+
+
+    <div class="footer flex-between text-left">
+        <div>
+            <div class="footer-logo-container">
+                <svg width="32" height="32" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" class="footer-logo-svg">
+                   <rect width="36" height="36" rx="10" fill="#0A122A"></rect>
+                   <line x1="10" y1="12" x2="10" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                   <line x1="16" y1="12" x2="16" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                   <line x1="16" y1="22" x2="16" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                   <line x1="22" y1="12" x2="22" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                   <line x1="22" y1="20" x2="22" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                   <circle cx="18" cy="8" r="2" fill="#FFD700" />
+                </svg>
+                <span class="footer-brand-name">Metodolog<span class="golden-accent">IA</span></span>
+            </div>
+            <p class="footer-tagline">Soberanía Estratégica apalancada en IA<br>© 2026 Success as a Service</p>
+        </div>
+        <div class="footer-code-box">
+            CÓDIGO DE DOCUMENTO:<br> <span class="footer-code-text">MTIA-ACTA-PROLIPA-01 | CONFIDENTIAL EXECUTION</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

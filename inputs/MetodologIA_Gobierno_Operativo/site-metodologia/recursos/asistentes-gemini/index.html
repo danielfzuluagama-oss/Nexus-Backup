@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Gems | MetodologIA - Recursos Públicos</title>
+    <meta name="description" content="Colección de Gemini Gems de MetodologIA. Asistentes IA optimizados para el ecosistema Google: Gmail, Drive, Docs. Eficiencia sin fricción.">
+    <link rel="stylesheet" href="../../estilos/tokens.css">
+    <link rel="stylesheet" href="../../estilos/base.css">
+    <link rel="stylesheet" href="../../estilos/components.css">
+    <link rel="stylesheet" href="../../estilos/layouts.css">
+    <link rel="stylesheet" href="../../estilos/utilities.css">
+    <style>
+        .gem-hero {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(16, 185, 129, 0.08) 100%);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        .gem-hero h1 {
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .gem-hero .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        .ecosystem-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: #a78bfa;
+            font-size: 0.875rem;
+        }
+        .section-gems {
+            padding: 3rem 2rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .section-title .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-weight: 600;
+        }
+        .badge-gold { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .badge-purple { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+        .gems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .gem-card {
+            background: rgba(30, 30, 40, 0.6);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .gem-card:hover {
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.15);
+        }
+        .gem-card.featured {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(30, 30, 40, 0.6) 100%);
+        }
+        .gem-card.featured:hover {
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 12px 40px rgba(245, 158, 11, 0.15);
+        }
+        .gem-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .gem-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .gem-card.featured .gem-icon {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        .gem-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        .gem-category {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .gem-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .gem-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .gem-card.featured .gem-cta {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #1a1a2e;
+        }
+        .gem-cta:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+        .infrastructure-notice {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .infrastructure-notice .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .infrastructure-notice h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+        .infrastructure-notice p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+        .efficiency-callout {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            margin: 0 2rem 2rem;
+            text-align: center;
+        }
+        .efficiency-callout h3 {
+            color: #34d399;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        .efficiency-callout p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        /* Search Picker Styles */
+        .gem-search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 1.5rem auto 0;
+        }
+        .gem-search-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            background: rgba(30, 30, 40, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .gem-search-input:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        .gem-search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+        .gem-search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            pointer-events: none;
+        }
+        .gem-search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.5rem;
+            background: rgba(30, 30, 40, 0.95);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 0.75rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            z-index: 50;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        .gem-search-results.active {
+            display: block;
+        }
+        .gem-search-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .gem-search-item:hover {
+            background: rgba(139, 92, 246, 0.15);
+        }
+        .gem-search-item-icon {
+            font-size: 1.25rem;
+        }
+        .gem-search-item-info {
+            flex: 1;
+        }
+        .gem-search-item-name {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .gem-search-item-category {
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+        }
+        .tip-callout {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            margin: 0 2rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .tip-callout .tip-icon {
+            color: #34d399;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .tip-callout p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        .tip-callout strong {
+            color: #34d399;
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header"></div>
+
+    <!-- Hero Section -->
+    <section class="gem-hero">
+        <h1><i data-lucide="sparkles" class="w-10 h-10 inline-block mr-2"></i> Gemini Gems</h1>
+        <span class="ecosystem-badge" style="margin-bottom: 1rem;">
+            <i data-lucide="globe" class="w-4 h-4"></i>
+            Powered by Google AI
+        </span>
+        <p class="subtitle">Asistentes IA integrados en el ecosistema Google. Accede desde Gmail, Drive, Docs — eficiencia sin fricción.</p>
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <span class="badge badge-purple">5 Gems</span>
+            <span class="badge badge-gold">2 Destacados</span>
+        </div>
+        <!-- Search Picker -->
+        <div class="gem-search-container">
+            <span class="gem-search-icon"><i data-lucide="search" class="w-4 h-4 text-slate-400"></i></span>
+            <input 
+                type="text" 
+                id="gem-search-input" 
+                class="gem-search-input" 
+                placeholder="Buscar Gem por nombre o categoría..."
+                autocomplete="off"
+            />
+            <div id="gem-search-results" class="gem-search-results"></div>
+        </div>
+    </section>
+
+    <!-- Tip Callout -->
+    <div class="tip-callout">
+        <span class="tip-icon"><i data-lucide="lightbulb" class="w-5 h-5"></i></span>
+        <p><strong>Tip:</strong> Cada Gem puede explicarte cómo usarlo. Al acceder, puedes pedirle que te oriente o empezar directamente a sacar provecho.</p>
+    </div>
+
+    <!-- Efficiency Callout -->
+    <div class="efficiency-callout">
+        <h3><i data-lucide="zap" class="w-5 h-5 inline-block mr-2 text-brand-emerald"></i> Eficiencia sin Fricción</h3>
+        <p>Los Gems funcionan directamente desde tu cuenta de Google. Úsalos en Gmail, Drive, y cualquier entorno Google sin cambiar de contexto.</p>
+    </div>
+
+    <!-- Destacados Section -->
+    <section class="section-gems">
+        <h2 class="section-title">
+            <i data-lucide="star" class="w-6 h-6 text-brand-gold"></i>
+            Destacados
+            <span class="badge badge-gold">Máxima Eficiencia</span>
+        </h2>
+        <div class="gems-grid">
+            <!-- Note Taking - Destacado -->
+            <article class="gem-card featured">
+                <div class="gem-header">
+                    <div class="gem-icon"><i data-lucide="file-text" class="w-6 h-6 text-slate-800"></i></div>
+                    <div>
+                        <h3 class="gem-title">Note-Taking</h3>
+                        <span class="gem-category">Productividad</span>
+                    </div>
+                </div>
+                <p class="gem-description">Captura, organiza y transforma tus notas con IA. Integración perfecta con Google Docs y Drive para un flujo de trabajo sin interrupciones.</p>
+                <a href="https://gemini.google.com/gem/1WBkH4BFdiH9GqdVsLgyLK-mNQqDSfxgc?usp=sharing" target="_blank" rel="noopener" class="gem-cta">
+                    Abrir Gem →
+                </a>
+            </article>
+
+            <!-- Task Managing - Destacado -->
+            <article class="gem-card featured">
+                <div class="gem-header">
+                    <div class="gem-icon"><i data-lucide="check-square" class="w-6 h-6 text-slate-800"></i></div>
+                    <div>
+                        <h3 class="gem-title">Task Managing</h3>
+                        <span class="gem-category">Productividad</span>
+                    </div>
+                </div>
+                <p class="gem-description">Gestión inteligente de tareas integrada con tu ecosistema Google. Prioriza, planifica y ejecuta desde cualquier entorno Google.</p>
+                <a href="https://gemini.google.com/gem/1WbgrLxXLctD8SVEORSkxDG2h2UqW3giY?usp=sharing" target="_blank" rel="noopener" class="gem-cta">
+                    Abrir Gem →
+                </a>
+            </article>
+        </div>
+    </section>
+
+    <!-- Otros Gems -->
+    <section class="section-gems">
+        <h2 class="section-title">
+            <i data-lucide="gem" class="w-6 h-6 text-brand-purple"></i>
+            Colección Completa
+            <span class="badge badge-purple">3 Gems</span>
+        </h2>
+        <div class="gems-grid">
+            <!-- Slides -->
+            <article class="gem-card">
+                <div class="gem-header">
+                    <div class="gem-icon"><i data-lucide="palette" class="w-6 h-6"></i></div>
+                    <div>
+                        <h3 class="gem-title">Slides</h3>
+                        <span class="gem-category">Presentaciones</span>
+                    </div>
+                </div>
+                <p class="gem-description">Crea presentaciones impactantes con ayuda de IA. Genera contenido, estructura y diseño para Google Slides.</p>
+                <a href="https://gemini.google.com/gem/1OsY8uMF7Nc057RGhZJSpM_yMY6OpOP0n?usp=sharing" target="_blank" rel="noopener" class="gem-cta">
+                    Abrir Gem →
+                </a>
+            </article>
+
+            <!-- Prompts -->
+            <article class="gem-card">
+                <div class="gem-header">
+                    <div class="gem-icon"><i data-lucide="message-square" class="w-6 h-6"></i></div>
+                    <div>
+                        <h3 class="gem-title">Prompts</h3>
+                        <span class="gem-category">Ingeniería de Prompts</span>
+                    </div>
+                </div>
+                <p class="gem-description">Diseña, optimiza y perfecciona prompts para cualquier modelo de IA. Metodología estructurada para resultados consistentes.</p>
+                <a href="https://gemini.google.com/gem/1MzzZU0voHB4NS-5CeLYV0fim4KqdaHtY?usp=sharing" target="_blank" rel="noopener" class="gem-cta">
+                    Abrir Gem →
+                </a>
+            </article>
+
+            <!-- Deep Research Prompts -->
+            <article class="gem-card">
+                <div class="gem-header">
+                    <div class="gem-icon"><i data-lucide="microscope" class="w-6 h-6"></i></div>
+                    <div>
+                        <h3 class="gem-title">Deep Research Prompts</h3>
+                        <span class="gem-category">Investigación</span>
+                    </div>
+                </div>
+                <p class="gem-description">Prompts especializados para investigación profunda. Extrae insights complejos y análisis estructurados de cualquier tema.</p>
+                <a href="https://gemini.google.com/gem/1QcocUvH-D4Ec3inycBf0NWlbQdy_0Nha?usp=sharing" target="_blank" rel="noopener" class="gem-cta">
+                    Abrir Gem →
+                </a>
+            </article>
+        </div>
+    </section>
+
+    <!-- Infrastructure Notice -->
+    <div class="infrastructure-notice">
+        <span class="icon"><i data-lucide="info" class="w-6 h-6 text-brand-blue"></i></span>
+        <div>
+            <h3>Sobre la Infraestructura</h3>
+            <p>Los Gemini Gems funcionan sobre la infraestructura de Google AI. Requieren una cuenta de Google con acceso a Gemini. La disponibilidad y funcionalidad dependen de los servicios de Google.</p>
+        </div>
+    </div>
+
+    <!-- Back Navigation -->
+    <a href="../index.html" class="back-link">
+        ← Volver a Recursos
+    </a>
+
+    <div id="site-footer"></div>
+
+    <script src="../../components/SiteHeader.js"></script>
+    <script src="../../components/SiteFooter.js"></script>
+    <script src="../../scripts/icons.js"></script>
+    <script>
+        // Gems data for search
+        const gemsData = [
+            { name: 'Note-Taking', category: 'Productividad', icon: 'file-text', url: 'https://gemini.google.com/gem/1WBkH4BFdiH9GqdVsLgyLK-mNQqDSfxgc?usp=sharing', featured: true },
+            { name: 'Task Managing', category: 'Productividad', icon: 'check-square', url: 'https://gemini.google.com/gem/1WbgrLxXLctD8SVEORSkxDG2h2UqW3giY?usp=sharing', featured: true },
+            { name: 'Slides', category: 'Presentaciones', icon: 'palette', url: 'https://gemini.google.com/gem/1OsY8uMF7Nc057RGhZJSpM_yMY6OpOP0n?usp=sharing', featured: false },
+            { name: 'Prompts', category: 'Ingeniería de Prompts', icon: 'message-square', url: 'https://gemini.google.com/gem/1MzzZU0voHB4NS-5CeLYV0fim4KqdaHtY?usp=sharing', featured: false },
+            { name: 'Deep Research Prompts', category: 'Investigación', icon: 'microscope', url: 'https://gemini.google.com/gem/1QcocUvH-D4Ec3inycBf0NWlbQdy_0Nha?usp=sharing', featured: false }
+        ];
+
+        const searchInput = document.getElementById('gem-search-input');
+        const searchResults = document.getElementById('gem-search-results');
+
+        function renderResults(gems) {
+            if (gems.length === 0) {
+                searchResults.innerHTML = '<div style="padding: 1rem; color: var(--text-tertiary); text-align: center;">No se encontraron Gems</div>';
+                return;
+            }
+            searchResults.innerHTML = gems.map(gem => `
+                <a href="${gem.url}" target="_blank" rel="noopener noreferrer" class="gem-search-item">
+                    <span class="gem-search-item-icon"><i data-lucide="${gem.icon}" class="w-5 h-5"></i></span>
+                    <div class="gem-search-item-info">
+                        <div class="gem-search-item-name">${gem.name}${gem.featured ? ' <i data-lucide="star" class="w-3 h-3 inline-block text-brand-gold"></i>' : ''}</div>
+                        <div class="gem-search-item-category">${gem.category}</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        searchInput.addEventListener('focus', () => {
+            renderResults(gemsData);
+            searchResults.classList.add('active');
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                renderResults(gemsData);
+                return;
+            }
+            const filtered = gemsData.filter(gem => 
+                gem.name.toLowerCase().includes(query) || 
+                gem.category.toLowerCase().includes(query)
+            );
+            renderResults(filtered);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.gem-search-container')) {
+                searchResults.classList.remove('active');
+            }
+            // Re-initialize icons for new results
+            if (typeof icons !== 'undefined') icons.createIcons();
+        });
+    </script>
+</body>
+</html>

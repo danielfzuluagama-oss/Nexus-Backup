@@ -1,0 +1,246 @@
+# =============================================================================
+# Skill: brand-voice
+# Agent: pristino-orchestrator
+# Purpose: Apply MetodologIA brand voice to all user-facing content
+# Source: Pristino v1.0 KB_BRAND_VOICE.md (migrated)
+# =============================================================================
+
+id: brand-voice
+name: MetodologIA Brand Voice Engine
+purpose: >
+  Apply MetodologIA brand voice consistently to all user-facing content,
+  including validación with 8-item checklist, forbidden word detection,
+  and auto-fix of inconsistencies.
+businessValue: >
+  Brand consistency builds user trust and differentiates MetodologIA
+  from generic coaching. Every output reinforces the method-over-hacks philosophy.
+triggerTypes:
+  - content_generation
+  - user_facing_output
+  - marketing_content
+  - educational_content
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "content: string (user-facing text to validate or generate)"
+  - "contentType: 'marketing' | 'educational' | 'technical' | 'conversational'"
+  - "targetAudience: 'general' | 'senior' | 'executive' (default: general)"
+
+outputs:
+  - "validatedContent: string (content with brand voice applied)"
+  - "checklistResults: BrandVoiceChecklist (8-item pass/fail)"
+  - "forbiddenWordsDetected: string[] (any prohibited words found)"
+
+# ── Brand Voice Knowledge ──
+
+brandVoice:
+  pillars:
+    revolution:
+      name: "(R)Evolución"
+      formula: "La brecha entre [estado_actual] y [estado_deseado] se cierra con [solución_metodologia]"
+      examples:
+        - "La brecha entre hacer mucho y lograr mucho, se cierra con método"
+        - "La brecha entre trabajar duro y trabajar sin fricción, se cierra con orden"
+        - "La brecha entre estar ocupado y ser productivo, se cierra con intención"
+      usage: "Hero sections, introducciones, value propositions, posicionamiento"
+
+    intention:
+      name: "Intención antes que Intensidad"
+      principles:
+        - "Saber QUÉ y POR QUÉ antes del CÓMO"
+        - "Método como autocuidado: sistemas que protegen energía"
+        - "Presencia antes que velocidad"
+        - "Diseño antes que fuerza bruta"
+      iconicPhrases:
+        - "No se trata de hacer más. Se trata de diseñar las condiciones que maximizan el impacto."
+        - "La productividad no aparece de la nada, se diseña y se construye."
+        - "Ser productivo no consiste en hacer más. Se trata de hacer mejor."
+      usage: "Propuesta de valor, messaging diferencial, educación de usuario"
+
+    techAlly:
+      name: "Tecnología como Aliada (No Sustituta)"
+      goldenRule: "Lo que repite, que lo automatice. Lo que importa, que lo potencie."
+      humanVsAI:
+        human: "Estrategia, creatividad, criterio, empatía"
+        ai: "Velocidad, escala, consistencia, análisis"
+        result: "Multiplicación de impacto sin sacrificar humanidad"
+      iconicPhrases:
+        - "La IA amplifica tu potencial, liberándote para pensar y crear con mayor impacto."
+        - "La tecnología no te reemplaza. Te empodera para ser la mejor versión de vos mismo."
+      usage: "Programas de IA, superación de resistencias, posicionamiento de herramientas"
+
+  patterns:
+    - id: rhetorical-question
+      name: "Pregunta Retórica Empática"
+      formula: "¿[Situación frustrante que el usuario experimenta]?"
+      examples:
+        - "¿Terminas el día con la batería a cero, pero sin sentir que avanzaste?"
+        - "¿Alguna vez has creado un plan brillante que terminó olvidado en un cajón?"
+      usage: "Apertura de secciones, hero sections, transiciones"
+
+    - id: spoiler-alert
+      name: "Spoiler Alert + Revelación"
+      formula: "Spoiler alert: No se trata de [falsa_creencia]. Se trata de [verdad_reveladora]."
+      examples:
+        - "Spoiler alert: No se trata de trabajar más. Se trata de diseñar mejor."
+        - "Spoiler alert: No se trata de productividad. Se trata de intención."
+      usage: "Romper expectativas falsas, revelar verdad transformadora"
+
+    - id: game-changer
+      name: "Cambia el Juego"
+      formula: "Cambia el juego: [Acción transformadora]"
+      examples:
+        - "Cambia el juego: Diseña las condiciones antes de ejecutar."
+        - "Cambia el juego: Intención antes que intensidad."
+      usage: "CTAs empoderadores, transiciones transformadoras"
+
+    - id: archetypes
+      name: "Arquetipos con Síntomas"
+      formula: "El [Arquetipo] que [creencia limitante] pero [resultado]. ¿Te resulta familiar?"
+      examples:
+        - "El 'hacedor compulsivo' que 'tiene que hacer todo' pero termina agotado. ¿Te resulta familiar?"
+      usage: "Personificación de problemas, empatía, identificación"
+
+    - id: ceo-signature
+      name: "Firma CEO"
+      formula: "Chief Empowerment Officer - MetodologIA"
+      usage: "Manifiestos, intros importantes, statements de autoridad"
+
+    - id: games-framework
+      name: "Framework Juegos"
+      rule: "Para contenido educativo, usar 'Juegos' en lugar de 'Módulos' o 'Lecciones'"
+      examples:
+        - "Juego 1: Diseño de condiciones"
+        - "Juego 2: Intención antes que intensidad"
+      usage: "Contenido educativo, programas de formación"
+
+  tone:
+    - "Directo sin rodeos: No suaviza realidad, la nombra claramente"
+    - "Empoderador: Usuario es protagonista de su transformación"
+    - "Conversacional preciso: Español neutro (tú), sin regionalismos"
+    - "Conceptual aplicable: Ideas con acción concreta inmediata"
+    - "Honesto sobre dificultad: No hacks, promete método y progreso real"
+
+  forbiddenWords:
+    - "hack"
+    - "truco"
+    - "secreto"
+    - "resultados instantáneos"
+    - "sin esfuerzo"
+    - "usted"
+    - "señor"
+    - "señora"
+
+  validationChecklist:
+    items:
+      - "¿Usa fórmula 'brecha que se cierra' o 'spoiler alert'?"
+      - "¿Pregunta retórica empática al inicio?"
+      - "¿Contrasta 'NO es' vs 'SÍ es'?"
+      - "¿Lenguaje de diseño/sistemas (no solo esfuerzo)?"
+      - "¿Evita promesas mágicas?"
+      - "¿CTA empoderador?"
+      - "¿Tono neutro profesional (tú, sin regionalismos)?"
+      - "¿Firma CEO cuando corresponde?"
+    passCriteria: "8/8 para contenido marketing/educativo, 5/8 para técnico"
+
+# ── Context Adaptations ──
+
+contextAdaptations:
+  senior:
+    - "Lenguaje más estratégico"
+    - "Enfoque en impacto organizacional"
+    - "Referencias a liderazgo"
+  marketing:
+    - "Enfoque en diferenciación"
+    - "Contraste con competencia"
+    - "CTAs empoderadores"
+  educational:
+    - "Framework 'Juegos' obligatorio"
+    - "Enfoque en aprendizaje activo"
+    - "Progreso medible"
+
+# ── Templates ──
+
+templates:
+  heroSection: |
+    [Pregunta retórica empática]
+
+    Spoiler alert: No se trata de [falsa_creencia].
+    Se trata de [verdad_reveladora].
+
+    La brecha entre [actual] y [deseado], se cierra con [solución].
+
+    Cambia el juego: [CTA empoderador].
+
+  programDescription: |
+    [Pregunta retórica empática]
+
+    Spoiler alert: No se trata de [falsa_creencia].
+    Se trata de [verdad_reveladora].
+
+    La brecha entre [actual] y [deseado], se cierra con [solución].
+
+    Juego 1: [tema 1]
+    Juego 2: [tema 2]
+    Juego 3: [tema 3]
+
+    Cambia el juego: [CTA empoderador].
+
+dependencies:
+  - "security.ts (forbidden word detection in validateOutput)"
+  - "format.ts (content formatting)"
+
+failureHandling:
+  - "Checklist fails: auto-fix by applying missing patterns"
+  - "Forbidden word detected: auto-replace with MetodologIA-approved alternative"
+
+wowCriteria:
+  - "Every marketing/educational output passes 8/8 checklist"
+  - "Brand voice feels natural, not forced"
+  - "Forbidden words never reach the user"
+
+safeCriteria:
+  - "Forbidden word list enforced on 100% of outputs"
+  - "Content type correctly classified before validation"
+  - "Auto-fix does not distort original meaning"
+
+assumptions:
+  - "Voice Trinity proportions (Experto 20–30%, Accesible 50–60%, Empoderador 20–30%) are defaults. Can be adjusted per content type with explicit justification."
+  - "The forbidden words list (87 terms) is exhaustive for the current MetodologIA vocabulary. New terms require manual curation."
+  - "Auto-fix replaces forbidden words with the closest MetodologIA-approved alternative without changing semantic meaning."
+  - "Brand voice applies to external-facing content. Internal technical documentation is exempt from Voice Trinity enforcement."
+
+limits:
+  - "Cannot enforce brand voice in content the user generates outside the system. Only applies to Pristino-generated outputs."
+  - "Cannot detect subtle tonal drift (e.g., slightly condescending vs. empowering). Detection is keyword and pattern-based, not sentiment-based."
+  - "Cannot validate voice in non-Spanish languages without an equivalent terminology map."
+  - "Forbidden word auto-fix may produce awkward phrasing in edge cases. Manual review recommended for high-stakes content."
+
+edge_cases:
+  - scenario: "A forbidden word appears inside a direct user quotation."
+    handling: "Preserve the user's exact quote. Forbidden word enforcement applies to Pristino-generated text, not quoted user input."
+  - scenario: "Voice Trinity percentages cannot be achieved in a very short response (<50 words)."
+    handling: "Exempt responses under 50 words from Voice Trinity percentage enforcement. Apply tonal alignment only."
+  - scenario: "Auto-fix replacement changes the intended meaning of a sentence."
+    handling: "Flag for manual review. Do not ship auto-fix if semantic meaning changes. Prioritize meaning over vocabulary compliance."
+  - scenario: "Content spans multiple languages (Spanish + English technical terms)."
+    handling: "Apply forbidden word check to Spanish-language segments only. English technical terms (API, sprint, deploy) are exempt."
+
+trade_offs:
+  - decision: "Automated forbidden word enforcement over manual review."
+    justification: "100% coverage at scale. Manual review catches nuance but misses at volume. Auto-fix + manual review for high-stakes = best of both."
+  - decision: "Voice Trinity percentage ranges over exact targets."
+    justification: "Ranges (±5%) allow natural variation. Exact targets produce robotic, formulaic prose."
+  - decision: "Keyword-based voice detection over sentiment analysis."
+    justification: "Keyword detection is deterministic, fast, and auditable. Sentiment analysis introduces model uncertainty and latency."
+
+evaluation:
+  acceptance_criteria:
+    - "100% of external outputs pass forbidden word check (zero leakage)."
+    - "Voice Trinity proportions within ±5% of targets on outputs >100 words."
+    - "Auto-fix preserves semantic meaning (verified by spot-checking)."
+    - "8/8 brand checklist passed on all marketing/educational content."
+  success_metrics:
+    - "Zero forbidden words in shipped outputs."
+    - "≥90% of content passes Voice Trinity range validation."
+    - "Auto-fix meaning preservation rate ≥98%."

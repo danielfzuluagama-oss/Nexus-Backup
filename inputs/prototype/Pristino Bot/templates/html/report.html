@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}} — Pristino Ecosystem Report</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #dbeafe;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --info: #6366f1;
+      --info-bg: #eef2ff;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; color: var(--text); max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.6; background: var(--bg); }
+    .hero { border-bottom: 3px solid var(--primary); padding-bottom: 1rem; margin-bottom: 2rem; }
+    .hero h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+    .hero .meta span { margin-right: 1.5rem; color: var(--muted); font-size: 0.9rem; }
+    .hero .meta span strong { color: var(--text); }
+    .breadcrumb { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    section { margin-bottom: 2.5rem; }
+    h2 { color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; font-size: 1.4rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { padding: 0.6rem 0.75rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--accent); font-weight: 600; }
+    pre { background: #f3f4f6; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; }
+    code { background: #f3f4f6; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+
+    /* Executive Summary */
+    .executive-summary { background: var(--accent); padding: 1.25rem; border-radius: 8px; margin-bottom: 2rem; }
+    .executive-summary h2 { border: none; margin-top: 0; }
+    .executive-summary .verdict { font-size: 1.2rem; font-weight: 700; margin: 0.5rem 0; }
+    .verdict-pass { color: var(--success); }
+    .verdict-fail { color: var(--danger); }
+    .verdict-partial { color: var(--warning); }
+
+    /* Score display */
+    .score-display { text-align: center; margin: 1.5rem 0; }
+    .score-circle { display: inline-flex; align-items: center; justify-content: center; width: 100px; height: 100px; border-radius: 50%; font-size: 2rem; font-weight: 700; color: white; }
+    .score-high { background: var(--success); }
+    .score-medium { background: var(--warning); }
+    .score-low { background: var(--danger); }
+    .score-label { display: block; margin-top: 0.5rem; color: var(--muted); font-size: 0.85rem; }
+
+    /* Finding cards */
+    .finding { border-left: 4px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 1.5rem; border-radius: 0 8px 8px 0; background: #f9fafb; }
+    .finding-critical { border-left-color: var(--danger); background: var(--danger-bg); }
+    .finding-high { border-left-color: #f97316; background: #fff7ed; }
+    .finding-medium { border-left-color: var(--warning); background: var(--warning-bg); }
+    .finding-low { border-left-color: var(--info); background: var(--info-bg); }
+    .finding-info { border-left-color: var(--muted); background: #f9fafb; }
+    .finding h3 { margin-top: 0; }
+    .severity-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: white; margin-left: 0.5rem; }
+    .badge-critical { background: var(--danger); }
+    .badge-high { background: #f97316; }
+    .badge-medium { background: var(--warning); }
+    .badge-low { background: var(--info); }
+    .badge-info { background: var(--muted); }
+    .finding .evidence { color: var(--muted); font-style: italic; margin: 0.5rem 0; }
+    .finding .recommendation { background: white; padding: 0.5rem 0.75rem; border-radius: 4px; margin-top: 0.5rem; }
+
+    /* Recommendations table */
+    .recommendations-table { margin: 1rem 0; }
+    .recommendations-table tr:hover { background: #f9fafb; }
+    .priority-high { color: var(--danger); font-weight: 600; }
+    .priority-medium { color: var(--warning); font-weight: 600; }
+    .priority-low { color: var(--info); font-weight: 600; }
+
+    /* Dimensions radar placeholder */
+    .dimensions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .dimension-card { background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+    .dimension-card h4 { margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--muted); }
+    .dimension-score { font-size: 1.5rem; font-weight: 700; }
+
+    /* Metadata table */
+    .metadata-table { font-size: 0.9rem; }
+    .metadata-table td:first-child { font-weight: 600; width: 180px; color: var(--muted); }
+
+    @media print {
+      body { max-width: none; padding: 1rem; }
+      .finding { page-break-inside: avoid; }
+      .score-circle { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .severity-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      .dimensions-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Section 1: Hero -->
+  <header class="hero">
+    <h1>{{title}}</h1>
+    <div class="meta">
+      <span><strong>Version:</strong> {{version}}</span>
+      <span><strong>Date:</strong> {{date}}</span>
+      <span><strong>Agent:</strong> {{owningAgent}}</span>
+      <span><strong>Type:</strong> {{reportType}}</span>
+    </div>
+  </header>
+
+  <!-- Section 2: Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="#">Ecosystem</a> &rsaquo;
+    <a href="#">{{agentName}}</a> &rsaquo;
+    <a href="#">Reports</a> &rsaquo;
+    <span>{{reportName}}</span>
+  </nav>
+
+  <!-- Section 3: Executive Summary -->
+  <section class="executive-summary">
+    <h2>Executive Summary</h2>
+    <p class="verdict {{verdictClass}}">Verdict: {{verdict}}</p>
+    <p>{{executiveSummary}}</p>
+  </section>
+
+  <!-- Section 4: Score (when applicable) -->
+  <section class="score-section">
+    <h2>Quality Score</h2>
+    <div class="score-display">
+      <div class="score-circle {{scoreClass}}">{{score}}</div>
+      <span class="score-label">out of 100</span>
+    </div>
+  </section>
+
+  <!-- Section 5: Dimensions Breakdown -->
+  <section class="dimensions">
+    <h2>Evaluation Dimensions</h2>
+    <div class="dimensions-grid">
+      <!-- Repeat for each dimension -->
+      <div class="dimension-card">
+        <h4>{{dimensionName}}</h4>
+        <div class="dimension-score" style="color: {{dimensionColor}}">{{dimensionScore}}/100</div>
+      </div>
+      <!-- End dimension repeat -->
+    </div>
+  </section>
+
+  <!-- Section 6: Findings -->
+  <section class="findings">
+    <h2>Findings</h2>
+
+    <!-- Summary table -->
+    <table>
+      <thead>
+        <tr><th>Severity</th><th>Count</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="severity-badge badge-critical">Critical</span></td><td>{{criticalCount}}</td></tr>
+        <tr><td><span class="severity-badge badge-high">High</span></td><td>{{highCount}}</td></tr>
+        <tr><td><span class="severity-badge badge-medium">Medium</span></td><td>{{mediumCount}}</td></tr>
+        <tr><td><span class="severity-badge badge-low">Low</span></td><td>{{lowCount}}</td></tr>
+        <tr><td><span class="severity-badge badge-info">Info</span></td><td>{{infoCount}}</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Detailed findings -->
+    <!-- Repeat for each finding, ordered by severity -->
+    <div class="finding {{findingSeverityClass}}">
+      <h3>{{findingTitle}} <span class="severity-badge {{badgeClass}}">{{severity}}</span></h3>
+      <p>{{findingDescription}}</p>
+      <p class="evidence"><strong>Evidence:</strong> {{evidence}}</p>
+      <div class="recommendation">
+        <strong>Recommendation:</strong> {{recommendation}}
+      </div>
+    </div>
+    <!-- End finding repeat -->
+
+  </section>
+
+  <!-- Section 7: Recommendations (Prioritized) -->
+  <section class="recommendations">
+    <h2>Recommendations</h2>
+    <table class="recommendations-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Priority</th>
+          <th>Recommendation</th>
+          <th>Impact</th>
+          <th>Effort</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Repeat for each recommendation -->
+        <tr>
+          <td>{{recNumber}}</td>
+          <td class="{{priorityClass}}">{{priority}}</td>
+          <td>{{recommendationText}}</td>
+          <td>{{impact}}</td>
+          <td>{{effort}}</td>
+        </tr>
+        <!-- End recommendation repeat -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 8: Metadata -->
+  <section class="metadata">
+    <h2>Report Metadata</h2>
+    <table class="metadata-table">
+      <tbody>
+        <tr><td>Evaluated Output</td><td>{{evaluatedOutput}}</td></tr>
+        <tr><td>Source Agent</td><td>{{sourceAgent}}</td></tr>
+        <tr><td>Validation Criteria</td><td>{{validationCriteria}}</td></tr>
+        <tr><td>Evaluation Mode</td><td>{{evaluationMode}}</td></tr>
+        <tr><td>Duration</td><td>{{duration}}</td></tr>
+        <tr><td>Checkpoints Applied</td><td>{{checkpoints}}</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 9: Appendix -->
+  <section class="appendix">
+    <h2>Appendix</h2>
+
+    <h3>Raw Input</h3>
+    <pre>{{rawInput}}</pre>
+
+    <h3>Validation Log</h3>
+    <pre>{{validationLog}}</pre>
+  </section>
+
+  <footer style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 3rem; color: var(--muted); font-size: 0.8rem;">
+    <p>Generated by Pristino Ecosystem v3.0.0 &mdash; {{date}}</p>
+  </footer>
+
+</body>
+</html>

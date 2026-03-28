@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <title>MetodologIA — Hub Unificado v3.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%);--bg-2:hsl(220,34%,18%);--surface:hsl(220,30%,23%);
+            --accent:#FFD700;--gold:#FFD700;--gold-dark:#FFA000;--green:#34d399;
+            --red:#ef4444;--orange:#F97316;--purple:#a855f7;--cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif;--font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF;--text-secondary:#e2e8f0;--text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15);--gold-glow:rgba(255,215,0,0.2);--border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.6}
+        body.light{--bg-1:#fff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;--border:#e2e8f0}
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .card{background:#fff;border-color:#e2e8f0}
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:50px 20px 35px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-40%;right:-8%;width:600px;height:600px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.8rem;font-weight:800;margin-bottom:8px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:1rem;color:var(--accent);margin-bottom:6px;font-weight:500}
+        .header .meta{font-size:.85rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:35px;margin:22px 0;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center}
+        .stat-number{font-size:1.8rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.8rem;color:var(--text-secondary);margin-top:3px}
+
+        .container{max-width:1100px;margin:0 auto;padding:24px 20px}
+        .section-title{font-family:var(--font-head);font-size:1.3rem;font-weight:700;color:var(--accent);margin:28px 0 14px;border-left:4px solid var(--gold);padding-left:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .count{background:var(--accent);color:var(--bg-1);padding:2px 9px;border-radius:10px;font-size:.75rem}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-bottom:16px}
+
+        .card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .3s;text-decoration:none;color:inherit;display:block;position:relative;overflow:hidden}
+        .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,215,0,.12)}
+        .card::after{content:'→';position:absolute;top:18px;right:18px;font-size:1.1rem;color:var(--accent);opacity:0;transition:all .3s}
+        .card:hover::after{opacity:1;transform:translateX(2px)}
+        .card h3{font-family:var(--font-head);font-size:.95rem;font-weight:700;margin-bottom:4px;color:var(--text-primary)}
+        .card .metrics{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+        .card .metric{font-size:.72rem;padding:2px 7px;border-radius:6px;background:rgba(255,215,0,.08);color:var(--accent)}
+
+        .card-type{font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:6px;display:inline-block;padding:2px 8px;border-radius:8px}
+        .card-type.proceso{background:rgba(255,215,0,.12);color:var(--accent)}
+        .card-type.catalogo{background:rgba(255,215,0,.12);color:var(--gold)}
+        .card-type.sop{background:rgba(44,165,111,.12);color:var(--green)}
+        .card-type.bridge{background:rgba(155,89,182,.12);color:var(--purple)}
+
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:24px}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        @media print{
+            .theme-toggle{display:none!important}
+            body{background:#fff!important;color:#000!important}
+            .card{border:1px solid #ccc!important}
+        }
+        @media(max-width:768px){
+            .header h1{font-size:1.8rem}
+            .grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="document.body.classList.toggle('light')" aria-label="Cambiar tema">☀️ / 🌙</button>
+
+    <header class="header" role="banner">
+        <h1>Hub Unificado</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo (Delivery + Comercial + Transversales)</div>
+        <div class="meta">201 documentos interactivos | 13 verticales + integración | Excellence Edition v3.0</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">201</span><span class="stat-label">Documentos</span></div>
+            <div class="stat"><span class="stat-number">13</span><span class="stat-label">Verticales</span></div>
+            <div class="stat"><span class="stat-number">496</span><span class="stat-label">Marcadores 10x</span></div>
+            <div class="stat"><span class="stat-number">2625</span><span class="stat-label">Secciones</span></div>
+        </div>
+    </header>
+
+    <div class="container" role="main">
+        
+        <div style="text-align:center;margin:36px 0 12px;font-family:var(--font-head);font-size:.8rem;color:var(--text-secondary);letter-spacing:3px;text-transform:uppercase">
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-right:12px"></span>
+            <span style="color:var(--accent)">DELIVERY</span>
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-left:12px"></span>
+        </div>
+        <div class="section-title" style="border-left-color:var(--accent)">
+            Workshop
+            <span class="count">5 docs</span>
+            <span class="count" style="background:var(--accent);color:var(--bg-1)">16 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="workshop/entregar-workshop-proceso.html" class="card" aria-label="Abrir Proceso: Entregar Workshop de Transformación Digital">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso: Entregar Workshop de Transformación Digital</h3>
+                <div class="metrics">
+                    <span class="metric">10 marcadores</span>
+                    <span class="metric">20 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/catalogo-workshops.html" class="card" aria-label="Abrir Catálogo Completo de Workshops MetodologIA">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>Catálogo Completo de Workshops MetodologIA</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">5 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/preparar-workshop-sop.html" class="card" aria-label="Abrir SOP: Preparar Workshop">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Preparar Workshop</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/facilitar-workshop-sop.html" class="card" aria-label="Abrir SOP: Facilitar Workshop">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Facilitar Workshop</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/cerrar-workshop-sop.html" class="card" aria-label="Abrir SOP: Cerrar Workshop">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Cerrar Workshop</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--green)">
+            Bootcamp
+            <span class="count">6 docs</span>
+            <span class="count" style="background:var(--green);color:var(--bg-1)">13 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="bootcamp/entregar-bootcamp-proceso.html" class="card" aria-label="Abrir Proceso: Entregar Bootcamp de Transformación">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso: Entregar Bootcamp de Transformación</h3>
+                <div class="metrics">
+                    <span class="metric">6 marcadores</span>
+                    <span class="metric">21 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/catalogo-bootcamps.html" class="card" aria-label="Abrir Catálogo Completo de Bootcamps MetodologIA">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>Catálogo Completo de Bootcamps MetodologIA</h3>
+                
+            </a>
+            <a href="bootcamp/diseno-curricular-sop.html" class="card" aria-label="Abrir SOP: Diseño Curricular de Bootcamp">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Diseño Curricular de Bootcamp</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">11 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/onboarding-cohorte-sop.html" class="card" aria-label="Abrir SOP: Onboarding Cohorte">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Onboarding Cohorte</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">9 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/facilitacion-semanal-sop.html" class="card" aria-label="Abrir SOP: Facilitación Semanal de Bootcamp">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Facilitación Semanal de Bootcamp</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/graduacion-sop.html" class="card" aria-label="Abrir SOP: Graduación y Activación Alumni">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Graduación y Activación Alumni</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--gold)">
+            Programa Élite
+            <span class="count">13 docs</span>
+            <span class="count" style="background:var(--gold);color:var(--bg-1)">99 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="programa-elite/entregar-programa-elite-proceso.html" class="card" aria-label="Abrir Proceso de Entrega: Programa Elite MetodologIA">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso de Entrega: Programa Elite MetodologIA</h3>
+                <div class="metrics">
+                    <span class="metric">6 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/catalogo-programas.html" class="card" aria-label="Abrir CATÁLOGO: Programas Élite">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>CATÁLOGO: Programas Élite</h3>
+                
+            </a>
+            <a href="programa-elite/diseno-transformacional-sop.html" class="card" aria-label="Abrir SOP: Diseño Transformacional">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Diseño Transformacional</h3>
+                <div class="metrics">
+                    <span class="metric">24 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/inmersion-inicial-sop.html" class="card" aria-label="Abrir SOP: Inmersión Inicial (Semanas 1-2)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Inmersión Inicial (Semanas 1-2)</h3>
+                <div class="metrics">
+                    <span class="metric">20 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/acompanamiento-continuo-sop.html" class="card" aria-label="Abrir SOP: Acompañamiento Continuo (Semanas 3-14)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Acompañamiento Continuo (Semanas 3-14)</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">10 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/consolidacion-sop.html" class="card" aria-label="Abrir SOP: Consolidación (Semanas 15-16)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Consolidación (Semanas 15-16)</h3>
+                <div class="metrics">
+                    <span class="metric">18 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/alumni-sop.html" class="card" aria-label="Abrir SOP: Alumni &amp; Referral (Post-Semana 16)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Alumni &amp; Referral (Post-Semana 16)</h3>
+                <div class="metrics">
+                    <span class="metric">11 marcadores</span>
+                    <span class="metric">19 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/facilitar-masterclass-sop.html" class="card" aria-label="Abrir Facilitar Masterclass — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Facilitar Masterclass — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/facilitar-clinica-ia-sop.html" class="card" aria-label="Abrir Facilitar Clínica IA — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Facilitar Clínica IA — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/operar-ciclo-semanal-sop.html" class="card" aria-label="Abrir Operar Ciclo Semanal — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Operar Ciclo Semanal — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/gestionar-cohorte-sop.html" class="card" aria-label="Abrir Gestionar Cohorte — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Gestionar Cohorte — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/convertir-modulo-cero-sop.html" class="card" aria-label="Abrir Convertir Módulo Cero — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Convertir Módulo Cero — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/evaluar-criterios-aprobacion-sop.html" class="card" aria-label="Abrir Evaluar Criterios de Aprobación — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Evaluar Criterios de Aprobación — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--purple)">
+            Consultoría
+            <span class="count">6 docs</span>
+            <span class="count" style="background:var(--purple);color:var(--bg-1)">33 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="consultoria/entregar-consultoria-proceso.html" class="card" aria-label="Abrir PROCESO: Entregar Consultoría">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>PROCESO: Entregar Consultoría</h3>
+                <div class="metrics">
+                    <span class="metric">9 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/catalogo-intervenciones.html" class="card" aria-label="Abrir CATÁLOGO: Intervenciones de Consultoría">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>CATÁLOGO: Intervenciones de Consultoría</h3>
+                <div class="metrics">
+                    <span class="metric">9 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/diagnostico-sop.html" class="card" aria-label="Abrir SOP: Diagnóstico de Madurez Digital">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Diagnóstico de Madurez Digital</h3>
+                <div class="metrics">
+                    <span class="metric">5 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/traccion-sop.html" class="card" aria-label="Abrir SOP: Tracción - Implementación Rápida (4-8 semanas)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Tracción - Implementación Rápida (4-8 semanas)</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">10 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/evolucion-sop.html" class="card" aria-label="Abrir SOP: Evolución - Transformación Profunda (12-24 semanas)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Evolución - Transformación Profunda (12-24 semanas)</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">11 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/handoff-success-sop.html" class="card" aria-label="Abrir SOP: Handoff &amp; Success - Transición a Éxito Sostenible">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Handoff &amp; Success - Transición a Éxito Sostenible</h3>
+                <div class="metrics">
+                    <span class="metric">6 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--accent)">
+            Tecnología
+            <span class="count">6 docs</span>
+            <span class="count" style="background:var(--accent);color:var(--bg-1)">20 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="tecnologia/entregar-tecnologia-proceso.html" class="card" aria-label="Abrir PROCESO: Entregar TecnologIA — Aceleradores y Amplificadores">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>PROCESO: Entregar TecnologIA — Aceleradores y Amplificadores</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/catalogo-servicios-digitales.html" class="card" aria-label="Abrir CATÁLOGO DE SERVICIOS DIGITALES — TecnologIA">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>CATÁLOGO DE SERVICIOS DIGITALES — TecnologIA</h3>
+                <div class="metrics">
+                    <span class="metric">5 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/implementar-asistentes-ia-sop.html" class="card" aria-label="Abrir SOP: Implementar Asistentes IA — Amplificador Cognitivo">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Implementar Asistentes IA — Amplificador Cognitivo</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/desarrollar-agentes-ia-sop.html" class="card" aria-label="Abrir SOP: Desarrollar Agentes IA — Amplificador Operativo">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Desarrollar Agentes IA — Amplificador Operativo</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/desarrollar-mini-apps-sop.html" class="card" aria-label="Abrir Mini Apps — Acelerador Digital">
+                <span class="card-type sop">SOP</span>
+                <h3>Mini Apps — Acelerador Digital</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/construir-sitios-web-sop.html" class="card" aria-label="Abrir Sitios Web — Amplificador de Marca">
+                <span class="card-type sop">SOP</span>
+                <h3>Sitios Web — Amplificador de Marca</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a></div>
+        <div style="text-align:center;margin:36px 0 12px;font-family:var(--font-head);font-size:.8rem;color:var(--text-secondary);letter-spacing:3px;text-transform:uppercase">
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-right:12px"></span>
+            <span style="color:var(--gold)">COMERCIAL</span>
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-left:12px"></span>
+        </div>
+        <div class="section-title" style="border-left-color:var(--green)">
+            Empresas B2B
+            <span class="count">5 docs</span>
+            <span class="count" style="background:var(--green);color:var(--bg-1)">100 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="empresas-b2b/vender-empresas-b2b-proceso.html" class="card" aria-label="Abrir Proceso: Vender a Empresas (B2B)">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso: Vender a Empresas (B2B)</h3>
+                <div class="metrics">
+                    <span class="metric">29 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="empresas-b2b/prospectar-cuentas-b2b-sop.html" class="card" aria-label="Abrir SOP: Prospectar Cuentas B2B">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Prospectar Cuentas B2B</h3>
+                <div class="metrics">
+                    <span class="metric">15 marcadores</span>
+                    <span class="metric">11 secciones</span>
+                </div>
+            </a>
+            <a href="empresas-b2b/descubrir-dolores-b2b-sop.html" class="card" aria-label="Abrir SOP: Descubrir Dolores B2B">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Descubrir Dolores B2B</h3>
+                <div class="metrics">
+                    <span class="metric">22 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="empresas-b2b/estructurar-oferta-b2b-sop.html" class="card" aria-label="Abrir SOP: Estructurar Oferta B2B">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Estructurar Oferta B2B</h3>
+                <div class="metrics">
+                    <span class="metric">19 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="empresas-b2b/gestionar-exito-b2b-sop.html" class="card" aria-label="Abrir SOP: Gestionar Éxito B2B">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Gestionar Éxito B2B</h3>
+                <div class="metrics">
+                    <span class="metric">15 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--orange)">
+            Personas B2C
+            <span class="count">1 docs</span>
+            <span class="count" style="background:var(--orange);color:var(--bg-1)">8 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="personas-b2c/vender-personas-b2c-proceso.html" class="card" aria-label="Abrir PROCESO: Vender Personas B2C">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>PROCESO: Vender Personas B2C</h3>
+                <div class="metrics">
+                    <span class="metric">8 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--gold)">
+            Aliados Comerciales
+            <span class="count">10 docs</span>
+            <span class="count" style="background:var(--gold);color:var(--bg-1)">68 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="aliados-comercial/gestionar-aliados-gtm-proceso.html" class="card" aria-label="Abrir Proceso: Gestionar Aliados GTM">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso: Gestionar Aliados GTM</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/evaluar-fit-aliado-sop.html" class="card" aria-label="Abrir SOP: Evaluar Fit Aliado">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Evaluar Fit Aliado</h3>
+                
+            </a>
+            <a href="aliados-comercial/certificar-aliado-sop.html" class="card" aria-label="Abrir SOP: Certificar Aliado">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Certificar Aliado</h3>
+                
+            </a>
+            <a href="aliados-comercial/ejecutar-coselling-sop.html" class="card" aria-label="Abrir SOP: Ejecutar Co-Selling">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Ejecutar Co-Selling</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">10 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/auditar-ecosistema-sop.html" class="card" aria-label="Abrir SOP: Auditar Ecosistema de Aliados">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Auditar Ecosistema de Aliados</h3>
+                
+            </a>
+            <a href="aliados-comercial/estructura-incentivos-aliados-sop.html" class="card" aria-label="Abrir Estructura de Incentivos para Aliados — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Estructura de Incentivos para Aliados — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">7 marcadores</span>
+                    <span class="metric">18 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/operar-como-reseller-sop.html" class="card" aria-label="Abrir Operar como Reseller — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Operar como Reseller — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">7 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/habilitar-embajador-comercial-sop.html" class="card" aria-label="Abrir Habilitar Embajador Comercial — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Habilitar Embajador Comercial — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">12 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/gestionar-marca-blanca-sop.html" class="card" aria-label="Abrir Gestionar Marca Blanca — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Gestionar Marca Blanca — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">19 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/liquidar-comisiones-aliados-sop.html" class="card" aria-label="Abrir Liquidar Comisiones de Aliados — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Liquidar Comisiones de Aliados — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">19 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a></div>
+        <div style="text-align:center;margin:36px 0 12px;font-family:var(--font-head);font-size:.8rem;color:var(--text-secondary);letter-spacing:3px;text-transform:uppercase">
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-right:12px"></span>
+            <span style="color:#e91e63">ECOSISTEMA</span>
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-left:12px"></span>
+        </div>
+        <div class="section-title" style="border-left-color:#e91e63">
+            Ecosistema Embajadores
+            <span class="count">9 docs</span>
+            <span class="count" style="background:#e91e63;color:var(--bg-1)">41 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="embajadores/gestionar-ecosistema-embajadores-proceso.html" class="card" aria-label="Abrir Gestionar Ecosistema de Embajadores — Proceso">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Gestionar Ecosistema de Embajadores — Proceso</h3>
+                
+            </a>
+            <a href="embajadores/reclutar-desde-programas-sop.html" class="card" aria-label="Abrir Reclutamiento de Embajadores desde Programas — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Reclutamiento de Embajadores desde Programas — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">8 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="embajadores/habilitar-embajador-comercial-sop.html" class="card" aria-label="Abrir Habilitar Embajador Comercial — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Habilitar Embajador Comercial — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">12 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="embajadores/certificar-embajador-sop.html" class="card" aria-label="Abrir Certificar Embajador — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Certificar Embajador — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="embajadores/activar-embajador-sop.html" class="card" aria-label="Abrir SOP: ACTIVACIÓN DE EMBAJADOR">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: ACTIVACIÓN DE EMBAJADOR</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="embajadores/operar-como-embajador-sop.html" class="card" aria-label="Abrir Operar como Embajador — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Operar como Embajador — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="embajadores/liquidar-compensacion-10-20-70-sop.html" class="card" aria-label="Abrir SOP: Liquidación de Compensación - Modelo 10/20/70">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Liquidación de Compensación - Modelo 10/20/70</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">22 secciones</span>
+                </div>
+            </a>
+            <a href="embajadores/feedback-loop-embajador-sop.html" class="card" aria-label="Abrir Feedback Loop del Embajador — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Feedback Loop del Embajador — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">9 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a>
+            <a href="embajadores/gestionar-red-embajadores-sop.html" class="card" aria-label="Abrir Gestionar Red de Embajadores — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Gestionar Red de Embajadores — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a></div>
+        <div style="text-align:center;margin:36px 0 12px;font-family:var(--font-head);font-size:.8rem;color:var(--text-secondary);letter-spacing:3px;text-transform:uppercase">
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-right:12px"></span>
+            <span style="color:var(--orange)">TRANSVERSALES</span>
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-left:12px"></span>
+        </div>
+        <div class="section-title" style="border-left-color:var(--red)">
+            Operaciones Transversales
+            <span class="count">8 docs</span>
+            <span class="count" style="background:var(--red);color:var(--bg-1)">75 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="operaciones-transversales/ejecutar-evento-activacion-sop.html" class="card" aria-label="Abrir Ejecutar Evento de Activación — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Ejecutar Evento de Activación — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">18 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-follow-up-sop.html" class="card" aria-label="Abrir Preparar Follow-Up — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Follow-Up — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-meeting-sop.html" class="card" aria-label="Abrir Preparar Meeting — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Meeting — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-contenido-sesion-sop.html" class="card" aria-label="Abrir Preparar Contenido de Sesión — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Contenido de Sesión — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-propuesta-comercial-sop.html" class="card" aria-label="Abrir Preparar Propuesta Comercial — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Propuesta Comercial — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">18 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/ejecutar-strategy-day-sop.html" class="card" aria-label="Abrir SOP: Ejecutar Strategy Day - Calibración Estratégica Trimestral">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Ejecutar Strategy Day - Calibración Estratégica Trimest</h3>
+                <div class="metrics">
+                    <span class="metric">20 marcadores</span>
+                    <span class="metric">11 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/ejecutar-11-star-check-sop.html" class="card" aria-label="Abrir SOP: Ejecutar 11-Star Check - Verificación de Calidad Pre-Cierre">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Ejecutar 11-Star Check - Verificación de Calidad Pre-Ci</h3>
+                <div class="metrics">
+                    <span class="metric">19 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/ejecutar-retrospectiva-trimestral-sop.html" class="card" aria-label="Abrir SOP: Ejecutar Retrospectiva Trimestral - Cosecha y Evolución">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Ejecutar Retrospectiva Trimestral - Cosecha y Evolución</h3>
+                <div class="metrics">
+                    <span class="metric">20 marcadores</span>
+                    <span class="metric">10 secciones</span>
+                </div>
+            </a></div>
+        <div style="text-align:center;margin:36px 0 12px;font-family:var(--font-head);font-size:.8rem;color:var(--text-secondary);letter-spacing:3px;text-transform:uppercase">
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-right:12px"></span>
+            <span style="color:#00bcd4">OFERTA</span>
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-left:12px"></span>
+        </div>
+        <div class="section-title" style="border-left-color:#00bcd4">
+            Canónicos: Workshops
+            <span class="count">54 docs</span>
+            <span class="count" style="background:#00bcd4;color:var(--bg-1)">6 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="canonicos-ws/ws-01-aliados.html" class="card" aria-label="Abrir Ecosistema IA — WS-01">
+                <span class="card-type sop">SOP</span>
+                <h3>Ecosistema IA — WS-01</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-01-empresas.html" class="card" aria-label="Abrir Workshop WS-01 — Introducción al Ecosistema de IA">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-01 — Introducción al Ecosistema de IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-01-marca-blanca.html" class="card" aria-label="Abrir WS-01 — Ecosistema IA">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-01 — Ecosistema IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-01-personas.html" class="card" aria-label="Abrir Workshop WS-01 — Introducción al Ecosistema de IA">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-01 — Introducción al Ecosistema de IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-01-resellers.html" class="card" aria-label="Abrir WS-01 — Ecosistema IA">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-01 — Ecosistema IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-02-aliados.html" class="card" aria-label="Abrir Advanced Prompting — WS-02">
+                <span class="card-type sop">SOP</span>
+                <h3>Advanced Prompting — WS-02</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-02-empresas.html" class="card" aria-label="Abrir Workshop WS-02 — Advanced Prompting">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-02 — Advanced Prompting</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-02-marca-blanca.html" class="card" aria-label="Abrir WS-02 — Advanced Prompting Mastery">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-02 — Advanced Prompting Mastery</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-02-personas.html" class="card" aria-label="Abrir Workshop WS-02 — Advanced Prompting">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-02 — Advanced Prompting</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-02-resellers.html" class="card" aria-label="Abrir WS-02 — Advanced Prompting">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-02 — Advanced Prompting</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-03-aliados.html" class="card" aria-label="Abrir Second Brain — WS-03">
+                <span class="card-type sop">SOP</span>
+                <h3>Second Brain — WS-03</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-03-empresas.html" class="card" aria-label="Abrir Workshop WS-03 — Second Brain (PKM)">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-03 — Second Brain (PKM)</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-03-marca-blanca.html" class="card" aria-label="Abrir WS-03 — Second Brain con IA">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-03 — Second Brain con IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-03-personas.html" class="card" aria-label="Abrir Workshop WS-03 — Second Brain (PKM)">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-03 — Second Brain (PKM)</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-03-resellers.html" class="card" aria-label="Abrir WS-03 — Second Brain">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-03 — Second Brain</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-04-aliados.html" class="card" aria-label="Abrir Productividad GTD — WS-04">
+                <span class="card-type sop">SOP</span>
+                <h3>Productividad GTD — WS-04</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-04-empresas.html" class="card" aria-label="Abrir Workshop WS-04 — Productividad Personal GTD+Kanban">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-04 — Productividad Personal GTD+Kanban</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-04-marca-blanca.html" class="card" aria-label="Abrir WS-04 — Productividad con GTD + IA">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-04 — Productividad con GTD + IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-04-personas.html" class="card" aria-label="Abrir Workshop WS-04 — Productividad Personal GTD+Kanban">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-04 — Productividad Personal GTD+Kanban</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-04-resellers.html" class="card" aria-label="Abrir WS-04 — Productividad &amp; GTD">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-04 — Productividad &amp; GTD</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-05-empresas.html" class="card" aria-label="Abrir Workshop WS-05 — Moving Motivators (Management 3.0)">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-05 — Moving Motivators (Management 3.0)</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-05-personas.html" class="card" aria-label="Abrir Workshop WS-05 — Moving Motivators (Management 3.0)">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-05 — Moving Motivators (Management 3.0)</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-05-resellers.html" class="card" aria-label="Abrir WS-05 — Moving Motivators">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-05 — Moving Motivators</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-06-empresas.html" class="card" aria-label="Abrir Workshop WS-06 — Happiness Canvas">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-06 — Happiness Canvas</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-06-personas.html" class="card" aria-label="Abrir Workshop WS-06 — Happiness Canvas">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-06 — Happiness Canvas</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-06-resellers.html" class="card" aria-label="Abrir WS-06 — Happiness Canvas">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-06 — Happiness Canvas</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-07-aliados.html" class="card" aria-label="Abrir Team Canvas — WS-07">
+                <span class="card-type sop">SOP</span>
+                <h3>Team Canvas — WS-07</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-07-empresas.html" class="card" aria-label="Abrir Workshop WS-07 — Team Canvas">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-07 — Team Canvas</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-07-marca-blanca.html" class="card" aria-label="Abrir WS-07 — Team Canvas &amp; Dinámica de Equipo">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-07 — Team Canvas &amp; Dinámica de Equipo</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-07-personas.html" class="card" aria-label="Abrir Workshop WS-07 — Team Canvas: Alineación Estratégica">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-07 — Team Canvas: Alineación Estratégica</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-07-resellers.html" class="card" aria-label="Abrir WS-07 — Team Canvas">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-07 — Team Canvas</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-08-aliados.html" class="card" aria-label="Abrir De Ocupado a Productivo — WS-08">
+                <span class="card-type sop">SOP</span>
+                <h3>De Ocupado a Productivo — WS-08</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-08-empresas.html" class="card" aria-label="Abrir Workshop WS-08 — De Ocupado a Productivo">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-08 — De Ocupado a Productivo</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-08-marca-blanca.html" class="card" aria-label="Abrir WS-08 — De Ocupado a Productivo">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-08 — De Ocupado a Productivo</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-08-personas.html" class="card" aria-label="Abrir Anexo C — 3 prompts estrella (copiar/pegar)">
+                <span class="card-type sop">SOP</span>
+                <h3>Anexo C — 3 prompts estrella (copiar/pegar)</h3>
+                <div class="metrics">
+                    <span class="metric">6 marcadores</span>
+                    <span class="metric">36 secciones</span>
+                </div>
+            </a>
+            <a href="canonicos-ws/ws-08-resellers.html" class="card" aria-label="Abrir WS-08 — De Ocupado a Productivo">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-08 — De Ocupado a Productivo</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-09-aliados.html" class="card" aria-label="Abrir Qué Pasa con IA — WS-09">
+                <span class="card-type sop">SOP</span>
+                <h3>Qué Pasa con IA — WS-09</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-09-empresas.html" class="card" aria-label="Abrir Workshop WS-09 — ¿Qué Pasa con la IA?">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-09 — ¿Qué Pasa con la IA?</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-09-personas.html" class="card" aria-label="Abrir Workshop WS-09 — ¿Qué está pasando con la IA? Análisis de Futuros">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-09 — ¿Qué está pasando con la IA? Análisis de Fu</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-09-resellers.html" class="card" aria-label="Abrir WS-09 — Qué Pasa Con IA">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-09 — Qué Pasa Con IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-10-aliados.html" class="card" aria-label="Abrir Ideación con IA — WS-10">
+                <span class="card-type sop">SOP</span>
+                <h3>Ideación con IA — WS-10</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-10-empresas.html" class="card" aria-label="Abrir Workshop WS-10 — Ideación con IA">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-10 — Ideación con IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-10-marca-blanca.html" class="card" aria-label="Abrir WS-10 — Ideación con IA">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-10 — Ideación con IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-10-personas.html" class="card" aria-label="Abrir Workshop WS-10 — Ideación con IA: 3 Prototipos Validados">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-10 — Ideación con IA: 3 Prototipos Validados</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-10-resellers.html" class="card" aria-label="Abrir WS-10 — Ideación Con IA">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-10 — Ideación Con IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-11-aliados.html" class="card" aria-label="Abrir Ética &amp; Gobernanza — WS-11">
+                <span class="card-type sop">SOP</span>
+                <h3>Ética &amp; Gobernanza — WS-11</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-11-empresas.html" class="card" aria-label="Abrir Workshop WS-11 — Ética &amp; Gobernanza">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-11 — Ética &amp; Gobernanza</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-11-personas.html" class="card" aria-label="Abrir Workshop WS-11 — Ética &amp; Gobernanza IA">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-11 — Ética &amp; Gobernanza IA</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-11-resellers.html" class="card" aria-label="Abrir WS-11 — Ética &amp; Gobernanza">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-11 — Ética &amp; Gobernanza</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-12-aliados.html" class="card" aria-label="Abrir Exponential Leadership — WS-12">
+                <span class="card-type sop">SOP</span>
+                <h3>Exponential Leadership — WS-12</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-12-empresas.html" class="card" aria-label="Abrir Workshop WS-12 — Exponential Leadership">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-12 — Exponential Leadership</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-12-marca-blanca.html" class="card" aria-label="Abrir WS-12 — Exponential Leadership">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-12 — Exponential Leadership</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-12-personas.html" class="card" aria-label="Abrir Workshop WS-12 — Exponential Leadership">
+                <span class="card-type sop">SOP</span>
+                <h3>Workshop WS-12 — Exponential Leadership</h3>
+                
+            </a>
+            <a href="canonicos-ws/ws-12-resellers.html" class="card" aria-label="Abrir WS-12 — Exponential Leadership">
+                <span class="card-type sop">SOP</span>
+                <h3>WS-12 — Exponential Leadership</h3>
+                
+            </a></div>
+        <div class="section-title" style="border-left-color:#4caf50">
+            Canónicos: Bootcamps
+            <span class="count">32 docs</span>
+            <span class="count" style="background:#4caf50;color:var(--bg-1)">3 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="canonicos-bc/bc-01-aliados.html" class="card" aria-label="Abrir Office Automation — BC-01">
+                <span class="card-type sop">SOP</span>
+                <h3>Office Automation — BC-01</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-01-empresas.html" class="card" aria-label="Abrir Bootcamp BC-01 — Office Automation + AI (M365+Copilot)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-01 — Office Automation + AI (M365+Copilot)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-01-marca-blanca.html" class="card" aria-label="Abrir BC-01 — Office Automation Bootcamp">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-01 — Office Automation Bootcamp</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-01-personas.html" class="card" aria-label="Abrir Bootcamp BC-01 — Office Automation + AI (M365+Copilot)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-01 — Office Automation + AI (M365+Copilot)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-01-resellers.html" class="card" aria-label="Abrir BC-01 — Office Automation">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-01 — Office Automation</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-02-aliados.html" class="card" aria-label="Abrir Sales with AI — BC-02">
+                <span class="card-type sop">SOP</span>
+                <h3>Sales with AI — BC-02</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-02-empresas.html" class="card" aria-label="Abrir Bootcamp BC-02 — Sales with AI (B2B Prospecting)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-02 — Sales with AI (B2B Prospecting)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-02-personas.html" class="card" aria-label="Abrir Bootcamp BC-02 — Sales with AI (B2B Prospecting)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-02 — Sales with AI (B2B Prospecting)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-02-resellers.html" class="card" aria-label="Abrir BC-02 — Sales With AI">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-02 — Sales With AI</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-03-aliados.html" class="card" aria-label="Abrir Ways of Working — BC-03">
+                <span class="card-type sop">SOP</span>
+                <h3>Ways of Working — BC-03</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-03-empresas.html" class="card" aria-label="Abrir Bootcamp BC-03 — Ways of Working (Agile+GTD+PKM)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-03 — Ways of Working (Agile+GTD+PKM)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-03-marca-blanca.html" class="card" aria-label="Abrir BC-03 — Ways of Working Bootcamp">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-03 — Ways of Working Bootcamp</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-03-personas.html" class="card" aria-label="Abrir Bootcamp BC-03 — Ways of Working (Agile+GTD+PKM)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-03 — Ways of Working (Agile+GTD+PKM)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-03-resellers.html" class="card" aria-label="Abrir BC-03 — Ways of Working">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-03 — Ways of Working</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-04-aliados.html" class="card" aria-label="Abrir Amplified Work — BC-04">
+                <span class="card-type sop">SOP</span>
+                <h3>Amplified Work — BC-04</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-04-empresas.html" class="card" aria-label="Abrir Bootcamp BC-04 — Amplified Work (Custom GPTs &amp; Agents)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-04 — Amplified Work (Custom GPTs &amp; Agents)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-04-marca-blanca.html" class="card" aria-label="Abrir BC-04 — Amplified Work Bootcamp">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-04 — Amplified Work Bootcamp</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-04-personas.html" class="card" aria-label="Abrir Bootcamp BC-04 — Amplified Work (Custom GPTs &amp; Agents)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-04 — Amplified Work (Custom GPTs &amp; Agents)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-04-resellers.html" class="card" aria-label="Abrir BC-04 — Amplified Work">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-04 — Amplified Work</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-05-empresas.html" class="card" aria-label="Abrir Bootcamp BC-05 — Vibe Coding (No-code Apps)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-05 — Vibe Coding (No-code Apps)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-05-personas.html" class="card" aria-label="Abrir Bootcamp BC-05 — Vibe Coding (No-code Apps)">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-05 — Vibe Coding (No-code Apps)</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-05-resellers.html" class="card" aria-label="Abrir BC-05 — Vibe Coding">
+                <span class="card-type sop">SOP</span>
+                <h3>BC-05 — Vibe Coding</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-06-aliados.html" class="card" aria-label="Abrir Bootcamp BC-06 — Trabajar Amplificado">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-06 — Trabajar Amplificado</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-06-empresas.html" class="card" aria-label="Abrir Bootcamp BC-06 — Trabajar Amplificado">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-06 — Trabajar Amplificado</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-06-maestro.html" class="card" aria-label="Abrir Bootcamp BC-06 — Trabajar Amplificado">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-06 — Trabajar Amplificado</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">19 secciones</span>
+                </div>
+            </a>
+            <a href="canonicos-bc/bc-06-personas.html" class="card" aria-label="Abrir Bootcamp BC-06 — Trabajar Amplificado">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-06 — Trabajar Amplificado</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-06-resellers.html" class="card" aria-label="Abrir Bootcamp BC-06 — Trabajar Amplificado">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-06 — Trabajar Amplificado</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-07-aliados.html" class="card" aria-label="Abrir Bootcamp BC-07 — Trabajo Agéntico">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-07 — Trabajo Agéntico</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-07-empresas.html" class="card" aria-label="Abrir Bootcamp BC-07 — Trabajo Agéntico">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-07 — Trabajo Agéntico</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-07-maestro.html" class="card" aria-label="Abrir Bootcamp BC-07 — Trabajo Agéntico">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-07 — Trabajo Agéntico</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">21 secciones</span>
+                </div>
+            </a>
+            <a href="canonicos-bc/bc-07-personas.html" class="card" aria-label="Abrir Bootcamp BC-07 — Trabajo Agéntico">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-07 — Trabajo Agéntico</h3>
+                
+            </a>
+            <a href="canonicos-bc/bc-07-resellers.html" class="card" aria-label="Abrir Bootcamp BC-07 — Trabajo Agéntico">
+                <span class="card-type sop">SOP</span>
+                <h3>Bootcamp BC-07 — Trabajo Agéntico</h3>
+                
+            </a></div>
+        <div class="section-title" style="border-left-color:#ff9800">
+            Canónicos: Premium
+            <span class="count">43 docs</span>
+            <span class="count" style="background:#ff9800;color:var(--bg-1)">1 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="canonicos-premium/pe-01-aliados.html" class="card" aria-label="Abrir PE-01 — Programa Empoderamiento (Aliados)">
+                <span class="card-type sop">SOP</span>
+                <h3>PE-01 — Programa Empoderamiento (Aliados)</h3>
+                
+            </a>
+            <a href="canonicos-premium/pe-01-empresas.html" class="card" aria-label="Abrir PE-01 — Programa Empoderamiento (Empresas)">
+                <span class="card-type sop">SOP</span>
+                <h3>PE-01 — Programa Empoderamiento (Empresas)</h3>
+                
+            </a>
+            <a href="canonicos-premium/pe-01-personas.html" class="card" aria-label="Abrir PROGRAMA ELITE P1 — Empoderamiento Digital">
+                <span class="card-type sop">SOP</span>
+                <h3>PROGRAMA ELITE P1 — Empoderamiento Digital</h3>
+                
+            </a>
+            <a href="canonicos-premium/pe-02-aliados.html" class="card" aria-label="Abrir PE-02 — Digital Champions Program (Aliados)">
+                <span class="card-type sop">SOP</span>
+                <h3>PE-02 — Digital Champions Program (Aliados)</h3>
+                
+            </a>
+            <a href="canonicos-premium/pe-02-empresas.html" class="card" aria-label="Abrir PROGRAMA ELITE P2 — Digital Champions Corporativo">
+                <span class="card-type sop">SOP</span>
+                <h3>PROGRAMA ELITE P2 — Digital Champions Corporativo</h3>
+                
+            </a>
+            <a href="canonicos-premium/pe-02-marca-blanca.html" class="card" aria-label="Abrir PE-02 — Digital Champions Program">
+                <span class="card-type sop">SOP</span>
+                <h3>PE-02 — Digital Champions Program</h3>
+                
+            </a>
+            <a href="canonicos-premium/pe-02-resellers.html" class="card" aria-label="Abrir PE-02 — Digital Champions Program (Resellers)">
+                <span class="card-type sop">SOP</span>
+                <h3>PE-02 — Digital Champions Program (Resellers)</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t1-aliados.html" class="card" aria-label="Abrir Consultoría T1: Diagnóstico — CON-T1">
+                <span class="card-type sop">SOP</span>
+                <h3>Consultoría T1: Diagnóstico — CON-T1</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t1-empresas.html" class="card" aria-label="Abrir CONSULTORÍA T1 — Diagnóstico Integral">
+                <span class="card-type sop">SOP</span>
+                <h3>CONSULTORÍA T1 — Diagnóstico Integral</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t1-marca-blanca.html" class="card" aria-label="Abrir CON-T1 — Diagnóstico de Transformación Digital">
+                <span class="card-type sop">SOP</span>
+                <h3>CON-T1 — Diagnóstico de Transformación Digital</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t1-resellers.html" class="card" aria-label="Abrir Consultoría T1: Diagnóstico — CON-T1">
+                <span class="card-type sop">SOP</span>
+                <h3>Consultoría T1: Diagnóstico — CON-T1</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t2-aliados.html" class="card" aria-label="Abrir Consultoría T2: Tracción — CON-T2">
+                <span class="card-type sop">SOP</span>
+                <h3>Consultoría T2: Tracción — CON-T2</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t2-empresas.html" class="card" aria-label="Abrir CONSULTORÍA T2 — Tracción">
+                <span class="card-type sop">SOP</span>
+                <h3>CONSULTORÍA T2 — Tracción</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t2-marca-blanca.html" class="card" aria-label="Abrir CON-T2 — Tracción y Escalabilidad">
+                <span class="card-type sop">SOP</span>
+                <h3>CON-T2 — Tracción y Escalabilidad</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t2-resellers.html" class="card" aria-label="Abrir Consultoría T2: Tracción — CON-T2">
+                <span class="card-type sop">SOP</span>
+                <h3>Consultoría T2: Tracción — CON-T2</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t3-aliados.html" class="card" aria-label="Abrir Consultoría T3: Evolución — CON-T3">
+                <span class="card-type sop">SOP</span>
+                <h3>Consultoría T3: Evolución — CON-T3</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t3-empresas.html" class="card" aria-label="Abrir CONSULTORÍA T3 — Evolución Sistémica">
+                <span class="card-type sop">SOP</span>
+                <h3>CONSULTORÍA T3 — Evolución Sistémica</h3>
+                
+            </a>
+            <a href="canonicos-premium/con-t3-marca-blanca.html" class="card" aria-label="Abrir Consultoría T3: Evolución — CON-T3">
+                <span class="card-type sop">SOP</span>
+                <h3>Consultoría T3: Evolución — CON-T3</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-01-aliados.html" class="card" aria-label="Abrir TEC-01 — Asistentes IA Personalizados">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-01 — Asistentes IA Personalizados</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-01-empresas.html" class="card" aria-label="Abrir TECNOLOGÍA T1 — Asistentes IA">
+                <span class="card-type sop">SOP</span>
+                <h3>TECNOLOGÍA T1 — Asistentes IA</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-01-marca-blanca.html" class="card" aria-label="Abrir TEC-01 — Asistentes IA Personalizados">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-01 — Asistentes IA Personalizados</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-01-personas.html" class="card" aria-label="Abrir TEC-01 — Asistentes IA (Personas)">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-01 — Asistentes IA (Personas)</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-01-resellers.html" class="card" aria-label="Abrir TEC-01 — Asistentes IA Personalizados">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-01 — Asistentes IA Personalizados</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-02-aliados.html" class="card" aria-label="Abrir TEC-02 — Agentes IA Autónomos">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-02 — Agentes IA Autónomos</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-02-empresas.html" class="card" aria-label="Abrir TECNOLOGÍA T2 — Agentes IA">
+                <span class="card-type sop">SOP</span>
+                <h3>TECNOLOGÍA T2 — Agentes IA</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-02-marca-blanca.html" class="card" aria-label="Abrir TEC-02 — Agentes IA Autónomos">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-02 — Agentes IA Autónomos</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-02-personas.html" class="card" aria-label="Abrir TEC-02 — Agentes IA (Personas)">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-02 — Agentes IA (Personas)</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-02-resellers.html" class="card" aria-label="Abrir TEC-02 — Agentes IA Autónomos">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-02 — Agentes IA Autónomos</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="canonicos-premium/tec-03-aliados.html" class="card" aria-label="Abrir TEC-03 — Mini Apps Inteligentes">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-03 — Mini Apps Inteligentes</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-03-empresas.html" class="card" aria-label="Abrir TECNOLOGÍA T3 — Mini Apps">
+                <span class="card-type sop">SOP</span>
+                <h3>TECNOLOGÍA T3 — Mini Apps</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-03-marca-blanca.html" class="card" aria-label="Abrir TEC-03 — Mini Apps Inteligentes">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-03 — Mini Apps Inteligentes</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-03-personas.html" class="card" aria-label="Abrir TEC-03 — Mini Apps (Personas)">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-03 — Mini Apps (Personas)</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-03-resellers.html" class="card" aria-label="Abrir TEC-03 — Mini Apps Inteligentes">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-03 — Mini Apps Inteligentes</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-04-empresas.html" class="card" aria-label="Abrir TECNOLOGÍA T4 — Sitios Web">
+                <span class="card-type sop">SOP</span>
+                <h3>TECNOLOGÍA T4 — Sitios Web</h3>
+                
+            </a>
+            <a href="canonicos-premium/tec-04-personas.html" class="card" aria-label="Abrir TEC-04 — Sitios Web (Personas)">
+                <span class="card-type sop">SOP</span>
+                <h3>TEC-04 — Sitios Web (Personas)</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-01-aliados.html" class="card" aria-label="Abrir EST-01 — Estrategia Empresarial (Aliados)">
+                <span class="card-type sop">SOP</span>
+                <h3>EST-01 — Estrategia Empresarial (Aliados)</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-01-empresas.html" class="card" aria-label="Abrir ESTRATEGIA E1 — EstrategIA Empresarial">
+                <span class="card-type sop">SOP</span>
+                <h3>ESTRATEGIA E1 — EstrategIA Empresarial</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-01-marca-blanca.html" class="card" aria-label="Abrir EST-01 — Estrategia Empresarial (Marca Blanca)">
+                <span class="card-type sop">SOP</span>
+                <h3>EST-01 — Estrategia Empresarial (Marca Blanca)</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-01-resellers.html" class="card" aria-label="Abrir EST-01 — Estrategia Empresarial (Resellers)">
+                <span class="card-type sop">SOP</span>
+                <h3>EST-01 — Estrategia Empresarial (Resellers)</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-02-aliados.html" class="card" aria-label="Abrir EST-02 — Estrategia Personal (Aliados)">
+                <span class="card-type sop">SOP</span>
+                <h3>EST-02 — Estrategia Personal (Aliados)</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-02-empresas.html" class="card" aria-label="Abrir ESTRATEGIA P2 — EstrategIA Personal para Empresas">
+                <span class="card-type sop">SOP</span>
+                <h3>ESTRATEGIA P2 — EstrategIA Personal para Empresas</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-02-personas.html" class="card" aria-label="Abrir ESTRATEGIA P1 — EstrategIA Personal">
+                <span class="card-type sop">SOP</span>
+                <h3>ESTRATEGIA P1 — EstrategIA Personal</h3>
+                
+            </a>
+            <a href="canonicos-premium/est-02-resellers.html" class="card" aria-label="Abrir EST-02 — Estrategia Personal (Resellers)">
+                <span class="card-type sop">SOP</span>
+                <h3>EST-02 — Estrategia Personal (Resellers)</h3>
+                
+            </a></div>
+        <div style="text-align:center;margin:36px 0 12px;font-family:var(--font-head);font-size:.8rem;color:var(--text-secondary);letter-spacing:3px;text-transform:uppercase">
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-right:12px"></span>
+            <span style="color:var(--purple)">INTEGRACIÓN</span>
+            <span style="display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin-left:12px"></span>
+        </div>
+        <div class="section-title" style="border-left-color:var(--purple)">
+            Integración
+            <span class="count">3 docs</span>
+            <span class="count" style="background:var(--purple);color:var(--bg-1)">13 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="integracion/02-BRIDGE-COMERCIAL-DELIVERY.html" class="card" aria-label="Abrir PUENTE: Proceso Comercial → Proceso Delivery">
+                <span class="card-type bridge">BRIDGE</span>
+                <h3>PUENTE: Proceso Comercial → Proceso Delivery</h3>
+                <div class="metrics">
+                    <span class="metric">11 marcadores</span>
+                    <span class="metric">9 secciones</span>
+                </div>
+            </a>
+            <a href="integracion/03-MANIFIESTO-DELIVERY.html" class="card" aria-label="Abrir MANIFIESTO: Proceso de Delivery de Servicios">
+                <span class="card-type bridge">INTEGRACIÓN</span>
+                <h3>MANIFIESTO: Proceso de Delivery de Servicios</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">9 secciones</span>
+                </div>
+            </a>
+            <a href="integracion/04-REPORTE-DELTA-VERIFICACION.html" class="card" aria-label="Abrir REPORTE DELTA: Verificación de Elevación 10x">
+                <span class="card-type bridge">INTEGRACIÓN</span>
+                <h3>REPORTE DELTA: Verificación de Elevación 10x</h3>
+                
+            </a></div>
+    </div>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | Hub Unificado — Gobierno Operativo</div>
+        <div class="version">v3.0 Excellence Edition — 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        if(localStorage.getItem('metodologia-theme')==='light')document.body.classList.add('light');
+    </script>
+</body>
+</html>

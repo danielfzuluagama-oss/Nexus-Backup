@@ -1,0 +1,635 @@
+id: conclusion-drawing
+name: Conclusion Drawing
+purpose: Derive well-supported conclusions from multiple analyses, ensuring conclusions are logically sound, evidence-based, and appropriately qualified with confidence levels.
+businessValue: Transforms raw multi-agent analysis into actionable conclusions that decision-makers can trust, with transparent reasoning chains that allow verification and challenge.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: synthesizer
+
+inputs:
+  - "analyses: Analysis[] - Multiple agent analyses to draw conclusions from"
+  - "originalQuery: string - The original question or task"
+  - "conclusionType: string - 'consensus'|'majority'|'nuanced'|'conditional'"
+  - "decisionContext: string - How the conclusion will be used"
+
+outputs:
+  - "conclusion: string - The derived conclusion"
+  - "reasoningChain: string[] - Step-by-step reasoning leading to the conclusion"
+  - "supportingEvidence: string[] - Evidence from analyses that supports the conclusion"
+  - "qualifications: string[] - Conditions, caveats, and limitations"
+
+dependencies:
+  - "agents/synthesizer/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task with analyses from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - conclusion_derived
+  - reasoning_chain_built
+  - evidence_assessed
+  - qualification_added
+  - fallback_triggered
+
+failureHandling:
+  - "Analyses are contradictory: Draw conditional conclusion or declare no conclusion possible"
+  - "Insufficient evidence: Declare conclusion tentative with explicit gaps"
+  - "Analyses off-topic: Report to orchestrator before attempting conclusion"
+  - "Circular reasoning detected: Break cycle and rebuild reasoning chain"
+
+interoperabilityContract:
+  inputType: "ConclusionRequest { analyses: Analysis[], originalQuery: string, conclusionType: string, decisionContext: string }"
+  outputType: "ConclusionResult { conclusion: string, reasoningChain: string[], supportingEvidence: string[], qualifications: string[], confidence: string }"
+
+wowCriteria:
+  - "Conclusion follows logically from stated evidence with transparent reasoning chain"
+  - "Qualifications are precise rather than generic hedge language"
+  - "Reasoning chain can be independently verified step by step"
+  - "Conclusion type matches the evidence strength and consensus level"
+
+safeCriteria:
+  - "Conclusion does not overstate what the evidence supports"
+  - "Dissenting analyses are not silenced in the conclusion"
+  - "Qualifications are present for any non-trivial conclusion"
+  - "Reasoning chain contains no fabricated evidence"
+
+workflows:
+  - id: consensus-conclusion
+    title: Consensus Conclusion
+    objective: Derive a conclusion that reflects full or near-full consensus across all analyses, suitable when analyses strongly agree
+    trigger: "conclusionType === 'consensus' or high agreement detected"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple analyses provided"
+      - "Significant agreement exists across analyses"
+    inputs:
+      - "analyses: Analysis[] (sanitized)"
+      - "originalQuery: string"
+      - "decisionContext: string"
+    steps:
+      - stepNumber: 1
+        title: Verify consensus exists
+        desc: Sanitize inputs and verify that genuine consensus exists across the analyses before attempting to draw a consensus conclusion.
+        whyThisMatters: Drawing a consensus conclusion when no consensus exists is intellectually dishonest and could lead to overconfident decisions.
+        inputNeeded: "All analyses and original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with consensus verification prompt."
+        promptToUse: |
+          You are the Synthesizer agent verifying whether consensus exists across analyses.
+
+          Original query: {{originalQuery}}
+          Analyses:
+          {{analyses}}
+
+          Verify consensus:
+          1. Core agreement: Do all analyses reach similar conclusions?
+          2. Reasoning alignment: Do they use compatible reasoning?
+          3. Dissent check: Are there any significant dissenting points?
+          4. Consensus strength: strong (all agree) / moderate (most agree) / weak (slight majority) / none
+
+          Be strict about consensus. Mild agreement on a few points is not consensus.
+        expectedOutput: "ConsensusVerification { exists: boolean, strength: string, coreAgreements: string[], dissents: string[], recommendation: string }"
+        validationRule: "Consensus strength rated, core agreements listed if exists is true"
+        failureSignal: "Claims consensus when significant dissents exist"
+        recoveryAction: "Redirect to majority-conclusion or nuanced-conclusion workflow"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Build reasoning chain
+        desc: Construct a step-by-step reasoning chain from evidence to conclusion, grounded in the consensus points.
+        whyThisMatters: A verifiable reasoning chain makes the conclusion auditable and increases trust in the result.
+        inputNeeded: "ConsensusVerification with core agreements, analyses"
+        actionInstruction: "Call llm.chat() with reasoning chain construction prompt."
+        promptToUse: |
+          You are the Synthesizer agent building a reasoning chain for a consensus conclusion.
+
+          Core agreements:
+          {{coreAgreements}}
+          Supporting analyses:
+          {{analyses}}
+          Original query: {{originalQuery}}
+
+          Build reasoning chain:
+          1. Premise 1: [First agreed-upon fact or finding]
+          2. Premise 2: [Second agreed-upon fact or finding]
+          ... (as many premises as needed)
+          N. Conclusion: [What logically follows from the premises]
+
+          Rules:
+          - Each step must follow logically from previous steps
+          - All premises must be supported by at least 2 analyses
+          - The conclusion must be the natural result of the chain, not forced
+          - Note any inferential leaps
+        expectedOutput: "ReasoningChain { steps: ChainStep[], conclusion: string, inferentialLeaps: string[], evidenceGaps: string[] }"
+        validationRule: "Chain has at least 2 premises, conclusion follows from premises, each premise cited"
+        failureSignal: "Conclusion does not follow from premises or premises unsupported"
+        recoveryAction: "Simplify chain to most strongly supported premises and weaker conclusion"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Qualify conclusion
+        desc: Add appropriate qualifications, conditions, and confidence levels to the conclusion.
+        whyThisMatters: Even consensus conclusions have limitations; qualifications prevent overconfidence and protect against edge cases where the consensus may not apply.
+        inputNeeded: "ReasoningChain with conclusion, dissent information"
+        actionInstruction: "Call llm.chat() with qualification prompt."
+        promptToUse: |
+          You are the Synthesizer agent qualifying a consensus conclusion.
+
+          Conclusion: {{conclusion}}
+          Reasoning chain: {{reasoningChain}}
+          Known dissents: {{dissents}}
+          Decision context: {{decisionContext}}
+
+          Add qualifications:
+          1. Under what conditions does this conclusion hold?
+          2. Under what conditions might it NOT hold?
+          3. What evidence would change this conclusion?
+          4. How should this conclusion be used in the decision context?
+          5. Overall confidence: alto / medio / bajo
+        expectedOutput: "QualifiedConclusion { conclusion: string, qualifications: string[], conditions: string[], changeFactors: string[], confidence: string }"
+        validationRule: "At least 1 qualification present, confidence assigned"
+        failureSignal: "No qualifications (overconfident) or only hedge language"
+        recoveryAction: "Add standard qualifications: 'based on available analyses', 'subject to new evidence'"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the qualified consensus conclusion with full reasoning chain.
+        whyThisMatters: Validated delivery ensures the conclusion and its reasoning chain are safe and properly formatted.
+        inputNeeded: "QualifiedConclusion with reasoning chain"
+        actionInstruction: "Call validateOutput(). Format as ConclusionResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConclusionResult with conclusion, reasoning chain, evidence, and qualifications"
+        validationRule: "CP3 passed, reasoning chain included, qualifications present"
+        failureSignal: "CP3 flags content or chain missing"
+        recoveryAction: "Deliver conclusion with simplified reasoning"
+        handoffIfNeeded: null
+
+    mainOutput: "Qualified consensus conclusion with transparent reasoning chain and evidence citations"
+    secondaryOutputs:
+      - "consensus_verification for audit"
+      - "full_reasoning_chain for review"
+      - "conclusion_metrics (consensus strength, chain length, confidence)"
+    DoD:
+      - "Consensus verified before conclusion drawn"
+      - "Reasoning chain is traceable and logical"
+      - "Conclusion qualified with conditions"
+      - "Confidence level assigned"
+      - "CP3 passed"
+    qaChecklist:
+      - "Conclusion follows from stated premises"
+      - "All premises supported by multiple analyses"
+      - "Qualifications are specific not generic"
+      - "Dissents acknowledged even in consensus"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "logical_validity: conclusion follows from premises"
+      - "evidence_coverage: all premises supported by 2+ analyses"
+      - "qualification_specificity: qualifications reference specific conditions"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when consensus conclusion is needed)"
+    errorHandling: "If consensus verification fails, redirect to majority or nuanced workflow"
+    fallbackRoute: "Draw majority-conclusion instead of consensus"
+    escalationRoute: "Report to orchestrator that analyses are insufficient for any reliable conclusion"
+
+  - id: majority-conclusion
+    title: Majority Conclusion
+    objective: Derive a conclusion supported by the majority of analyses while acknowledging minority positions
+    trigger: "conclusionType === 'majority' or moderate agreement detected"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple analyses provided"
+      - "Clear majority position identifiable"
+    inputs:
+      - "analyses: Analysis[] (sanitized)"
+      - "originalQuery: string"
+      - "decisionContext: string"
+    steps:
+      - stepNumber: 1
+        title: Identify majority position
+        desc: Sanitize inputs and determine which conclusion is supported by the majority, counting and characterizing majority and minority positions.
+        whyThisMatters: Accurate majority identification ensures the conclusion truly reflects the preponderance of evidence rather than a vocal minority.
+        inputNeeded: "All analyses and original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with majority identification prompt."
+        promptToUse: |
+          You are the Synthesizer agent identifying the majority position across analyses.
+
+          Original query: {{originalQuery}}
+          Analyses:
+          {{analyses}}
+
+          Identify positions:
+          1. Group analyses by conclusion direction
+          2. Count support for each position
+          3. Determine majority: Which position has the most support?
+          4. Characterize minority: What do dissenting analyses argue?
+          5. Margin: How strong is the majority (bare majority vs. supermajority)?
+
+          Do not count neutrals as supporting the majority.
+        expectedOutput: "MajorityAnalysis { majorityPosition: string, majorityCount: number, totalCount: number, minorityPositions: MinorityPosition[], margin: string }"
+        validationRule: "Majority clearly identified with count, minority positions characterized"
+        failureSignal: "No clear majority or equal split"
+        recoveryAction: "Redirect to nuanced-conclusion workflow for balanced treatment"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Build majority reasoning
+        desc: Construct the reasoning chain supporting the majority conclusion, incorporating the strongest evidence from majority analyses.
+        whyThisMatters: The reasoning chain must represent the actual arguments of the majority, not a cherry-picked version.
+        inputNeeded: "MajorityAnalysis, majority analyses"
+        actionInstruction: "Call llm.chat() with majority reasoning prompt."
+        promptToUse: |
+          You are the Synthesizer agent building reasoning for the majority conclusion.
+
+          Majority position: {{majorityPosition}}
+          Supporting analyses: {{majorityAnalyses}}
+          Original query: {{originalQuery}}
+
+          Build reasoning:
+          1. What evidence supports the majority position?
+          2. What logic connects the evidence to the conclusion?
+          3. Why did minority analyses reach different conclusions?
+          4. Is the minority position based on different evidence, different logic, or different values?
+
+          The reasoning must honestly represent both majority and minority arguments.
+        expectedOutput: "MajorityReasoning { chain: string[], evidence: string[], minorityCounter: string[], differenceExplanation: string }"
+        validationRule: "Reasoning chain present, minority counter-arguments included"
+        failureSignal: "Minority arguments omitted or misrepresented"
+        recoveryAction: "Re-build with explicit minority perspective integration"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Draft qualified conclusion
+        desc: Draft the conclusion acknowledging it represents a majority rather than consensus, with appropriate qualifications.
+        whyThisMatters: A majority conclusion must be clearly distinguished from a consensus conclusion to prevent overconfidence in contested areas.
+        inputNeeded: "MajorityReasoning, minority positions, decision context"
+        actionInstruction: "Call llm.chat() with majority conclusion drafting prompt."
+        promptToUse: |
+          You are the Synthesizer agent drafting a majority conclusion.
+
+          Majority reasoning: {{majorityReasoning}}
+          Minority positions: {{minorityPositions}}
+          Margin: {{margin}}
+          Decision context: {{decisionContext}}
+
+          Draft conclusion:
+          1. State the majority conclusion clearly
+          2. Note it represents majority, not full consensus
+          3. Summarize minority dissent fairly
+          4. Qualify: Under what conditions might the minority be correct?
+          5. Confidence: Based on margin and evidence quality
+
+          The conclusion must be honest about its status as majority, not unanimous.
+        expectedOutput: "MajorityConclusion { conclusion: string, majorityNote: string, minoritySummary: string, qualifications: string[], confidence: string }"
+        validationRule: "Conclusion clearly labeled as majority, minority fairly summarized"
+        failureSignal: "Conclusion presented as consensus or minority omitted"
+        recoveryAction: "Re-draft with explicit 'Majority of analyses support...' framing"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the majority conclusion with full metadata.
+        whyThisMatters: Proper validation and delivery with majority/minority metadata enables informed downstream decision-making.
+        inputNeeded: "MajorityConclusion with all metadata"
+        actionInstruction: "Call validateOutput(). Format as ConclusionResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConclusionResult with majority conclusion, reasoning, and minority representation"
+        validationRule: "CP3 passed, majority and minority both represented"
+        failureSignal: "CP3 flags content or minority representation missing"
+        recoveryAction: "Deliver with basic majority conclusion and note about minority"
+        handoffIfNeeded: null
+
+    mainOutput: "Majority conclusion with transparent reasoning, minority acknowledgment, and honest confidence level"
+    secondaryOutputs:
+      - "majority_analysis with position counts"
+      - "minority_characterization for balanced reference"
+      - "conclusion_metrics (margin, evidence strength, confidence)"
+    DoD:
+      - "Majority position clearly identified"
+      - "Reasoning chain supports majority conclusion"
+      - "Minority position fairly represented"
+      - "Conclusion labeled as majority, not consensus"
+      - "CP3 passed"
+    qaChecklist:
+      - "Majority count is accurate"
+      - "Minority arguments fairly presented"
+      - "Conclusion does not overstate consensus"
+      - "Qualifications are relevant to decision context"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "majority_accuracy: count matches actual analysis positions"
+      - "minority_representation: dissenting views included"
+      - "honesty: conclusion labeled as majority, not consensus"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when majority conclusion is needed)"
+    errorHandling: "If no clear majority, redirect to nuanced-conclusion workflow"
+    fallbackRoute: "Present all positions without declaring a majority"
+    escalationRoute: "Report to orchestrator that analyses are too evenly split for majority conclusion"
+
+  - id: nuanced-conclusion
+    title: Nuanced Conclusion
+    objective: Derive a multi-faceted conclusion that preserves the complexity and tensions in the analyses without forcing simple agreement
+    trigger: "conclusionType === 'nuanced' or analyses show complex interplay"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple analyses with varied perspectives"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "analyses: Analysis[] (sanitized)"
+      - "originalQuery: string"
+      - "decisionContext: string"
+    steps:
+      - stepNumber: 1
+        title: Map analytical landscape
+        desc: Sanitize inputs and map the full landscape of positions, perspectives, and tensions across all analyses.
+        whyThisMatters: Nuanced conclusions require understanding the full complexity space; oversimplification at this stage defeats the purpose of nuanced analysis.
+        inputNeeded: "All analyses and original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with landscape mapping prompt."
+        promptToUse: |
+          You are the Synthesizer agent mapping the analytical landscape for a nuanced conclusion.
+
+          Original query: {{originalQuery}}
+          Analyses:
+          {{analyses}}
+
+          Map the landscape:
+          1. Distinct positions taken (may be more than 2 sides)
+          2. Shared ground across all positions
+          3. Tensions and trade-offs between positions
+          4. Contextual factors that make different positions valid (under different conditions)
+          5. Complexity level: How many distinct facets does this question have?
+
+          Preserve complexity. Do not reduce to binary agree/disagree.
+        expectedOutput: "AnalyticalLandscape { positions: Position[], sharedGround: string[], tensions: Tension[], contextualFactors: string[], complexityLevel: string }"
+        validationRule: "Multiple positions identified, tensions characterized, shared ground noted"
+        failureSignal: "Reduced to binary or complexity not captured"
+        recoveryAction: "Force identification of at least 3 distinct facets of the question"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Build multi-faceted reasoning
+        desc: Construct reasoning that honors each facet, showing how different conclusions are valid under different conditions or from different perspectives.
+        whyThisMatters: Multi-faceted reasoning prevents false simplification and gives users a complete picture for making their own nuanced decisions.
+        inputNeeded: "AnalyticalLandscape with positions and tensions"
+        actionInstruction: "Call llm.chat() with multi-faceted reasoning prompt."
+        promptToUse: |
+          You are the Synthesizer agent building multi-faceted reasoning.
+
+          Analytical landscape:
+          {{landscape}}
+          Original query: {{originalQuery}}
+
+          Build nuanced reasoning:
+          1. What can we say with confidence? (shared ground)
+          2. What depends on context? (conditional conclusions)
+          3. What remains genuinely uncertain? (open questions)
+          4. What are the key trade-offs? (if X then Y, but at cost of Z)
+          5. How do different stakeholders or use cases change the conclusion?
+
+          The reasoning should help the reader form their own informed judgment.
+        expectedOutput: "NuancedReasoning { certainties: string[], conditionals: ConditionalConclusion[], openQuestions: string[], tradeoffs: Tradeoff[] }"
+        validationRule: "At least one certainty and one conditional, trade-offs characterized"
+        failureSignal: "Everything certain or everything uncertain (no nuance)"
+        recoveryAction: "Re-analyze with explicit instruction to find at least one conditional statement"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compose nuanced conclusion
+        desc: Compose a conclusion that communicates the nuanced picture clearly without losing complexity.
+        whyThisMatters: The challenge of nuanced conclusions is communicating complexity without confusion; the composition must be clear despite being multi-faceted.
+        inputNeeded: "NuancedReasoning, decision context"
+        actionInstruction: "Call llm.chat() with nuanced composition prompt."
+        promptToUse: |
+          You are the Synthesizer agent composing a nuanced conclusion.
+
+          Nuanced reasoning:
+          {{nuancedReasoning}}
+          Decision context: {{decisionContext}}
+
+          Compose conclusion:
+          1. Start with what is clear and agreed upon
+          2. Present conditional conclusions with their conditions
+          3. Acknowledge open questions honestly
+          4. Highlight key trade-offs for decision-makers
+          5. Provide a meta-conclusion: What type of answer does this question admit?
+
+          The conclusion must be clear to read despite being nuanced.
+          Confidence: Separately rate confidence in each facet.
+        expectedOutput: "NuancedConclusion { conclusion: string, facetConfidences: FacetConfidence[], overallCharacterization: string, qualifications: string[] }"
+        validationRule: "Conclusion addresses multiple facets, per-facet confidence assigned"
+        failureSignal: "Conclusion is simple/binary or facets are not addressed"
+        recoveryAction: "Structure as explicit list: 'What we know / What depends / What we do not know'"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the nuanced conclusion with faceted confidence data.
+        whyThisMatters: Validated delivery with rich metadata enables nuanced downstream decision-making.
+        inputNeeded: "NuancedConclusion with all metadata"
+        actionInstruction: "Call validateOutput(). Format as ConclusionResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConclusionResult with nuanced conclusion and per-facet data"
+        validationRule: "CP3 passed, all facets represented"
+        failureSignal: "CP3 flags content or facets missing"
+        recoveryAction: "Deliver simplified conclusion noting complexity was reduced"
+        handoffIfNeeded: null
+
+    mainOutput: "Multi-faceted nuanced conclusion with per-facet confidence and transparent reasoning"
+    secondaryOutputs:
+      - "analytical_landscape for reference"
+      - "nuanced_reasoning for detailed review"
+      - "conclusion_metrics (facet count, certainty distribution, complexity level)"
+    DoD:
+      - "Analytical landscape mapped"
+      - "Multiple facets addressed"
+      - "Conditional conclusions clearly stated"
+      - "Open questions acknowledged"
+      - "CP3 passed"
+    qaChecklist:
+      - "Complexity preserved, not artificially reduced"
+      - "Each facet has appropriate confidence"
+      - "Conclusion is clear despite being nuanced"
+      - "Trade-offs are well-characterized"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "facet_count: >= 2 distinct facets addressed"
+      - "clarity: conclusion readable despite complexity"
+      - "trade_off_characterization: key trade-offs identified"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when nuanced conclusion is needed)"
+    errorHandling: "If analyses are too simple for nuanced treatment, redirect to consensus workflow"
+    fallbackRoute: "Return structured 'what we know / what we do not know' format"
+    escalationRoute: "Report to orchestrator that complexity exceeds synthesis capability"
+
+  - id: conditional-conclusion
+    title: Conditional Conclusion
+    objective: Derive conclusions that are explicitly conditional on stated assumptions, producing if-then conclusion structures
+    trigger: "conclusionType === 'conditional' or analyses depend heavily on assumptions"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Analyses with identifiable assumptions or conditions"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "analyses: Analysis[] (sanitized)"
+      - "originalQuery: string"
+      - "decisionContext: string"
+    steps:
+      - stepNumber: 1
+        title: Extract conditions and assumptions
+        desc: Sanitize inputs and extract all explicit and implicit conditions and assumptions from the analyses.
+        whyThisMatters: Conditional conclusions require clear identification of the conditions; hidden assumptions undermine the conditional structure.
+        inputNeeded: "All analyses and original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with condition extraction prompt."
+        promptToUse: |
+          You are the Synthesizer agent extracting conditions and assumptions from analyses.
+
+          Original query: {{originalQuery}}
+          Analyses:
+          {{analyses}}
+
+          Extract all conditions:
+          1. Explicit conditions stated by analyses
+          2. Implicit assumptions (unstated but required for conclusions to hold)
+          3. Shared assumptions (common across all analyses)
+          4. Divergent assumptions (where analyses assume different things)
+          5. Testable vs. untestable conditions
+
+          For each condition, assess: How likely is this condition to be true?
+        expectedOutput: "ConditionExtraction { explicit: Condition[], implicit: Condition[], shared: string[], divergent: DivergentAssumption[], testability: object }"
+        validationRule: "At least 2 conditions extracted, testability assessed"
+        failureSignal: "No conditions found (analyses may not be conditional)"
+        recoveryAction: "Redirect to consensus-conclusion workflow if analyses are unconditional"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Build conditional chains
+        desc: For each major condition or condition combination, determine what conclusion follows if the condition is true.
+        whyThisMatters: Explicit if-then structures make the conclusion directly actionable as conditions change or are verified.
+        inputNeeded: "ConditionExtraction, analyses"
+        actionInstruction: "Call llm.chat() with conditional chain building prompt."
+        promptToUse: |
+          You are the Synthesizer agent building conditional conclusion chains.
+
+          Conditions:
+          {{conditions}}
+          Analyses:
+          {{analyses}}
+          Original query: {{originalQuery}}
+
+          Build if-then chains:
+          For each major condition (or combination):
+          - IF [condition] THEN [conclusion]
+          - Evidence supporting this chain
+          - What changes if the condition is false?
+
+          Also identify:
+          - Default conclusion (what holds regardless of conditions)
+          - Most likely scenario (based on condition likelihood)
+          - Worst case and best case scenarios
+        expectedOutput: "ConditionalChains { chains: IfThenChain[], defaultConclusion: string, mostLikelyScenario: string, bestCase: string, worstCase: string }"
+        validationRule: "At least 2 if-then chains, default conclusion present"
+        failureSignal: "Chains without clear if-then structure"
+        recoveryAction: "Simplify to single most important condition with binary outcome"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compose conditional conclusion
+        desc: Compose the final conditional conclusion that presents the if-then structure clearly with appropriate guidance for the decision context.
+        whyThisMatters: The presentation must make conditional conclusions actionable, not just academically interesting.
+        inputNeeded: "ConditionalChains, decision context"
+        actionInstruction: "Call llm.chat() with conditional composition prompt."
+        promptToUse: |
+          You are the Synthesizer agent composing a conditional conclusion.
+
+          Conditional chains:
+          {{conditionalChains}}
+          Decision context: {{decisionContext}}
+
+          Compose conclusion:
+          1. State the default conclusion (what holds regardless)
+          2. Present key conditional conclusions in order of likelihood
+          3. For decision context: Which conditions should be verified first?
+          4. Provide decision guidance: What should the user do to resolve conditions?
+          5. Overall confidence: Rate per-condition and overall
+
+          Format for actionability: Help the user determine which conditions apply to their situation.
+        expectedOutput: "ConditionalConclusion { defaultConclusion: string, conditionals: ConditionalStatement[], verificationPriority: string[], guidance: string, confidence: string }"
+        validationRule: "Default conclusion present, conditionals structured as if-then, guidance actionable"
+        failureSignal: "No clear default or conditionals are vague"
+        recoveryAction: "Present as scenario analysis: Scenario A / Scenario B / Scenario C"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the conditional conclusion with verification guidance.
+        whyThisMatters: Validated delivery with condition verification guidance enables users to resolve conditions themselves.
+        inputNeeded: "ConditionalConclusion"
+        actionInstruction: "Call validateOutput(). Format as ConclusionResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConclusionResult with conditional conclusion and verification guidance"
+        validationRule: "CP3 passed, conditional structure preserved in output"
+        failureSignal: "CP3 flags content or conditional structure lost"
+        recoveryAction: "Deliver simplified conditional: 'If X, then Y; otherwise Z'"
+        handoffIfNeeded: null
+
+    mainOutput: "Conditional conclusion with explicit if-then chains, default position, and verification guidance"
+    secondaryOutputs:
+      - "condition_extraction for reference"
+      - "conditional_chains for detailed review"
+      - "conclusion_metrics (condition count, chain depth, scenario count)"
+    DoD:
+      - "Conditions extracted from analyses"
+      - "If-then chains constructed"
+      - "Default conclusion stated"
+      - "Verification guidance provided"
+      - "CP3 passed"
+    qaChecklist:
+      - "Conditions are genuinely from analyses, not fabricated"
+      - "If-then logic is valid"
+      - "Default conclusion is the safest/most conservative"
+      - "Guidance helps resolve conditions"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "condition_count: >= 2 distinct conditions identified"
+      - "chain_validity: all if-then chains are logically sound"
+      - "actionability: verification guidance is specific"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when conditional conclusion is needed)"
+    errorHandling: "If analyses are not conditional, redirect to consensus or majority workflow"
+    fallbackRoute: "Present analyses as scenarios without conditional structure"
+    escalationRoute: "Report to orchestrator that conditions require external validation"

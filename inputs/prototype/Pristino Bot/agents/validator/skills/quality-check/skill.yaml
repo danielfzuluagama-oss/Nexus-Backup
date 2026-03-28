@@ -1,0 +1,588 @@
+id: quality-check
+name: Quality Check
+purpose: Verify the quality of outputs from other agents against defined criteria, producing structured validation results with severity ratings and actionable improvement recommendations.
+businessValue: Acts as a quality gate ensuring that outputs reaching users meet defined standards, catching errors, omissions, and quality issues before delivery.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: validator
+
+inputs:
+  - "output: string - The output to validate"
+  - "criteria: string[] - Quality criteria to check against"
+  - "sourceAgent: string - Which agent produced the output"
+  - "originalQuery: string - The original user request"
+
+outputs:
+  - "validationResult: ValidationResult - Pass/Fail/Partial with details"
+  - "findings: Finding[] - Issues found with severity ratings"
+  - "qualityScore: number - Quality score 0-100"
+  - "recommendations: string[] - Prioritized improvement suggestions"
+
+dependencies:
+  - "agents/validator/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task with output to validate from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - validation_passed
+  - validation_failed
+  - finding_critical
+  - finding_high
+  - finding_medium
+  - finding_low
+  - quality_scored
+  - fallback_triggered
+
+failureHandling:
+  - "Empty output: Immediate Fail with 'empty output' finding"
+  - "No criteria provided: Apply default quality criteria for the agent type"
+  - "Output too long to validate: Validate representative sample and note"
+  - "Ambiguous criteria: Apply reasonable interpretation and document it"
+
+interoperabilityContract:
+  inputType: "QualityCheckRequest { output: string, criteria?: string[], sourceAgent: string, originalQuery: string }"
+  outputType: "QualityCheckResult { validationResult: ValidationResult, findings: Finding[], qualityScore: number, recommendations: string[] }"
+
+wowCriteria:
+  - "Every finding has specific evidence from the output, not just generic criticism"
+  - "Severity ratings are calibrated to actual impact on user experience"
+  - "Recommendations are concrete and immediately actionable"
+  - "Quality score is reproducible with the same criteria"
+
+safeCriteria:
+  - "No invented problems — every finding is evidence-based"
+  - "Constructive tone — identify issues without being destructive"
+  - "Severity is proportional — no inflation of minor issues"
+  - "Pass/Fail threshold is clear and consistently applied"
+
+workflows:
+  - id: standard-quality-check
+    title: Standard Quality Check
+    objective: Perform a standard quality assessment using default criteria appropriate for the source agent type
+    trigger: "No specific criteria provided or standard check requested"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Output to validate is non-empty"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "output: string (sanitized)"
+      - "sourceAgent: string"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Determine quality criteria
+        desc: Sanitize inputs and establish quality criteria based on the source agent type and the nature of the original query.
+        whyThisMatters: Applying appropriate criteria for the agent type prevents unfair evaluation (e.g., checking a researcher for synthesis quality).
+        inputNeeded: "Output, source agent identifier, original query"
+        actionInstruction: "Call sanitizeInput() on all inputs. Determine criteria from agent type mapping."
+        promptToUse: |
+          You are the Validator agent determining quality criteria.
+
+          Source agent: {{sourceAgent}}
+          Original query: {{originalQuery}}
+          Output preview: {{output}} (first 500 chars)
+
+          Determine appropriate quality criteria:
+          For researcher outputs: accuracy, evidence support, confidence declarations, completeness, honesty about limitations
+          For analyst outputs: depth of analysis, logical reasoning, insight quality, actionability
+          For synthesizer outputs: coherence, faithfulness to inputs, conflict handling, no agent attribution
+          For any output: relevance to query, clarity, no fabrication, appropriate length
+
+          List 5-8 criteria with importance weight (high/medium/low).
+        expectedOutput: "QualityCriteria { criteria: Criterion[], totalCriteria: number, applicableStandard: string }"
+        validationRule: "5-8 criteria defined with importance weights, appropriate for agent type"
+        failureSignal: "Criteria inappropriate for agent type or fewer than 5"
+        recoveryAction: "Use generic quality criteria: accuracy, relevance, clarity, completeness, tone"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Evaluate against criteria
+        desc: Systematically evaluate the output against each criterion, documenting findings with evidence.
+        whyThisMatters: Systematic evaluation prevents overlooking issues and ensures every criterion is checked with equal rigor.
+        inputNeeded: "QualityCriteria, full output, original query"
+        actionInstruction: "Call llm.chat() with systematic evaluation prompt."
+        promptToUse: |
+          You are the Validator agent evaluating output quality.
+
+          Output to validate:
+          {{output}}
+          Original query: {{originalQuery}}
+          Quality criteria:
+          {{criteria}}
+
+          For each criterion:
+          1. Assessment: Met / Partially Met / Not Met
+          2. Evidence: Specific quote or observation from the output supporting your assessment
+          3. Severity if not met: Critical / High / Medium / Low / Info
+          4. Recommendation: Specific improvement suggestion
+
+          Rules:
+          - Be objective, not subjective
+          - Cite specific evidence, not general impressions
+          - Do not invent problems that do not exist
+          - Distinguish factual errors from style preferences
+          - Be constructive in recommendations
+        expectedOutput: "CriteriaEvaluation { evaluations: CriterionResult[], passCount: number, failCount: number, partialCount: number }"
+        validationRule: "Every criterion evaluated with evidence, severity assigned for failures"
+        failureSignal: "Criteria without evaluation or findings without evidence"
+        recoveryAction: "Mark unevaluable criteria as 'Not Assessable' with reason"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Calculate quality score
+        desc: Calculate the weighted quality score and determine the overall Pass/Fail/Partial verdict.
+        whyThisMatters: The quality score and verdict are the primary outputs that downstream systems use for automated quality gates.
+        inputNeeded: "CriteriaEvaluation with all assessments"
+        actionInstruction: "Calculate weighted score. Determine verdict based on critical/high finding presence."
+        promptToUse: null (mechanical step)
+        expectedOutput: "QualityVerdict { score: number, verdict: 'Pass'|'Fail'|'Partial', criticalFindings: number, highFindings: number, mediumFindings: number, lowFindings: number }"
+        validationRule: "Score is 0-100, verdict matches finding severity (any Critical = Fail)"
+        failureSignal: "Score does not reflect findings or verdict is inconsistent"
+        recoveryAction: "Recalculate using simple formula: (met criteria / total) * 100"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver results
+        desc: Apply CP3 and deliver the quality check results with all findings and recommendations.
+        whyThisMatters: The validation report itself must be safe and properly formatted for consumption.
+        inputNeeded: "QualityVerdict with all supporting data"
+        actionInstruction: "Call validateOutput(). Format as QualityCheckResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated QualityCheckResult with verdict, score, findings, and recommendations"
+        validationRule: "CP3 passed, output matches interoperabilityContract.outputType"
+        failureSignal: "CP3 flags content or schema validation fails"
+        recoveryAction: "Deliver verdict and score without detailed findings"
+        handoffIfNeeded: null
+
+    mainOutput: "Quality assessment with Pass/Fail/Partial verdict, score, evidence-based findings, and recommendations"
+    secondaryOutputs:
+      - "criteria_mapping for agent-type reference"
+      - "per_criterion_evaluation for detailed review"
+      - "quality_metrics (score, finding distribution, criterion pass rate)"
+    DoD:
+      - "Quality criteria determined for agent type"
+      - "All criteria evaluated with evidence"
+      - "Quality score calculated"
+      - "Verdict assigned"
+      - "CP3 passed"
+    qaChecklist:
+      - "Criteria appropriate for source agent type"
+      - "Findings have specific evidence"
+      - "Severity proportional to actual impact"
+      - "Recommendations are constructive"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "criteria_coverage: 100% of criteria evaluated"
+      - "evidence_per_finding: every finding has cited evidence"
+      - "score_consistency: same output gets same score on re-evaluation"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when quality check is needed)"
+    errorHandling: "If output is empty, return immediate Fail with explanation"
+    fallbackRoute: "Return simple Pass/Fail based on most critical criteria only"
+    escalationRoute: "Report Critical findings to orchestrator immediately"
+
+  - id: criteria-specific-check
+    title: Criteria-Specific Check
+    objective: Validate output against specific user-provided criteria rather than default standards
+    trigger: "criteria provided explicitly in request"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Specific criteria provided by requester"
+      - "Output to validate is non-empty"
+    inputs:
+      - "output: string (sanitized)"
+      - "criteria: string[] (user-specified)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Parse and validate criteria
+        desc: Sanitize inputs and validate that the provided criteria are testable and applicable to the output.
+        whyThisMatters: Untestable criteria produce meaningless validation; validating criteria first prevents wasted effort.
+        inputNeeded: "Provided criteria, output preview"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with criteria validation prompt."
+        promptToUse: |
+          You are the Validator agent validating quality check criteria.
+
+          Provided criteria:
+          {{criteria}}
+          Output to check: {{output}} (preview)
+
+          For each criterion:
+          1. Is it testable? (Can it be objectively assessed?)
+          2. Is it applicable to this output type?
+          3. How will you measure it?
+          4. Suggest refinement if criterion is vague
+
+          Flag any criteria that are untestable or inapplicable.
+        expectedOutput: "ValidatedCriteria { valid: Criterion[], refined: RefinedCriterion[], rejected: RejectedCriterion[] }"
+        validationRule: "Every provided criterion classified as valid, refined, or rejected with reason"
+        failureSignal: "Criteria classification missing or all criteria rejected"
+        recoveryAction: "Refine vague criteria using reasonable interpretation and proceed"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Evaluate against provided criteria
+        desc: Evaluate the output against each validated criterion, applying the specified measurement method.
+        whyThisMatters: Criteria-specific evaluation ensures the validation answers the specific questions the requester asked.
+        inputNeeded: "ValidatedCriteria, full output, original query"
+        actionInstruction: "Call llm.chat() with criteria-specific evaluation prompt."
+        promptToUse: |
+          You are the Validator agent evaluating output against specific criteria.
+
+          Output:
+          {{output}}
+          Original query: {{originalQuery}}
+          Criteria to check:
+          {{validatedCriteria}}
+
+          For each criterion:
+          1. Met / Partially Met / Not Met
+          2. Specific evidence from the output
+          3. Measurement result (using the defined measurement method)
+          4. Severity if not met: Critical / High / Medium / Low
+          5. How to fix if not met
+
+          Apply criteria strictly as specified. Do not add your own criteria.
+        expectedOutput: "CriteriaResults { results: CriterionResult[], overallCompliance: number }"
+        validationRule: "Every validated criterion has a result with evidence"
+        failureSignal: "Criteria without results or extra criteria added"
+        recoveryAction: "Evaluate remaining criteria with best-effort measurement"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compile and deliver results
+        desc: Compile results into structured validation output, calculate compliance score, and deliver with CP3 validation.
+        whyThisMatters: Structured output with compliance scoring enables automated quality gates keyed to specific criteria.
+        inputNeeded: "CriteriaResults with all evaluations"
+        actionInstruction: "Calculate compliance score. Call validateOutput(). Format as QualityCheckResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated QualityCheckResult with per-criterion results and compliance score"
+        validationRule: "CP3 passed, compliance score matches evaluation results"
+        failureSignal: "CP3 flags content or score mismatch"
+        recoveryAction: "Deliver per-criterion results without aggregate score"
+        handoffIfNeeded: null
+
+    mainOutput: "Criteria-specific validation results with per-criterion evidence and compliance score"
+    secondaryOutputs:
+      - "criteria_validation for methodology audit"
+      - "per_criterion_evidence for detailed review"
+      - "compliance_metrics (pass rate, severity distribution)"
+    DoD:
+      - "Provided criteria validated for testability"
+      - "Each criterion evaluated with evidence"
+      - "Compliance score calculated"
+      - "CP3 passed"
+    qaChecklist:
+      - "Only provided criteria used (no extras added)"
+      - "Criteria applied as specified"
+      - "Evidence is specific and verifiable"
+      - "Rejected criteria explained"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "criteria_coverage: 100% of valid criteria evaluated"
+      - "evidence_quality: every result has specific evidence"
+      - "response_time_p95: < 25s"
+      - "criteria_fidelity: only specified criteria used"
+    cadence: "Per-request (when criteria-specific check is needed)"
+    errorHandling: "If all criteria are untestable, report to orchestrator and suggest alternatives"
+    fallbackRoute: "Apply standard quality check if provided criteria are insufficient"
+    escalationRoute: "Report to orchestrator that criteria are ambiguous and need clarification"
+
+  - id: comparative-quality-check
+    title: Comparative Quality Check
+    objective: Compare the quality of two or more outputs to determine which best meets quality standards
+    trigger: "Multiple outputs provided for quality comparison"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "At least 2 outputs to compare"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "outputs: string[] (sanitized, 2+)"
+      - "criteria: string[]"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Establish comparison baseline
+        desc: Sanitize inputs, establish uniform criteria, and ensure fair comparison conditions.
+        whyThisMatters: Fair comparison requires identical criteria applied identically; bias in setup invalidates the entire comparison.
+        inputNeeded: "All outputs, criteria, original query"
+        actionInstruction: "Call sanitizeInput() on all inputs. Define uniform evaluation criteria."
+        promptToUse: |
+          You are the Validator agent establishing comparison baseline for quality comparison.
+
+          Outputs to compare: {{outputs.length}} outputs
+          Provided criteria: {{criteria}}
+          Original query: {{originalQuery}}
+
+          Establish fair comparison:
+          1. Define uniform criteria applicable to all outputs
+          2. Verify all outputs address the same query
+          3. Note any structural differences that could bias comparison
+          4. Define scoring method (1-5 per criterion for each output)
+        expectedOutput: "ComparisonBaseline { uniformCriteria: Criterion[], outputsComparable: boolean, biasRisks: string[], scoringMethod: string }"
+        validationRule: "Criteria are uniform, comparability confirmed"
+        failureSignal: "Outputs are not comparable (address different queries)"
+        recoveryAction: "Report incomparability and evaluate each individually"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Score outputs independently
+        desc: Score each output against the uniform criteria independently without comparing to other outputs.
+        whyThisMatters: Independent scoring prevents contrast bias where one output makes another look better or worse than it actually is.
+        inputNeeded: "ComparisonBaseline, all outputs"
+        actionInstruction: "For each output, call llm.chat() with independent scoring prompt."
+        promptToUse: |
+          You are the Validator agent scoring an output independently for comparative quality check.
+
+          Output to score:
+          {{output}}
+          Criteria:
+          {{uniformCriteria}}
+          Original query: {{originalQuery}}
+
+          Score INDEPENDENTLY (do not reference other outputs):
+          For each criterion: Score 1-5 with evidence.
+          Calculate total quality score.
+
+          Be consistent in your scoring standard.
+        expectedOutput: "IndependentScore { outputIndex: number, criterionScores: CriterionScore[], totalScore: number }"
+        validationRule: "All criteria scored for this output, scores are 1-5"
+        failureSignal: "Scores reference other outputs or criteria missing"
+        recoveryAction: "Re-score with explicit independence instruction"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Compare and rank
+        desc: Compare independent scores to produce a quality ranking with justification for the ranking order.
+        whyThisMatters: The ranking with justification is the primary deliverable that enables selecting the best output.
+        inputNeeded: "All IndependentScores"
+        actionInstruction: "Compare scores, rank outputs, identify key differentiators. Call validateOutput()."
+        promptToUse: |
+          You are the Validator agent ranking outputs by quality.
+
+          Independent scores:
+          {{allScores}}
+
+          Compare and rank:
+          1. Rank outputs by total score
+          2. Identify key differentiators (criteria where scores differ most)
+          3. Note where outputs are essentially tied
+          4. Recommend the best output with justification
+          5. Note if the top output has any critical weaknesses despite being best overall
+        expectedOutput: "QualityRanking { rankings: Rank[], keyDifferentiators: string[], ties: string[], recommendation: string, topOutputWeaknesses: string[] }"
+        validationRule: "All outputs ranked, recommendation present"
+        failureSignal: "Ranking does not match scores or recommendation is missing"
+        recoveryAction: "Rank strictly by total score without qualitative analysis"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the comparative quality results.
+        whyThisMatters: Validated delivery ensures the comparison is safe and properly formatted.
+        inputNeeded: "QualityRanking with all supporting data"
+        actionInstruction: "Call validateOutput(). Format as QualityCheckResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated QualityCheckResult with comparative rankings and recommendation"
+        validationRule: "CP3 passed, all outputs represented in ranking"
+        failureSignal: "CP3 flags content or outputs missing from ranking"
+        recoveryAction: "Deliver simple ranking without detailed comparison"
+        handoffIfNeeded: null
+
+    mainOutput: "Comparative quality ranking with per-criterion scores, key differentiators, and best-output recommendation"
+    secondaryOutputs:
+      - "independent_scores for audit trail"
+      - "comparison_baseline for methodology reference"
+      - "comparison_metrics (score ranges, differentiation level)"
+    DoD:
+      - "Uniform criteria established"
+      - "All outputs scored independently"
+      - "Rankings produced with justification"
+      - "Best output recommended"
+      - "CP3 passed"
+    qaChecklist:
+      - "Same criteria applied to all outputs"
+      - "Independent scoring (no contrast bias)"
+      - "Rankings match scores"
+      - "Recommendation justified"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "scoring_uniformity: same criteria to all outputs"
+      - "independence: no cross-output references in individual scores"
+      - "ranking_accuracy: rankings match score ordering"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when comparative quality check is needed)"
+    errorHandling: "If outputs are incomparable, evaluate individually and note"
+    fallbackRoute: "Return individual quality scores without ranking"
+    escalationRoute: "Report to orchestrator that outputs require domain expertise to compare"
+
+  - id: regression-quality-check
+    title: Regression Quality Check
+    objective: Verify that a revised output maintains or improves quality compared to a previous version, catching quality regressions
+    trigger: "Previous version available for comparison or regression check requested"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Both current and previous output versions available"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "currentOutput: string (sanitized)"
+      - "previousOutput: string (sanitized)"
+      - "criteria: string[]"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Establish regression baseline
+        desc: Sanitize inputs, score the previous output to establish the quality baseline that the current output must meet or exceed.
+        whyThisMatters: Without a scored baseline, regression detection is subjective; the baseline provides an objective comparison point.
+        inputNeeded: "Previous output, criteria, original query"
+        actionInstruction: "Call sanitizeInput() on all inputs. Call llm.chat() with baseline scoring prompt."
+        promptToUse: |
+          You are the Validator agent establishing a quality baseline for regression checking.
+
+          Previous output:
+          {{previousOutput}}
+          Criteria: {{criteria}}
+          Original query: {{originalQuery}}
+
+          Score the previous output (this is the baseline):
+          For each criterion: Score 1-5 with brief evidence.
+          Note the strengths and weaknesses of the baseline.
+        expectedOutput: "BaselineScore { criterionScores: CriterionScore[], totalScore: number, strengths: string[], weaknesses: string[] }"
+        validationRule: "All criteria scored, total calculated"
+        failureSignal: "Criteria missing from scoring"
+        recoveryAction: "Use overall impression score if per-criterion scoring fails"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Score current output
+        desc: Score the current output using identical criteria and compare against the baseline.
+        whyThisMatters: Identical scoring methodology ensures the comparison is fair and regressions are detected accurately.
+        inputNeeded: "Current output, same criteria, baseline scores"
+        actionInstruction: "Call llm.chat() with current scoring and comparison prompt."
+        promptToUse: |
+          You are the Validator agent scoring a revised output and comparing against baseline.
+
+          Current output:
+          {{currentOutput}}
+          Criteria: {{criteria}}
+          Baseline scores: {{baselineScores}}
+
+          Score current output with same criteria:
+          For each criterion:
+          1. Score 1-5 with evidence
+          2. Compare to baseline: improved / same / regressed
+          3. If regressed: How significant is the regression?
+
+          Identify:
+          - Improvements (criteria where current > baseline)
+          - Regressions (criteria where current < baseline)
+          - Stable areas (criteria where scores match)
+        expectedOutput: "RegressionAnalysis { currentScores: CriterionScore[], improvements: string[], regressions: Regression[], stable: string[], netChange: number }"
+        validationRule: "All criteria scored and compared, regressions have significance assessment"
+        failureSignal: "Comparison missing for some criteria or regressions not characterized"
+        recoveryAction: "Compare total scores only for overall regression check"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Determine regression verdict
+        desc: Determine whether the revision passes the regression check based on the severity of any regressions found.
+        whyThisMatters: The regression verdict determines whether the revised output should replace the previous version or whether the revision needs rework.
+        inputNeeded: "RegressionAnalysis with improvements and regressions"
+        actionInstruction: "Apply regression verdict logic. Call validateOutput()."
+        promptToUse: |
+          You are the Validator agent rendering a regression verdict.
+
+          Regression analysis:
+          {{regressionAnalysis}}
+
+          Determine verdict:
+          - PASS: No regressions, or only minor regressions outweighed by improvements
+          - WARN: Some regressions exist but overall quality maintained
+          - FAIL: Significant regressions that reduce overall quality below baseline
+
+          Provide:
+          1. Verdict with justification
+          2. Net quality change (score difference)
+          3. Critical regressions to fix (if any)
+          4. Recommendation: Accept revision / Fix regressions / Revert to previous
+        expectedOutput: "RegressionVerdict { verdict: string, netChange: number, criticalRegressions: string[], recommendation: string }"
+        validationRule: "Verdict is PASS/WARN/FAIL, recommendation is actionable"
+        failureSignal: "Verdict inconsistent with regression data"
+        recoveryAction: "Apply conservative verdict (if any regression, WARN; if significant regression, FAIL)"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the regression check results.
+        whyThisMatters: Final validation ensures safe delivery of the regression verdict.
+        inputNeeded: "RegressionVerdict with full analysis"
+        actionInstruction: "Call validateOutput(). Format as QualityCheckResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated QualityCheckResult with regression verdict and detailed comparison"
+        validationRule: "CP3 passed, verdict and comparison data present"
+        failureSignal: "CP3 flags content or comparison data missing"
+        recoveryAction: "Deliver simple PASS/WARN/FAIL without detailed comparison"
+        handoffIfNeeded: null
+
+    mainOutput: "Regression check verdict with per-criterion comparison, regression identification, and recommendation"
+    secondaryOutputs:
+      - "baseline_scores for reference"
+      - "regression_analysis for detailed review"
+      - "regression_metrics (net change, improvement count, regression count)"
+    DoD:
+      - "Baseline scored"
+      - "Current output scored with same criteria"
+      - "Regressions identified and characterized"
+      - "Verdict rendered with recommendation"
+      - "CP3 passed"
+    qaChecklist:
+      - "Same criteria used for both versions"
+      - "Regressions accurately identified"
+      - "Verdict matches analysis"
+      - "Recommendation is actionable"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "criteria_consistency: identical criteria for both versions"
+      - "regression_detection: all regressions identified"
+      - "verdict_accuracy: verdict matches regression data"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when regression checking is needed)"
+    errorHandling: "If previous output is unavailable, perform standard quality check instead"
+    fallbackRoute: "Standard quality check on current output only"
+    escalationRoute: "Report Critical regressions to orchestrator for immediate attention"

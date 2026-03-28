@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Blueprint General — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Montserrat:wght@400;500;600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-secondary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-tertiary: 'Jost', 'Futura', 'Trebuchet MS', Arial, sans-serif;
+
+            --bg-primary: hsl(220, 34%, 18%);
+            --bg-surface: hsl(220, 30%, 23%);
+            --bg-body: hsl(222, 29%, 12%);
+            --bg-elevated: hsla(220, 34%, 18%, 0.8);
+            --bg-hover: hsla(220, 30%, 23%, 0.9);
+
+            --text-primary: #FFFFFF;
+            --text-secondary: #e2e8f0;
+            --text-muted: #cbd5e1;
+
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.15);
+            --border-strong: rgba(255, 255, 255, 0.25);
+
+            --brand-gold: hsl(51, 100%, 50%);
+            --brand-gold-dark: hsl(45, 100%, 50%);
+            --brand-gold-glow: hsla(51, 100%, 50%, 0.10);
+            --brand-cyan: hsl(189, 94%, 53%);
+            --brand-emerald: hsl(158, 64%, 52%);
+            --brand-purple: hsl(271, 91%, 65%);
+            --brand-blue: hsl(221, 83%, 53%);
+            --brand-chaos-orange: hsl(25, 100%, 50%);
+            --brand-red: #ef4444;
+
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+            --gradient-premium: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-surface) 100%);
+
+            --shadow-glow-gold: 0 0 25px rgba(255, 240, 51, 0.12);
+            --shadow-glow-cyan: 0 0 25px rgba(34, 211, 238, 0.12);
+
+            /* WCAG AA Contrast-Safe Brand Colors (for text use) */
+            --brand-purple-text: hsl(271, 91%, 76%);
+            --brand-blue-text: hsl(221, 83%, 72%);
+            --brand-indigo-text: #a5b4fc;
+
+            /* Reduced Glow Intensities */
+            --brand-gold-glow-reduced: hsla(51, 100%, 50%, 0.12);
+            --brand-cyan-glow-reduced: hsla(189, 94%, 53%, 0.12);
+
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            background: linear-gradient(135deg, var(--bg-body) 0%, hsl(222, 25%, 16%) 100%);
+            background-attachment: fixed;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-primary);
+            font-weight: 800;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Navigation */
+        .premium-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: hsla(220, 34%, 18%, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            height: 4.5rem;
+        }
+
+        .nav-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-logo svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 900;
+            font-family: var(--font-primary);
+        }
+
+        .logo-text-white {
+            color: white;
+        }
+
+        .highlight-ia-premium {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .tagline-text {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: white;
+            display: block;
+            font-family: var(--font-tertiary);
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        .nav-links a {
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .nav-links a:hover {
+            color: var(--brand-gold);
+        }
+
+        .nav-cta-glow {
+            padding: 0.75rem 1rem;
+            background: var(--gradient-gold);
+            color: #000;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 0.65rem;
+            box-shadow: var(--shadow-glow-gold);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-primary);
+        }
+
+        .nav-cta-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 240, 51, 0.12);
+        }
+
+        /* Main Content */
+        body {
+            padding-top: 4.5rem;
+        }
+
+        .section {
+            padding: 4rem 1.5rem;
+        }
+
+        .section-wide {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .section-narrow {
+            max-width: 896px;
+            margin: 0 auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            font-style: italic;
+            color: var(--text-muted);
+            border-left: 4px solid var(--brand-gold);
+            padding-left: 1.5rem;
+            margin: 2rem auto;
+            max-width: 640px;
+        }
+
+        .hero-quote .gold {
+            color: var(--brand-gold);
+            font-size: 0.875rem;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow-gold);
+            border-color: var(--border-default);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Cards */
+        .card-glass {
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-glass:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow-gold);
+            border-color: var(--border-default);
+        }
+
+        .phase-timeline {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        .phase-card {
+            flex-shrink: 0;
+            width: 16rem;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .phase-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow-gold);
+            border-color: var(--border-default);
+        }
+
+        .phase-card.active {
+            border: 2px solid var(--brand-gold);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .phase-icon {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .phase-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .phase-details {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            space: 0.5rem;
+        }
+
+        .phase-detail {
+            margin-bottom: 0.5rem;
+        }
+
+        .phase-detail strong {
+            color: var(--text-secondary);
+        }
+
+        .phase-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-gold);
+            font-size: 1.5rem;
+            margin: 0 1rem;
+        }
+
+        /* Blueprint Grid */
+        .blueprint-grid {
+            display: grid;
+            gap: 1px;
+            background: var(--brand-gold-glow);
+            padding: 1px;
+            border-radius: var(--radius-lg);
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        .blueprint-grid {
+            grid-template-columns: 150px repeat(6, 1fr);
+        }
+
+        .grid-cell {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            padding: 1rem;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            transition: all 0.2s ease;
+        }
+
+        .grid-cell:hover {
+            background: var(--bg-hover);
+            border-color: var(--brand-gold);
+            box-shadow: inset 0 0 12px rgba(255, 240, 51, 0.1);
+        }
+
+        .grid-header {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+
+        .grid-cell strong {
+            color: var(--text-secondary);
+        }
+
+        .line-of-visibility {
+            grid-column: 1 / -1;
+            background: linear-gradient(90deg, var(--brand-gold-glow) 0%, rgba(34, 211, 238, 0.12) 50%, var(--brand-gold-glow) 100%);
+            border: 2px solid rgba(255, 240, 51, 0.15);
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: var(--brand-gold);
+            text-transform: uppercase;
+        }
+
+        /* MOTs */
+        .mots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .mot-card {
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mot-card.active {
+            border: 2px solid var(--brand-gold);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .mot-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .mot-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        .mot-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .mot-quote {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .mot-metric {
+            border-top: 1px solid rgba(255, 240, 51, 0.12);
+            padding-top: 1rem;
+            font-size: 0.75rem;
+        }
+
+        .mot-metric strong {
+            color: var(--brand-gold);
+            display: block;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .accordion-header {
+            padding: 1rem;
+            cursor: pointer;
+            background: rgba(99, 102, 241, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            border: 1px solid var(--border-default);
+        }
+
+        .accordion-header:hover {
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .accordion-toggle {
+            color: var(--brand-gold);
+            font-weight: 700;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: rgba(15, 23, 42, 0.5);
+            border-top: 1px solid var(--border-default);
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+            padding: 1rem;
+        }
+
+        .accordion-item.active .accordion-header {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .accordion-body {
+            space: 1rem;
+        }
+
+        .accordion-body p {
+            margin-bottom: 0.5rem;
+        }
+
+        .accordion-body ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+            space: 0.25rem;
+        }
+
+        .accordion-body li {
+            margin-bottom: 0.25rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .handoff-box {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .handoff-box strong {
+            color: var(--brand-cyan);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-gold);
+            transition: width 0.3s ease;
+        }
+
+        /* Badge */
+        .badge-glass {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-default);
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            backdrop-filter: blur(12px);
+        }
+
+        /* Emotions Chart */
+        .emotion-curve {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            margin: 1.5rem 0;
+        }
+
+        /* Footer */
+        .footer-glow-line {
+            height: 2px;
+            background: var(--gradient-gold);
+            margin-bottom: 2rem;
+        }
+
+        .footer-section {
+            margin-bottom: 2rem;
+        }
+
+        .footer-section-title {
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--brand-gold);
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 0.875rem;
+            margin-right: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-link:hover {
+            color: var(--brand-gold);
+            transform: translateX(4px);
+        }
+
+        footer {
+            border-top: 1px solid var(--border-default);
+            padding: 3rem 1.5rem;
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        footer p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        footer strong {
+            color: var(--text-secondary);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .blueprint-grid {
+                grid-template-columns: 120px repeat(3, 1fr);
+                font-size: 0.65rem;
+            }
+
+            .grid-cell {
+                padding: 0.75rem;
+            }
+
+            .phase-timeline {
+                gap: 0.75rem;
+            }
+
+            .phase-card {
+                width: 14rem;
+                padding: 1rem;
+            }
+
+            .hero-section {
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Navigation -->
+    <nav class="premium-nav">
+        <div class="nav-content">
+            <div class="nav-logo">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0A122A"/>
+                            <stop offset="100%" stop-color="#13315C"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="36" height="36" rx="10" fill="url(#logoGrad)"/>
+                    <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                    <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+                </svg>
+                <div>
+                    <div class="logo-text">
+                        <span class="logo-text-white">Metodolog</span><span class="highlight-ia-premium">IA</span>
+                    </div>
+                    <span class="tagline-text">Success as a Service</span>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="#phases">Fases</a>
+                <a href="#blueprint">Blueprint</a>
+                <a href="#mots">MOTs</a>
+                <a href="#gates">Gates</a>
+                <a href="#metrics">Métricas</a>
+            </div>
+            <button class="nav-cta-glow">Agendar Diagnóstico</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="section hero-section">
+        <div class="section-narrow">
+            <div class="hero-badge">
+                <i data-lucide="star" style="width: 16px; height: 16px; color: var(--brand-gold);"></i>
+                Service Blueprint General · v2.1
+            </div>
+            <h1>La Arquitectura de tu <span class="highlight-ia-premium">Evolución Digital</span></h1>
+            <p style="font-size: 1.125rem; color: var(--text-muted); margin: 1.5rem 0;">6 fases × 6 capas. Del primer contacto a la soberanía completa.</p>
+
+            <div class="hero-quote">
+                El éxito se mide no por lo que logras conmigo, sino por lo que sigues logrando sin mí.
+                <span class="gold">— Soberanía Digital</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Fases</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Capas</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">MOTs</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Max/Coach</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phase Timeline -->
+    <section id="phases" class="section">
+        <div class="section-wide">
+            <h2>Fases del Servicio</h2>
+            <div class="phase-timeline">
+                <div class="phase-card">
+                    <div class="phase-icon"><i data-lucide="eye"></i></div>
+                    <div class="phase-title">F0 Awareness</div>
+                    <div class="phase-details">
+                        <div class="phase-detail"><strong>Trigger:</strong> Contenido, life event</div>
+                        <div class="phase-detail"><strong>Duración:</strong> 1-4 semanas</div>
+                        <div class="phase-detail"><strong>Outcome:</strong> Lead calificado</div>
+                    </div>
+                </div>
+                <div class="phase-arrow">→</div>
+                <div class="phase-card">
+                    <div class="phase-icon"><i data-lucide="search"></i></div>
+                    <div class="phase-title">F1 Diagnóstico</div>
+                    <div class="phase-details">
+                        <div class="phase-detail"><strong>Trigger:</strong> Solicitud diagnóstico</div>
+                        <div class="phase-detail"><strong>Duración:</strong> 1 sesión (1h)</div>
+                        <div class="phase-detail"><strong>Outcome:</strong> Baseline Report</div>
+                    </div>
+                </div>
+                <div class="phase-arrow">→</div>
+                <div class="phase-card">
+                    <div class="phase-icon"><i data-lucide="ruler"></i></div>
+                    <div class="phase-title">F2 Diseño</div>
+                    <div class="phase-details">
+                        <div class="phase-detail"><strong>Trigger:</strong> Decisión inversión</div>
+                        <div class="phase-detail"><strong>Duración:</strong> 1-2 sesiones</div>
+                        <div class="phase-detail"><strong>Outcome:</strong> Roadmap + KPIs</div>
+                    </div>
+                </div>
+                <div class="phase-arrow">→</div>
+                <div class="phase-card active">
+                    <div class="phase-icon"><i data-lucide="zap"></i></div>
+                    <div class="phase-title">F3 Práctica</div>
+                    <div class="phase-details">
+                        <div class="phase-detail"><strong>Trigger:</strong> Inicio bootcamp</div>
+                        <div class="phase-detail"><strong>Duración:</strong> 4-12 semanas</div>
+                        <div class="phase-detail"><strong>Outcome:</strong> Dominio + GPTs</div>
+                    </div>
+                </div>
+                <div class="phase-arrow">→</div>
+                <div class="phase-card">
+                    <div class="phase-icon"><i data-lucide="shield-check"></i></div>
+                    <div class="phase-title">F4 Autonomía</div>
+                    <div class="phase-details">
+                        <div class="phase-detail"><strong>Trigger:</strong> Cierre programa</div>
+                        <div class="phase-detail"><strong>Duración:</strong> Ongoing</div>
+                        <div class="phase-detail"><strong>Outcome:</strong> Soberanía</div>
+                    </div>
+                </div>
+                <div class="phase-arrow">→</div>
+                <div class="phase-card">
+                    <div class="phase-icon"><i data-lucide="rocket"></i></div>
+                    <div class="phase-title">F5 Advocacy</div>
+                    <div class="phase-details">
+                        <div class="phase-detail"><strong>Trigger:</strong> Éxito demostrado</div>
+                        <div class="phase-detail"><strong>Duración:</strong> Ongoing</div>
+                        <div class="phase-detail"><strong>Outcome:</strong> Referrals</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blueprint Grid -->
+    <section id="blueprint" class="section">
+        <div class="section-wide">
+            <h2>Blueprint: 6 Capas × 6 Fases</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Interactúa con las celdas para ver detalles completos</p>
+
+            <div class="blueprint-grid">
+                <!-- Header -->
+                <div class="grid-cell grid-header">Capas</div>
+                <div class="grid-cell grid-header">F0</div>
+                <div class="grid-cell grid-header">F1</div>
+                <div class="grid-cell grid-header">F2</div>
+                <div class="grid-cell grid-header">F3</div>
+                <div class="grid-cell grid-header">F4</div>
+                <div class="grid-cell grid-header">F5</div>
+
+                <!-- Physical Evidence -->
+                <div class="grid-cell grid-header"><i data-lucide="smartphone" style="width: 16px; height: 16px; display: inline;"></i> Evidencia</div>
+                <div class="grid-cell"><strong>Sitio web</strong><br>Posts RRSS<br>Lead magnets</div>
+                <div class="grid-cell"><strong>Cuestionario</strong><br>Baseline Report<br>Mapa oportunidad</div>
+                <div class="grid-cell"><strong>Roadmap doc</strong><br>Dashboard KPIs<br>Calendario</div>
+                <div class="grid-cell"><strong>Plataforma</strong><br>Prompts + Templates<br>GPTs personalizados</div>
+                <div class="grid-cell"><strong>Autonomy Kit</strong><br>Canal async<br>Check-in mensual</div>
+                <div class="grid-cell"><strong>Caso éxito</strong><br>Testimonio<br>Badge Champion</div>
+
+                <!-- Customer Actions -->
+                <div class="grid-cell grid-header"><i data-lucide="user" style="width: 16px; height: 16px; display: inline;"></i> Acciones</div>
+                <div class="grid-cell"><strong>Consume</strong><br>Busca solución<br>Registra interés</div>
+                <div class="grid-cell"><strong>Completa</strong><br>Conversación (1h)<br>Valida hallazgos</div>
+                <div class="grid-cell"><strong>Revisa opciones</strong><br>Elige compromiso<br>Define métricas</div>
+                <div class="grid-cell"><strong>Asiste sesiones</strong><br>Implementa cambios<br>Reporta avances</div>
+                <div class="grid-cell"><strong>Mantiene hábitos</strong><br>Mide progreso<br>Ajusta resultados</div>
+                <div class="grid-cell"><strong>Refiere pares</strong><br>Comparte resultados<br>Genera UGC</div>
+
+                <!-- Frontstage -->
+                <div class="grid-cell grid-header"><i data-lucide="presentation" style="width: 16px; height: 16px; display: inline;"></i> Frontstage</div>
+                <div class="grid-cell"><strong>SEO Orgánico</strong><br>Chatbot/WhatsApp<br>Webinars</div>
+                <div class="grid-cell"><strong>Discovery guiada</strong><br>Presentación diagnóstico<br>Social proof</div>
+                <div class="grid-cell"><strong>Co-diseño ruta</strong><br>Priorización cambios<br>Framework medición</div>
+                <div class="grid-cell"><strong>Coaching guiado</strong><br>Resolución obstáculos<br>Reviews semanales</div>
+                <div class="grid-cell"><strong>Sesión cierre</strong><br>Revisión logros<br>Plan mantenimiento</div>
+                <div class="grid-cell"><strong>Invitación embajador</strong><br>Reconocimiento<br>Red exclusiva</div>
+
+                <!-- Line of Visibility -->
+                <div class="line-of-visibility"><i data-lucide="arrow-up" style="width: 16px; height: 16px; display: inline;"></i> FRONTSTAGE — LÍNEA DE VISIBILIDAD — BACKSTAGE <i data-lucide="arrow-down" style="width: 16px; height: 16px; display: inline;"></i></div>
+
+                <!-- Backstage -->
+                <div class="grid-cell grid-header"><i data-lucide="wrench" style="width: 16px; height: 16px; display: inline;"></i> Backstage</div>
+                <div class="grid-cell"><strong>SOP Scouting</strong><br>SOP Nurturing<br>BANT qualification</div>
+                <div class="grid-cell"><strong>Review cuestionario</strong><br>Research contexto<br>Diagnóstico personalizado</div>
+                <div class="grid-cell"><strong>Adaptar playbooks</strong><br>Seleccionar herramientas<br>Configurar prompts</div>
+                <div class="grid-cell"><strong>Quality check</strong><br>Documentar learnings<br>Refinar prompts</div>
+                <div class="grid-cell"><strong>Consulta async</strong><br>Check-ins opcionales<br>Actualizaciones</div>
+                <div class="grid-cell"><strong>Track referral</strong><br>Gestionar embajadores<br>Producción casos</div>
+
+                <!-- Support Processes -->
+                <div class="grid-cell grid-header"><i data-lucide="settings" style="width: 16px; height: 16px; display: inline;"></i> Soporte</div>
+                <div class="grid-cell"><strong>CRM/HubSpot</strong><br>Analytics web<br>Email automation</div>
+                <div class="grid-cell"><strong>Plataforma diag</strong><br>Templates reports<br>Confidencialidad</div>
+                <div class="grid-cell"><strong>Biblioteca playbooks</strong><br>Catálogo herramientas<br>Facturación</div>
+                <div class="grid-cell"><strong>LMS/Entrega</strong><br>Repositorio prompts<br>QA automatizado</div>
+                <div class="grid-cell"><strong>Knowledge base</strong><br>Sistema alertas<br>Encuestas NPS</div>
+                <div class="grid-cell"><strong>Analytics referral</strong><br>CRM loyalty<br>UGC curation</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Moments of Truth -->
+    <section id="mots" class="section" style="background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.3));">
+        <div class="section-wide">
+            <h2>Momentos de Verdad (MOTs)</h2>
+
+            <div class="mots-grid">
+                <div class="mot-card">
+                    <div class="mot-icon"><i data-lucide="star" style="color: var(--brand-gold);"></i></div>
+                    <div class="mot-title">MOT-1: Relevancia</div>
+                    <div class="mot-quote">"Esto me habla a mí"</div>
+                    <div class="mot-metric">
+                        <strong>CTR > 3%</strong>
+                        <span>F0→F1</span>
+                    </div>
+                </div>
+
+                <div class="mot-card">
+                    <div class="mot-icon"><i data-lucide="star" style="color: var(--brand-gold);"></i></div>
+                    <div class="mot-title">MOT-2: Claridad</div>
+                    <div class="mot-quote">"Ahora veo dónde pierdo"</div>
+                    <div class="mot-metric">
+                        <strong>Conv. > 60%</strong>
+                        <span>F1→F2</span>
+                    </div>
+                </div>
+
+                <div class="mot-card active">
+                    <div class="mot-icon"><i data-lucide="star" style="color: var(--brand-gold);"></i></div>
+                    <div class="mot-title">MOT-3: Aha!</div>
+                    <div class="mot-quote">"Funciona en mi día"</div>
+                    <div class="mot-metric">
+                        <strong>NPS > 8</strong>
+                        <span>F3 (semana 3-4)</span>
+                    </div>
+                </div>
+
+                <div class="mot-card">
+                    <div class="mot-icon"><i data-lucide="star" style="color: var(--brand-gold);"></i></div>
+                    <div class="mot-title">MOT-4: Soberanía</div>
+                    <div class="mot-quote">"Puedo solo/a"</div>
+                    <div class="mot-metric">
+                        <strong>Autonomía > 80%</strong>
+                        <span>F4 (mes 1)</span>
+                    </div>
+                </div>
+
+                <div class="mot-card">
+                    <div class="mot-icon"><i data-lucide="shield-check" style="color: var(--brand-emerald);"></i></div>
+                    <div class="mot-title">MOT-5: Sostenible</div>
+                    <div class="mot-quote">"Puedo Sostenible"</div>
+                    <div class="mot-metric">
+                        <strong>Autonomía > 80%</strong>
+                        <span>F4 (30d+)</span>
+                    </div>
+                </div>
+
+                <div class="mot-card">
+                    <div class="mot-icon"><i data-lucide="trending-up" style="color: var(--brand-cyan);"></i></div>
+                    <div class="mot-title">MOT-6: Escalable</div>
+                    <div class="mot-quote">"Puedo Escalable"</div>
+                    <div class="mot-metric">
+                        <strong>Expansión ≥ 2 áreas</strong>
+                        <span>F4→F5</span>
+                    </div>
+                </div>
+
+                <div class="mot-card">
+                    <div class="mot-icon"><i data-lucide="users" style="color: var(--brand-purple-text);"></i></div>
+                    <div class="mot-title">MOT-7: Multiplicador</div>
+                    <div class="mot-quote">"Puedo enseñar a otros"</div>
+                    <div class="mot-metric">
+                        <strong>≥ 1 persona capacitada</strong>
+                        <span>F5 (mes 2-3)</span>
+                    </div>
+                </div>
+
+                <div class="mot-card">
+                    <div class="mot-icon"><i data-lucide="megaphone" style="color: var(--brand-gold);"></i></div>
+                    <div class="mot-title">MOT-8: Embajador</div>
+                    <div class="mot-quote">"Puedo ser embajador"</div>
+                    <div class="mot-metric">
+                        <strong>Referral > 25%</strong>
+                        <span>F5+ (mes 3+)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass" style="margin-top: 2rem;">
+                <h3>Curva de Satisfacción (Emoción)</h3>
+                <svg class="emotion-curve" viewBox="0 0 600 200" style="preserveAspectRatio: xMidYMid meet;">
+                    <line x1="60" y1="20" x2="60" y2="160" stroke="rgba(255, 215, 0, 0.1)" stroke-width="1"/>
+                    <line x1="60" y1="160" x2="580" y2="160" stroke="rgba(255, 215, 0, 0.1)" stroke-width="1"/>
+                    <path d="M 80 140 Q 150 100, 200 80 T 300 60 T 400 70 T 500 50 T 560 40" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <circle cx="80" cy="140" r="4" fill="#FFD700"/>
+                    <text x="70" y="155" font-size="12" fill="#FFD700">F0</text>
+                    <circle cx="200" cy="80" r="4" fill="#00E5FF"/>
+                    <text x="190" y="75" font-size="12" fill="#00E5FF">F1</text>
+                    <circle cx="300" cy="60" r="4" fill="#FFD700"/>
+                    <text x="290" y="55" font-size="12" fill="#FFD700">F2</text>
+                    <circle cx="400" cy="70" r="4" fill="#a5b4fc"/>
+                    <text x="390" y="65" font-size="12" fill="#a5b4fc">F3</text>
+                    <circle cx="500" cy="50" r="4" fill="#10b981"/>
+                    <text x="480" y="45" font-size="12" fill="#10b981">F4-F5</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quality Gates -->
+    <section id="gates" class="section">
+        <div class="section-narrow">
+            <h2>Puertas de Aceptación (Quality Gates)</h2>
+
+            <div id="gates-container" style="space: 1.5rem;">
+                <!-- F0→F1 -->
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>F0 → F1: Awareness → Diagnóstico</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-gold);">Cliente DEBE:</strong></p>
+                            <ul>
+                                <li>Confirmó interés explícitamente</li>
+                                <li>Datos de contacto válidos (email + tel)</li>
+                                <li>Arquetipos B2C/B2B definidos</li>
+                                <li>Disponibilidad 1 sesión en 14 días</li>
+                            </ul>
+                            <div class="handoff-box">
+                                <i data-lucide="check" style="width: 16px; height: 16px; display: inline;"></i> <strong>Handoff completado cuando:</strong><br>Cliente acepta sesión diagnóstico dentro de 14 días
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- F1→F2 -->
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>F1 → F2: Diagnóstico → Diseño</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-cyan);">Cliente DEBE:</strong></p>
+                            <ul>
+                                <li>Asistió a sesión 1:1 (o asíncrona justificada)</li>
+                                <li>Baseline Report generado y compartido</li>
+                                <li>NPS de sesión ≥ 7</li>
+                                <li>Identificó mínimo 3 oportunidades cuantificables</li>
+                                <li>Confirma que diagnóstico "resonó"</li>
+                            </ul>
+                            <div class="handoff-box" style="border-color: rgba(34, 211, 238, 0.15);">
+                                <i data-lucide="check" style="width: 16px; height: 16px; display: inline; color: var(--brand-cyan);"></i> <strong style="color: var(--brand-cyan);">Handoff completado cuando:</strong><br>Cliente avanza a Taller o Diseño; BANT cumple y firma ODS
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- F2→F3 -->
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>F2 → F3: Diseño → Práctica</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: #a5b4fc;">Cliente DEBE:</strong></p>
+                            <ul>
+                                <li>Completó mínimo 1 sesión co-diseño</li>
+                                <li>ODS completada y signada</li>
+                                <li>Plataforma acceso lista (LMS, Slack, etc.)</li>
+                                <li>Primer GPT personalizado probado y funcional</li>
+                                <li>Expectativas claras sobre F3</li>
+                                <li>Pago o plan de pago completado</li>
+                            </ul>
+                            <div class="handoff-box" style="border-color: rgba(99, 102, 241, 0.15);">
+                                <i data-lucide="check" style="width: 16px; height: 16px; display: inline; color: #a5b4fc;"></i> <strong style="color: #a5b4fc;">Handoff completado cuando:</strong><br>Cliente accede LMS, asiste Orientation, primer KPI baseline registrado
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- F3→F4 -->
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>F3 → F4: Práctica → Autonomía</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-emerald);">Cliente DEBE:</strong></p>
+                            <ul>
+                                <li>Completó mínimo 60% de sesiones/módulos</li>
+                                <li>Evidencia de implementación (cambios, herramientas activas)</li>
+                                <li>Autonomía medida ≥ 70% en self-assessment</li>
+                                <li>Al menos 1 KPI movió en dirección deseada</li>
+                                <li>Feedback de cierre positivo (NPS ≥ 7)</li>
+                                <li>Plan de mantenimiento autónomo documentado</li>
+                            </ul>
+                            <div class="handoff-box" style="border-color: rgba(16, 185, 129, 0.15);">
+                                <i data-lucide="check" style="width: 16px; height: 16px; display: inline; color: var(--brand-emerald);"></i> <strong style="color: var(--brand-emerald);">Handoff completado cuando:</strong><br>NPS ≥ 7, cliente entiende plan autónomo, acceso recursos permanentes activo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- F4→F5 -->
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>F4 → F5: Autonomía → Advocacy</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-gold);">Cliente DEBE:</strong></p>
+                            <ul>
+                                <li>Está en F4 mínimo 1 mes (validar sostenibilidad)</li>
+                                <li>NPS personal ≥ 8 en encuesta post-cierre</li>
+                                <li>Generó al menos 1 resultado medible atribuible</li>
+                                <li>Acepta ser embajador (firma consentimiento)</li>
+                                <li>Clima de confianza y relación personal</li>
+                            </ul>
+                            <div class="handoff-box">
+                                <i data-lucide="check" style="width: 16px; height: 16px; display: inline;"></i> <strong>Handoff completado cuando:</strong><br>Cliente acepta embajador, firma consentimiento, referral link activo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Capacity & Limits -->
+    <section id="metrics" class="section" style="background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.3));">
+        <div class="section-narrow">
+            <h2>Capacidad y Límites Operativos</h2>
+
+            <div class="card-glass">
+                <div style="space: 1.5rem;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span><strong>Máx clientes F3 por coach</strong></span>
+                            <span style="color: var(--brand-gold); font-weight: 700;">10 clientes</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span><strong>Máx participantes bootcamp grupal</strong></span>
+                            <span style="color: var(--brand-cyan); font-weight: 700;">20 personas</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span><strong>Duración máxima F3</strong></span>
+                            <span style="color: #a5b4fc; font-weight: 700;">20 semanas</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border-default); padding-top: 1.5rem; margin-top: 1.5rem;">
+                        <h3 style="color: var(--brand-gold); margin-bottom: 1rem;">Supuestos Críticos</h3>
+                        <ul style="space: 0.5rem; list-style: none;">
+                            <li style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;"><i data-lucide="check" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>Cliente tiene acceso a Internet estable</li>
+                            <li style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;"><i data-lucide="check" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>UN decision-maker principal identificado</li>
+                            <li style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;"><i data-lucide="check" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>CRM es HubSpot (integración estándar)</li>
+                            <li style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;"><i data-lucide="check" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>Herramientas AI base disponibles (ChatGPT, Claude)</li>
+                            <li style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;"><i data-lucide="check" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>Cliente puede asignar 4-8 h/semana en F3</li>
+                            <li style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;"><i data-lucide="check" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>Feedback loop regular (sesiones 1:1 o async)</li>
+                            <li style="color: var(--text-muted); font-size: 0.875rem;"><i data-lucide="check" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>Idioma principal: español o bilingüe</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edge Cases -->
+    <section class="section">
+        <div class="section-narrow">
+            <h2>Casos Borde (Edge Cases)</h2>
+
+            <div id="edgecases-container" style="space: 0.5rem;">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Caso 1: Cliente solicita saltar fase (ej: F1 → F3)</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-gold);">Protocolo:</strong></p>
+                            <ol style="list-style: decimal; margin-left: 1.5rem; space: 0.25rem;">
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Realizar diagnóstico acelerado en F1 estándar (no se salta)</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Si diagnóstico revela competencia F2-3, ofrecer "Onboarding Acelerado"</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Registrar "Path: Fast-track" en CRM para tracking</li>
+                                <li style="color: var(--text-muted);">Validar que cliente comprende brechas reales</li>
+                            </ol>
+                            <p style="margin-top: 1rem; color: var(--brand-gold);"><strong>Riesgo aceptado:</strong> Si falla en F3, se ofrecen sesiones remediales pagadas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Caso 2: Cliente es B2C Y B2B simultáneamente</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-cyan);">Protocolo:</strong></p>
+                            <ol style="list-style: decimal; margin-left: 1.5rem; space: 0.25rem;">
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Tratar como 2 "engagements" separados en CRM (2 registros, 1 persona)</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">F1 se hace 1 sola sesión con 2 lentes (personal + empresarial)</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Presupuestar por separado; no es doble pago</li>
+                                <li style="color: var(--text-muted);">Assign 1 coach principal; coordinator secundario si hay complejidad</li>
+                            </ol>
+                            <p style="margin-top: 1rem; color: var(--brand-cyan);"><strong>Riesgo aceptado:</strong> Posible conflicto de interés de tiempo del cliente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Caso 3: Cliente referido, pero YA está en F3</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: #a5b4fc;">Protocolo:</strong></p>
+                            <ol style="list-style: decimal; margin-left: 1.5rem; space: 0.25rem;">
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Contactar a cliente actual sobre referridor potencial</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Presentación directa + "credibility call" con cliente existente</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Saltar F0-F1, hacer validación rápida (30 min)</li>
+                                <li style="color: var(--text-muted);">Oferta: "Diseño Corporativo" (F2 acelerado, 2 sesiones)</li>
+                            </ol>
+                            <p style="margin-top: 1rem; color: #a5b4fc;"><strong>Riesgo aceptado:</strong> Reputacional si referridor habla negativamente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Caso 4: Cliente necesita retroceder a fase anterior</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-emerald);">Protocolo:</strong></p>
+                            <ol style="list-style: decimal; margin-left: 1.5rem; space: 0.25rem;">
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;"><strong>NO es fracaso.</strong> Registrar como "Remedial Request"</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Ofrecer "Booster Pack" de 4 sesiones F3 (costo reducido, máx 4 semanas)</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Cliente permanece en F4 nominalmente con soporte táctico F3</li>
+                                <li style="color: var(--text-muted);">Post-booster: sesiones check-in mensuales por 3 meses sin costo</li>
+                            </ol>
+                            <p style="margin-top: 1rem; color: var(--brand-emerald);"><strong>Riesgo aceptado:</strong> Costo variable de soporte (mitigado con límite 4 sesiones)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Caso 5: Cliente multilingüe (2+ idiomas)</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-gold);">Protocolo:</strong></p>
+                            <ol style="list-style: decimal; margin-left: 1.5rem; space: 0.25rem;">
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;"><strong>Permitido solo en F1-F2</strong> (diagnóstico y diseño pueden mezclar idiomas)</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;"><strong>F3 y adelante:</strong> Cliente elige 1 idioma principal</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Grabaciones pueden estar subtituladas en idioma secundario (costo cliente)</li>
+                                <li style="color: var(--text-muted);">Documentación entregable: siempre en idioma principal</li>
+                            </ol>
+                            <p style="margin-top: 1rem; color: var(--brand-gold);"><strong>Riesgo aceptado:</strong> Calidad si traducción es deficiente (usar traductores certificados)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Caso 6: Bootcamp grupal con competencias mixtas</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <p><strong style="color: var(--brand-cyan);">Protocolo:</strong></p>
+                            <ol style="list-style: decimal; margin-left: 1.5rem; space: 0.25rem;">
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;"><strong>NO ACEPTAR.</strong> Bootcamp requiere "cohorte homogénea" en fase</li>
+                                <li style="color: var(--text-muted); margin-bottom: 0.25rem;">Si cliente no califica: oferta alternativa de 1:1 customizado o esperar cohorte</li>
+                                <li style="color: var(--text-muted);">Excepción: mentores/facilitadores en F4 pueden asistir como soporte peer-learning</li>
+                            </ol>
+                            <p style="margin-top: 1rem; color: var(--brand-cyan);"><strong>Riesgo aceptado:</strong> Insatisfacción por rechazo (mitigado con alternativas)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="section-wide">
+            <div class="footer-glow-line"></div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <div class="footer-section">
+                    <div class="footer-section-title">Acerca de este Blueprint</div>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        Service Blueprint General v2.1 — Documento operativo que define la arquitectura completa de entrega de servicio.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <div class="footer-section-title">Acciones</div>
+                    <div>
+                        <a href="#" class="footer-link">Agendar Diagnóstico</a><br>
+                        <a href="#" class="footer-link">Documentos Internos</a><br>
+                        <a href="#" class="footer-link">Soporte</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <div class="footer-section-title">Información</div>
+                    <p style="font-size: 0.875rem; color: var(--text-muted);">
+                        <strong style="color: var(--text-secondary);">Versión:</strong> 2.1<br>
+                        <strong style="color: var(--text-secondary);">Fecha:</strong> 2026-03-24<br>
+                        <strong style="color: var(--text-secondary);">Owner:</strong> Gobierno Operativo
+                    </p>
+                </div>
+            </div>
+
+            <p style="text-align: center; color: var(--text-muted); border-top: 1px solid var(--border-default); padding-top: 1.5rem;">
+                <strong style="color: var(--text-secondary);">MetodologIA — Gobierno Operativo 2026</strong><br>
+                El éxito se mide no por lo que logras conmigo, sino por lo que sigues logrando sin mí.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Accordion functionality
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const item = this.closest('.accordion-item');
+                const isActive = item.classList.contains('active');
+                document.querySelectorAll('.accordion-item.active').forEach(activeItem => {
+                    if (activeItem !== item) activeItem.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.phase-card, .card-glass, .stat-card, .mot-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

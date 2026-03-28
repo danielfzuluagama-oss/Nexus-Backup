@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v2.0">
+    <meta name="description" content="Evaluar Criterios de Aprobación — SOP — Proceso de Delivery MetodologIA">
+    <title>Evaluar Criterios de Aprobación — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f; --bg-2:#102346; --surface:#f7f4ec;
+            --accent:#00cde8; --gold:#ffd700; --green:#2ca56f;
+            --red:#dc5f5f; --orange:#e8a000; --purple:#9b59b6;
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0; --text-secondary:#999;
+            --border:#1a3a52; --hover-bg:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(0,205,232,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,205,232,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(0,205,232,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(0,205,232,.4);box-shadow:0 0 12px rgba(0,205,232,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(0,205,232,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(0,205,232,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(0,205,232,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(0,205,232,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(0,205,232,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(0,205,232,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Programa Elite</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Evaluar Criterios de Aprobación — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Evaluar Criterios de Aprobación — SOP</h1>
+        <div class="subtitle">MetodologIA — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-supuestos-ef2247')" aria-label="Ir a 1. Supuestos">1. Supuestos</button>
+<button class="nav-btn" onclick="scrollToSection('2-lmites-585686')" aria-label="Ir a 2. Límites">2. Límites</button>
+<button class="nav-btn" onclick="scrollToSection('3-los-5-criterios-definicin-operativa-12221c')" aria-label="Ir a 3. Los 5 Criterios (Definición Operativa)">3. Los 5 Criterios (Definición Oper</button>
+<button class="nav-btn" onclick="scrollToSection('4-casos-borde-57-47d53d')" aria-label="Ir a 4. Casos Borde (5-7)">4. Casos Borde (5-7)</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-0f7d5a')" aria-label="Ir a 5. Decisiones de Diseño">5. Decisiones de Diseño</button>
+<button class="nav-btn" onclick="scrollToSection('6-antipatterns-ff2cdd')" aria-label="Ir a 6. Anti-Patterns">6. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('7-fallbacks-3035d9')" aria-label="Ir a 7. Fallbacks">7. Fallbacks</button>
+<button class="nav-btn" onclick="scrollToSection('ejecucin-operativa-las-2-fases-principales-047b5b')" aria-label="Ir a Ejecución Operativa: Las 2 Fases Principales">Ejecución Operativa: Las 2 Fases Pr</button>
+<button class="nav-btn" onclick="scrollToSection('mtrica-de-xito-7e421e')" aria-label="Ir a Métrica de Éxito">Métrica de Éxito</button>
+<button class="nav-btn" onclick="scrollToSection('integraciones-adcece')" aria-label="Ir a Integraciones">Integraciones</button>
+<button class="nav-btn" onclick="scrollToSection('documentos-relacionados-c15e25')" aria-label="Ir a Documentos Relacionados">Documentos Relacionados</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-evaluacin-b258b6')" aria-label="Ir a Checklist de Evaluación">Checklist de Evaluación</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-supuestos-ef2247" data-searchable aria-labelledby="head-1-supuestos-ef2247">
+            <div class="phase-header" id="head-1-supuestos-ef2247" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 1. Supuestos</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Criterios son conocidos desde Sem 1</strong>: Cada participante recibe en onboarding una hoja de &quot;Los 5 criterios de aprobación&quot;. Se reiteran en Sem 4, Sem 8, Sem 12, Sem 14. No es sorpresa.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Entregables son auto-contenidos</strong>: Un evaluador sin contexto de las sesiones puede revisar un entregable (ej. un prompt) y decir &quot;cumple / no cumple&quot;. No requiere entrevista adicional de defensa oral.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>&quot;Alto rendimiento&quot; tiene definición operativa clara</strong>: No es subjetivo. Un prompt de &quot;alto rendimiento&quot; es uno que: (a) produce resultado útil con estructura clara, (b) usa técnicas de prompt engineering (chain-of-thought, roles, contexto), (c) es reproducible (mismo prompt = resultado similar).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>&quot;Valor medible&quot; tiene definición clara</strong>: Automatización/asistencia genera &quot;valor&quot; si: (a) ahorra tiempo (mínimo 2h/semana), (b) mejora calidad de output (comprobable), (c) es sustentable (no es un one-off). Participante debe poder articular: &quot;Antes invertía X tiempo, ahora invierto Y, libero Z para...&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>El programa completa su ciclo en Sem 16 + buffer</strong>: Participante no &quot;abandona a mitad&quot;. Sí puede necesitar tiempo extra (3 meses máximo) para compilar entregables. Pero el programa pedagógico termina Sem 16.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>5/5 criterios es el estándar</strong>: No hay &quot;pasar con 4/5&quot;. Es binario: completitud o no completitud. Filosofía MetodologIA: el viaje de transformación requiere todos los pasos.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Certificación abre puerta a Embajadores</strong>: Certificado no es &quot;diploma decorativo&quot;. Es acreditación que autoriza a participante a mentorar otros (pequeño impacto social) y acceder a comunidad privada con recursos avanzados.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-lmites-585686" data-searchable aria-labelledby="head-2-lmites-585686">
+            <div class="phase-header" id="head-2-lmites-585686" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 2. Límites</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Buffer máximo 3 meses</strong>: Sem 17 hasta Sem 28 (inclusive). Si participante no certifica en Sem 28, cierre definitivo con reconocimiento de &quot;participación incompleta&quot; (no certificado, pero sí diploma de asistencia).</div>
+<div class="bullet-item"><strong>No hay reevaluación después de Sem 28</strong>: Política clara. Protege integridad de certificación. Si alguien en Sem 30 dice &quot;ahora cumplí el criterio 5&quot;, respuesta es: &quot;Felicidades, pero la ventana de evaluación cerró. Para próximos programas...&quot;</div>
+<div class="bullet-item"><strong>Evaluador es Facilitador + Coordinador</strong>: No delegado a terceros (tutores, AI bots, etc.). La responsabilidad es personal. Si hay duda, ambos conversan y llegan a consenso.</div>
+<div class="bullet-item"><strong>No hay &quot;notas parciales&quot;</strong>: No es 4.5/5 o 3.2/5. Es: Criterio 1 ✓ / ✗, Criterio 2 ✓ / ✗, etc. Reduce ambigüedad.</div>
+<div class="bullet-item"><strong>Participante no puede apelar después de 7 días de resultado</strong>: Comunicamos resultado (Sem 16 ó Sem 28). Si participante discrepa, tienen 7 días para escribir apelación fundamentada. Pasados 7 días, resultado es final.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-los-5-criterios-definicin-operativa-12221c" data-searchable aria-labelledby="head-3-los-5-criterios-definicin-operativa-12221c">
+            <div class="phase-header" id="head-3-los-5-criterios-definicin-operativa-12221c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 3. Los 5 Criterios (Definición Operativa)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="criterio-1-entregar-4-prompts-de-alto-rendimiento-f6c515">Criterio 1: Entregar 4 prompts de alto rendimiento</h3>
+<p class="key-value"><strong>Definición</strong>: Participante presenta 4 prompts (archivos .txt, documento, o contenido en repositorio) que cumplen:</p>
+<div class="bullet-item">Estructura clara: input → instrucción → contexto → output esperado.</div>
+<div class="bullet-item">Técnica de prompt engineering: mínimo 2 de estas 5 técnicas:</div>
+<div class="bullet-item">Chain-of-thought (&quot;Piensa paso a paso...&quot;)</div>
+<div class="bullet-item">Role assignment (&quot;Eres un experto en...&quot;)</div>
+<div class="bullet-item">Ejemplos (few-shot prompting)</div>
+<div class="bullet-item">Restricciones claras (&quot;Máximo 200 palabras&quot;, &quot;Solo en español&quot;)</div>
+<div class="bullet-item">Iteración (prompt v1 → feedback → prompt v2 optimizado)</div>
+<div class="bullet-item">Resultado útil: prompt genera output que participante o alguien puede usar inmediatamente.</div>
+<div class="bullet-item">Diversidad: los 4 prompts son para contextos distintos (no 4 variantes del mismo).</div>
+<p class="key-value"><strong>Evaluar</strong>: ¿Cada prompt tiene estructura clara + técnica visible + resultado útil?</p>
+<div class="bullet-item">✓ Cumple: Sí a todo.</div>
+<div class="bullet-item">✗ No cumple: Faltan 2+ de estos aspectos en cualquiera de los prompts.</div>
+<p class="key-value"><strong>Entrega</strong>: Carpeta &quot;Prompts&quot; en repositorio con 4 archivos. Nombre claro: &quot;Prompt_Productividad.txt&quot;, &quot;Prompt_Email_Profesional.txt&quot;, etc.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="criterio-2-entregar-4-asistentes-personalizados-ti-2ead65">Criterio 2: Entregar 4 asistentes personalizados útiles (para sí mismo y para otros)</h3>
+<p class="key-value"><strong>Definición</strong>: Participante documenta 4 &quot;asistentes personalizados&quot; que creó usando IA (pueden ser en ChatGPT Custom Instructions, en herramientas como Make/Zapier, o en Notion AI).</p>
+<p>Cada asistente debe:</p>
+<div class="bullet-item">Tener propósito específico (&quot;Asistente de redacción de mails corporativos&quot;).</div>
+<div class="bullet-item">Ser reproducible: otro puede usarlo o entender cómo replicarlo.</div>
+<div class="bullet-item">Generar valor: ahorra tiempo, mejora calidad, reduce fricción.</div>
+<div class="bullet-item">Documentación: 1-2 párrafos explicando qué hace, cómo usarlo, un ejemplo de input/output.</div>
+<p class="key-value"><strong>Evaluar</strong>: ¿Cada asistente es útil, reproducible, documentado?</p>
+<div class="bullet-item">✓ Cumple: Sí a todo en los 4.</div>
+<div class="bullet-item">✗ No cumple: Uno o más asistentes son confusos, no reproducibles, o &quot;teóricos&quot; sin uso real.</div>
+<p class="key-value"><strong>Entrega</strong>: Carpeta &quot;Asistentes&quot; en repositorio con 4 subcarpetas, cada una con archivo de documentación + ejemplo de uso.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="criterio-3-establecer-declaraciones-estratgicas-tc-d75dbc">Criterio 3: Establecer declaraciones estratégicas, tácticas y operativas claras</h3>
+<p class="key-value"><strong>Definición</strong>: Participante documenta (en documento de Notion, Google Doc, o .md en repositorio):</p>
+<div class="bullet-item"><strong>Declaración estratégica</strong> (1 párrafo): &quot;¿Quién soy? ¿Cuál es mi propósito en los próximos 12 meses?&quot; (ej. &quot;Soy especialista en procesos; quiero reducir carga administrativa de mi equipo en 40%&quot;).</div>
+<div class="bullet-item"><strong>Declaración táctica</strong> (3-5 puntos): &quot;¿Cómo usaré IA específicamente para alcanzar eso?&quot; (ej. &quot;Automatizaré reportes semanales&quot;, &quot;Crearé asistentes para onboarding&quot;, &quot;Documentaré procesos con IA&quot;).</div>
+<div class="bullet-item"><strong>Declaración operativa</strong> (paso a paso): &quot;¿Cuál es mi forma de trabajo semanal con IA?&quot; (ej. &quot;Lunes: sesión 1h de prompt engineering. Martes-Viernes: uso asistentes en mis tareas. Viernes: review de qué funcionó&quot;).</div>
+<p class="key-value"><strong>Evaluar</strong>: ¿Las 3 declaraciones están alineadas, son realistas, y son específicas?</p>
+<div class="bullet-item">✓ Cumple: Las 3 están escritas, son claras, y hay coherencia (estrategia → tácticas → operaciones).</div>
+<div class="bullet-item">✗ No cumple: Faltan una o más, o son genéricas (&quot;Quiero ser productivo con IA&quot;).</div>
+<p class="key-value"><strong>Entrega</strong>: 1 documento en repositorio, máx 2 páginas, claro y concreto.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="criterio-4-construir-y-documentar-una-forma-de-tra-76efab">Criterio 4: Construir y documentar una forma de trabajo a su estilo y aplicarla</h3>
+<p class="key-value"><strong>Definición</strong>: Participante:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Documenta su forma de trabajo</strong> (cómo integra IA en su rutina diaria/semanal). Documento que describe: horarios, herramientas usadas, flujos (ej. &quot;Lunes 8-9am: reviso emails y uso asistente de síntesis&quot;; &quot;Miércoles 2-3pm: prompt engineering para tarea X&quot;).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Aplica esa forma de trabajo</strong> durante mínimo 4 semanas consecutivas (evidencia: screenshots, logs, o anotaciones que muestren uso real).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Refleja sobre lo que funcionó y lo que no</strong>: documento de reflexión de 1-2 párrafos (ej. &quot;El horario de Lunes 8-9am fue óptimo; miércoles 2-3pm no, porque estoy muy ocupado&quot;).</span></div>
+<p class="key-value"><strong>Evaluar</strong>: ¿Forma de trabajo está documentada, fue aplicada realmente, y hay reflexión?</p>
+<div class="bullet-item">✓ Cumple: Sí a todo. Hay evidencia de aplicación (no solo planes teóricos).</div>
+<div class="bullet-item">✗ No cumple: Documentación existe pero no hay evidencia de aplicación, o falta reflexión.</div>
+<p class="key-value"><strong>Entrega</strong>: Carpeta &quot;Forma_de_Trabajo&quot; con: documento de forma de trabajo + evidencia (screenshots, logs, capturas) + reflexión.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="criterio-5-automatizar-o-asistir-en-4-actividades--9d422b">Criterio 5: Automatizar o asistir en 4 actividades que generen valor medible</h3>
+<p class="key-value"><strong>Definición</strong>: Participante identifica 4 actividades de su trabajo/vida que automatizó o asistió usando IA, tal que:</p>
+<div class="bullet-item">Cada actividad ahorra tiempo: mínimo 2h/semana o 8h/mes (estimado o medido).</div>
+<div class="bullet-item">El ahorro es medible: &quot;Antes: 5h/semana redactando reportes. Ahora: 1h/semana con asistente. Ahorro: 4h/semana&quot;.</div>
+<div class="bullet-item">El ahorro es sustentable: no es &quot;un prompt que usé una vez&quot;, sino algo que repite cada semana/mes.</div>
+<div class="bullet-item">Hay 4 actividades distintas (no variantes de la misma).</div>
+<p class="key-value"><strong>Ejemplos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Automatizar síntesis de emails largos: -3h/semana.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Asistente de respuestas de soporte: -2h/semana.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Generación de reportes ejecutivos: -1h/semana.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Transcripción de notas de reunión → resumen: -2h/semana.</span></div>
+<p>Total: -8h/semana liberadas.</p>
+<p class="key-value"><strong>Evaluar</strong>: ¿4 actividades distintas, cada una con ahorro medible (≥2h/semana?</p>
+<div class="bullet-item">✓ Cumple: Sí. 4 actividades, cada una con estimación clara de ahorro.</div>
+<div class="bullet-item">✗ No cumple: Menos de 4 actividades, o actividades sin ahorro cuantificado, o &quot;teóricas&quot;.</div>
+<p class="key-value"><strong>Entrega</strong>: Documento en repositorio &quot;Automatizaciones_Impacto&quot; con tabla:</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Actividad</th><th scope="col">Antes (h/semana)</th><th scope="col">Ahora (h/semana)</th><th scope="col">Ahorro (h/semana)</th></tr></thead><tbody><tr><td>Reportes</td><td>5</td><td>1</td><td>4</td></tr><tr><td>Emails</td><td>3</td><td>1.5</td><td>1.5</td></tr><tr><td>...</td><td>...</td><td>...</td><td>...</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-casos-borde-57-47d53d" data-searchable aria-labelledby="head-4-casos-borde-57-47d53d">
+            <div class="phase-header" id="head-4-casos-borde-57-47d53d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 4. Casos Borde (5-7)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Participante entrega prompts pero son de baja calidad</strong>: &quot;Usa ChatGPT para escribir un email&quot; vs. &quot;Usa rol &#x27;especialista de copywriting corporativo&#x27;, contexto &#x27;email a CEO&#x27;, restricción &#x27;máx 5 párrafos&#x27;, ejemplo &#x27;aquí está un mail que funcionó antes&#x27;...&quot; El estándar de &quot;alto rendimiento&quot; no es experto-level, pero sí requiere intención y estructura. Si prompts son muy genéricos, pedir revisión. Conversación 1-1: &quot;¿Podrías mejorar estos 2 prompts con más estructura? Tomas 1 semana&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Participante automatizó 4 tareas pero el ahorro es especulativo, no medido</strong>: &quot;Ahorraría 2h/semana si usara esto.&quot; Pedir evidencia real: &quot;¿Lo usaste realmente? ¿Cuántas veces? ¿Qué tiempo te ahorró?&quot; Si puede mostrar 2-3 semanas de uso real, ok. Si no, preguntar: &quot;¿Es una automatización teórica o ya está en marcha?&quot; Si es teórica, pedir que la aplique 1 semana y reporte.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Participante con barrera de idioma</strong>: Programa en español, pero sus herramientas están en inglés. ¿Vale? Sí. Criterios no especifican idioma. Si tiene dificultad para documentar en español, Coordinador puede permitir documentación en inglés o spanglish, siempre que sea claro.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Participante que cumple 5/5 en Sem 10</strong>: &quot;Ya hice todos mis entregables, ¿puedo graduarme antes?&quot; Política: no. El programa es 16 semanas de viaje (no solo entregables). Los meses 3-4 son de integración, reflexión, preparación para embajador. Respuesta: &quot;Felicidades por avanzar rápido. Sigues participando en el programa; tus entregables ya están válidos, pero completamos las 16 semanas juntos.&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Participante que no entrega nada pero pide certificado porque pagó</strong>: Conversación clara: &quot;El certificado no es por pago, es por completar criterios. Has pagado, tienes acceso a programa y comunidad, pero certificación requiere entregables. ¿Quieres ayuda para empezar?&quot; Si respuesta es &quot;no tengo tiempo&quot;, opción: &quot;Te ofrezco buffer de 3 meses sin costo extra. ¿Te interesa?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Empresa que exige certificación para todos sus empleados sin importar calidad</strong>: &quot;Mis 8 empleados deben tener certificado para poder promocionarlos en la empresa.&quot; Respuesta clara: &quot;Certificación es por cumplimiento de criterios, no por presión corporativa. Cada empleado debe pasar evaluación binaria. Podemos ofrecerles soporte intenso en buffer para que todos lo logren, pero el estándar no se flexibiliza.&quot; Si empresa insiste, escalar a leadership de MetodologIA para decisión comercial.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>**Participante que cumple 4/5 pero es &quot;casi&quot;: &quot;Mi criterio 5 tiene solo 3.8 automatizaciones, redondeamos a 4?&quot; Política: no. 3.8 ≠ 4. Es &lt;5/5, entra a buffer. Conversación: &quot;Te faltan 0.2 automatizaciones. En el buffer, tomas 1 semana para completar. Entonces certificas sin problema.&quot;</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-0f7d5a" data-searchable aria-labelledby="head-5-decisiones-de-diseo-0f7d5a">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-0f7d5a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5. Decisiones de Diseño</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Gate binario (no rúbrica numérica)</strong>: Razón: la rúbrica (1-5 puntos por criterio = 5-25 puntos totales) introduce ambigüedad (&quot;¿Es 3.5 o 4?&quot;). Binario es más justo: cumple o no cumple. Reduce negociación, comunica claridad.</div>
+<div class="bullet-item"><strong>5/5 criterios es inviolable</strong>: Flexibilizar a &quot;4/5 es suficiente&quot; degrada integridad. Certificado de MetodologIA significa: &quot;Esta persona pasó el viaje completo, tiene capacidad de empoderador&quot;. No podemos certificar a alguien que solo automatizó 3 tareas.</div>
+<div class="bullet-item"><strong>Buffer de 3 meses (Sem 17-28)</strong>: Razón: cada persona tiene ritmo distinto. Algunos necesitan 2 semanas extras, otros 8 semanas. 3 meses es ventana generosa sin diluir completitud. Pasados 3 meses, línea en la arena (es psicológico también: &quot;Tienes hasta Sem 28&quot; motiva).</div>
+<div class="bullet-item"><strong>Soporte async en buffer</strong>: No abandonamos a participantes rezagados. Sesiones mensuales de Clínica IA (sin obligación de asistencia) + canal de WhatsApp responden &lt;48h. Es soporte real, sin presionar.</div>
+<div class="bullet-item"><strong>No hay graduación anticipada</strong>: Razón: el programa pedagógico requiere ciclos semanales, reflexión, integración. Entregar todos los criterios en Sem 10 es síntoma de que: (a) participante es muy capaz (excelente), o (b) criterios son muy fáciles (requiere revisión curricular). En ambos casos, terminar las 16 semanas. El aprendizaje es el viaje, no los entregables.</div>
+<div class="bullet-item"><strong>Participante decide si entra a buffer o no</strong>: En Sem 16, si cumple &lt;5/5, ofrecemos buffer. Participante puede: (a) aceptar buffer (&quot;quiero completar&quot;), (b) rechazar (&quot;estoy ocupado, está bien como está&quot;). Si rechaza, recibe &quot;Reconocimiento de Participación&quot; (no certificado, pero sí diploma de asistencia + acceso a comunidad general, no embajadores).</div>
+<div class="bullet-item"><strong>Evaluador es humano (no AI)</strong>: Razón: criterios requieren juicio. Un bot diría &quot;prompts ✓ checkmark, 4 asistentes ✓ checkmark&quot;. Un facilitador diría &quot;estos prompts son genéricos, hablamos y mejoramos&quot;. Juicio humano es irreemplazable aquí.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-antipatterns-ff2cdd" data-searchable aria-labelledby="head-6-antipatterns-ff2cdd">
+            <div class="phase-header" id="head-6-antipatterns-ff2cdd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 6. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>&quot;Todos aprueban&quot;</strong>: Presión de mantener altas tasas de certificación (NPS, reputación) lleva a flexibilizar criterios. &quot;Este participante casi cumple, certificamos para mantenerlo contento.&quot; Resultado: certificación pierde valor, egresados débiles, marca dañada. *Cura*: Gate G-CERT es inviolable. Aceptar que &lt;100% certifican. Es ok. Comunicar a liderazgo: &quot;Certificamos a 68% en Sem 16 + 17% en buffer, total 85%. Es saludable.&quot;</div>
+<div class="bullet-item"><strong>&quot;El entregable perfecto&quot;</strong>: Expectativa de que participante principiante cree prompts &quot;experto-level&quot; o automatizaciones &quot;production-ready&quot;. Resultado: participante se desanima (&quot;no es suficiente bueno&quot;), no entra a evaluación. *Cura*: Estándar es &quot;aceptable&quot;, no &quot;perfecto&quot;. Comunicar: &quot;Tu prompt tiene estructura, usa chain-of-thought, genera resultado útil. Cumple. No necesita ser obra maestra.&quot;</div>
+<div class="bullet-item"><strong>&quot;Abandonar el buffer&quot;</strong>: Participante entra a buffer (Sem 17), pero facilitador/coordinador desaparecen (&quot;programa terminó&quot;). Participante se siente solo, abandona. *Cura*: Buffer tiene soporte real (Clínica IA 2x/mes, canal WhatsApp, respuesta &lt;48h). Comunicar en Sem 16: &quot;Buffer no es abandono, es apoyo concentrado.&quot;</div>
+<div class="bullet-item"><strong>&quot;Evaluación opaca&quot;</strong>: Facilitador da resultado (&quot;No cumples&quot;) sin explicación. Participante se siente injusticia. *Cura*: Evaluación es transparente. Documento: &quot;Criterio 1: Cumples (aquí están los 4 prompts, todos con estructura). Criterio 2: No cumples (te faltan 1.3 asistentes documentados, acá te muestro qué falta).&quot; Claro.</div>
+<div class="bullet-item"><strong>&quot;Apelar sin límite&quot;</strong>: Participante apela resultado cada semana durante 2 meses. Consume recursos, dilata cierre. *Cura*: Ventana de apelación es 7 días. Pasados 7 días, resultado es final. Comunica esto en Sem 16.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-fallbacks-3035d9" data-searchable aria-labelledby="head-7-fallbacks-3035d9">
+            <div class="phase-header" id="head-7-fallbacks-3035d9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 7. Fallbacks</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Si evaluador (facilitador) no está disponible en Sem 16</strong>: Coordinador puede evaluar con evidencia clara. Si hay duda, panel: facilitador (vía async) + coordinador conversan y llegan a consenso. Evaluación se dilata máx 1 semana.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Si hay disputa sobre un criterio</strong> (participante dice &quot;cumplí&quot;, facilitador dice &quot;no&quot;):</span></div>
+<div class="bullet-item">Paso 1: Facilitador escribe fundamentación clara de por qué no cumple (máx 200 palabras).</div>
+<div class="bullet-item">Paso 2: Participante responde (máx 200 palabras) argumentando por qué sí cumple.</div>
+<div class="bullet-item">Paso 3: Panel (Coordinador + Facilitador + otro evaluador neutral si hay) revisa ambas posiciones, decide.</div>
+<div class="bullet-item">Tiempo total: máx 2 semanas. Comunicar resultado.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Si participante contesta apelación pero no cumple aún</strong>: Ejemplo, criterio 5 (automatizaciones). Participante dice: &quot;Medí mal, son 3.2 horas de ahorro, no 4.&quot; Respuesta: &quot;Entiendo. Toma 1 semana, prueba la automatización 2 veces más, mide bien, y reenvía.&quot; Se aceptan cambios en buffer.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Si buffer se extiende más de 3 meses</strong> (participante pide prórroga en Sem 27): Conversación 1-1. Si hay razón válida (enfermedad, cambio laboral imprevisto, etc.), considerar prórroga de 2-4 semanas máximo. Si no hay razón, cierre en Sem 28.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Si facilitador cambia mid-evaluación</strong> (facilitador se desvincula, nuevo evaluador retoma): Nuevo evaluador revisa criterios &quot;en frío&quot; (sin contexto de relación con participante). Puede cambiar resultado. Cura: evitar cambios de evaluador. Si es inevitable, ambos facilitadores conversan, leen notas, llegan a consenso antes de comunicar.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Si participante no contesta comunicaciones durante buffer</strong>: Facilitador intenta contacto en Sem 18, Sem 22, Sem 26. Si no hay respuesta post-Sem 26, enviar último email: &quot;Parece que no continuarás. Cerramos tu participación en Sem 28 con &#x27;participación incompleta&#x27;. Si cambias de opinión antes de Sem 28, avísanos.&quot; Luego, cierre.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ejecucin-operativa-las-2-fases-principales-047b5b" data-searchable aria-labelledby="head-ejecucin-operativa-las-2-fases-principales-047b5b">
+            <div class="phase-header" id="head-ejecucin-operativa-las-2-fases-principales-047b5b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ejecución Operativa: Las 2 Fases Principales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fase-1-preparacin-sem-14-64aff4">Fase 1: PREPARACIÓN (Sem 14)</h3>
+<p class="key-value"><strong>Owner</strong>: Coordinador + Facilitador</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Recordatorio a participantes</strong>: Email + WhatsApp en Sem 14 con asunto &quot;3 semanas para certificación. ¿Cómo vas?&quot;</span></div>
+<div class="bullet-item">Adjuntar checklist de 5 criterios.</div>
+<div class="bullet-item">Link a repositorio donde subir entregables.</div>
+<div class="bullet-item">Deadline: &quot;Los entregables van máximo Sem 15 mediodía. Sem 16 es evaluación pura.&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Dashboard de progreso</strong>: Coordinador crea tabla simple (Google Sheets):</span></div>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Participante</th><th scope="col">Criterio 1</th><th scope="col">Criterio 2</th><th scope="col">Criterio 3</th><th scope="col">Criterio 4</th><th scope="col">Criterio 5</th><th scope="col">Status</th></tr></thead><tbody><tr><td>Juan</td><td>En progreso</td><td>Completado</td><td>Completado</td><td>Pendiente</td><td>Pendiente</td><td>2/5</td></tr><tr><td>María</td><td>Completado</td><td>Completado</td><td>Completado</td><td>Completado</td><td>Completado</td><td>5/5 ✓</td></tr></tbody></table></div>
+<p>Compartir con facilitador. Identificar: ¿quiénes están 5/5? ¿Quiénes están rezagados?</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Contacto personal con rezagados</strong>: Facilitador hace contacto 1-1 con participantes &lt;4/5. Conversación: &quot;Veo que te faltan criterios X, Y. ¿Qué está pasando? ¿Te puedo ayudar a acelerar?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Sesión de Clínica IA</strong> (Sem 15, opcional): Facilitador ofrece sesión extra (1h) para participantes con dudas específicas. &quot;¿Cómo documento mis asistentes? ¿Qué cuenta como &#x27;alto rendimiento&#x27;?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Repositorio listo</strong>: Confirmación de que todos tienen acceso, saben dónde subir, entienden estructura de carpetas.</span></div>
+<p class="key-value"><strong>Salida</strong>: Dashboard preparado, participantes recordados, rezagados contactados, Clínica IA ofrecida.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-2-evaluacin-sem-16-20067f">Fase 2: EVALUACIÓN (Sem 16)</h3>
+<p class="key-value"><strong>Owner</strong>: Facilitador (evaluador principal) + Coordinador (validador)</p>
+<p class="key-value"><strong>Procedimiento</strong>:</p>
+<p class="key-value"><strong>T-0 (Fin de Sem 15 / inicio de Sem 16)</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Recolección de entregables</strong>: Participantes suben entregables hasta Sem 15 mediodía. Coordinador verifica que están en repositorio correctamente organizados.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Setup de evaluación</strong>: Facilitador + Coordinador bloquean 4h (pueden ser distribuidas) para evaluar todos los participantes.</span></div>
+<p class="key-value"><strong>T-1 (Evaluación principal, ~3-4 horas)</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Revisar entregable de cada criterio</strong>: Por cada participante, revisar:</span></div>
+<div class="bullet-item">Criterio 1: ¿4 prompts están? ¿Tienen estructura? ¿Técnica visible?</div>
+<div class="bullet-item">Criterio 2: ¿4 asistentes? ¿Documentados? ¿Reproducibles?</div>
+<div class="bullet-item">Criterio 3: ¿3 declaraciones (estratégica, táctica, operativa)? ¿Coherentes?</div>
+<div class="bullet-item">Criterio 4: ¿Forma de trabajo documentada? ¿Evidencia de aplicación? ¿Reflexión?</div>
+<div class="bullet-item">Criterio 5: ¿4 automatizaciones con ahorro medible?</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Marcar como ✓ o ✗</strong>: Uso de tabla o documento:</span></div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>   JUAN PÉREZ
+   Criterio 1: ✓ (4 prompts, buen structure)
+   Criterio 2: ✓ (4 asistentes bien documentados)
+   Criterio 3: ✓ (3 declaraciones claras)
+   Criterio 4: ✗ (forma de trabajo documented, pero evidencia de aplicación es débil, solo 1 semana medida)
+   Criterio 5: ✓ (5 automatizaciones, promedio 1.5h/semana de ahorro)
+
+   RESULTADO: 4/5 → BUFFER</code></pre>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Notas de evaluación</strong>: Para cada ✗, escribir 1-2 frases explicando qué falta. Usar estas notas en comunicación post-resultado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Coordinador valida</strong>: Coordinador revisa evaluación del facilitador. Si hay desacuerdo, conversan. Consenso. Resultado final.</span></div>
+<p class="key-value"><strong>T+2 (Comunicación de resultados, &lt;48h post-evaluación)</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Participantes con 5/5</strong>: Email personalizado:</span></div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>   Asunto: 🎉 ¡CERTIFICADO! Felicidades por completar el Programa
+
+   Hola [Nombre],
+
+   Acabamos de evaluar tus entregables y ¡CUMPLES LOS 5 CRITERIOS! 🚀
+
+   - Criterio 1 (Prompts): Cumples
+   - Criterio 2 (Asistentes): Cumples
+   - Criterio 3 (Declaraciones): Cumples
+   - Criterio 4 (Forma de trabajo): Cumples
+   - Criterio 5 (Automatizaciones): Cumples
+
+   Tu certificado estará listo el [fecha]. Próxima semana tienes invitación a &quot;Embajadores 101&quot;.
+
+   Orgullo de ti. Nos vemos en comunidad.
+   [Facilitador]</code></pre>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Participantes con &lt;5/5</strong>: Email personalizado:</span></div>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>   Asunto: Resultado de evaluación + Buffer de 3 meses
+
+   Hola [Nombre],
+
+   Revisamos tus entregables. CUMPLES 4/5 criterios. Aquí está el desglose:
+
+   - Criterio 1 (Prompts): Cumples ✓
+   - Criterio 2 (Asistentes): Cumples ✓
+   - Criterio 3 (Declaraciones): Cumples ✓
+   - Criterio 4 (Forma de trabajo): No cumples ✗ — Te falta evidencia clara de aplicación por 4 semanas. Vimos 1 semana, necesitamos 4.
+   - Criterio 5 (Automatizaciones): Cumples ✓
+
+   BUENA NOTICIA: Tienes buffer de 3 meses (hasta [fecha Sem 28]) para completar el criterio faltante.
+
+   Te ofrezco:
+   - Sesión de Clínica IA 1x/mes (próxima [fecha]), sin obligación de asistencia.
+   - Canal de WhatsApp para preguntas (respuesta &lt;48h).
+   - Evaluación final en [fecha Sem 28].
+
+   Responde este email si tienes dudas o si necesitas ayuda para empezar.</code></pre>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Comunicación sincrónica (opcional)</strong>: Si programa lo permite, videollamada grupal de 30min donde facilitador comparte resultados generales (sin datos individuales):</span></div>
+<div class="bullet-item">&quot;22 participantes cumplieron 5/5 (CERTIFICADOS).&quot;</div>
+<div class="bullet-item">&quot;8 participantes entran a buffer (cumplieron 4/5).&quot;</div>
+<div class="bullet-item">&quot;Explicamos ahora qué significa buffer...&quot;</div>
+<p class="key-value"><strong>Salida</strong>: Resultados comunicados. Certificados emitidos para 5/5. Buffer activado para &lt;5/5.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-3-buffer-sem-17-sem-28-si-aplica-cebfdd">Fase 3: BUFFER (Sem 17 - Sem 28, si aplica)</h3>
+<p class="key-value"><strong>Owner</strong>: Facilitador + Coordinador (soporte async)</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Clínica IA mensual</strong> (Sem 18, 22, 26): Sesión de 1h, facilitador disponible. Preguntas abiertas sobre el criterio faltante. No obligatoria, pero recomendada. Grabación disponible para async.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Canal de WhatsApp</strong>: Grupo privado &quot;Buffer Sem 16&quot; con participantes en buffer. Participante pregunta, facilitador responde &lt;48h.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Re-evaluación en Sem 28</strong>: Participante reenvía entregables mejorados del criterio faltante. Facilitador re-evalúa.</span></div>
+<div class="bullet-item">Si ahora cumple: ✓ → CERTIFICACIÓN en Sem 28.</div>
+<div class="bullet-item">Si aún no cumple: ✗ → Cierre con &quot;Participación incompleta&quot; (diploma de asistencia, sin certificado).</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Documentación</strong>: Registro claro en base de datos de MetodologIA:</span></div>
+<div class="bullet-item">Fecha de resultado Sem 16.</div>
+<div class="bullet-item">Criterios cumplidos.</div>
+<div class="bullet-item">Si entra a buffer, fecha de re-evaluación.</div>
+<div class="bullet-item">Resultado final (certificado o participación incompleta).</div>
+<p class="key-value"><strong>Salida</strong>: Buffer completado, certificaciones finales emitidas o participación cerrada.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtrica-de-xito-7e421e" data-searchable aria-labelledby="head-mtrica-de-xito-7e421e">
+            <div class="phase-header" id="head-mtrica-de-xito-7e421e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métrica de Éxito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Frecuencia</th><th scope="col">Propósito</th></tr></thead><tbody><tr><td><strong>Certificación Sem 16</strong></td><td>≥70%</td><td>Post-Sem 16</td><td>Punto de partida</td></tr><tr><td><strong>Certificación final</strong> (con buffer)</td><td>≥85%</td><td>Post-Sem 28</td><td>Éxito a largo plazo</td></tr><tr><td><strong>Criterio más difícil</strong></td><td>Registrar cuál</td><td>Post-análisis</td><td>Retroalimentar diseño curricular</td></tr><tr><td><strong>Tiempo promedio a certificación</strong></td><td>16 semanas (no buffer)</td><td>Reportar</td><td>Eficiencia</td></tr><tr><td><strong>Apelaciones / disputas</strong></td><td>&lt;5% de participantes</td><td>Post-evaluación</td><td>Claridad del proceso</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="integraciones-adcece" data-searchable aria-labelledby="head-integraciones-adcece">
+            <div class="phase-header" id="head-integraciones-adcece" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Integraciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Upstream</strong>:</p>
+<div class="bullet-item"><strong>gestionar-cohorte-sop.md</strong>: Proporciona estado de participantes al final del programa. Facilitador sabe quiénes están listos para evaluación.</div>
+<p class="key-value"><strong>Downstream</strong>:</p>
+<div class="bullet-item"><strong>onboarding-comunidad-embajadores-sop.md</strong>: Participantes certificados (5/5) se transfieren a este SOP. Incorporación a Comunidad de Embajadores.</div>
+<p class="key-value"><strong>Cross-functional</strong>:</p>
+<div class="bullet-item"><strong>Diseño Curricular</strong>: Feedback sobre criterio más difícil → ajustes en M-04, M-08, M-12.</div>
+<div class="bullet-item"><strong>R-03 (Caso de éxito)</strong>: Para cada certificado, Coordinador recolecta: &quot;¿Qué impacto tuvo?&quot; + foto + breve testimonio → va a Comercial.</div>
+<div class="bullet-item"><strong>Liderazgo</strong>: Reporte mensual de certificaciones (tasas, tendencias, qué está fallando).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documentos-relacionados-c15e25" data-searchable aria-labelledby="head-documentos-relacionados-c15e25">
+            <div class="phase-header" id="head-documentos-relacionados-c15e25" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documentos Relacionados</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">gestionar-cohorte-sop.md (antecedente, proporciona participantes)</div>
+<div class="bullet-item">onboarding-comunidad-embajadores-sop.md (siguiente paso post-certificación)</div>
+<div class="bullet-item">facilitar-ciclo-semanal-sop.md (donde se generan entregables progresivos)</div>
+<div class="bullet-item">R-03 (reporte de casos de éxito para comercial)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-evaluacin-b258b6" data-searchable aria-labelledby="head-checklist-de-evaluacin-b258b6">
+            <div class="phase-header" id="head-checklist-de-evaluacin-b258b6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Evaluación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-sem-14-recordatorios-enviados-a-participantes-626c37"><input type="checkbox" id="chk-sem-14-recordatorios-enviados-a-participantes-626c37" ><span>Sem 14: Recordatorios enviados a participantes</span></label>
+<label class="checklist-item" for="chk-sem-14-dashboard-de-progreso-creado-edec65"><input type="checkbox" id="chk-sem-14-dashboard-de-progreso-creado-edec65" ><span>Sem 14: Dashboard de progreso creado</span></label>
+<label class="checklist-item" for="chk-sem-14-contacto-personal-con-rezagados-64a1c7"><input type="checkbox" id="chk-sem-14-contacto-personal-con-rezagados-64a1c7" ><span>Sem 14: Contacto personal con rezagados</span></label>
+<label class="checklist-item" for="chk-sem-15-clnica-ia-ofrecida-6826b4"><input type="checkbox" id="chk-sem-15-clnica-ia-ofrecida-6826b4" ><span>Sem 15: Clínica IA ofrecida</span></label>
+<label class="checklist-item" for="chk-sem-15-medioda-deadline-de-entregables-264cb1"><input type="checkbox" id="chk-sem-15-medioda-deadline-de-entregables-264cb1" ><span>Sem 15 mediodía: Deadline de entregables</span></label>
+<label class="checklist-item" for="chk-sem-16-evaluacin-realizada-4h-bloqueadas-981d44"><input type="checkbox" id="chk-sem-16-evaluacin-realizada-4h-bloqueadas-981d44" ><span>Sem 16: Evaluación realizada (4h bloqueadas)</span></label>
+<label class="checklist-item" for="chk-sem-16-coordinador-valida-resultados-34dcbb"><input type="checkbox" id="chk-sem-16-coordinador-valida-resultados-34dcbb" ><span>Sem 16: Coordinador valida resultados</span></label>
+<label class="checklist-item" for="chk-sem-16-t2-resultados-comunicados-c264e1"><input type="checkbox" id="chk-sem-16-t2-resultados-comunicados-c264e1" ><span>Sem 16 T+2: Resultados comunicados</span></label>
+<label class="checklist-item" for="chk-sem-16-diplomados-emitidos-55-b6b829"><input type="checkbox" id="chk-sem-16-diplomados-emitidos-55-b6b829" ><span>Sem 16: Diplomados emitidos (5/5)</span></label>
+<label class="checklist-item" for="chk-sem-16-buffer-activado-55-87cb9e"><input type="checkbox" id="chk-sem-16-buffer-activado-55-87cb9e" ><span>Sem 16: Buffer activado (&lt;5/5)</span></label>
+<label class="checklist-item" for="chk-sem-18-22-26-clnica-ia-realizadas-1b6792"><input type="checkbox" id="chk-sem-18-22-26-clnica-ia-realizadas-1b6792" ><span>Sem 18, 22, 26: Clínica IA realizadas</span></label>
+<label class="checklist-item" for="chk-sem-28-reevaluacin-realizada-97f85a"><input type="checkbox" id="chk-sem-28-reevaluacin-realizada-97f85a" ><span>Sem 28: Re-evaluación realizada</span></label>
+<label class="checklist-item" for="chk-sem-28-t2-certificaciones-finales-comunicadas-e234b9"><input type="checkbox" id="chk-sem-28-t2-certificaciones-finales-comunicadas-e234b9" ><span>Sem 28 T+2: Certificaciones finales comunicadas</span></label>
+<label class="checklist-item" for="chk-postsem-28-documentacin-archivada-0ef4e5"><input type="checkbox" id="chk-postsem-28-documentacin-archivada-0ef4e5" ><span>Post-Sem 28: Documentación archivada</span></label>
+<hr class="divider">
+<p class="key-value"><strong>Versión</strong>: 1.0 | <strong>Fecha</strong>: 2026-03-24 | <strong>Estado</strong>: Publicado</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>MetodologIA © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v2.0 Excellence Edition — Generado: 2026-03-24 13:53</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

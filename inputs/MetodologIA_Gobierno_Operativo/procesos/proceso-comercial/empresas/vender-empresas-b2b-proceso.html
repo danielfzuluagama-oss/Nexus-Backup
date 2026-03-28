@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign B2B Sales | MetodologIA Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Montserrat', sans-serif;
+            --font-tertiary: 'Jost', sans-serif;
+            --bg-primary: #0F172A;
+            --bg-surface: #1E293B;
+            --bg-body: #0B1224;
+            --brand-gold: #FFD700;
+            --brand-gold-dark: #FFA000;
+            --brand-gold-glow: rgba(255, 215, 0, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #E2E8F0;
+            --text-muted: #CBD5E1;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+            --hsl-bg-body: 222, 47%, 9%;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: hsl(var(--hsl-bg-body));
+            color: var(--text-primary);
+            font-family: var(--font-secondary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            background-image: radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 40%);
+        }
+        h1, h2, h3 { font-family: var(--font-primary); font-weight: 700; }
+        .highlight-ia-premium { background: var(--gradient-gold); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .premium-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(15, 23, 42, 0.85); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: space-between; }
+        .nav-logo-link { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: white; }
+        .logo-svg { filter: drop-shadow(0 0 8px var(--brand-gold-glow)); }
+        .segment-switcher { display: flex; background: rgba(255, 255, 255, 0.05); padding: 0.25rem; border-radius: 0.75rem; border: 1px solid var(--border-subtle); }
+        .segment-btn { padding: 0.4rem 1rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em; border: none; color: var(--text-muted); background: transparent; }
+        .segment-btn.active { background: var(--gradient-gold); color: #020617; box-shadow: 0 2px 8px var(--brand-gold-glow); }
+        .hero { padding: 8rem 2rem 4rem; text-align: center; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin-bottom: 1rem; letter-spacing: -1px; }
+        .hero p { color: var(--text-secondary); max-width: 800px; margin: 0 auto; font-size: 1.2rem; font-weight: 300; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 2rem; }
+        .sop-section { margin-bottom: 5rem; }
+        .sop-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem; }
+        .sop-num { font-size: 4rem; font-weight: 800; color: transparent; -webkit-text-stroke: 1px rgba(255, 215, 0, 0.3); font-family: var(--font-tertiary); }
+        .sop-info h2 { font-size: 2rem; font-weight: 700; color: var(--brand-gold); }
+        .sop-info p { color: var(--text-muted); font-size: 1rem; }
+        .ritual-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+        .ritual-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: 24px; padding: 2.5rem; cursor: pointer; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); position: relative; overflow: hidden; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+        .ritual-card:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 215, 0, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .ritual-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 0; background: var(--brand-gold); transition: height 0.3s ease; }
+        .ritual-card:hover::before { height: 100%; }
+        .ritual-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.8rem; color: white; }
+        .ritual-card p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; height: 3.5rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; }
+        .view-steps { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--brand-gold); display: flex; align-items: center; gap: 6px; }
+        .slideover { position: fixed; top: 0; right: -550px; width: 100%; max-width: 550px; height: 100vh; background: var(--bg-surface); z-index: 1001; box-shadow: -20px 0 60px rgba(0,0,0,0.5); transition: right 0.5s cubic-bezier(0.85, 0, 0.15, 1); padding: 3rem 2.5rem; overflow-y: auto; border-left: 1px solid var(--border-subtle); border-radius: 32px 0 0 32px; }
+        .slideover.active { right: 0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        .close-btn { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: var(--text-muted); cursor: pointer; transition: color 0.3s; }
+        .close-btn:hover { color: var(--brand-gold); }
+        .panel-header { margin-bottom: 2.5rem; }
+        .panel-header h2 { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--brand-gold); line-height: 1.2; }
+        .panel-header .sop-tag { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 2px; }
+        .panel-goal { background: rgba(255, 215, 0, 0.05); padding: 1.25rem; border-radius: 12px; border-left: 3px solid var(--brand-gold); font-size: 0.95rem; margin: 1rem 0 2rem; }
+        .steps-list { list-style: none; counter-reset: steps-counter; }
+        .steps-list li { position: relative; padding-left: 3.5rem; margin-bottom: 1.5rem; font-size: 1rem; color: var(--text-secondary); }
+        .steps-list li::before { counter-increment: steps-counter; content: counter(steps-counter); position: absolute; left: 0; top: 0; width: 2.2rem; height: 2.2rem; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--brand-gold); font-size: 0.9rem; border: 1px solid rgba(255,215,0,0.2); }
+        .site-footer { background: #020617; padding: 5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 6rem; position: relative; overflow: hidden; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 4rem; }
+        .footer-brand { grid-column: span 2; }
+        .footer-quote { font-style: italic; color: var(--text-muted); margin: 1.5rem 0; font-size: 1.1rem; line-height: 1.5; max-width: 400px; }
+        .footer-links h4 { color: white; margin-bottom: 1.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--brand-gold); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .badge-premium { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; background: rgba(255,215,0,0.05); border: 1px solid var(--brand-gold-glow); border-radius: 1rem; position: relative; animation: pulse-glow 3s infinite; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 5px rgba(255,215,0,0.1); } 50% { box-shadow: 0 0 20px rgba(255,215,0,0.2); } 100% { box-shadow: 0 0 5px rgba(255,215,0,0.1); } }
+        .nav-links-official { display: flex; gap: 2rem; align-items: center; }
+        .nav-links-official a { color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
+        .nav-links-official a:hover { color: var(--brand-gold); }
+
+        /* Refactored Utility Classes */
+        .brand-title { font-size: 1.1rem; }
+        .nav-cta-btn { background: var(--gradient-gold); color: #020617; padding: 0.6rem 1.2rem; border-radius: 0.75rem; text-decoration: none; font-weight: 700; font-size: 0.8rem; box-shadow: 0 4px 15px var(--brand-gold-glow); }
+        .footer-logo-link { margin-bottom: 1.5rem; }
+        .footer-brand-title { font-size: 1.5rem; color: white; margin: 0; }
+        .footer-powered-text { color: var(--brand-gold); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+        
+        /* JS Injected Classes */
+        .ritual-card-label { margin-bottom: 1rem; font-size: 0.6rem; opacity: 0.6; }
+        .btn-ritual-master { display: block; margin-top: 2.5rem; text-align: center; background: var(--gradient-gold); color: #020617; text-decoration: none; padding: 1rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem; }
+    
+        /* Extra Utilty Classes for Inline Replacements */
+        .brand-title { font-size: 1.15rem; font-weight: 800; margin: 0; }
+        .icon-brand-gold { color: var(--brand-gold); }
+        .section-title-mod { font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .section-title-steps { font-size: 1.25rem; margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .step-expand-hint-mod { margin-left: auto; font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+        .vitamin-title { color: var(--brand-gold); margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        .vitamin-text { font-size: 1.1rem; font-style: italic; color: var(--text-secondary); line-height: 1.5; position: relative; z-index: 2; }
+        .kpi-icon-container { display:flex; align-items:center; justify-content:center; height:2.5rem; margin-bottom:0.15rem; }
+        .footer-logo-link { margin-bottom: 1.5rem; }
+        .footer-brand-title { font-size: 1.5rem; color: white; margin: 0; }
+        .footer-copyright-text { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+        .footer-powered-text { color: var(--brand-gold); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+        .modal-btn-complete { background: rgba(16,185,129,0.1); color: #10B981; border-color: rgba(16,185,129,0.2); }
+        .glossary-term-title { color: var(--brand-gold); display: block; margin-bottom: 0.25rem; }
+        .glossary-term-desc { font-size: 0.85rem; color: var(--text-secondary); }
+        .step-item-content { flex: 1; }
+        .step-item-title { font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .step-item-desc { font-size: 0.9rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+    <nav class="premium-nav">
+        <div class="nav-container">
+            <a href="https://metodologia.info" class="nav-logo-link" title="Ir al sitio oficial">
+                <svg width="34" height="34" viewBox="0 0 36 36" fill="none" class="logo-svg">
+                    <rect width="36" height="36" rx="10" fill="#1E293B"/>
+                    <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                </svg>
+                <h1 class="brand-title">Metodolog<span class="highlight-ia-premium">IA</span></h1>
+            </a>
+            <div class="nav-links-official">
+                <a href="https://metodologia.info/recursos/index.html">Recursos</a>
+                <a href="https://metodologia.info/contacto/index.html">Contacto</a>
+                <div class="segment-switcher">
+                    <button class="segment-btn active" onclick="switchSegment('B2B')" title="Activar modo B2B">B2B</button>
+                    <button class="segment-btn" onclick="switchSegment('B2C')" title="Activar modo B2C">B2C</button>
+                </div>
+            </div>
+            <a href="https://metodologia.info/contacto/index.html" class="nav-cta nav-cta-btn">Primera Conversación</a>
+        </div>
+    </nav>
+    <section class="hero">
+        <h1>Venta Soberana <span class="highlight-ia-premium">B2B</span></h1>
+        <p>Dashboard exhaustivo de ingeniería comercial. Mapeo atómico de 20 rituales y 4 procedimientos operativos estandarizados.</p>
+    </section>
+    <div class="container" id="dashboard"></div>
+    <div class="overlay" id="overlay" onclick="closePanel()"></div>
+    <div class="slideover" id="panel">
+        <button class="close-btn" onclick="closePanel()" title="Cerrar panel">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <div id="panel-content"></div>
+    </div>
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="https://metodologia.info" class="nav-logo-link footer-logo-link">
+                    <svg width="34" height="34" viewBox="0 0 36 36" fill="none" class="logo-svg">
+                        <rect width="36" height="36" rx="10" fill="#1E293B"/>
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                    </svg>
+                    <h2 class="footer-brand-title">Metodolog<span class="highlight-ia-premium">IA</span></h2>
+                </a>
+                <p class="footer-quote">"La excelencia no se compra, se diseña. Se cocrea y se comparte."</p>
+            </div>
+            <div class="footer-links">
+                <h4>Ecosistema</h4>
+                <ul>
+                    <li><a href="https://metodologia.info/recursos/index.html">Recursos</a></li>
+                    <li><a href="https://metodologia.info/servicios/index.html">Servicios</a></li>
+                    <li><a href="https://metodologia.info/proyectos/index.html">Proyectos</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="https://metodologia.info/legal/terminos.html">Términos</a></li>
+                    <li><a href="https://metodologia.info/legal/privacidad.html">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-copyright-text">© 2026 MetodologIA Playbook. Todos los derechos reservados.</p>
+            <div class="badge-premium">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span class="footer-powered-text">Success as a Service | Powered by Pristino Agent</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const data = {
+            sops: {
+                "sop-scouting": { title: "Scouting & Signal Mining", desc: "Detección y prospección de señales de mercado.", url: "./references/sop/sop-scouting/prospectar-cuentas-b2b-sop.html" },
+                "sop-discovery": { title: "Discovery & Consensus Engineering", desc: "Diagnóstico profundo y construcción de consenso." },
+                "sop-structuring": { title: "Deal Structuring & Risks", desc: "Estructuración técnica y financiera de la oferta." },
+                "sop-success": { title: "Impact & Success", desc: "Gestión de impacto, adopción y expansión." }
+            },
+            rituals: {
+                "agendar-discovery": { title: "Agendar Discovery B2B", sop: "sop-scouting", goal: "Conseguir la reunión ofreciendo valor irrefutable.", url: "./references/sop/sop-scouting/references/rituales/agendar-discovery-b2b-ritual/agendar-discovery-b2b-ritual.html", steps: ["Selección de Canal", "Hook de Investigación", "Hipótesis de Reto", "Insight de Industria", "Soft Ask estratégico", "Aporte de Valor (72h)", "Video Auditoría (Loom)", "Identificación de Conector", "Propuesta de Agenda", "Envío de Invite"] },
+                "calificar-oportunidad": { title: "Calificar Oportunidad B2B", sop: "sop-scouting", goal: "Determinar fit estratégico y financiero.", url: "./references/sop/sop-scouting/references/rituales/calificar-oportunidad-b2b-ritual/calificar-oportunidad-b2b-ritual.html", steps: ["Verificación ICP Elite", "Validación Dolor Activo", "Mapa Autoridad Real", "Timeline Crítico", "Sondeo Presupuesto", "Mapeo Competencia", "Auditoría Compatibilidad", "Moat Score", "Decisión Handoff", "Registro CRM"] },
+                "enriquecer-cuenta": { title: "Enriquecer Cuenta con IA", sop: "sop-scouting", goal: "Construir dossier de inteligencia con IA.", url: "./references/sop/sop-scouting/references/rituales/enriquecer-cuenta-con-ia-ritual/enriquecer-cuenta-con-ia-ritual.html", steps: ["Ingesta Misión IA", "Análisis Financiero", "Vigilancia Tecnológica", "Mining de Talento", "Profiling C-Level", "Sintetización Retos", "Ángulos de Ataque", "Icebreakers Premium", "Dossier 10x"] },
+                "mapear-stakeholders": { title: "Mapeo de Stakeholders", sop: "sop-scouting", goal: "Revelar red oculta de influencia.", url: "./references/sop/sop-scouting/references/rituales/mapear-stakeholders-b2b-ritual/mapear-stakeholders-b2b-ritual.html", steps: ["Captura Intención", "Scouting Estructura", "Economic Buyer", "Technical Stewards", "User Champions", "Verificación 3x3", "Conexiones 2º Grado", "Dolor por Rol", "Asignación SDR/AE", "Carga CRM"] },
+                "analizar-brechas": { title: "Analizar Brechas B2B", sop: "sop-discovery", goal: "Cuantificar distancia al éxito.", url: "./references/sop/sop-discovery/references/rituales/analizar-brechas-b2b-ritual/analizar-brechas-b2b-ritual.html", steps: ["Métricas Baseline", "Definición Goal", "Cálculo Delta", "Root Cause Analysis", "Fugas de Valor", "Mapa Capacidades", "Costo Inacción (COI)", "Riesgos Ocultos", "Visualización Gap", "Acuerdo Diagnóstico"] },
+                "ejecutar-discovery": { title: "Ejecutar Discovery B2B", sop: "sop-discovery", goal: "Posicionarse como autoridad absoluta.", url: "./references/sop/sop-discovery/references/rituales/ejecutar-discovery-b2b-ritual/ejecutar-discovery-b2b-ritual.html", steps: ["Up-Front Contract", "Situación Selectiva", "Dolor Clínico", "Preguntas Implicación", "Preguntas Visión", "Multithreading", "Hipótesis Challenger", "Mirroring Activo", "Bloqueos Políticos", "Cierre Pizarra"] },
+                "preparar-discovery": { title: "Preparar Discovery B2B", sop: "sop-discovery", goal: "Investigación previa para liderar.", url: "./references/sop/sop-discovery/references/rituales/preparar-discovery-b2b-ritual/preparar-discovery-b2b-ritual.html", steps: ["Auditoría Ingesta IA", "Research Competencia", "Hipótesis del Día", "Selección SPICED", "Mapa de Poder", "Uso Referencia", "Check Tech", "Handoff Inteligencia", "Agenda Soberana", "Recordatorio Valor"] },
+                "validar-solucion": { title: "Validar Solución B2B", sop: "sop-discovery", goal: "Confirmar ajuste arquitectura-necesidad.", url: "./references/sop/sop-discovery/references/rituales/validar-solucion-b2b-ritual/validar-solucion-b2b-ritual.html", steps: ["Solution Design", "Matriz Must-Haves", "Scope Control", "Hitos Operativos", "Pre-Cierre Técnico", "Alineación Expectativas", "Check Integración", "Aprobación Arquitectura", "Handoff Estructuración", "Documentación CRM"] },
+                "preparar-business-case": { title: "Preparar Business Case", sop: "sop-discovery", goal: "Traducir éxito en ROI financiero.", url: "./references/sop/sop-discovery/references/rituales/preparar-business-case-b2b-ritual/preparar-business-case-b2b-ritual.html", steps: ["Inputs Financieros", "Modelado ROI Hard", "Modelado ROI Soft", "Cálculo TCO", "Payback Period", "Sensibilidad 50/50", "Benchmark Líderes", "Argumentario Ejecutivo", "Validación Peer", "Slide del Dinero"] },
+                "disenar-arquitectura": { title: "Diseñar Arquitectura", sop: "sop-structuring", goal: "Diseño escalable y rentable.", url: "./references/sop/sop-structuring/references/rituales/disenar-arquitectura-solucion-ritual/disenar-arquitectura-solucion-ritual.html", steps: ["Consolidación Req", "Stack Tecnológico", "Flujos Integración", "Seguridad Design", "Escalabilidad", "Entregables Tech", "Definición SLAs", "Costos Infra", "Review Lead", "Blueprint Handoff"] },
+                "estimar-esfuerzo": { title: "Estimar Esfuerzo", sop: "sop-structuring", goal: "Cálculo preciso de tiempo/costo.", url: "./references/sop/sop-structuring/references/rituales/estimar-esfuerzo-implementacion-ritual/estimar-esfuerzo-implementacion-ritual.html", steps: ["WBS Desglose", "Estimación Perfiles", "Buffer Riesgo", "Costos Externos", "Gross Margin", "Calendario Ops", "Dependencias", "Gantt Maestro", "Firma Viabilidad", "Handoff Propuesta"] },
+                "redactar-propuesta": { title: "Redactar Propuesta Técnica", sop: "sop-structuring", goal: "Documento persuasivo Moat.", url: "./references/sop/sop-structuring/references/rituales/redactar-propuesta-tecnica-ritual/redactar-propuesta-tecnica-ritual.html", steps: ["Resumen Ejecutivo", "Contexto Dolor", "Solución Moat", "Inversión ROI", "CTAs Fricción Cero", "Visualización Éxito", "Diferenciadores", "Prueba Social", "Garantía", "Cierre Autoridad"] },
+                "realizar-qa-propuesta": { title: "Realizar QA Propuesta", sop: "sop-structuring", goal: "Blindar contra errores y fallos.", url: "./references/sop/sop-structuring/references/rituales/realizar-qa-propuesta-ritual/realizar-qa-propuesta-ritual.html", steps: ["Check Branding", "Auditoría Math", "Review Promesa", "Voz de Marca", "Firma Comercial", "Referencias", "Cláusulas Salida", "Review CTA", "Prueba CFO", "Aprobación Final"] },
+                "auditar-map": { title: "Auditar MAP B2B", sop: "sop-structuring", goal: "Sincronización de hitos de cierre.", url: "./references/sop/sop-structuring/references/rituales/auditar-map-b2b-ritual/auditar-map-b2b-ritual.html", steps: ["Hitos Críticos", "Dueños Tarea", "Bloqueadores Admin", "Confirmación Firmas", "Update CRM", "Sincro Recursos", "Check Legal", "Brief Cierre", "Mitigación Delay", "Registro Acuerdos"] },
+                "onboarding-corporativo": { title: "Onboarding Corporativo", sop: "sop-success", goal: "Mínimo TTV mediante activación.", url: "./references/sop/sop-success/references/rituales/onboarding-corporativo-ritual/onboarding-corporativo-ritual.html", steps: ["Bienvenida Kit", "Kick-off Alignment", "Setup Técnico", "Migración Data", "Training Champions", "KPIs Adopción", "Health Check", "Quick Win 72h", "Handoff CSM", "Activation Doc"] },
+                "monitorear-adopcion": { title: "Monitorear Adopción", sop: "sop-success", goal: "Prevenir churn proactivamente.", url: "./references/sop/sop-success/references/rituales/monitorear-adopcion-tecnica-ritual/monitorear-adopcion-tecnica-ritual.html", steps: ["Logs Actividad", "Health Score", "Power Users", "Zombie Alerts", "Fricción Soporte", "Feature Affinity", "NPS Sentimiento", "Alertas CSM", "Plan Rescate", "Ajuste Éxito"] },
+                "realizar-qbr": { title: "Realizar QBR", sop: "sop-success", goal: "Ratificar valor y escalada.", url: "./references/sop/sop-success/references/rituales/realizar-qbr-ritual/realizar-qbr-ritual.html", steps: ["Contexto Objetivos", "Dashboard Logros", "ROI Evidenciado", "Fix de Fricciones", "Voz del Sponsor", "Roadmap Futuro", "Detección Expansión", "Minuta Acuerdos", "Commitment Anual", "Next Quarter Plan"] },
+                "preparar-qbr": { title: "Preparar QBR B2B", sop: "sop-success", goal: "Consolidar evidencias de éxito.", url: "./references/sop/sop-success/references/rituales/preparar-qbr-b2b-ritual/preparar-qbr-b2b-ritual.html", steps: ["Mining Victorias", "Casos Internos", "Deuda Técnica", "ROI Calculus", "Industry Benchmark", "Deck Influencia", "Champion alignment", "LTV Guard", "Big Ask Strategy", "Simulación CFO"] },
+                "identificar-expansion": { title: "Identificar Expansión", sop: "sop-success", goal: "Detectar crecimiento orgánico.", url: "./references/sop/sop-success/references/rituales/identificar-expansion-upsell-ritual/identificar-expansion-upsell-ritual.html", steps: ["Auditoría Consumo", "Leads Internos", "Wishlist Support", "LTV Proyectado", "Value Brief", "Loyalty Offer", "CSM-AE alignment", "Soft Pitch QBR", "Trial Setup", "Addendum Firm"] }
+            }
+        };
+        function init() {
+            const dash = document.getElementById('dashboard');
+            Object.keys(data.sops).forEach((sopKey, idx) => {
+                const sop = data.sops[sopKey];
+                const rituals = Object.entries(data.rituals).filter(([k, v]) => v.sop === sopKey);
+                const section = document.createElement('section');
+                section.className = 'sop-section';
+                section.innerHTML = `<div class="sop-header"><div class="sop-num">0${idx+1}</div><div class="sop-info"><h2>${sop.title}</h2><p>${sop.desc}</p></div></div><div class="ritual-grid">${rituals.map(([k, v]) => `<div class="ritual-card" onclick="openPanel('${k}')"><div class="view-steps ritual-card-label">Protocolo Atómico</div><h3>${v.title}</h3><p>${v.goal}</p><div class="view-steps">Ver Ritual <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div></div>`).join('')}</div>`;
+                dash.appendChild(section);
+            });
+        }
+        function openPanel(key) {
+            const r = data.rituals[key];
+            const p = document.getElementById('panel-content');
+            p.innerHTML = `<div class="panel-header"><span class="sop-tag">${data.sops[r.sop].title}</span><h2>${r.title}</h2></div><div class="panel-goal">${r.goal}</div><ul class="steps-list">${r.steps.map(s => `<li>${s}</li>`).join('')}</ul><a href="${r.url}" target="_blank" class="btn-ritual-master">Abrir Ritual Maestro</a>`;
+            document.getElementById('panel').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+        function closePanel() {
+            document.getElementById('panel').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+        function switchSegment(type) {
+            if (type === 'B2C') {
+                window.location.href = '../onboarding-personas-b2c.html';
+            }
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>

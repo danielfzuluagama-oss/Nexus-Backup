@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA | Documentación Corporativa</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Montserrat:wght@400;500;600&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Branding Stewardship v5.2 tokens */
+            --bg-primary: hsl(225, 30%, 15%);
+            --bg-surface: hsl(225, 25%, 20%);
+            --bg-body: hsl(225, 30%, 10%);
+            --brand-gold: #FFD700;
+            --brand-gold-dark: #FFA000;
+            --brand-gold-glow: rgba(255, 215, 0, 0.3);
+            --brand-cyan: #00B8B8;
+            --text-primary: #FFFFFF;
+            --text-secondary: #E2E8F0;
+            --text-muted: #94A3B8;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --gold-subtle: rgba(255, 215, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Modernized Premium Nav */
+        .header {
+            background: rgba(15, 23, 42, 0.85);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-logo-link:hover { transform: scale(1.02); }
+
+        .logo-svg { 
+            border-radius: 8px; 
+            filter: drop-shadow(0 0 8px var(--brand-gold-glow));
+        }
+
+        .highlight-ia-premium { color: var(--brand-gold); font-weight: 800; }
+
+        /* Segment Switcher integrated */
+        .segment-switcher { 
+            display: none; 
+            gap: 0.5rem; 
+            padding: 0.3rem; 
+            background: rgba(255, 255, 255, 0.04); 
+            border: 1px solid var(--border-subtle); 
+            border-radius: 9999px; 
+        }
+        
+        @media (min-width: 1024px) { .segment-switcher { display: flex; } }
+        
+        .segment-btn { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            padding: 0.5rem 1rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+        }
+        
+        .segment-btn:hover { background: rgba(255, 215, 0, 0.1); color: var(--brand-gold); }
+
+        .container {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .doc-card {
+            background: var(--bg-surface);
+            border-radius: 24px;
+            padding: 3rem;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; color: var(--brand-gold); }
+        
+        .iq-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gold-subtle);
+            color: var(--brand-gold);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(255,215,0,0.2);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .content-section { margin-top: 2rem; }
+        
+        /* Standardized Footer v1.2.0 */
+        .site-footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-subtle);
+            padding: 5rem 2rem 2.5rem;
+            margin-top: 6rem;
+            position: relative;
+        }
+
+        .footer-glow-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--brand-gold-glow), transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .footer-grid {
+            max-width: 80rem;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        @media (min-width: 1024px) {
+            .footer-grid { grid-template-columns: repeat(5, 1fr); }
+            .footer-brand { grid-column: span 2; }
+        }
+
+        .footer-title {
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            flex-direction: column;
+        }
+
+        .footer-title::after {
+            content: '';
+            width: 1.5rem;
+            height: 2px;
+            background: var(--brand-gold);
+            margin-top: 0.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li { margin-bottom: 0.85rem; }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover { color: var(--brand-gold); transform: translateX(5px); display: inline-block; }
+
+        .footer-bottom {
+            max-width: 80rem;
+            margin: 4rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Refactored Utility Classes */
+        .header-title { font-size: 1.25rem; font-weight: 800; margin: 0; }
+        .nav-contact-wrapper { display: flex; gap: 1rem; }
+        .nav-contact-btn { background: var(--brand-gold); color: #020617; text-decoration: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
+        .doc-desc { color: var(--text-secondary); opacity: 0.9; }
+        .doc-divider { border: 0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0; }
+        .footer-brand-wrapper { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .footer-brand-text { font-weight: 800; color: white; font-size: 1.1rem; }
+        .highlight-gold { color: var(--brand-gold); }
+        .footer-quote { font-size: 0.85rem; color: var(--text-muted); font-style: italic; opacity: 0.8; }
+        .footer-powered-wrapper { display: flex; align-items: center; gap: 0.5rem; }
+        .footer-status-dot { width: 5px; height: 5px; background: #10B981; border-radius: 50%; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="../index.html" class="nav-logo-link">
+            <svg width="34" height="34" viewBox="0 0 36 36" fill="none" class="logo-svg">
+                <rect width="36" height="36" rx="10" fill="#0A122A"/>
+                <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+            </svg>
+            <h1 class="header-title">Metodolog<span class="highlight-ia-premium">IA</span></h1>
+        </a>
+
+        <div class="segment-switcher">
+            <a href="#" class="segment-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Personas</span>
+            </a>
+            <a href="#" class="segment-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+                <span>Empresas</span>
+            </a>
+        </div>
+
+        <div class="nav-contact-wrapper">
+             <a href="#" class="nav-contact-btn">Contacto</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="doc-card">
+            <div class="iq-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                Certified Moat Asset
+            </div>
+            <h1>[Nombre del Documento]</h1>
+            <p class="doc-desc">[Descripción u Objetivo alto nivel de la pieza operativa].</p>
+            
+            <hr class="doc-divider">
+
+            <div class="content-section">
+                <!-- Inyeccion de MD -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-glow-line"></div>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-brand-wrapper">
+                    <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
+                        <rect width="36" height="36" rx="8" fill="#1E293B"/>
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                        <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+                    </svg>
+                    <span class="footer-brand-text">Metodolog<span class="highlight-gold">IA</span></span>
+                </div>
+                <p class="footer-quote">"La excelencia no se compra, se diseña."</p>
+            </div>
+            <div>
+                <h4 class="footer-title">Servicios</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Empresas</a></li>
+                    <li><a href="#">Personas</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Recursos</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Playbooks</a></li>
+                    <li><a href="#">Catálogo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Privacidad</a></li>
+                    <li><a href="#">Términos</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 MetodologIA. Copyleft.</span>
+            <div class="footer-powered-wrapper">
+                <span class="footer-status-dot"></span>
+                <span>Success as a Service | Powered by Pristino Agent</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

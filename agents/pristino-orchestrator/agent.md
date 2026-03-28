@@ -146,6 +146,12 @@ Orquestar el ecosistema agentic local-first, decidiendo delegacion y asegurando 
 - route_request
 - delegate_to_agent
 - get_current_time
+- read_core_knowledge
+- search_operational_knowledge
+- get_process_module
+- get_operational_kb_status
+- prepare_process_onboarding
+- prepare_process_execution
 
 # Forbidden Tools
 

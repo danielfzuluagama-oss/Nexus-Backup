@@ -1,0 +1,257 @@
+<!--
+  @license Copyleft
+  @copyright MetodologIA
+  @version 1.2.0
+  @standard Golden Reference v1.1.0
+  @author Javier Montaño
+  @technology Antigravity | HSL Architecture | Micro-Interactions
+  @poweredBy Pristino Agent
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTA Hierarchy Standard v1.2.0 | MetodologIA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: hsl(225, 30%, 10%);
+            --bg-surface: hsl(225, 25%, 18%);
+            --brand-gold: #FFD700;
+            --brand-gold-dark: #FFA000;
+            --brand-gold-glow: rgba(255, 215, 0, 0.4);
+            --brand-gold-glow-soft: rgba(255, 215, 0, 0.15);
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Montserrat', sans-serif;
+        }
+
+        body { 
+            background: var(--bg-body); 
+            font-family: var(--font-secondary); 
+            color: white;
+            margin: 0;
+            padding: 4rem 2rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        header { margin-bottom: 5rem; text-align: center; }
+        h1 { font-family: var(--font-primary); font-size: 3rem; color: var(--brand-gold); margin-bottom: 1rem; }
+        p.subtitle { font-size: 1.1rem; color: #94a3b8; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .demo-card {
+            background: var(--bg-surface);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, transparent, var(--brand-gold), transparent);
+            opacity: 0.3;
+        }
+
+        .tier-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #64748b;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        /* TIER 1: CTA NAV (Header Only) */
+        .cta-nav {
+            position: relative;
+            display: inline-flex;
+            padding: 0.75rem 1.75rem;
+            background: var(--brand-gold);
+            color: #020617;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            border: 2px solid var(--brand-gold);
+            box-shadow: 0 0 20px var(--brand-gold-glow), 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: var(--font-primary);
+        }
+
+        .cta-nav:hover {
+            background: #020617;
+            color: var(--brand-gold);
+            border-color: var(--brand-gold);
+            box-shadow: 0 0 30px var(--brand-gold-glow), 0 0 60px rgba(255, 215, 0, 0.1);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        /* TIER 2: CTA PRIMARY (Hero / Main Actions) */
+        .cta-primary {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 99px;
+            color: white;
+            font-family: var(--font-primary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .cta-primary:hover {
+            background: var(--brand-gold);
+            color: #020617;
+            border-color: var(--brand-gold);
+            box-shadow: 0 0 35px var(--brand-gold-glow-soft);
+            transform: scale(1.05);
+        }
+
+        /* TIER 3: CTA SECONDARY (Subtle Link) */
+        .cta-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 0.35rem;
+            transition: all 0.3s ease;
+            font-family: var(--font-primary);
+        }
+
+        .cta-secondary:hover {
+            color: var(--brand-gold);
+            border-color: var(--brand-gold);
+        }
+
+        .cta-secondary svg {
+            transition: transform 0.3s ease;
+        }
+
+        .cta-secondary:hover svg {
+            transform: translateX(6px);
+        }
+
+        /* Table Design */
+        .rules-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-surface);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .rules-table th { background: rgba(255,255,255,0.02); color: var(--brand-gold); text-align: left; padding: 1.25rem 1.5rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; }
+        .rules-table td { padding: 1.25rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CTA Hierarchy</h1>
+            <p class="subtitle">Manual de jerarquías para llamadas a la acción. Tres niveles de peso visual para guiar la intención del usuario.</p>
+        </header>
+
+        <section class="demo-grid">
+            <!-- Tier 1 -->
+            <div class="demo-card">
+                <span class="tier-label">Tier 1: Nav CTA (Maximum Visibility)</span>
+                <a href="#" class="cta-nav">Inicia Ahora</a>
+                <p style="font-size: 0.8rem; color: #64748b; margin-top: 2rem; line-height: 1.5;">
+                    Reservado exclusivamente para la acción principal del sitio en el header fijo. 
+                    Debe invocar urgencia y claridad absoluta.
+                </p>
+            </div>
+
+            <!-- Tier 2 -->
+            <div class="demo-card">
+                <span class="tier-label">Tier 2: Primary CTA (High Intent)</span>
+                <a href="#" class="cta-primary">Ver Catálogo Élite</a>
+                <p style="font-size: 0.8rem; color: #64748b; margin-top: 2rem; line-height: 1.5;">
+                    Usado en Heros y finales de sección. Lógica <strong>Color-Swap</strong>. 
+                    Sin iconos para mantener el foco en el verbo de acción.
+                </p>
+            </div>
+
+            <!-- Tier 3 -->
+            <div class="demo-card">
+                <span class="tier-label">Tier 3: Secondary CTA (Exploration)</span>
+                <a href="#" class="cta-secondary">
+                    Conocer nuestra metodología
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+                <p style="font-size: 0.8rem; color: #64748b; margin-top: 2rem; line-height: 1.5;">
+                    Acciones de soporte o enlaces de "Ver más". Sutil, elegante y 
+                    acompañado de una micro-interacción en la flecha (SVG inline).
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2 style="color: white; margin-bottom: 1.5rem;">Matriz de Decisión</h2>
+            <table class="rules-table">
+                <thead>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Criterio de Uso</th>
+                        <th>Frecuencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nav</strong></td>
+                        <td>Conversión final (Contacto / Registro)</td>
+                        <td>Máx 1 por página (en Nav)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary</strong></td>
+                        <td>Acción principal de la sección o Hero</td>
+                        <td>1 por viewport</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Secondary</strong></td>
+                        <td>Hilos de navegación interna / Soporte</td>
+                        <td>Ilimitado (usar con criterio)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

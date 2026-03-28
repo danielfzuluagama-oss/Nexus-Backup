@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Facilitar Workshop — Proceso de Delivery MetodologIA">
+    <title>SOP: Facilitar Workshop — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Workshop</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Facilitar Workshop</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Facilitar Workshop</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 2.0 | Vigencia: 2026-01 | Dueño: Facilitador Principal | Última Actualización: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('identificacin-557cb8')" aria-label="Ir a Identificación">Identificación</button>
+<button class="nav-btn" onclick="scrollToSection('objetivo-binario-1c51fd')" aria-label="Ir a Objetivo Binario">Objetivo Binario</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-explcitos-bc218e')" aria-label="Ir a Supuestos Explícitos">Supuestos Explícitos</button>
+<button class="nav-btn" onclick="scrollToSection('presession-t60-min-462369')" aria-label="Ir a Pre-Session (T-60 min)">Pre-Session (T-60 min)</button>
+<button class="nav-btn" onclick="scrollToSection('session-minutebyminute-framework-9b66c8')" aria-label="Ir a Session: Minute-by-Minute Framework">Session: Minute-by-Minute Framework</button>
+<button class="nav-btn" onclick="scrollToSection('realtime-facilitation-techniques-b8629b')" aria-label="Ir a Real-Time Facilitation Techniques">Real-Time Facilitation Techniques</button>
+<button class="nav-btn" onclick="scrollToSection('documentation-during-session-4f369a')" aria-label="Ir a Documentation During Session">Documentation During Session</button>
+<button class="nav-btn" onclick="scrollToSection('emergency-protocols-during-session-edf750')" aria-label="Ir a Emergency Protocols (During Session)">Emergency Protocols (During Session</button>
+<button class="nav-btn" onclick="scrollToSection('postsession-t0-to-t5-min-20ec75')" aria-label="Ir a Post-Session (T+0 to T+5 min)">Post-Session (T+0 to T+5 min)</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-decisiones-en-vivo-f24a94')" aria-label="Ir a Casos Borde (Decisiones en Vivo)">Casos Borde (Decisiones en Vivo)</button>
+<button class="nav-btn" onclick="scrollToSection('antipatterns-qu-evitar-4e7769')" aria-label="Ir a Anti-Patterns (QUÉ EVITAR)">Anti-Patterns (QUÉ EVITAR)</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-en-sesin-bf0eb4')" aria-label="Ir a Fallbacks en Sesión">Fallbacks en Sesión</button>
+<button class="nav-btn" onclick="scrollToSection('facilitacin-excellence-rubric-f688d6')" aria-label="Ir a Facilitación Excellence Rubric">Facilitación Excellence Rubric</button>
+<button class="nav-btn" onclick="scrollToSection('facilitator-energy-management-personal-0ed8a5')" aria-label="Ir a Facilitator Energy Management (Personal)">Facilitator Energy Management (Pers</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="identificacin-557cb8" data-searchable aria-labelledby="head-identificacin-557cb8">
+            <div class="phase-header" id="head-identificacin-557cb8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Identificación</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Código SOP</strong>: SOP-FAC-WS</div>
+<div class="bullet-item"><strong>Proceso Padre</strong>: Entregar Workshop (Ver: entregar-workshop-proceso.md)</div>
+<div class="bullet-item"><strong>Fase</strong>: Facilitación (T-0: 3 horas exactas = 180 min)</div>
+<div class="bullet-item"><strong>Responsable Principal</strong>: Facilitador Principal (conducción + timing)</div>
+<div class="bullet-item"><strong>Responsable Secundario</strong>: Facilitador Asistente (documentación + soporte técnico)</div>
+<div class="bullet-item"><strong>Stakeholders</strong>: Coordinador Ops (logística en vivo), Participantes, Cliente (observador opcional)</div>
+<div class="bullet-item"><strong>Input desde</strong>: SOP-PREP-WS (deck, briefing, logistics), Rituals: Bienvenida, Co-creación, Commitment</div>
+<div class="bullet-item"><strong>Output hacia</strong>: SOP-CIERRE-WS (video, fotos, NPS, action cards)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="objetivo-binario-1c51fd" data-searchable aria-labelledby="head-objetivo-binario-1c51fd">
+            <div class="phase-header" id="head-objetivo-binario-1c51fd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Objetivo Binario</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Ejecutar 3 horas con éxito si:</p>
+<label class="checklist-item" for="chk-engagement-70-hands-up-preguntas-intervenciones-vi-5cfff6"><input type="checkbox" id="chk-engagement-70-hands-up-preguntas-intervenciones-vi-5cfff6" ><span>Engagement ≥70% (hands up, preguntas, intervenciones = visible)</span></label>
+<label class="checklist-item" for="chk-canvas-completitud-85-participantes-salieron-con-o-c4b92c"><input type="checkbox" id="chk-canvas-completitud-85-participantes-salieron-con-o-c4b92c" ><span>Canvas completitud ≥85% (participantes salieron con outputs tangibles)</span></label>
+<label class="checklist-item" for="chk-acciones-comprometidas-85-escritas-especficas-medi-59e115"><input type="checkbox" id="chk-acciones-comprometidas-85-escritas-especficas-medi-59e115" ><span>Acciones comprometidas ≥85% (escritas, específicas, medibles)</span></label>
+<label class="checklist-item" for="chk-nps-calculado-insession-no-pospuesto-a0c5be"><input type="checkbox" id="chk-nps-calculado-insession-no-pospuesto-a0c5be" ><span>NPS calculado in-session (no pospuesto)</span></label>
+<p>Si alguno falla: documentar como &quot;sesión de aprendizaje&quot;, no fracaso (data valuable para evolución)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-explcitos-bc218e" data-searchable aria-labelledby="head-supuestos-explcitos-bc218e">
+            <div class="phase-header" id="head-supuestos-explcitos-bc218e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> Supuestos Explícitos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Supuestos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Facilitador ha dormido ≥7h y comió (fatiga = baja facilitación)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Asistente está presente y capacitado en captura de data (fotos, cards, engagement notes)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Participantes tienen capacidad cognitiva suficiente para co-crear (no sesión de 8h previo agotador)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Contexto cliente ha sido comunicado a facilitador (via briefing T-7)</span></div>
+<p class="key-value"><strong>Limitaciones (qué NO controlamos)</strong>:</p>
+<div class="bullet-item">Motivación individual del participante (externo)</div>
+<div class="bullet-item">Disrupciones externas (llamada de jefe, emergencia)</div>
+<div class="bullet-item">Dinámicas de poder dentro de grupo (puede inhibir participación)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="presession-t60-min-462369" data-searchable aria-labelledby="head-presession-t60-min-462369">
+            <div class="phase-header" id="head-presession-t60-min-462369" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Pre-Session (T-60 min)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="actividad-1-arrival-setup-b684eb">Actividad 1: Arrival &amp; Setup</h3>
+<p class="key-value"><strong>Responsable</strong>: Facilitador + Ops Coordinator</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Arrive early</strong> (60 min antes de hora inicio):</span></div>
+<div class="bullet-item">Check venue setup (chairs, tables, AV, WiFi)</div>
+<div class="bullet-item">Test projector, sound system, microphone</div>
+<div class="bullet-item">Arrange seating (U-shape preferred for engagement)</div>
+<div class="bullet-item">Set up registration table if not done</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Tech test</strong> (15 min):</span></div>
+<div class="bullet-item">Load deck on laptop + projector</div>
+<div class="bullet-item">Test speaker audio (level, clarity)</div>
+<div class="bullet-item">Check recording (camera position, audio input)</div>
+<div class="bullet-item">Have backup: printed decks, handouts</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Material setup</strong> (10 min):</span></div>
+<div class="bullet-item">Lay out canvases on tables</div>
+<div class="bullet-item">Markers, sticky notes, pens ready</div>
+<div class="bullet-item">Name badges, nametags</div>
+<div class="bullet-item">Water, coffee, snacks visible</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Psyche prep</strong> (10 min):</span></div>
+<div class="bullet-item">Walk through room</div>
+<div class="bullet-item">Breathe deeply</div>
+<div class="bullet-item">Review briefing doc + key messages</div>
+<div class="bullet-item">Mentally rehearse opening (30 sec)</div>
+<hr class="divider">
+<h3 class="subsection-title" id="actividad-2-participant-reception-t30-to-t0-0992ec">Actividad 2: Participant Reception (T-30 to T-0)</h3>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Greet early arrivals</strong> at door:</span></div>
+<div class="bullet-item">Warm welcome, thank you for coming</div>
+<div class="bullet-item">Offer coffee, help with seating</div>
+<div class="bullet-item">Informal conversation (read energy of room)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>5 min before start</strong>: Facilitator Asistente does roll call:</span></div>
+<div class="bullet-item">Check who is here vs. roster</div>
+<div class="bullet-item">Note absences (to share with Ops post)</div>
+<div class="bullet-item">Seat stragglers</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>At T-0</strong>: Stand at front, make eye contact, smile</span></div>
+<div class="bullet-item">Ops stops accepting new entries</div>
+<div class="bullet-item">Recording starts</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="session-minutebyminute-framework-9b66c8" data-searchable aria-labelledby="head-session-minutebyminute-framework-9b66c8">
+            <div class="phase-header" id="head-session-minutebyminute-framework-9b66c8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Session: Minute-by-Minute Framework</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="block-1-bienvenida-contexto-0000-0015-15-min-8b3ad3">BLOCK 1: BIENVENIDA &amp; CONTEXTO (00:00 - 00:15) | 15 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Solo (Principal)</p>
+<p class="key-value"><strong>Objective</strong>: Set tone, establish psychological safety, clarify objectives</p>
+<p class="key-value"><strong>Minute-by-Minute</strong>:</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Min</th><th scope="col">Activity</th><th scope="col">Facilitator Action</th><th scope="col">Participant Engagement</th></tr></thead><tbody><tr><td>00:00-00:02</td><td>Welcome</td><td>Stand, big smile, greet by name if possible</td><td>Settle, attention</td></tr><tr><td>00:02-00:05</td><td>Icebreaker</td><td>Share 1 personal story (30 sec) + ask: &quot;Who&#x27;s here for first time?&quot;</td><td>Hands up; build intimacy</td></tr><tr><td>00:05-00:10</td><td>Context</td><td>Explain workshop purpose, why today matters, what they&#x27;ll leave with</td><td>Listen, nod</td></tr><tr><td>00:10-00:13</td><td>Housekeeping</td><td>Bathrooms, breaks, WiFi, mute phones</td><td>Note-taking</td></tr><tr><td>00:13-00:15</td><td>Energy check</td><td>&quot;How&#x27;s energy? Anyone tired? Anyone excited?&quot;</td><td>Verbal responses</td></tr></tbody></table></div>
+<p class="key-value"><strong>Tone</strong>: Warm, confident, conversational (not formal)</p>
+<p class="key-value"><strong>Key Lines</strong>:</p>
+<div class="bullet-item">&quot;Today isn&#x27;t a lecture; it&#x27;s a journey we take together&quot;</div>
+<div class="bullet-item">&quot;There are no stupid questions—only insight waiting to happen&quot;</div>
+<div class="bullet-item">&quot;By the end of 3 hours, you&#x27;ll have [X tool] + [Y framework] + [Z action plan&quot;</div>
+<hr class="divider">
+<h3 class="subsection-title" id="block-2-mapeamiento-de-realidad-actual-0015-0030-1-fd07c1">BLOCK 2: MAPEAMIENTO DE REALIDAD ACTUAL (00:15 - 00:30) | 15 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Dialogue (Q&amp;A)</p>
+<p class="key-value"><strong>Objective</strong>: Surface where group is today; create baseline</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Polling</strong> (5 min): Ask 3-5 quick questions to understand current state:</span></div>
+<div class="bullet-item">&quot;Who&#x27;s used ChatGPT?&quot; (hands)</div>
+<div class="bullet-item">&quot;Who&#x27;s used it for work?&quot; (subset)</div>
+<div class="bullet-item">&quot;What&#x27;s one biggest challenge you&#x27;re facing right now?&quot; (popcorn responses, 1-2 min)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Synthesis</strong> (5 min): Facilitator maps responses into themes:</span></div>
+<div class="bullet-item">&quot;I&#x27;m hearing X, Y, Z as big themes&quot;</div>
+<div class="bullet-item">&quot;We&#x27;re going to address all of these today&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Transition</strong> (5 min): Bridge to content:</span></div>
+<div class="bullet-item">&quot;What if I told you there&#x27;s a framework for solving Y?&quot;</div>
+<div class="bullet-item">Preview first module</div>
+<p class="key-value"><strong>Engagement Technique</strong>: Popcorn responses build participation; name-calling if needed (&quot;Sarah, what&#x27;s on your mind?&quot;)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="block-3-mdulo-1-concept-vivo-0030-0115-45-min-434589">BLOCK 3: MÓDULO 1 - CONCEPT + VIVO (00:30 - 01:15) | 45 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Teaching + Co-creation</p>
+<p class="key-value"><strong>Objective</strong>: Introduce framework, demonstrate live, start building first output</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Concept intro</strong> (15 min):</span></div>
+<div class="bullet-item">Define the framework (e.g., Eisenhower, Ecosystem Map, etc.)</div>
+<div class="bullet-item">Why it matters (the why)</div>
+<div class="bullet-item">Show 2-3 examples (1 from their industry if possible)</div>
+<div class="bullet-item">Use visuals, not text-heavy slides</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Live demo</strong> (15 min):</span></div>
+<div class="bullet-item">Facilitator models the framework in real-time</div>
+<div class="bullet-item">E.g., for Eisenhower: &quot;Let me take MY calendar and map it to urgent/important&quot;</div>
+<div class="bullet-item">Narrate thinking out loud (&quot;I&#x27;m putting this meeting here because...&quot;)</div>
+<div class="bullet-item">Invite questions mid-demo</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Group build</strong> (15 min):</span></div>
+<div class="bullet-item">Transition to tables: &quot;Now it&#x27;s your turn&quot;</div>
+<div class="bullet-item">Provide template (canvas or digital)</div>
+<div class="bullet-item">Facilitator walks around, listens, nudges</div>
+<div class="bullet-item">Ask 1-2 groups to share what they have</div>
+<div class="bullet-item">Celebrate early progress</div>
+<p class="key-value"><strong>Energy Management</strong>: Watch for:</p>
+<div class="bullet-item">People zoning out? → ask direct question to re-engage</div>
+<div class="bullet-item">Too quiet? → tell story to re-energize</div>
+<div class="bullet-item">Too fast? → pause, check for understanding</div>
+<p class="key-value"><strong>Co-creation Principle</strong>: NEVER present finished product; co-build with group</p>
+<hr class="divider">
+<h3 class="subsection-title" id="block-4-descanso-0115-0130-15-min-9ebe12">BLOCK 4: DESCANSO (01:15 - 01:30) | 15 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Stepping back</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Announce break</strong> (enthusiastically):</span></div>
+<div class="bullet-item">&quot;We&#x27;ve earned a break. Back in 12 minutes sharp.&quot;</div>
+<div class="bullet-item">Point to coffee, bathrooms</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>During break</strong>: Facilitator steps outside or sits quietly</span></div>
+<div class="bullet-item">Listen for energy level</div>
+<div class="bullet-item">Check if participants talking about workshop (good sign)</div>
+<div class="bullet-item">Recharge yourself</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Call people back</strong>: Stand up, clap hands, smile</span></div>
+<div class="bullet-item">&quot;Alright, let&#x27;s get back. You ready?&quot;</div>
+<div class="bullet-item">Start promptly (builds trust in timing)</div>
+<hr class="divider">
+<h3 class="subsection-title" id="block-5-mdulo-2-profundidad-taller-0130-0215-45-mi-3e65e4">BLOCK 5: MÓDULO 2 - PROFUNDIDAD + TALLER (01:30 - 02:15) | 45 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Teaching + group work</p>
+<p class="key-value"><strong>Objective</strong>: Go deeper, build more sophisticated version of tool</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Review</strong> (5 min):</span></div>
+<div class="bullet-item">Quickly recap what you built in Module 1</div>
+<div class="bullet-item">Show completed version (what they&#x27;re building toward)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Concept 2</strong> (15 min):</span></div>
+<div class="bullet-item">Introduce next layer (e.g., prioritization, sequencing, etc.)</div>
+<div class="bullet-item">Show examples, stories, case studies</div>
+<div class="bullet-item">Connect to their context</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Group build v2</strong> (20 min):</span></div>
+<div class="bullet-item">Return to tables</div>
+<div class="bullet-item">Build more complex version (add details, prioritize, sequence)</div>
+<div class="bullet-item">Asistente + Facilitador circulate, ask probing questions:</div>
+<div class="bullet-item">&quot;Why did you rank that way?&quot;</div>
+<div class="bullet-item">&quot;What would change if you...&quot;</div>
+<div class="bullet-item">&quot;How will you know it&#x27;s working?&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Gallery walk</strong> (5 min) [if time allows]:</span></div>
+<div class="bullet-item">Groups stand by their canvas</div>
+<div class="bullet-item">Walk around, look at others&#x27; work</div>
+<div class="bullet-item">Celebrate different approaches</div>
+<p class="key-value"><strong>Facilitation Technique</strong>:</p>
+<div class="bullet-item">Use &quot;I notice...&quot; language (non-judgmental)</div>
+<div class="bullet-item">Ask questions, don&#x27;t give answers</div>
+<div class="bullet-item">Celebrate effort, not just correctness</div>
+<hr class="divider">
+<h3 class="subsection-title" id="block-6-aplicacin-a-contexto-especfico-0215-0245-3-cdae4b">BLOCK 6: APLICACIÓN A CONTEXTO ESPECÍFICO (02:15 - 02:45) | 30 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Coaching + Small group</p>
+<p class="key-value"><strong>Objective</strong>: Translate learning to their specific reality</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Context setting</strong> (5 min):</span></div>
+<div class="bullet-item">&quot;Now let&#x27;s make this real for YOUR world&quot;</div>
+<div class="bullet-item">Share prompt: &quot;What&#x27;s one challenge you face right now that this framework could help with?&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Small group work</strong> (15 min):</span></div>
+<div class="bullet-item">Arrange tables into 3-4 groups (mixed roles)</div>
+<div class="bullet-item">Each group gets 1 challenge question</div>
+<div class="bullet-item">Asistente facilitates each table (asking questions, probing deeper)</div>
+<div class="bullet-item">Main facilitador circulates, listens, nudges</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Group share</strong> (10 min):</span></div>
+<div class="bullet-item">Each group shares their insight (1-2 min per group)</div>
+<div class="bullet-item">Facilitator adds context, connects to frameworks</div>
+<div class="bullet-item">Celebrate insight, validate struggle</div>
+<p class="key-value"><strong>Engagement</strong>: This is where magic happens—real application of learning</p>
+<hr class="divider">
+<h3 class="subsection-title" id="block-7-commitment-hoja-de-ruta-0245-0255-10-min-4562a5">BLOCK 7: COMMITMENT &amp; HOJA DE RUTA (02:45 - 02:55) | 10 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Coaching + accountability</p>
+<p class="key-value"><strong>Objective</strong>: Every person leaves with 3+ specific actions committed</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Action card introduction</strong> (1 min):</span></div>
+<div class="bullet-item">Hold up action card template</div>
+<div class="bullet-item">Explain: &quot;You&#x27;re going to write 3 things you&#x27;ll do in next 2 weeks&quot;</div>
+<div class="bullet-item">Make it specific, measurable, time-bound</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Silent reflection</strong> (5 min):</span></div>
+<div class="bullet-item">Everyone writes 3 actions (individually, not grouped)</div>
+<div class="bullet-item">Facilitator quiet, but available for Qs</div>
+<div class="bullet-item">Ops/Asistente capture photos of cards (data collection)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Popcorn share</strong> (3 min):</span></div>
+<div class="bullet-item">Volunteers share 1 action (5-10 people if time)</div>
+<div class="bullet-item">Facilitator celebrates specificity</div>
+<div class="bullet-item">&quot;I&#x27;m going to implement GTD in my calendar by Friday&quot; ✓</div>
+<div class="bullet-item">NOT &quot;I&#x27;ll be more productive&quot; ✗</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Accountability pairing</strong> (1 min):</span></div>
+<div class="bullet-item">&quot;Find someone next to you who shares similar action&quot;</div>
+<div class="bullet-item">Exchange contact info</div>
+<div class="bullet-item">&quot;Check in with them in 2 weeks&quot;</div>
+<p class="key-value"><strong>Tone</strong>: Energizing, hopeful, slightly urgent (&quot;You CAN do this&quot;)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="block-8-cierre-encuesta-nps-0255-0300-5-min-2e65cb">BLOCK 8: CIERRE &amp; ENCUESTA NPS (02:55 - 03:00) | 5 min</h3>
+<p class="key-value"><strong>Facilitator Role</strong>: Gratitude + Data collection</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Thank you</strong> (1 min):</span></div>
+<div class="bullet-item">Stand at front, look at group</div>
+<div class="bullet-item">&quot;Thank you. Seriously. You showed up, you engaged, you built something real today.&quot;</div>
+<div class="bullet-item">Applause (lead with hands)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>NPS Survey</strong> (2 min):</span></div>
+<div class="bullet-item">Hold up NPS card (or show on screen)</div>
+<div class="bullet-item">&quot;On scale 0-10, how likely are you to recommend this workshop?&quot;</div>
+<div class="bullet-item">Collect cards (Asistente gathers immediately post-session)</div>
+<div class="bullet-item">Or: Use Typeform link on screen (QR code on exit)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Closing words</strong> (2 min):</span></div>
+<div class="bullet-item">Share one final insight or belief</div>
+<div class="bullet-item">Remind of next steps (materials will be emailed, etc.)</div>
+<div class="bullet-item">Personal goodbye (&quot;I&#x27;m here if you want to chat after&quot;)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Dismiss</strong>:</span></div>
+<div class="bullet-item">Stand by door, high-five people as they leave</div>
+<div class="bullet-item">Collect any feedback verbally</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="realtime-facilitation-techniques-b8629b" data-searchable aria-labelledby="head-realtime-facilitation-techniques-b8629b">
+            <div class="phase-header" id="head-realtime-facilitation-techniques-b8629b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Real-Time Facilitation Techniques</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="energy-management-7e6549">Energy Management</h3>
+<p class="key-value"><strong>Watch for these signals</strong>:</p>
+<div class="bullet-item">0-30 min: Usually high energy (fresh)</div>
+<div class="bullet-item">30-90 min: Possible dip (need story, activity change)</div>
+<div class="bullet-item">90-120 min: <strong>CRITICAL ZONE</strong> — post-break tiredness</div>
+<div class="bullet-item">120-180 min: Usually recover if content is engaging</div>
+<p class="key-value"><strong>Interventions</strong>:</p>
+<div class="bullet-item"><strong>Story</strong>: If energy drops, tell a story (45 sec, relevant, personal)</div>
+<div class="bullet-item"><strong>Activity change</strong>: Switch from lecture → group work → individual reflection</div>
+<div class="bullet-item"><strong>Movement</strong>: Stand up, stretch, walk around</div>
+<div class="bullet-item"><strong>Humor</strong>: Levity, not jokes (self-deprecating OK)</div>
+<div class="bullet-item"><strong>Urgency</strong>: &quot;We have only X minutes left, so let&#x27;s focus&quot;</div>
+<h3 class="subsection-title" id="handling-difficult-moments-ab3a95">Handling Difficult Moments</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Scenario</th><th scope="col">Response</th></tr></thead><tbody><tr><td><strong>Dominant person talking too much</strong></td><td>Gently redirect: &quot;Thanks [name]. Let&#x27;s hear from someone else—[person], what are you thinking?&quot;</td></tr><tr><td><strong>Someone on their phone</strong></td><td>Light comment: &quot;I know emails are tempting, but let&#x27;s be here together for 3 hours&quot;</td></tr><tr><td><strong>Skeptical person challenging idea</strong></td><td>Welcome it: &quot;Great question. That&#x27;s exactly the kind of critical thinking we need&quot;</td></tr><tr><td><strong>Quiet person hasn&#x27;t spoken</strong></td><td>Direct but gentle: &quot;We haven&#x27;t heard from this side of the table—what&#x27;s on your mind?&quot;</td></tr><tr><td><strong>Technical difficulty</strong></td><td>Pause, problem-solve quickly, or pivot: &quot;Tech is being slow; let&#x27;s do this on flip chart instead&quot;</td></tr><tr><td><strong>Participant gets emotional</strong></td><td>Pause, validate: &quot;This stuff is real and matters. It&#x27;s OK to feel.&quot; Offer break.</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="psychological-safety-techniques-0384cb">Psychological Safety Techniques</h3>
+<p class="key-value"><strong>DO</strong>:</p>
+<div class="bullet-item">Use &quot;we&quot; language: &quot;We&#x27;re all figuring this out&quot;</div>
+<div class="bullet-item">Validate all ideas: &quot;I appreciate that perspective&quot;</div>
+<div class="bullet-item">Normalize struggle: &quot;This is hard; that&#x27;s how we know it&#x27;s working&quot;</div>
+<div class="bullet-item">Celebrate questions: &quot;Best question all day!&quot;</div>
+<div class="bullet-item">Share your own mistakes: &quot;I tried this and failed first, then...&quot;</div>
+<p class="key-value"><strong>DON&#x27;T</strong>:</p>
+<div class="bullet-item">Dismiss ideas, even bad ones</div>
+<div class="bullet-item">Make fun of anyone</div>
+<div class="bullet-item">Rush people who are processing</div>
+<div class="bullet-item">Use jargon without explaining</div>
+<div class="bullet-item">Show frustration with pace</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documentation-during-session-4f369a" data-searchable aria-labelledby="head-documentation-during-session-4f369a">
+            <div class="phase-header" id="head-documentation-during-session-4f369a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documentation During Session</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="facilitators-role-703adc">Facilitator&#x27;s Role</h3>
+<div class="bullet-item"><strong>Timing keeper</strong> (Facilitador watches clock, nudges forward)</div>
+<div class="bullet-item"><strong>Energy manager</strong> (Facilitador reads room, adjusts)</div>
+<div class="bullet-item"><strong>Question fielder</strong> (Facilitador listens for themes, calls out patterns)</div>
+<h3 class="subsection-title" id="asistentes-role-824a8d">Asistente&#x27;s Role</h3>
+<div class="bullet-item"><strong>Photographer</strong> (Capture canvases, action cards, group moments)</div>
+<div class="bullet-item"><strong>Note taker</strong> (Write down key quotes, insights, questions)</div>
+<div class="bullet-item"><strong>Table facilitator</strong> (During small group work, ask probing questions)</div>
+<div class="bullet-item"><strong>Tech monitor</strong> (Ensure recording is going, WiFi stable)</div>
+<h3 class="subsection-title" id="data-capture-e1d62d">Data Capture</h3>
+<p>During session, Asistente collects:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Photos of completed canvases</strong> (2-3 angles per group)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Attendance sheet</strong> (names, check-in)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>NPS responses</strong> (cards or digital)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Key quotes</strong> (things people said that reveal insight)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Questions asked</strong> (for future content evolution)</span></div>
+<p>All data goes to shared Google Drive folder post-session.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="emergency-protocols-during-session-edf750" data-searchable aria-labelledby="head-emergency-protocols-during-session-edf750">
+            <div class="phase-header" id="head-emergency-protocols-during-session-edf750" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Emergency Protocols (During Session)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="emergency-1-tech-failure-433b51">Emergency 1: Tech Failure</h3>
+<p class="key-value"><strong>If projector/AV goes down</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Pause gracefully: &quot;Let&#x27;s take a tech pause&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Assess: Is it 5-min fix or 15+ min?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>If &lt;5 min: &quot;One moment, we&#x27;ll be right back&quot;</span></div>
+<div class="bullet-item">Asistente troubleshoots behind the scenes</div>
+<div class="bullet-item">Facilitator tells story or asks questions to fill time</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>If &gt;5 min: Pivot to whiteboard/flip chart</span></div>
+<div class="bullet-item">&quot;Let&#x27;s go analog; sometimes that&#x27;s better anyway&quot;</div>
+<div class="bullet-item">Draw diagrams by hand</div>
+<div class="bullet-item">Continue content unchanged</div>
+<h3 class="subsection-title" id="emergency-2-low-attendance-30-49790c">Emergency 2: Low Attendance (&lt;30%)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Acknowledge: &quot;We have a smaller group today, which is great—more intimate&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Adapt: Add more Q&amp;A, deeper conversation</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Proceed: Don&#x27;t cancel or rush; quality over quantity</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Document: Note in post-workshop report (pattern analysis)</span></div>
+<h3 class="subsection-title" id="emergency-3-participant-gets-sickinjured-ab0930">Emergency 3: Participant Gets Sick/Injured</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Pause session</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Asistente helps participant (water, bathroom, first aid if needed)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>If serious: Call 911 or emergency contact</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>If minor: Resume once settled</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Follow up post-workshop (empathy)</span></div>
+<h3 class="subsection-title" id="emergency-4-extremely-disruptive-participant-1948bf">Emergency 4: Extremely Disruptive Participant</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>First</strong>: Politely redirect:</span></div>
+<div class="bullet-item">&quot;I appreciate your passion; let&#x27;s chat during break about this&quot;</div>
+<div class="bullet-item">Move on with content</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Second offense</strong>: Private conversation during break:</span></div>
+<div class="bullet-item">&quot;Hey, I want to understand what&#x27;s bothering you&quot;</div>
+<div class="bullet-item">Listen, validate, reset expectations</div>
+<div class="bullet-item">&quot;Can we come back together for the next 90 minutes?&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>If won&#x27;t cooperate</strong>: Ask them to step out:</span></div>
+<div class="bullet-item">&quot;This isn&#x27;t working. Let&#x27;s reconvene offline after workshop&quot;</div>
+<div class="bullet-item">Proceed with rest of group</div>
+<div class="bullet-item">Escalate to Ops post-workshop</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="postsession-t0-to-t5-min-20ec75" data-searchable aria-labelledby="head-postsession-t0-to-t5-min-20ec75">
+            <div class="phase-header" id="head-postsession-t0-to-t5-min-20ec75" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Post-Session (T+0 to T+5 min)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="immediate-actions-59f8da">Immediate Actions</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Stop recording</strong> (Asistente)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Collect NPS cards</strong> (Asistente)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Take group photo</strong> (Asistente)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Thank everyone</strong> (Facilitator at door)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Collect action cards</strong> (Asistente scans/photos)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Hand out any materials</strong> (Ops)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Availability for questions</strong> (Facilitator stays 10 min post)</span></div>
+<h3 class="subsection-title" id="facilitator-debrief-facilitator-asistente-15-min-a97efe">Facilitator Debrief (Facilitator + Asistente, 15 min)</h3>
+<p>While memory is fresh:</p>
+<div class="bullet-item">What went well?</div>
+<div class="bullet-item">What would you do differently?</div>
+<div class="bullet-item">Any insights about group or content?</div>
+<div class="bullet-item">Any questions that came up for future evolution?</div>
+<div class="bullet-item">Any technical/logistical issues?</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-decisiones-en-vivo-f24a94" data-searchable aria-labelledby="head-casos-borde-decisiones-en-vivo-f24a94">
+            <div class="phase-header" id="head-casos-borde-decisiones-en-vivo-f24a94" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> Casos Borde (Decisiones en Vivo)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Caso 1: Participante dominante habla 60% del tiempo</strong></p>
+<p>Signal: Una persona monopoliza Q&amp;A, otros se sienten silenciados</p>
+<p>Decision: Minute 45, usar redirect: &quot;[Name], gracias. Escuchemos a alguien que no ha hablado todavía. [Other person], ¿qué piensas?&quot;</p>
+<p>Justificación: Psychological safety requiere que todos puedan hablar. Interrumpir dominancia early previene group shutdown.</p>
+<p class="key-value"><strong>Caso 2: 3 participantes claramente perdidos (confused faces min 60)</strong></p>
+<p>Signal: Cuerpo lenguaje sugiere desconexión (sin notas, mirando al vacio)</p>
+<p>Decision: Minute 70, mini-reset: &quot;Pause. Let me reframe this more simply...&quot; + ejemplo concreto de su mundo.</p>
+<p>Justificación: Si 15%+ se pierden, mensaje no está clear. Re-teach breve = mejor que proceder.</p>
+<p class="key-value"><strong>Caso 3: Tech falla completa (proyector muerte) min 45</strong></p>
+<p>Signal: No image, no sound</p>
+<p>Decision: &quot;Tech pause. Let&#x27;s go analog.&quot; Facilitador dibuja en whiteboard los conceptos pendientes, narración en vivo.</p>
+<p>Justificación: Workshop es sobre IDEAS, no slides. Continuamos sin tech.</p>
+<p class="key-value"><strong>Caso 4: Participante emocional (ojos llorosos) min 120</strong></p>
+<p>Signal: Algo en contenido toca personalmente</p>
+<p>Decision: Pause, validar: &quot;This stuff is real and matters. It&#x27;s OK to feel.&quot; Oferta de break. Luego continuar.</p>
+<p>Justificación: Emotion = engagement profundo. Normalize, don&#x27;t pathologize.</p>
+<p class="key-value"><strong>Caso 5: Solo 60% asistencia cuando empezó workshop (no-shows no avisaron)</strong></p>
+<p>Signal: 12 de 20 presentes</p>
+<p>Decision: Proceder. Ejecutar mismo workshop, documentar no-show rate. Después investigar patrón con Account Manager.</p>
+<p>Justificación: Calidad educativa no cambia con grupo pequeño (ventaja: más diálogo). No cancelar = respeto a quienes SÍ vinieron.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="antipatterns-qu-evitar-4e7769" data-searchable aria-labelledby="head-antipatterns-qu-evitar-4e7769">
+            <div class="phase-header" id="head-antipatterns-qu-evitar-4e7769" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> Anti-Patterns (QUÉ EVITAR)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">NO improvisar contenido en vivo (preparación es responsabilidad Prep phase)</div>
+<div class="bullet-item">NO leer slides word-by-word (elocución muere, engagement cae)</div>
+<div class="bullet-item">NO ignorar participante perdido (esperando que se recupere solo)</div>
+<div class="bullet-item">NO responder directamente preguntas off-scope; SIEMPRE defer con link/contacto</div>
+<div class="bullet-item">NO hacer timing como &quot;lo importante es profundidad&quot;, NO respetes breaks (tiempo = contrato)</div>
+<div class="bullet-item">NO faltar facilitador asistente (sin asistente: data capture imposible, ejecución degradada)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-en-sesin-bf0eb4" data-searchable aria-labelledby="head-fallbacks-en-sesin-bf0eb4">
+            <div class="phase-header" id="head-fallbacks-en-sesin-bf0eb4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> Fallbacks en Sesión</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Falla</th><th scope="col">Fallback</th><th scope="col">Tiempo</th></tr></thead><tbody><tr><td>Tech muerte</td><td>Flipchart + narración</td><td>Inmediato</td></tr><tr><td>Participante disruptivo (muy agresivo)</td><td>Pausa, conversación privada, reset expectativas</td><td>Break</td></tr><tr><td>Energía baja min 90</td><td>Story de 60 seg + stretch break de 5 min</td><td>Inmediato</td></tr><tr><td>Pregunta que no sé responder</td><td>&quot;Great Q. I don&#x27;t know off top. Let me follow up. [email/contact]&quot;</td><td>Admítelo</td></tr><tr><td>Timing detrás (min 120 y solo completaste 70%)</td><td>Reduce profundidad, no agregues tópicos nuevos</td><td>Ajusta en vivo</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="facilitacin-excellence-rubric-f688d6" data-searchable aria-labelledby="head-facilitacin-excellence-rubric-f688d6">
+            <div class="phase-header" id="head-facilitacin-excellence-rubric-f688d6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Facilitación Excellence Rubric</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Self-assessment post-workshop</strong> (Facilitador answers):</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Dimension</th><th scope="col">Excellent</th><th scope="col">Good</th><th scope="col">Needs Work</th></tr></thead><tbody><tr><td><strong>Energy</strong></td><td>High, consistent, contagious</td><td>Generally good, slight dip mid</td><td>Low, participants seemed tired</td></tr><tr><td><strong>Engagement</strong></td><td>&gt;80% hands up, questions, sharing</td><td>60-70% participating, quiet patches</td><td>&lt;50% visible engagement</td></tr><tr><td><strong>Content clarity</strong></td><td>Participants could reteach</td><td>Participants understand main ideas</td><td>Confusion evident</td></tr><tr><td><strong>Co-creation</strong></td><td>Groups built things collaboratively</td><td>Some group work, facilitator did some</td><td>Mostly facilitator presenting</td></tr><tr><td><strong>Psychological safety</strong></td><td>People took risks, asked silly Qs</td><td>Safe enough, some hesitation</td><td>Reserved, no vulnerable sharing</td></tr><tr><td><strong>Timing</strong></td><td>Landed everything, no rushing</td><td>Rushed last 15 min slightly</td><td>Overran, dropped ending</td></tr><tr><td><strong>Inclusivity</strong></td><td>Everyone heard, participated</td><td>Most heard; some quiet folks</td><td>Some people didn&#x27;t get voice</td></tr></tbody></table></div>
+<p class="key-value"><strong>NPS Target</strong>: ≥ 45 (Promoters ≥ 60%, Detractors &lt; 20%)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="facilitator-energy-management-personal-0ed8a5" data-searchable aria-labelledby="head-facilitator-energy-management-personal-0ed8a5">
+            <div class="phase-header" id="head-facilitator-energy-management-personal-0ed8a5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Facilitator Energy Management (Personal)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Before workshop</strong>:</p>
+<div class="bullet-item">Sleep well (7+ hours)</div>
+<div class="bullet-item">Light exercise (15 min walk)</div>
+<div class="bullet-item">Eat something (don&#x27;t go in hungry)</div>
+<div class="bullet-item">Review briefing doc one more time</div>
+<div class="bullet-item">Deep breathing (5 min quiet)</div>
+<p class="key-value"><strong>During workshop</strong>:</p>
+<div class="bullet-item">Drink water</div>
+<div class="bullet-item">Use bathroom during break</div>
+<div class="bullet-item">Stand most of time (energy transfer)</div>
+<div class="bullet-item">Make eye contact with each person 1x minimum</div>
+<div class="bullet-item">Use your voice variation (not monotone)</div>
+<div class="bullet-item">Pace the room (don&#x27;t stay in one spot)</div>
+<p class="key-value"><strong>After workshop</strong>:</p>
+<div class="bullet-item">Debrief with Asistente</div>
+<div class="bullet-item">Drink more water</div>
+<div class="bullet-item">Eat something</div>
+<div class="bullet-item">30 min alone time (you gave a lot)</div>
+<hr class="divider">
+<p class="key-value"><strong>Próximo Review</strong>: 2026-04-15 | <strong>Dueño</strong>: Facilitador Principal</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

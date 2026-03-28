@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v2.0">
+    <meta name="description" content="SOP: Implementar Asistentes IA — Amplificador Cognitivo — Proceso de Delivery MetodologIA">
+    <title>SOP: Implementar Asistentes IA — Amplificador Cognitivo — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f; --bg-2:#102346; --surface:#f7f4ec;
+            --accent:#00cde8; --gold:#ffd700; --green:#2ca56f;
+            --red:#dc5f5f; --orange:#e8a000; --purple:#9b59b6;
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0; --text-secondary:#999;
+            --border:#1a3a52; --hover-bg:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(0,205,232,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,205,232,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(0,205,232,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(0,205,232,.4);box-shadow:0 0 12px rgba(0,205,232,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(0,205,232,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(0,205,232,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(0,205,232,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(0,205,232,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(0,205,232,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(0,205,232,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Tecnologia</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Implementar Asistentes IA — Amplificador Cogn</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Implementar Asistentes IA — Amplificador Cognitivo</h1>
+        <div class="subtitle">MetodologIA — Gobierno Operativo</div>
+        <div class="meta">## Versión: 1.0 | Próxima revisión: 2026-Q3 | Propietario: Vertical TecnologIA</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-propsito-y-scope-f0e3bb')" aria-label="Ir a 1. PROPÓSITO Y SCOPE">1. PROPÓSITO Y SCOPE</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-asunciones-base-ecd587')" aria-label="Ir a 2. SUPUESTOS EXPLÍCITOS (Asunciones Base)">2. SUPUESTOS EXPLÍCITOS (Asunciones</button>
+<button class="nav-btn" onclick="scrollToSection('3-lmites-qu-no-hacemos-f119e5')" aria-label="Ir a 3. LÍMITES (Qué NO Hacemos)">3. LÍMITES (Qué NO Hacemos)</button>
+<button class="nav-btn" onclick="scrollToSection('4-criterios-de-aceptacin-binarios-c2c1fa')" aria-label="Ir a 4. CRITERIOS DE ACEPTACIÓN BINARIOS">4. CRITERIOS DE ACEPTACIÓN BINARIOS</button>
+<button class="nav-btn" onclick="scrollToSection('5-casos-borde-57-escenarios-de-estrs-ab1585')" aria-label="Ir a 5. CASOS BORDE (5-7 Escenarios de Estrés)">5. CASOS BORDE (5-7 Escenarios de E</button>
+<button class="nav-btn" onclick="scrollToSection('6-decisiones-de-diseo-con-justificacin-71e9f3')" aria-label="Ir a 6. DECISIONES DE DISEÑO CON JUSTIFICACIÓN">6. DECISIONES DE DISEÑO CON JUSTIFI</button>
+<button class="nav-btn" onclick="scrollToSection('7-antipatterns-5-trampas-a-evitar-3fc8a9')" aria-label="Ir a 7. ANTI-PATTERNS (5+ Trampas a Evitar)">7. ANTI-PATTERNS (5+ Trampas a Evit</button>
+<button class="nav-btn" onclick="scrollToSection('8-tres-niveles-de-complejidad-e05c8b')" aria-label="Ir a 8. TRES NIVELES DE COMPLEJIDAD">8. TRES NIVELES DE COMPLEJIDAD</button>
+<button class="nav-btn" onclick="scrollToSection('9-proceso-paso-a-paso-6-fases-86235b')" aria-label="Ir a 9. PROCESO PASO A PASO (6 Fases)">9. PROCESO PASO A PASO (6 Fases)</button>
+<button class="nav-btn" onclick="scrollToSection('10-fallbacks-operativos-plan-b-8c5735')" aria-label="Ir a 10. FALLBACKS OPERATIVOS (Plan B)">10. FALLBACKS OPERATIVOS (Plan B)</button>
+<button class="nav-btn" onclick="scrollToSection('11-mtricas-de-xito-a26227')" aria-label="Ir a 11. MÉTRICAS DE ÉXITO">11. MÉTRICAS DE ÉXITO</button>
+<button class="nav-btn" onclick="scrollToSection('12-integraciones-upstreamdownstream-e1e314')" aria-label="Ir a 12. INTEGRACIONES UPSTREAM/DOWNSTREAM">12. INTEGRACIONES UPSTREAM/DOWNSTRE</button>
+<button class="nav-btn" onclick="scrollToSection('13-roles-y-responsabilidades-b5f80c')" aria-label="Ir a 13. ROLES Y RESPONSABILIDADES">13. ROLES Y RESPONSABILIDADES</button>
+<button class="nav-btn" onclick="scrollToSection('versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734')" aria-label="Ir a Versión: 1.0 | Próxima revisión: 2026-Q3 | Propietario: Vertical TecnologIA">Versión: 1.0 | Próxima revisión: 20</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-propsito-y-scope-f0e3bb" data-searchable aria-labelledby="head-1-propsito-y-scope-f0e3bb">
+            <div class="phase-header" id="head-1-propsito-y-scope-f0e3bb" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. PROPÓSITO Y SCOPE</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <h3 class="subsection-title" id="propsito-estratgico-686ec8">Propósito Estratégico</h3>
+<p>Diseñar, construir y desplegar asistentes de IA personalizados que amplifican la capacidad cognitiva del cliente: análisis, síntesis, escritura, decisión, atención al cliente.</p>
+<p>El asistente es un <strong>Amplificador Cognitivo</strong> — no reemplaza expertise, sino que multiplica su velocidad y escala.</p>
+<h3 class="subsection-title" id="scope-de-servicio-8f2bea">Scope de Servicio</h3>
+<div class="bullet-item">Cobertura: Startups, PyMEs, empresas medianas (up to 500 empleados)</div>
+<div class="bullet-item">Plataformas soportadas: ChatGPT Custom GPTs, Claude Projects, Gemini Gems, chatbots custom (Voiceflow, Botpress), asistentes vía API</div>
+<div class="bullet-item">Casos de uso: Análisis de datos, síntesis de información, generación de contenido, atención al cliente, soporte operativo</div>
+<div class="bullet-item">Límite: No incluye entrenamiento de modelos custom (ver SOP de agentes para esto)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-asunciones-base-ecd587" data-searchable aria-labelledby="head-2-supuestos-explcitos-asunciones-base-ecd587">
+            <div class="phase-header" id="head-2-supuestos-explcitos-asunciones-base-ecd587" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. SUPUESTOS EXPLÍCITOS (Asunciones Base)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Cliente tiene claridad parcial sobre la tarea</strong>: El cliente sabe QUÉ quiere automatizar pero no CÓMO. Nosotros ayudamos a clarificar.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Conocimiento está documentado o en mentes</strong>: Los datos/procedimientos del cliente existen (documentos, emails, o en la mente de expertos). No creamos información desde cero.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Plataforma elegida es accesible</strong>: El cliente tiene acceso a las APIs y herramientas (cuenta activa, permisos, presupuesto).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Cambios de alcance son pagos</strong>: El cliente acepta que variaciones post-discovery son adicionales.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>IA actual es &quot;buena para tareas cerradas&quot;</strong>: El asistente funciona mejor en tareas bien definidas (no en contextos altamente ambiguos).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Cliente participa en testing</strong>: Sin retroalimentación real del usuario, no podemos validar que el asistente funciona.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>30 días de soporte incluyen refinamiento agresivo</strong>: Los primeros 30 días son críticos; después, es mantenimiento.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-lmites-qu-no-hacemos-f119e5" data-searchable aria-labelledby="head-3-lmites-qu-no-hacemos-f119e5">
+            <div class="phase-header" id="head-3-lmites-qu-no-hacemos-f119e5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 3. LÍMITES (Qué NO Hacemos)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Límite</th><th scope="col">Razón</th><th scope="col">Alternativa</th></tr></thead><tbody><tr><td>Entrenar modelo custom</td><td>Fuera de alcance (costo prohibitivo para este servicio)</td><td>Usar modelos base + prompt engineering</td></tr><tr><td>Garantizar 100% accuracy</td><td>IA genera alucinaciones; 90% es excelente</td><td>Audit humano en paralelo para decisiones críticas</td></tr><tr><td>Soportar &gt;5 idiomas</td><td>Cada idioma duplica testing. Máx 3 idiomas.</td><td>Cliente elige idiomas prioritarios</td></tr><tr><td>Integración con &gt;10 sistemas</td><td>Costo de integración crece exponencialmente</td><td>Priorizar 3 sistemas core</td></tr><tr><td>Garantizar privacidad data EU</td><td>Si cliente maneja GDPR strict, usar on-prem</td><td>Documentar dónde reside data</td></tr><tr><td>Automático sin intervención</td><td>Siempre hay un humano que revisa</td><td>Por eso tenemos &quot;training&quot; en soporte</td></tr><tr><td>Cambios después de 30 días sin costo</td><td>30 días es el período incluido</td><td>Después, por horas o SLA adicional</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-criterios-de-aceptacin-binarios-c2c1fa" data-searchable aria-labelledby="head-4-criterios-de-aceptacin-binarios-c2c1fa">
+            <div class="phase-header" id="head-4-criterios-de-aceptacin-binarios-c2c1fa" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 4. CRITERIOS DE ACEPTACIÓN BINARIOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Cada criterio es <strong>sí/no</strong>, no escala. Cliente debe validar cada uno antes de dar por completado:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Corrección</strong>: ☐ Asistente responde correctamente al 90%+ de 10 queries de test predefinidas con cliente</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Tono</strong>: ☐ Tone of voice alineado a marca del cliente (validado con 3+ ejemplos reales)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Completitud Knowledge</strong>: ☐ Cero &quot;No sé&quot; en preguntas sobre documentos cargados en knowledge base</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Usabilidad</strong>: ☐ Cliente puede usar sin soporte durante 30 minutos de testing libre</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Documentación</strong>: ☐ Guía de usuario + guía de mantenimiento entregadas y validadas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Performance</strong>: ☐ Tiempo de respuesta &lt;5 segundos en 95% de las queries</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Escalabilidad</strong>: ☐ Asistente maneja 100 queries/día sin degradación (si aplicable)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Satisfacción</strong>: ☐ Net Promoter Score o survey ≥8/10 post-entrega</span></div>
+<p class="key-value"><strong>Gate Crítico</strong>: Todos los 8 criterios deben ser ☑ antes de cierre. Si alguno es ☐, extender soporte.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-casos-borde-57-escenarios-de-estrs-ab1585" data-searchable aria-labelledby="head-5-casos-borde-57-escenarios-de-estrs-ab1585">
+            <div class="phase-header" id="head-5-casos-borde-57-escenarios-de-estrs-ab1585" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 5. CASOS BORDE (5-7 Escenarios de Estrés)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-1-knowledge-base-catica-b7cd9b">Caso 1: Knowledge Base Caótica</h3>
+<p class="key-value"><strong>Escenario</strong>: Cliente tiene 500 documentos sin estructura (PDFs, emails, Word docs, drives sin carpetas claras).</p>
+<p class="key-value"><strong>Trigger</strong>: Cliente no tiene su información organizada.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Fase Discovery incluye 4-8h de curación de documentos. Si excede, es adicional.</p>
+<p class="key-value"><strong>Fallback</strong>: Generar &quot;Índice Maestro&quot; (1 documento que mapea todos los docs) → asistente aprende índice primero.</p>
+<h3 class="subsection-title" id="caso-2-alucinacin-del-asistente-1dcaf2">Caso 2: Alucinación del Asistente</h3>
+<p class="key-value"><strong>Escenario</strong>: Asistente inventa información que no está en los docs (&quot;La empresa fundó X en 1985&quot; cuando no hay evidencia).</p>
+<p class="key-value"><strong>Trigger</strong>: Testing con queries sobre datos no presentes en knowledge base.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Configurar asistente para NO generar si no está en docs (mode=&quot;search_only&quot;, no synthesis).</p>
+<p class="key-value"><strong>Fallback</strong>: Entrenar cliente en prompt: &quot;Pregunta por X, no por Y&quot; (donde Y es prone to hallucinations).</p>
+<h3 class="subsection-title" id="caso-3-multiidioma-esenpt-534cff">Caso 3: Multiidioma (ES/EN/PT)</h3>
+<p class="key-value"><strong>Escenario</strong>: Cliente opera en 3 países, quiere asistente trilingüe.</p>
+<p class="key-value"><strong>Trigger</strong>: Cliente menciona equipos en múltiples países.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: 1 asistente con instrucciones en 3 idiomas (testing duplicado por idioma).</p>
+<p class="key-value"><strong>Fallback</strong>: Crear 3 asistentes separados (más simple, menos costos).</p>
+<h3 class="subsection-title" id="caso-4-plataforma-no-soporta-feature-158c04">Caso 4: Plataforma No Soporta Feature</h3>
+<p class="key-value"><strong>Escenario</strong>: Cliente quiere asistente en GPT Custom pero necesita function_calls (que GPT soporta pero cliente no sabe).</p>
+<p class="key-value"><strong>Trigger</strong>: Feature requerido incompatible con plataforma elegida.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Matriz de compatibilidad (Discovery, día 2). Si falta, proponer plataforma alternativa.</p>
+<p class="key-value"><strong>Fallback</strong>: Redesign del asistente sin esa feature.</p>
+<h3 class="subsection-title" id="caso-5-uso-dual-internal-customerfacing-a8b9c6">Caso 5: Uso Dual (Internal + Customer-Facing)</h3>
+<p class="key-value"><strong>Escenario</strong>: Asistente para equipo interno de ventas + asistente públicamente visible para clientes (compliance diferente).</p>
+<p class="key-value"><strong>Trigger</strong>: Cliente quiere monetizar o exponer asistente.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Crear 2 versiones con knowledge base compartida pero prompts/escalations diferentes.</p>
+<p class="key-value"><strong>Fallback</strong>: Iniciar con versión interna; después lanzar versión pública (fase 2).</p>
+<h3 class="subsection-title" id="caso-6-datos-sensibles-compliance-gdpr-etc-23c066">Caso 6: Datos Sensibles (Compliance, GDPR, etc.)</h3>
+<p class="key-value"><strong>Escenario</strong>: Cliente es fintech, asistente procesa datos de clientes. GDPR + normativa local aplica.</p>
+<p class="key-value"><strong>Trigger</strong>: Cliente opera en EU o maneja información PII/sensible.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Aislamiento de data (on-prem si es posible) + auditoría de compliance. Costo adicional.</p>
+<p class="key-value"><strong>Fallback</strong>: Documentar limitaciones; derivar a consultor de compliance.</p>
+<h3 class="subsection-title" id="caso-7-cliente-cambia-plataforma-midproject-c588be">Caso 7: Cliente Cambia Plataforma Mid-Project</h3>
+<p class="key-value"><strong>Escenario</strong>: Día 10 de 21: Cliente decide pasar de GPT Custom a Claude Projects.</p>
+<p class="key-value"><strong>Trigger</strong>: Cliente quiere cambio post-discovery.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Modificación es adicional (nuevas 2-3h de redev). Aceptar si cliente paga delta.</p>
+<p class="key-value"><strong>Fallback</strong>: Completar en plataforma original; migración post-entrega es responsabilidad del cliente.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-decisiones-de-diseo-con-justificacin-71e9f3" data-searchable aria-labelledby="head-6-decisiones-de-diseo-con-justificacin-71e9f3">
+            <div class="phase-header" id="head-6-decisiones-de-diseo-con-justificacin-71e9f3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 6. DECISIONES DE DISEÑO CON JUSTIFICACIÓN</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">ID</th><th scope="col">Decisión</th><th scope="col">Justificación</th><th scope="col">Riesgo Mitigado</th></tr></thead><tbody><tr><td>DD-01</td><td><strong>Plataforma agnóstica</strong>: No forzamos plataforma. Cliente elige.</td><td>Cada cliente tiene stack diferente. Forzar crea fricción y vendor lock-in.</td><td>Cliente elige herramienta que YA usa.</td></tr><tr><td>DD-02</td><td><strong>Testing con queries reales</strong>: Usamos preguntas del cliente, no genéricas.</td><td>Queries genéricas (&quot;¿Cuál es tu nombre?&quot;) no revelan si el asistente funciona en contexto real.</td><td>Validamos que asistente resuelve problema real.</td></tr><tr><td>DD-03</td><td><strong>Knowledge base curada &gt; exhaustiva</strong>: Cargar 50 docs bien curados vs. 500 desordenados.</td><td>Asistente con knowledge confusa es peor que asistente sin knowledge.</td><td>Asistente es preciso, no ruidoso.</td></tr><tr><td>DD-04</td><td><strong>Training presencial 1h obligatorio</strong>: Antes de entregar, sesión en vivo con cliente.</td><td>Cliente que no entiende cómo usar el asistente no lo usa.</td><td>Adopción + confianza en la herramienta.</td></tr><tr><td>DD-05</td><td><strong>30 días soporte incluido</strong>: No abandonamos post-entrega.</td><td>Los asistentes mejoran con uso real. Prompts refinan, Knowledge Base expande.</td><td>Proyecto termina con cliente satisfecho.</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-antipatterns-5-trampas-a-evitar-3fc8a9" data-searchable aria-labelledby="head-7-antipatterns-5-trampas-a-evitar-3fc8a9">
+            <div class="phase-header" id="head-7-antipatterns-5-trampas-a-evitar-3fc8a9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 7. ANTI-PATTERNS (5+ Trampas a Evitar)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="antipattern-1-el-asistente-genrico-0fe255">Anti-Pattern 1: &quot;El Asistente Genérico&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Entregar un prompt básico sin personalización real de marca, tono, o conocimiento del cliente.</p>
+<p class="key-value"><strong>Síntoma</strong>: Cliente dice &quot;Parece ChatGPT normal, no nuestro asistente.&quot;</p>
+<p class="key-value"><strong>Cómo evitar</strong>: Invertir 2 días en personalidad (system prompt único, ejemplos de conversación, tone guidelines).</p>
+<h3 class="subsection-title" id="antipattern-2-knowledge-dump-ec14c4">Anti-Pattern 2: &quot;Knowledge Dump&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Cargar TODOS los documentos del cliente sin curación. Asistente confuso.</p>
+<p class="key-value"><strong>Síntoma</strong>: Asistente mezcla info contradictoria, genera respuestas que contradicen docs.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: Curación iterativa. Empezar con top 20 docs; expandir según testing.</p>
+<h3 class="subsection-title" id="antipattern-3-demodriven-development-58634d">Anti-Pattern 3: &quot;Demo-Driven Development&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Mostrar demos impresionantes (&quot;Asistente que escribe emails en 10 segundos&quot;) pero no funciona en producción con datos reales.</p>
+<p class="key-value"><strong>Síntoma</strong>: Testing con cliente revela que &quot;funciona&quot; solo con preguntas del demo.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: Testing con datos reales desde día 3. No demos = no cuenta como validación.</p>
+<h3 class="subsection-title" id="antipattern-4-sin-testing-usuario-real-1f2e50">Anti-Pattern 4: &quot;Sin Testing Usuario Real&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Validar internamente (&quot;Nosotros lo probamos y funciona&quot;) pero cliente nunca lo prueba antes de entrega.</p>
+<p class="key-value"><strong>Síntoma</strong>: Cliente descubre problemas post-entrega cuando no hay tiempo de fijar.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: 2-3 días dedicados a &quot;cliente toquetea el asistente&quot; con nosotros presentes.</p>
+<h3 class="subsection-title" id="antipattern-5-abandonar-postentrega-b8e7d6">Anti-Pattern 5: &quot;Abandonar Post-Entrega&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Entregar y desaparecer. Cliente se queda con asistente que &quot;funciona a medias&quot; sin soporte.</p>
+<p class="key-value"><strong>Síntoma</strong>: Asistente nunca se refina. Cliente lo abandona en 2 meses.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: 30 días de soporte agresivo (bugs, ajustes de prompt, Knowledge Base updates).</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-tres-niveles-de-complejidad-e05c8b" data-searchable aria-labelledby="head-8-tres-niveles-de-complejidad-e05c8b">
+            <div class="phase-header" id="head-8-tres-niveles-de-complejidad-e05c8b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. TRES NIVELES DE COMPLEJIDAD</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="nivel-1-bsico-1-semana-cop-800k-93b9f4">Nivel 1: BÁSICO (1 Semana, ~COP $800K)</h3>
+<p class="key-value"><strong>Qué entregamos</strong>: GPT Custom o Claude Project funcional con personalidad y conocimiento curado del cliente.</p>
+<p class="key-value"><strong>Proceso</strong>:</p>
+<div class="bullet-item">Day 1-2: Discovery (entrevista, documentos, brief de asistente)</div>
+<div class="bullet-item">Day 3-4: Diseño personalidad (system prompt, tono, ejemplos)</div>
+<div class="bullet-item">Day 5: Implementación en plataforma elegida</div>
+<div class="bullet-item">Day 6: Testing con cliente</div>
+<div class="bullet-item">Day 7: Entrega + training 1h</div>
+<div class="bullet-item">Days 8-35: 30 días soporte</div>
+<p class="key-value"><strong>Gate de Aceptación</strong>: 6 de 8 criterios mínimo (Corrección, Tono, Usabilidad, Documentación, Performance, Satisfacción).</p>
+<p class="key-value"><strong>Casos típicos</strong>: Asistente para análisis de documentos, redacción de emails, respuestas a FAQs internas.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="nivel-2-avanzado-3-semanas-cop-25m-9763ff">Nivel 2: AVANZADO (3 Semanas, ~COP $2.5M)</h3>
+<p class="key-value"><strong>Qué entregamos</strong>: Asistente con RAG (Retrieval-Augmented Generation) + Knowledge Base + búsqueda en documentos propios del cliente.</p>
+<p class="key-value"><strong>Proceso</strong>:</p>
+<div class="bullet-item">Week 1: Discovery + análisis de documentos + curación</div>
+<div class="bullet-item">Week 2: Diseño RAG + Knowledge Base indexing + integración</div>
+<div class="bullet-item">Week 3: Testing iterativo con cliente + refinamiento + entrega</div>
+<div class="bullet-item">Days 22-50: 30 días soporte</div>
+<p class="key-value"><strong>Gate de Aceptación</strong>: 7 de 8 criterios (Corrección, Completitud Knowledge, Usabilidad, Documentación, Performance, Escalabilidad, Satisfacción).</p>
+<p class="key-value"><strong>Casos típicos</strong>: Asistente de soporte al cliente (conoce los docs de la empresa), analizador de reportes, asesor interno basado en knowledge base.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="nivel-3-enterprise-6-semanas-cop-5m-906d15">Nivel 3: ENTERPRISE (6 Semanas, ~COP $5M)</h3>
+<p class="key-value"><strong>Qué entregamos</strong>: Asistente integrado a sistemas del cliente (CRM, WhatsApp, Slack, web) con webhook + API + multi-canal.</p>
+<p class="key-value"><strong>Proceso</strong>:</p>
+<div class="bullet-item">Week 1-2: Discovery + arquitectura de integraciones</div>
+<div class="bullet-item">Week 3-4: Desarrollo RAG + Knowledge Base + API setup</div>
+<div class="bullet-item">Week 5: Integraciones (CRM/Slack/WhatsApp/Web)</div>
+<div class="bullet-item">Week 6: Testing end-to-end + entrega</div>
+<div class="bullet-item">Days 43-73: 30 días soporte</div>
+<p class="key-value"><strong>Gate de Aceptación</strong>: Todos 8 criterios.</p>
+<p class="key-value"><strong>Casos típicos</strong>: Asistente WhatsApp para atención al cliente, integración a Hubspot, chatbot incrustado en web + Slack.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-proceso-paso-a-paso-6-fases-86235b" data-searchable aria-labelledby="head-9-proceso-paso-a-paso-6-fases-86235b">
+            <div class="phase-header" id="head-9-proceso-paso-a-paso-6-fases-86235b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. PROCESO PASO A PASO (6 Fases)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fase-1-discovery-days-12-5e7a01">Fase 1: DISCOVERY (Days 1-2)</h3>
+<p class="key-value"><strong>Entrada</strong>: Proyecto ganado (contrato firmado).</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Entrevista estructurada (Kickoff, 1h):</span></div>
+<div class="bullet-item">¿Qué tarea cognitiva quieres amplificar? (análisis, síntesis, atención al cliente, otra)</div>
+<div class="bullet-item">¿Qué documentos/datos tienes? (PDFs, Notion, Drive, Confluence, emails)</div>
+<div class="bullet-item">¿Qué plataforma prefieres? (GPT, Claude, Gemini, custom chatbot)</div>
+<div class="bullet-item">¿Quién es el usuario final? (equipo interno, cliente externo, mixto)</div>
+<div class="bullet-item">¿Datos sensibles? (compliance, GDPR, PII)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Auditoría de documentos (2-4h):</span></div>
+<div class="bullet-item">Revisar knowledge base del cliente</div>
+<div class="bullet-item">Identificar gaps, inconsistencias</div>
+<div class="bullet-item">Proponer estructura (index, categorías, prioridades)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Crear Brief de Asistente (2h):</span></div>
+<div class="bullet-item">Nombre y propósito (1 párrafo)</div>
+<div class="bullet-item">Persona/tono</div>
+<div class="bullet-item">Casos de uso top 5</div>
+<div class="bullet-item">Límites (&quot;El asistente NO hace...&quot;)</div>
+<div class="bullet-item">Plataforma recomendada (si cliente no tiene preference)</div>
+<p class="key-value"><strong>Entrega</strong>: Brief de Asistente + Documento de Knowledge Base Map.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-2-diseo-de-personalidad-days-34-724d29">Fase 2: DISEÑO DE PERSONALIDAD (Days 3-4)</h3>
+<p class="key-value"><strong>Entrada</strong>: Brief aprobado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>System Prompt (4h):</span></div>
+<div class="bullet-item">Rol/personalidad del asistente</div>
+<div class="bullet-item">Límites y instrucciones de comportamiento</div>
+<div class="bullet-item">Ejemplos de 3-5 conversaciones ideales</div>
+<div class="bullet-item">Instrucciones para &quot;No Sé&quot; (cuándo decir &quot;No tengo esa info&quot;)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Knowledge Base Map (2h):</span></div>
+<div class="bullet-item">Documentos clave por categoría</div>
+<div class="bullet-item">Prioridades (críticos vs. nice-to-have)</div>
+<div class="bullet-item">Plan de carga (qué docs cargamos en MVP)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Ejemplos de conversación (2h):</span></div>
+<div class="bullet-item">5 escenarios reales cliente</div>
+<div class="bullet-item">Respuestas ideales esperadas</div>
+<div class="bullet-item">Edge cases (&quot;¿Qué pasa si preguntan X?&quot;)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Gate Review (1h):</span></div>
+<div class="bullet-item">Cliente aprueba/rechaza la &quot;personalidad&quot; del asistente</div>
+<div class="bullet-item">Iteramos si necesario (1-2 rondas típico)</div>
+<p class="key-value"><strong>Entrega</strong>: System Prompt finalizado + Knowledge Base Map + Ejemplos de Conversación + Persona Document.</p>
+<p class="key-value"><strong>Go/No-Go Gate</strong>: Cliente debe aprobar personalidad antes de pasar a Construcción.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-3-construccin-days-5101530-segn-nivel-3b83c6">Fase 3: CONSTRUCCIÓN (Days 5-10/15/30 según nivel)</h3>
+<p class="key-value"><strong>Entrada</strong>: Diseño aprobado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Setup de plataforma (1-2h):</span></div>
+<div class="bullet-item">Crear account/project en plataforma elegida</div>
+<div class="bullet-item">Configurar autenticación</div>
+<div class="bullet-item">Setup de API keys (si aplicable)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Cargar Knowledge Base (4-8h según tamaño):</span></div>
+<div class="bullet-item">Procesar documentos (PDF -&gt; texto, extracción)</div>
+<div class="bullet-item">Indexar y cargar en plataforma</div>
+<div class="bullet-item">Testear retrieval (¿el asistente encuentra la info?)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Implementar System Prompt (2-4h):</span></div>
+<div class="bullet-item">Copiar prompt en asistente</div>
+<div class="bullet-item">Ajustar plataforma-specific (GPT instruction syntax vs. Claude system prompt)</div>
+<div class="bullet-item">Testing básico (&quot;¿El asistente responde en tono correcto?&quot;)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Integraciones (si Nivel 2+):</span></div>
+<div class="bullet-item">Conectar a CRM, Slack, WhatsApp, etc.</div>
+<div class="bullet-item">Configurar webhooks</div>
+<div class="bullet-item">Testing de flujo end-to-end</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>QA Interno (2-3h):</span></div>
+<div class="bullet-item">10 queries de test (propias) para validar funcionalidad</div>
+<div class="bullet-item">Bug fixing</div>
+<div class="bullet-item">Performance testing (respuesta time, hallucinations)</div>
+<p class="key-value"><strong>Entrega</strong>: Asistente funcional en plataforma + access para cliente.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-4-testing-con-cliente-days-68-1517-ff0898">Fase 4: TESTING CON CLIENTE (Days 6-8 / 15-17)</h3>
+<p class="key-value"><strong>Entrada</strong>: Asistente funcional.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sesión de onboarding (1h):</span></div>
+<div class="bullet-item">Mostrar asistente en vivo</div>
+<div class="bullet-item">Explicar cómo usarlo</div>
+<div class="bullet-item">Dar acceso (login/link)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Período de testing libre (2-4h):</span></div>
+<div class="bullet-item">Cliente prueba con sus casos reales</div>
+<div class="bullet-item">Anotamos problemas, gaps, surprises</div>
+<div class="bullet-item">Nosotros disponibles para preguntas en Slack/email</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Sesión de feedback (1-2h):</span></div>
+<div class="bullet-item">Revisar notas de cliente</div>
+<div class="bullet-item">Categorizas bugs vs. feature requests vs. design tweaks</div>
+<div class="bullet-item">Priorizar fixes (críticos this week, nice-to-have later)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Refinamiento iterativo (2-3h):</span></div>
+<div class="bullet-item">Ajustes a system prompt basados en feedback</div>
+<div class="bullet-item">Cargar documentos faltantes</div>
+<div class="bullet-item">Retest de escenarios problemáticos</div>
+<p class="key-value"><strong>Entrega</strong>: Asistente refinado basado en feedback real.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-5-entrega-training-day-9-day-18-170342">Fase 5: ENTREGA + TRAINING (Day 9 / Day 18)</h3>
+<p class="key-value"><strong>Entrada</strong>: Asistente testado y aprobado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Documentación (2-3h antes de sesión):</span></div>
+<div class="bullet-item">Guía de usuario (cómo usar, casos de uso, ejemplos)</div>
+<div class="bullet-item">Guía de mantenimiento (cómo actualizar Knowledge Base, cómo dar feedback)</div>
+<div class="bullet-item">Troubleshooting guide (qué hacer si falla, cómo escalar)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Sesión de training presencial (1h, sincrónico):</span></div>
+<div class="bullet-item">Demo vivo del asistente</div>
+<div class="bullet-item">Handoff de acceso (credenciales, links, documentación)</div>
+<div class="bullet-item">Q&amp;A</div>
+<div class="bullet-item">Establecer canales de soporte (email, Slack)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Checklist de entrega:</span></div>
+<div class="bullet-item">☐ Acceso funcional confirmado</div>
+<div class="bullet-item">☐ Cliente puede usar sin soporte (probado en vivo)</div>
+<div class="bullet-item">☐ Documentación entregada y leída</div>
+<div class="bullet-item">☐ Expectativas de soporte (30 días) confirmadas</div>
+<p class="key-value"><strong>Entrega</strong>: Asistente live + Documentación completa + Expectativas claras.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-6-soporte-days-1035-1849-d677f5">Fase 6: SOPORTE (Days 10-35 / 18-49)</h3>
+<p class="key-value"><strong>Entrada</strong>: Asistente entregado.</p>
+<p class="key-value"><strong>SLA de Soporte (30 días)</strong>:</p>
+<div class="bullet-item"><strong>Bugs críticos</strong> (asistente no funciona): Respuesta &lt;4h, fix &lt;24h</div>
+<div class="bullet-item"><strong>Bugs menores</strong>: Respuesta &lt;24h, fix &lt;3 días</div>
+<div class="bullet-item"><strong>Feature requests</strong>: Documentamos pero NO incluimos (post-soporte)</div>
+<div class="bullet-item"><strong>Optimización de prompt</strong>: Incluido (refinamiento basado en uso real)</div>
+<p class="key-value"><strong>Actividades típicas</strong>:</p>
+<div class="bullet-item">Cliente reporta: &quot;Asistente no entiende questions sobre X&quot;</div>
+<div class="bullet-item">Nuestro action: Investigar, ajustar prompt, cargar más docs sobre X, retest</div>
+<div class="bullet-item">Comunicar: &quot;Ajustamos el prompt. Prueba de nuevo.&quot;</div>
+<p class="key-value"><strong>Cierre de soporte</strong>:</p>
+<div class="bullet-item">Day 30: Revisión final</div>
+<div class="bullet-item">¿Todos 8 criterios de aceptación se mantienen? ☑</div>
+<div class="bullet-item">¿Cliente satisfecho? (NPS ≥8) ☑</div>
+<div class="bullet-item">¿Documentación actualizada? ☑</div>
+<div class="bullet-item">Entregar acceso a &quot;modo self-service&quot; (cliente puede actualizar Knowledge Base sin nosotros)</div>
+<div class="bullet-item">Proponer SLA post-30 días (opcional, pago adicional)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-fallbacks-operativos-plan-b-8c5735" data-searchable aria-labelledby="head-10-fallbacks-operativos-plan-b-8c5735">
+            <div class="phase-header" id="head-10-fallbacks-operativos-plan-b-8c5735" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 10. FALLBACKS OPERATIVOS (Plan B)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Problema</th><th scope="col">Fallback</th><th scope="col">Costo</th></tr></thead><tbody><tr><td>Asistente &quot;muere&quot; mid-project (cliente decide abortar)</td><td>Documentar todo lo hecho. Entregar documentación como learning. Reembolso proporcional.</td><td>Pérdida de ingresos</td></tr><tr><td>Knowledge Base es muy grande (100k+ documentos)</td><td>Usar subset prioritario (top 20% de docs). Expandir post-entrega.</td><td>Más soporte post-30 días</td></tr><tr><td>Cliente quiere cambiar plataforma mid-project</td><td>Aceptar como adicional (nuevas 2-3h de redev). Si no paga, completar en plataforma original.</td><td>+COP $300K aproximado</td></tr><tr><td>Asistente consistentemente alucina</td><td>Pasar a &quot;search-only mode&quot; (sin synthesis). Menos potente, pero preciso.</td><td>Scope reduction</td></tr><tr><td>Cliente no participa en testing</td><td>Extender soporte a 45 días. Testing es responsabilidad del cliente.</td><td>+COP $200K</td></tr><tr><td>Plataforma tiene outage</td><td>Usar plataforma backup (ej: GPT → Claude). Sin costo adicional.</td><td>Riesgo mitigation</td></tr><tr><td>Cliente quiere multi-idioma (post-discovery)</td><td>Adicional por idioma (+1 semana, +COP $500K por idioma).</td><td>Payment upfront</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-mtricas-de-xito-a26227" data-searchable aria-labelledby="head-11-mtricas-de-xito-a26227">
+            <div class="phase-header" id="head-11-mtricas-de-xito-a26227" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. MÉTRICAS DE ÉXITO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Métrica 1: Accuracy del Asistente</strong></p>
+<div class="bullet-item">KPI: 90%+ de queries respondidas correctamente</div>
+<div class="bullet-item">Medición: Manual review de 20 queries reales post-entrega</div>
+<div class="bullet-item">Owner: Implementador IA</div>
+<p class="key-value"><strong>Métrica 2: Adopción del Cliente</strong></p>
+<div class="bullet-item">KPI: Cliente usa asistente 5+ veces/semana en mes 1</div>
+<div class="bullet-item">Medición: Dashboard de uso (queries/semana)</div>
+<div class="bullet-item">Owner: Customer Success</div>
+<p class="key-value"><strong>Métrica 3: Net Promoter Score (NPS)</strong></p>
+<div class="bullet-item">KPI: NPS ≥8/10 (1-10 scale)</div>
+<div class="bullet-item">Medición: Post-entrega survey</div>
+<div class="bullet-item">Owner: Customer Success</div>
+<p class="key-value"><strong>Métrica 4: Time-to-Value</strong></p>
+<div class="bullet-item">KPI: Cliente &quot;siente valor&quot; dentro de 2 semanas</div>
+<div class="bullet-item">Medición: Cualitativa (feedback en sesión de testing)</div>
+<div class="bullet-item">Owner: Implementador IA</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-integraciones-upstreamdownstream-e1e314" data-searchable aria-labelledby="head-12-integraciones-upstreamdownstream-e1e314">
+            <div class="phase-header" id="head-12-integraciones-upstreamdownstream-e1e314" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. INTEGRACIONES UPSTREAM/DOWNSTREAM</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Upstream</strong>:</p>
+<div class="bullet-item"><code class="inline-code">entregar-tecnologia-proceso.md</code> (fase Discovery depende de este marco general)</div>
+<p class="key-value"><strong>Cross-vertical</strong>:</p>
+<div class="bullet-item"><code class="inline-code">Empoderamiento M10</code> (participantes aprenden a refinar sus propios asistentes)</div>
+<div class="bullet-item"><code class="inline-code">Comercial B2B</code> (empresas que compran asistentes para sus equipos)</div>
+<p class="key-value"><strong>Downstream</strong>:</p>
+<div class="bullet-item">Caso de éxito → Comercial para referral + upsell (Nivel 2/3)</div>
+<div class="bullet-item">Post-30 días: SLA adicional (soporte ongoing)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-roles-y-responsabilidades-b5f80c" data-searchable aria-labelledby="head-13-roles-y-responsabilidades-b5f80c">
+            <div class="phase-header" id="head-13-roles-y-responsabilidades-b5f80c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. ROLES Y RESPONSABILIDADES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Responsabilidad</th><th scope="col">Horas Estimadas</th></tr></thead><tbody><tr><td>Implementador IA Senior</td><td>Discovery, Diseño, Construcción, Testing, Entrega</td><td>40-60h</td></tr><tr><td>Especialista en Knowledge</td><td>Auditoría de docs, curación, indexing</td><td>8-16h</td></tr><tr><td>QA / Testing</td><td>Testing interno, reporte de bugs</td><td>4-8h</td></tr><tr><td>Customer Success</td><td>Onboarding, training, soporte post-30 días</td><td>2-4h</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734" data-searchable aria-labelledby="head-versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734">
+            <div class="phase-header" id="head-versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Versión: 1.0 | Próxima revisión: 2026-Q3 | Propietario: Vertical TecnologIA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>MetodologIA © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v2.0 Excellence Edition — Generado: 2026-03-24 13:53</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

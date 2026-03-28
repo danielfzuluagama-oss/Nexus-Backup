@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetodologIA — Experience Design Dashboard</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2234;
+    --border: #2a3550;
+    --accent: #a5b4fc;
+    --accent2: #c4b5fd;
+    --accent3: #22d3ee;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --gold: #fbbf24;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%); padding: 32px 40px; border-bottom: 1px solid var(--border); }
+  .header h1 { font-size: 28px; font-weight: 700; background: linear-gradient(90deg, #a5b4fc, #c4b5fd, #67e8f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header p { color: var(--text2); margin-top: 4px; font-size: 14px; }
+  .header-meta { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+  .header-meta span { font-size: 12px; color: var(--text3); background: var(--surface); padding: 4px 12px; border-radius: 20px; }
+  .header-badge { font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+  .header-badge.docs { background: rgba(165,180,252,.2); color: #a5b4fc; }
+  .header-badge.governance { background: rgba(16,185,129,.2); color: #6ee7b7; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 40px; overflow-x: auto; }
+  .tab { padding: 14px 24px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text3); border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+  .tab:hover { color: var(--text); background: var(--surface2); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Content */
+  .content { padding: 32px 40px; max-width: 1400px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--accent); }
+  .card h4 { font-size: 14px; font-weight: 600; margin: 16px 0 8px; color: var(--text); }
+
+  /* Blueprint Grid */
+  .bp-grid { display: grid; grid-template-columns: 140px repeat(6, 1fr); gap: 1px; background: var(--border); border-radius: 8px; overflow: hidden; font-size: 12px; margin: 20px 0; }
+  .bp-cell { background: var(--surface); padding: 10px; min-height: 70px; }
+  .bp-header { background: var(--surface2); font-weight: 600; color: var(--accent); text-align: center; padding: 12px 8px; }
+  .bp-phase { background: linear-gradient(135deg, #312e81, #3730a3); color: #ddd6fe; font-weight: 600; text-align: center; }
+  .bp-label { background: var(--surface2); font-weight: 600; color: var(--text2); display: flex; align-items: center; padding: 10px; font-size: 11px; }
+  .bp-cell ul { list-style: none; padding: 0; }
+  .bp-cell li { padding: 2px 0; color: var(--text2); font-size: 11px; }
+  .bp-cell li::before { content: "•"; color: var(--accent3); margin-right: 4px; }
+  .bp-divider { grid-column: 1 / -1; background: linear-gradient(90deg, var(--warning), var(--accent), var(--warning)); height: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--bg); letter-spacing: 3px; padding: 14px; text-transform: uppercase; }
+
+  /* MOT */
+  .mot-row { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+  .mot-card { flex: 1; min-width: 180px; background: linear-gradient(135deg, var(--surface2), var(--surface)); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; position: relative; }
+  .mot-card .star { font-size: 24px; margin-bottom: 6px; }
+  .mot-card .mot-title { font-size: 13px; font-weight: 600; color: var(--gold); }
+  .mot-card .mot-quote { font-size: 11px; color: var(--text2); font-style: italic; margin-top: 4px; }
+  .mot-card .mot-metric { font-size: 10px; color: var(--text3); margin-top: 8px; background: var(--bg); padding: 4px 8px; border-radius: 4px; }
+
+  /* Emotion Curve */
+  .emotion-curve { position: relative; height: 200px; background: var(--surface); border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+  .emotion-curve svg { width: 100%; height: 100%; }
+
+  /* Segments */
+  .seg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0; }
+  .seg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: all .2s; cursor: pointer; }
+  .seg-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(165,180,252,.15); }
+  .seg-card .seg-icon { font-size: 32px; margin-bottom: 8px; }
+  .seg-card .seg-name { font-size: 15px; font-weight: 600; }
+  .seg-card .seg-desc { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .seg-card .seg-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .seg-tag { font-size: 10px; padding: 3px 8px; border-radius: 12px; background: var(--surface2); color: var(--text3); }
+  .seg-tag.b2c { background: rgba(165,180,252,.15); color: #a5b4fc; }
+  .seg-tag.b2b { background: rgba(34,211,238,.15); color: #67e8f9; }
+
+  /* Phase Timeline */
+  .phase-timeline { display: flex; gap: 0; margin: 24px 0; overflow-x: auto; }
+  .phase-item { flex: 1; min-width: 200px; border: 1px solid var(--border); padding: 16px; position: relative; }
+  .phase-item:first-child { border-radius: 10px 0 0 10px; }
+  .phase-item:last-child { border-radius: 0 10px 10px 0; }
+  .phase-item .phase-num { font-size: 10px; color: var(--accent3); font-weight: 700; letter-spacing: 1px; }
+  .phase-item .phase-name { font-size: 14px; font-weight: 600; margin: 4px 0; }
+  .phase-item .phase-thought { font-size: 11px; color: var(--text2); font-style: italic; margin: 8px 0; padding: 8px; background: var(--bg); border-radius: 6px; border-left: 3px solid var(--accent); }
+  .phase-item .phase-emotion { font-size: 20px; margin: 8px 0; }
+  .phase-item .phase-details { font-size: 11px; color: var(--text3); }
+  .phase-item .phase-details dt { font-weight: 600; color: var(--text2); margin-top: 6px; }
+
+  /* Matrix */
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 16px 0; }
+  .matrix-table th { background: var(--surface2); color: var(--accent); padding: 10px; text-align: left; border: 1px solid var(--border); font-size: 11px; }
+  .matrix-table td { background: var(--surface); padding: 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+  .matrix-table tr:hover td { background: var(--surface2); }
+
+  /* RACI Grid */
+  .raci-grid { display: grid; grid-template-columns: 140px repeat(6, 1fr); gap: 1px; background: var(--border); border-radius: 8px; overflow: hidden; font-size: 12px; margin: 20px 0; }
+  .raci-cell { background: var(--surface); padding: 12px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; }
+  .raci-role { background: var(--surface2); font-weight: 600; color: var(--text2); padding: 12px; display: flex; align-items: center; min-height: 50px; }
+  .raci-phase { background: linear-gradient(135deg, #312e81, #3730a3); color: #ddd6fe; font-weight: 600; }
+  .raci-r { background: rgba(165,180,252,.2); color: #a5b4fc; font-weight: 700; }
+  .raci-a { background: rgba(239,68,68,.2); color: #fca5a5; font-weight: 700; }
+  .raci-c { background: rgba(34,211,238,.2); color: #67e8f9; font-weight: 700; }
+  .raci-i { background: rgba(100,116,139,.2); color: var(--text3); font-weight: 700; }
+
+  /* Handoff Flow */
+  .handoff-flow { display: flex; align-items: center; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+  .handoff-node { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; min-width: 60px; text-align: center; }
+  .handoff-arrow { font-size: 18px; color: var(--gold); }
+  .handoff-sla { font-size: 10px; color: var(--text3); text-align: center; min-width: 40px; }
+
+  /* Decision Cards */
+  .decision-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin: 8px 0; }
+  .decision-id { font-size: 10px; color: var(--accent); font-weight: 700; }
+  .decision-title { font-size: 13px; font-weight: 600; margin: 4px 0; }
+  .decision-meta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .decision-badge { font-size: 9px; padding: 2px 8px; border-radius: 10px; }
+  .decision-status { background: rgba(16,185,129,.2); color: #6ee7b7; }
+  .decision-risk-low { background: rgba(16,185,129,.2); color: #6ee7b7; }
+  .decision-risk-med { background: rgba(245,158,11,.2); color: #fcd34d; }
+  .decision-risk-high { background: rgba(239,68,68,.2); color: #fca5a5; }
+  .decision-dots { font-size: 12px; letter-spacing: 2px; }
+  .decision-summary { font-size: 11px; color: var(--text2); margin-top: 6px; }
+
+  /* Capacity Card */
+  .capacity-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, var(--surface2), var(--surface)); border: 1px solid var(--border); border-radius: 8px; margin: 8px 0; }
+  .capacity-label { font-size: 12px; font-weight: 600; flex: 1; }
+  .capacity-bar { height: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; flex: 1; overflow: hidden; }
+  .capacity-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent3)); }
+
+  /* Gaps */
+  .gap-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 8px 0; }
+  .gap-badge { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 12px; min-width: 60px; text-align: center; }
+  .gap-badge.high { background: rgba(239,68,68,.15); color: #fca5a5; }
+  .gap-badge.med { background: rgba(245,158,11,.15); color: #fcd34d; }
+  .gap-badge.resolved { background: rgba(16,185,129,.15); color: #6ee7b7; }
+  .gap-info { flex: 1; }
+  .gap-info .gap-title { font-size: 13px; font-weight: 600; }
+  .gap-info .gap-desc { font-size: 11px; color: var(--text3); }
+  .gap-info .gap-note { font-size: 10px; color: #6ee7b7; margin-top: 4px; font-style: italic; }
+
+  /* Bridges */
+  .bridge-visual { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 20px; flex-wrap: wrap; }
+  .bridge-node { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; text-align: center; min-width: 140px; }
+  .bridge-node .bn-icon { font-size: 28px; }
+  .bridge-node .bn-label { font-size: 12px; font-weight: 600; margin-top: 4px; }
+  .bridge-node .bn-sub { font-size: 10px; color: var(--text3); }
+  .bridge-node.b2c { border-color: var(--accent); }
+  .bridge-node.b2b { border-color: var(--accent3); }
+  .bridge-arrow { font-size: 24px; color: var(--gold); }
+
+  /* Friction */
+  .friction-bar { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .friction-label { font-size: 11px; min-width: 200px; color: var(--text2); }
+  .friction-fill { height: 8px; border-radius: 4px; }
+  .friction-fill.high { background: linear-gradient(90deg, var(--danger), #b91c1c); }
+  .friction-fill.med { background: linear-gradient(90deg, var(--warning), #d97706); }
+  .friction-fill.low { background: linear-gradient(90deg, var(--success), #059669); }
+
+  /* KPIs */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+  .kpi-card { background: var(--surface2); border-radius: 10px; padding: 16px; text-align: center; }
+  .kpi-value { font-size: 28px; font-weight: 700; background: linear-gradient(90deg, var(--accent), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .kpi-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .kpi-target { font-size: 10px; color: #6ee7b7; margin-top: 2px; }
+
+  /* Priority Matrix */
+  .priority-chart { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; height: 300px; background: var(--border); border-radius: 12px; overflow: hidden; margin: 16px 0; position: relative; }
+  .priority-quad { background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .priority-quad .pq-title { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .priority-item { font-size: 12px; padding: 6px 10px; border-radius: 6px; }
+  .priority-item.p0 { background: rgba(239,68,68,.15); color: #fca5a5; }
+  .priority-item.p1 { background: rgba(245,158,11,.15); color: #fcd34d; }
+  .priority-item.p2 { background: rgba(165,180,252,.15); color: #a5b4fc; }
+  .priority-item.p3 { background: rgba(100,116,139,.15); color: var(--text3); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .content { padding: 16px; }
+    .header { padding: 20px 16px; }
+    .tabs { padding: 0 16px; }
+    .bp-grid { font-size: 10px; }
+    .phase-timeline { flex-direction: column; }
+    .raci-grid { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>MetodologIA — Experience Design System</h1>
+  <p>Service Blueprint + Customer Journey Maps — Gobierno Operativo 2026</p>
+  <div class="header-meta">
+    <span>v3.0 — 10x Expansion</span>
+    <span class="header-badge docs">11 Documentos</span>
+    <span class="header-badge governance">4 New Governance Docs</span>
+    <span>7 Sub-Segmentos</span>
+    <span>6 Fases</span>
+    <span>5 Moments of Truth</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showSection('blueprint')">Service Blueprint</div>
+  <div class="tab" onclick="showSection('segments')">Segmentos</div>
+  <div class="tab" onclick="showSection('journey-general')">CJ General</div>
+  <div class="tab" onclick="showSection('journeys-b2c')">Journeys B2C</div>
+  <div class="tab" onclick="showSection('journeys-b2b')">Journeys B2B</div>
+  <div class="tab" onclick="showSection('matrix')">Matriz Cruzada</div>
+  <div class="tab" onclick="showSection('gaps')">Gaps + Fricciones</div>
+  <div class="tab" onclick="showSection('raci')">RACI</div>
+  <div class="tab" onclick="showSection('decisiones')">Decisiones</div>
+  <div class="tab" onclick="showSection('handoffs')">Handoffs</div>
+  <div class="tab" onclick="showSection('web-reno')">Renovacion Web</div>
+</div>
+
+<div class="content">
+
+  <!-- ============ BLUEPRINT ============ -->
+  <div id="blueprint" class="section active">
+    <div class="card">
+      <h3>Service Blueprint General — Vista Multi-Capa</h3>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:16px;">6 capas verticales x 6 fases horizontales. Cada celda conecta con SOPs del gobierno operativo.</p>
+
+      <div class="bp-grid">
+        <div class="bp-header"></div>
+        <div class="bp-phase">F0<br>AWARENESS</div>
+        <div class="bp-phase">F1<br>DIAGNOSTICO</div>
+        <div class="bp-phase">F2<br>DISENO</div>
+        <div class="bp-phase">F3<br>PRACTICA</div>
+        <div class="bp-phase">F4<br>AUTONOMIA</div>
+        <div class="bp-phase">F5<br>ADVOCACY</div>
+
+        <div class="bp-label">Evidencia Fisica</div>
+        <div class="bp-cell"><ul><li>Sitio web</li><li>Posts RRSS</li><li>Lead magnets</li></ul></div>
+        <div class="bp-cell"><ul><li>Baseline Report</li><li>Mapa Oportunidad</li><li>Grabacion</li></ul></div>
+        <div class="bp-cell"><ul><li>Roadmap doc</li><li>Dashboard KPIs</li><li>Contrato/ODS</li></ul></div>
+        <div class="bp-cell"><ul><li>Plataforma</li><li>GPTs custom</li><li>Templates</li></ul></div>
+        <div class="bp-cell"><ul><li>Autonomy Kit</li><li>Canal async</li><li>Check-in</li></ul></div>
+        <div class="bp-cell"><ul><li>Badge Champion</li><li>Caso de exito</li><li>Referral link</li></ul></div>
+
+        <div class="bp-label">Acciones Cliente</div>
+        <div class="bp-cell"><ul><li>Busca solucion</li><li>Consume contenido</li><li>Compara</li></ul></div>
+        <div class="bp-cell"><ul><li>Completa quiz</li><li>Sesion 1h</li><li>Valida</li></ul></div>
+        <div class="bp-cell"><ul><li>Revisa opciones</li><li>Elige nivel</li><li>Define metricas</li></ul></div>
+        <div class="bp-cell"><ul><li>Asiste sesiones</li><li>Implementa</li><li>Practica real</li></ul></div>
+        <div class="bp-cell"><ul><li>Mantiene habitos</li><li>Mide progreso</li><li>Escala</li></ul></div>
+        <div class="bp-cell"><ul><li>Refiere pares</li><li>Comparte</li><li>UGC</li></ul></div>
+
+        <div class="bp-label">Frontstage</div>
+        <div class="bp-cell"><ul><li>SEO organico</li><li>Chatbot/WA</li><li>Webinars</li></ul></div>
+        <div class="bp-cell"><ul><li>Discovery 1:1</li><li>Diagnostico</li><li>Framework</li></ul></div>
+        <div class="bp-cell"><ul><li>Co-diseno ruta</li><li>Priorizacion</li><li>Metricas</li></ul></div>
+        <div class="bp-cell"><ul><li>Coaching guiado</li><li>Reviews</li><li>Feedback RT</li></ul></div>
+        <div class="bp-cell"><ul><li>Sesion cierre</li><li>Revision logros</li><li>Plan manten.</li></ul></div>
+        <div class="bp-cell"><ul><li>Invit. embajador</li><li>Reconocimiento</li><li>Red exclusiva</li></ul></div>
+
+        <div class="bp-divider">LINEA DE VISIBILIDAD</div>
+
+        <div class="bp-label">Backstage</div>
+        <div class="bp-cell"><ul><li>SOP Scouting</li><li>SOP Nurturing</li><li>Pipeline mgmt</li></ul></div>
+        <div class="bp-cell"><ul><li>Review quiz</li><li>Research sector</li><li>Create report</li></ul></div>
+        <div class="bp-cell"><ul><li>Adaptar playbooks</li><li>Config prompts</li><li>Prep materiales</li></ul></div>
+        <div class="bp-cell"><ul><li>QA progreso</li><li>Doc learnings</li><li>Refinar prompts</li></ul></div>
+        <div class="bp-cell"><ul><li>Async support</li><li>Check-ins</li><li>Update recursos</li></ul></div>
+        <div class="bp-cell"><ul><li>Track referrals</li><li>Gestion red</li><li>Produc. cases</li></ul></div>
+
+        <div class="bp-label">Soporte</div>
+        <div class="bp-cell"><ul><li>CRM/Hubspot</li><li>Analytics</li><li>Email automat.</li></ul></div>
+        <div class="bp-cell"><ul><li>Plat. diagnostico</li><li>Templates</li><li>NDA</li></ul></div>
+        <div class="bp-cell"><ul><li>Bib. playbooks</li><li>Facturacion</li><li>Calendario</li></ul></div>
+        <div class="bp-cell"><ul><li>LMS</li><li>Repo prompts</li><li>Dashboard</li></ul></div>
+        <div class="bp-cell"><ul><li>Knowledge base</li><li>NPS</li><li>Licencias</li></ul></div>
+        <div class="bp-cell"><ul><li>Analytics ref.</li><li>CRM loyalty</li><li>UGC curation</li></ul></div>
+      </div>
+    </div>
+
+    <!-- MOTs -->
+    <div class="card">
+      <h3>Moments of Truth (MOTs)</h3>
+      <div class="mot-row">
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-1: Relevancia</div>
+          <div class="mot-quote">"Esto me habla a mi"</div>
+          <div class="mot-metric">CTR > 3% | Bounce < 40%</div>
+        </div>
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-2: Claridad</div>
+          <div class="mot-quote">"Ahora veo donde pierdo"</div>
+          <div class="mot-metric">Conv. diag→diseno > 60%</div>
+        </div>
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-3: Aha!</div>
+          <div class="mot-quote">"Funciona en mi dia a dia"</div>
+          <div class="mot-metric">NPS sesion > 8</div>
+        </div>
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-4: Soberania</div>
+          <div class="mot-quote">"Puedo solo/a"</div>
+          <div class="mot-metric">Autonomia > 80%</div>
+        </div>
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-5: Sostenible</div>
+          <div class="mot-quote">"Puedo Sostenible"</div>
+          <div class="mot-metric">Autonomía > 80% · 30d+</div>
+        </div>
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-6: Escalable</div>
+          <div class="mot-quote">"Puedo Escalable"</div>
+          <div class="mot-metric">Expansión ≥ 2 áreas</div>
+        </div>
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-7: Multiplicador</div>
+          <div class="mot-quote">"Puedo enseñar a otros"</div>
+          <div class="mot-metric">≥ 1 persona capacitada</div>
+        </div>
+        <div class="mot-card">
+          <div class="star">&#9733;</div>
+          <div class="mot-title">MOT-8: Embajador</div>
+          <div class="mot-quote">"Puedo ser embajador"</div>
+          <div class="mot-metric">Referral > 25%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="card">
+      <h3>KPIs de Salud del Blueprint</h3>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-value">&lt; 14d</div>
+          <div class="kpi-label">Time to First Value</div>
+          <div class="kpi-target">Target: dias hasta Aha!</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">40-60-80%</div>
+          <div class="kpi-label">Conversion Funnel</div>
+          <div class="kpi-target">F0→F1→F2→F3</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">&lt; 2/5</div>
+          <div class="kpi-label">Customer Effort Score</div>
+          <div class="kpi-target">Por fase de servicio</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">&gt; 70</div>
+          <div class="kpi-label">Net Promoter Score</div>
+          <div class="kpi-target">Medido en F4</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">&gt; 25%</div>
+          <div class="kpi-label">Referral Rate</div>
+          <div class="kpi-target">Clientes que refieren</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">&lt; 30d</div>
+          <div class="kpi-label">Pipeline Velocity B2C</div>
+          <div class="kpi-target">&lt; 60d para B2B</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Capacity Constraints -->
+    <div class="card">
+      <h3>Capacity Constraints (Limites Operacionales)</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Restricciones de capacidad que limitan el crecimiento del blueprint:</p>
+      <div class="capacity-item">
+        <div class="capacity-label">Max 10 clientes/coach F3</div>
+        <div class="capacity-bar"><div class="capacity-fill" style="width:65%;"></div></div>
+        <div style="font-size:11px;color:var(--text3);min-width:80px;">6.5/10 (65%)</div>
+      </div>
+      <div class="capacity-item">
+        <div class="capacity-label">Max 20 personas/bootcamp</div>
+        <div class="capacity-bar"><div class="capacity-fill" style="width:70%;"></div></div>
+        <div style="font-size:11px;color:var(--text3);min-width:80px;">14/20 (70%)</div>
+      </div>
+      <div class="capacity-item">
+        <div class="capacity-label">Max 20 semanas F3 duración</div>
+        <div class="capacity-bar"><div class="capacity-fill" style="width:56%;"></div></div>
+        <div style="font-size:11px;color:var(--text3);min-width:80px;">11.2/20 sem (56%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SEGMENTS ============ -->
+  <div id="segments" class="section">
+    <div class="card">
+      <h3>Taxonomia de Segmentos</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">4 sub-segmentos B2C (Personas) + 3 sub-segmentos B2B (Empresas). Click para ver journey detallado.</p>
+
+      <h4 style="color:var(--accent);">B2C — Personas</h4>
+      <div class="seg-grid">
+        <div class="seg-card" onclick="showJourneyDetail('p1')">
+          <div class="seg-icon">&#128188;</div>
+          <div class="seg-name">P1: Profesional en Transicion</div>
+          <div class="seg-desc">28-45 anos. Siente que la IA cambia su profesion y quiere reinventarse.</div>
+          <div class="seg-tags">
+            <span class="seg-tag b2c">B2C</span>
+            <span class="seg-tag">$800k COP</span>
+            <span class="seg-tag">LinkedIn</span>
+            <span class="seg-tag">Volumen medio</span>
+          </div>
+        </div>
+        <div class="seg-card" onclick="showJourneyDetail('p2')">
+          <div class="seg-icon">&#127891;</div>
+          <div class="seg-name">P2: Estudiante Universitario</div>
+          <div class="seg-desc">18-26 anos. Nativo digital pero no productivo con IA. FOMO academico.</div>
+          <div class="seg-tags">
+            <span class="seg-tag b2c">B2C</span>
+            <span class="seg-tag">$0-$200k COP</span>
+            <span class="seg-tag">IG/TikTok</span>
+            <span class="seg-tag">Pipeline futuro</span>
+          </div>
+        </div>
+        <div class="seg-card" onclick="showJourneyDetail('p3')">
+          <div class="seg-icon">&#128084;</div>
+          <div class="seg-name">P3: Ejecutivo / C-Level</div>
+          <div class="seg-desc">35-55 anos. VP/Director/CEO que necesita liderar la conversacion de IA.</div>
+          <div class="seg-tags">
+            <span class="seg-tag b2c">B2C</span>
+            <span class="seg-tag">$2.4M COP</span>
+            <span class="seg-tag">Referrals</span>
+            <span class="seg-tag">Revenue alto</span>
+          </div>
+        </div>
+        <div class="seg-card" onclick="showJourneyDetail('p4')">
+          <div class="seg-icon">&#128218;</div>
+          <div class="seg-name">P4: Adulto Autodidacta</div>
+          <div class="seg-desc">30-60 anos. Curioso, no tech, quiere no quedarse atras.</div>
+          <div class="seg-tags">
+            <span class="seg-tag b2c">B2C</span>
+            <span class="seg-tag">$0-$800k COP</span>
+            <span class="seg-tag">FB/WhatsApp</span>
+            <span class="seg-tag">Volumen alto</span>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="color:var(--accent3);margin-top:24px;">B2B — Empresas</h4>
+      <div class="seg-grid">
+        <div class="seg-card" onclick="showJourneyDetail('e1')">
+          <div class="seg-icon">&#127970;</div>
+          <div class="seg-name">E1: Small Business</div>
+          <div class="seg-desc">1-20 empleados. Fundador hace todo, necesita automatizar para escalar.</div>
+          <div class="seg-tags">
+            <span class="seg-tag b2b">B2B</span>
+            <span class="seg-tag">$200k-$800k</span>
+            <span class="seg-tag">1-3 sem ciclo</span>
+            <span class="seg-tag">Puente B2C</span>
+          </div>
+        </div>
+        <div class="seg-card" onclick="showJourneyDetail('e2')">
+          <div class="seg-icon">&#127963;</div>
+          <div class="seg-name">E2: Enterprise / Mid-Market</div>
+          <div class="seg-desc">21-200 empleados. Pipeline lento, equipo inconsistente, necesita sistema.</div>
+          <div class="seg-tags">
+            <span class="seg-tag b2b">B2B</span>
+            <span class="seg-tag">$2M-$8M</span>
+            <span class="seg-tag">4-8 sem ciclo</span>
+            <span class="seg-tag">Recurrente</span>
+          </div>
+        </div>
+        <div class="seg-card" onclick="showJourneyDetail('e3')">
+          <div class="seg-icon">&#127964;</div>
+          <div class="seg-name">E3: Corporate</div>
+          <div class="seg-desc">200+ empleados. Adopcion a escala con governance y compliance.</div>
+          <div class="seg-tags">
+            <span class="seg-tag b2b">B2B</span>
+            <span class="seg-tag">$10M-$50M+</span>
+            <span class="seg-tag">8-16 sem ciclo</span>
+            <span class="seg-tag">Contrato anual</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ JOURNEY GENERAL ============ -->
+  <div id="journey-general" class="section">
+    <div class="card">
+      <h3>Customer Journey General (J0) — North Star</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Vista maestra que aplica a todos los segmentos. Cada CJ individual hereda estas fases y MOTs.</p>
+
+      <div class="phase-timeline">
+        <div class="phase-item" style="background: linear-gradient(180deg, var(--surface) 0%, rgba(165,180,252,.08) 100%);">
+          <div class="phase-num">FASE F0</div>
+          <div class="phase-name">Awareness</div>
+          <div class="phase-emotion">&#129300;</div>
+          <div class="phase-thought">"Algo debe cambiar... escucho mucho sobre IA pero no se por donde"</div>
+          <div class="phase-details">
+            <dt>Canales</dt><dd>Web, LinkedIn, IG, referrals</dd>
+            <dt>Pain Point</dt><dd>Sobrecarga informativa</dd>
+            <dt>KPI</dt><dd>Trafico, leads, CTR</dd>
+          </div>
+        </div>
+        <div class="phase-item" style="background: linear-gradient(180deg, var(--surface) 0%, rgba(165,180,252,.12) 100%);">
+          <div class="phase-num">FASE F1</div>
+          <div class="phase-name">Diagnostico</div>
+          <div class="phase-emotion">&#128558;</div>
+          <div class="phase-thought">"Quiero saber donde estoy parado/a realmente"</div>
+          <div class="phase-details">
+            <dt>Canales</dt><dd>1:1 video, email</dd>
+            <dt>Pain Point</dt><dd>Miedo a ser juzgado</dd>
+            <dt>KPI</dt><dd>Conv. lead→diag, NPS</dd>
+          </div>
+        </div>
+        <div class="phase-item" style="background: linear-gradient(180deg, var(--surface) 0%, rgba(165,180,252,.16) 100%);">
+          <div class="phase-num">FASE F2</div>
+          <div class="phase-name">Diseno</div>
+          <div class="phase-emotion">&#128522;</div>
+          <div class="phase-thought">"Ya entiendo mi situacion. Necesito un plan"</div>
+          <div class="phase-details">
+            <dt>Canales</dt><dd>Video, email, WhatsApp</dd>
+            <dt>Pain Point</dt><dd>Salto de precio</dd>
+            <dt>KPI</dt><dd>Conv. diag→diseno, ticket</dd>
+          </div>
+        </div>
+        <div class="phase-item" style="background: linear-gradient(180deg, var(--surface) 0%, rgba(165,180,252,.22) 100%);">
+          <div class="phase-num">FASE F3</div>
+          <div class="phase-name">Practica</div>
+          <div class="phase-emotion">&#129321;</div>
+          <div class="phase-thought">"Estoy aprendiendo cosas que puedo aplicar HOY"</div>
+          <div class="phase-details">
+            <dt>Canales</dt><dd>Plataforma, video, WA</dd>
+            <dt>Pain Point</dt><dd>Frustracion inicial</dd>
+            <dt>KPI</dt><dd>Asistencia, NPS, aplicacion</dd>
+          </div>
+        </div>
+        <div class="phase-item" style="background: linear-gradient(180deg, var(--surface) 0%, rgba(165,180,252,.28) 100%);">
+          <div class="phase-num">FASE F4</div>
+          <div class="phase-name">Autonomia</div>
+          <div class="phase-emotion">&#128170;</div>
+          <div class="phase-thought">"Ya no necesito que me guien. Puedo solo/a"</div>
+          <div class="phase-details">
+            <dt>Canales</dt><dd>Async, check-in mensual</dd>
+            <dt>Pain Point</dt><dd>Regresion a viejos habitos</dd>
+            <dt>KPI</dt><dd>>80% autonomo, NPS post</dd>
+          </div>
+        </div>
+        <div class="phase-item" style="background: linear-gradient(180deg, var(--surface) 0%, rgba(165,180,252,.35) 100%);">
+          <div class="phase-num">FASE F5</div>
+          <div class="phase-name">Advocacy</div>
+          <div class="phase-emotion">&#127775;</div>
+          <div class="phase-thought">"Esto cambio mi vida. Otros necesitan saber"</div>
+          <div class="phase-details">
+            <dt>Canales</dt><dd>LinkedIn, boca a boca</dd>
+            <dt>Pain Point</dt><dd>No saber como referir</dd>
+            <dt>KPI</dt><dd>Referral rate >25%</dd>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Curva Emocional General</h3>
+      <div class="emotion-curve">
+        <svg viewBox="0 0 600 160" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#a5b4fc;stop-opacity:0.15" />
+              <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0.15" />
+            </linearGradient>
+          </defs>
+          <!-- Grid lines -->
+          <line x1="0" y1="80" x2="600" y2="80" stroke="#2a3550" stroke-width="1" stroke-dasharray="4"/>
+          <!-- Curve -->
+          <path d="M 0,110 C 50,105 80,100 100,80 C 120,60 150,55 200,50 C 250,45 280,40 300,25 C 350,15 380,20 400,30 C 420,35 440,25 500,15 C 530,10 560,8 600,5" fill="none" stroke="url(#curveGrad)" stroke-width="3"/>
+          <path d="M 0,110 C 50,105 80,100 100,80 C 120,60 150,55 200,50 C 250,45 280,40 300,25 C 350,15 380,20 400,30 C 420,35 440,25 500,15 C 530,10 560,8 600,5 L 600,160 L 0,160 Z" fill="url(#curveGrad)" opacity="0.2"/>
+          <!-- Phase labels -->
+          <text x="0" y="155" font-size="10" fill="#64748b">F0</text>
+          <text x="100" y="155" font-size="10" fill="#64748b">F1</text>
+          <text x="200" y="155" font-size="10" fill="#64748b">F2</text>
+          <text x="300" y="155" font-size="10" fill="#64748b">F3</text>
+          <text x="400" y="155" font-size="10" fill="#64748b">F4</text>
+          <text x="520" y="155" font-size="10" fill="#64748b">F5</text>
+          <!-- Emoji points -->
+          <text x="0" y="105" font-size="18">&#129300;</text>
+          <text x="95" y="72" font-size="18">&#128558;</text>
+          <text x="195" y="42" font-size="18">&#128522;</text>
+          <text x="295" y="18" font-size="18">&#129321;</text>
+          <text x="395" y="25" font-size="18">&#128170;</text>
+          <text x="520" y="5" font-size="18">&#127775;</text>
+          <!-- Satisfaction line -->
+          <line x1="0" y1="80" x2="600" y2="80" stroke="#f59e0b" stroke-width="1" stroke-dasharray="8,4" opacity="0.5"/>
+          <text x="510" y="77" font-size="9" fill="#f59e0b">Umbral satisfaccion</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ JOURNEYS B2C ============ -->
+  <div id="journeys-b2c" class="section">
+    <div id="b2c-overview">
+      <div class="card">
+        <h3>Customer Journeys B2C — Personas</h3>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">4 journeys diferenciados. Click en cada arquetipo para ver el detalle completo.</p>
+
+        <div class="seg-grid" id="b2c-cards">
+          <div class="seg-card" onclick="showB2CDetail('p1')">
+            <div class="seg-icon">&#128188;</div>
+            <div class="seg-name">Andrea, 34 — Marketing Manager</div>
+            <div class="seg-desc"><strong>P1: Profesional en Transicion.</strong> Siente que la IA cambia su industria y sus juniors ya usan ChatGPT mejor que ella.</div>
+            <div style="margin-top:12px;font-size:11px;color:var(--text3);">Curva: &#128560; → &#128558; → &#128522; → &#129321; → &#128170; → &#127775;</div>
+          </div>
+          <div class="seg-card" onclick="showB2CDetail('p2')">
+            <div class="seg-icon">&#127891;</div>
+            <div class="seg-name">Santiago, 22 — Estudiante Administracion</div>
+            <div class="seg-desc"><strong>P2: Estudiante Universitario.</strong> Ve que todos hablan de IA pero en la U no le ensenan a usarla.</div>
+            <div style="margin-top:12px;font-size:11px;color:var(--text3);">Curva: &#128556; → &#129299; → &#129297; → &#129321; → &#128526; → &#128293;</div>
+          </div>
+          <div class="seg-card" onclick="showB2CDetail('p3')">
+            <div class="seg-icon">&#128084;</div>
+            <div class="seg-name">Carlos, 48 — VP Comercial</div>
+            <div class="seg-desc"><strong>P3: Ejecutivo C-Level.</strong> Su CEO le dijo que necesitan estrategia IA y no sabe por donde empezar.</div>
+            <div style="margin-top:12px;font-size:11px;color:var(--text3);">Curva: &#128548; → &#129488; → &#128527; → &#129321; → &#128084; → &#127942;</div>
+          </div>
+          <div class="seg-card" onclick="showB2CDetail('p4')">
+            <div class="seg-icon">&#128218;</div>
+            <div class="seg-name">Marta, 52 — Contadora Independiente</div>
+            <div class="seg-desc"><strong>P4: Adulta Autodidacta.</strong> Sus hijos usan ChatGPT y ella siente que el mundo cambio sin avisarle.</div>
+            <div style="margin-top:12px;font-size:11px;color:var(--text3);">Curva: &#128543; → &#128522; → &#128556; → &#128562; → &#128516; → &#129303;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparativa B2C -->
+      <div class="card">
+        <h3>Comparativa Cruzada B2C</h3>
+        <table class="matrix-table">
+          <tr>
+            <th>Dimension</th><th>P1 Profesional</th><th>P2 Estudiante</th><th>P3 Ejecutivo</th><th>P4 Autodidacta</th>
+          </tr>
+          <tr><td><strong>Trigger</strong></td><td>Competencia laboral</td><td>FOMO academico</td><td>Presion board</td><td>Brecha generacional</td></tr>
+          <tr><td><strong>Canal entrada</strong></td><td>LinkedIn</td><td>IG/TikTok</td><td>Referral</td><td>Facebook/WA</td></tr>
+          <tr><td><strong>Diagnostico</strong></td><td>1:1 video</td><td>Auto-quiz digital</td><td>VIP ejecutivo</td><td>Llamada amigable</td></tr>
+          <tr><td><strong>Producto estrella</strong></td><td>Bootcamp $800k</td><td>Grupal/beca</td><td>Liderazgo $2.4M</td><td>Ofimatica $800k</td></tr>
+          <tr><td><strong>Barrera</strong></td><td>Tiempo + precio</td><td>Precio</td><td>Agenda</td><td>Miedo tech</td></tr>
+          <tr><td><strong>Aha! Moment</strong></td><td>Prompt ahorra 3h</td><td>Mejor nota</td><td>Board aprueba</td><td>Doc automatizado</td></tr>
+          <tr><td><strong>Advocacy</strong></td><td>LinkedIn posts</td><td>Instagram/campus</td><td>Referral C-level</td><td>Boca a boca</td></tr>
+          <tr><td><strong>Potencial upsell</strong></td><td>Ventas/Liderazgo</td><td>Embajador U</td><td>Contrato B2B</td><td>2do bootcamp</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ JOURNEYS B2B ============ -->
+  <div id="journeys-b2b" class="section">
+    <div class="card">
+      <h3>Customer Journeys B2B — Empresas</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">3 journeys diferenciados por complejidad y tamano.</p>
+
+      <div class="seg-grid">
+        <div class="seg-card" onclick="showB2BDetail('e1')">
+          <div class="seg-icon">&#127970;</div>
+          <div class="seg-name">"Cafe Digital" — Agencia de 8 personas</div>
+          <div class="seg-desc"><strong>E1: Small Business.</strong> Fundadora hace todo. Un competidor le quito un cliente usando IA.</div>
+          <div class="seg-tags"><span class="seg-tag b2b">1-3 sem</span><span class="seg-tag">$200k-$800k</span></div>
+        </div>
+        <div class="seg-card" onclick="showB2BDetail('e2')">
+          <div class="seg-icon">&#127963;</div>
+          <div class="seg-name">"TechForce" — Servicios TI 85 empleados</div>
+          <div class="seg-desc"><strong>E2: Enterprise.</strong> Pipeline de $2B pero win rate del 18%. CEO quiere +30% sin contratar mas.</div>
+          <div class="seg-tags"><span class="seg-tag b2b">4-8 sem</span><span class="seg-tag">$2M-$8M</span></div>
+        </div>
+        <div class="seg-card" onclick="showB2BDetail('e3')">
+          <div class="seg-icon">&#127964;</div>
+          <div class="seg-name">"GlobalManufactura" — 400 empleados</div>
+          <div class="seg-desc"><strong>E3: Corporate.</strong> VP Innovacion tiene mandato del board de adoptar IA a escala.</div>
+          <div class="seg-tags"><span class="seg-tag b2b">8-16 sem</span><span class="seg-tag">$10M-$50M+</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Puentes B2C→B2B -->
+    <div class="card">
+      <h3>Puentes B2C &#8594; B2B</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Los segmentos B2C alimentan el pipeline B2B cuando los clientes satisfechos traen a sus organizaciones.</p>
+      <div class="bridge-visual">
+        <div class="bridge-node b2c"><div class="bn-icon">&#128084;</div><div class="bn-label">P3 Ejecutivo</div><div class="bn-sub">Satisfecho con coaching</div></div>
+        <div class="bridge-arrow">&#10132;</div>
+        <div class="bridge-node b2b"><div class="bn-icon">&#127963;</div><div class="bn-label">E2/E3 Empresa</div><div class="bn-sub">"Mi empresa necesita esto"</div></div>
+      </div>
+      <div class="bridge-visual">
+        <div class="bridge-node b2c"><div class="bn-icon">&#128188;</div><div class="bn-label">P1 Profesional</div><div class="bn-sub">Aplica en su trabajo</div></div>
+        <div class="bridge-arrow">&#10132;</div>
+        <div class="bridge-node b2b"><div class="bn-icon">&#127970;</div><div class="bn-label">E1/E2 Empresa</div><div class="bn-sub">"Mi jefe deberia conocer"</div></div>
+      </div>
+      <div class="bridge-visual">
+        <div class="bridge-node b2c"><div class="bn-icon">&#127891;</div><div class="bn-label">P2 Estudiante</div><div class="bn-sub">Se gradua y emprende</div></div>
+        <div class="bridge-arrow">&#10132;</div>
+        <div class="bridge-node b2b"><div class="bn-icon">&#127970;</div><div class="bn-label">E1 Small Biz</div><div class="bn-sub">Startup propia</div></div>
+      </div>
+    </div>
+
+    <!-- Comparativa B2B -->
+    <div class="card">
+      <h3>Comparativa Cruzada B2B</h3>
+      <table class="matrix-table">
+        <tr><th>Dimension</th><th>E1 Small Biz</th><th>E2 Enterprise</th><th>E3 Corporate</th></tr>
+        <tr><td><strong>Decision Maker</strong></td><td>Fundador/CEO</td><td>Gerente + Director</td><td>C-Suite + Comite</td></tr>
+        <tr><td><strong>Ciclo venta</strong></td><td>1-3 semanas</td><td>4-8 semanas</td><td>8-16 semanas</td></tr>
+        <tr><td><strong>Ticket</strong></td><td>$200k-$800k</td><td>$2M-$8M</td><td>$10M-$50M+</td></tr>
+        <tr><td><strong>Discovery</strong></td><td>Express 30 min</td><td>2 sesiones</td><td>3-5 sesiones multi-area</td></tr>
+        <tr><td><strong>Producto</strong></td><td>Workshop + Bootcamp</td><td>Bootcamp Corp + Acomp.</td><td>Programa a medida</td></tr>
+        <tr><td><strong>Barrera</strong></td><td>Cashflow</td><td>Aprobacion multiple</td><td>Procurement + compliance</td></tr>
+        <tr><td><strong>Aha! Moment</strong></td><td>Dia 2 (propuesta rapida)</td><td>Semana 4 (deal cerrado)</td><td>Mes 2 (area reporta ROI)</td></tr>
+        <tr><td><strong>Advocacy</strong></td><td>Networking local</td><td>Caso emblematico</td><td>Board-to-board</td></tr>
+        <tr><td><strong>Revenue model</strong></td><td>One-shot</td><td>Recurrente (QBRs)</td><td>Contrato anual</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ MATRIX ============ -->
+  <div id="matrix" class="section">
+    <div class="card">
+      <h3>Matriz Cruzada: 7 Segmentos x 6 Fases</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Cada celda muestra el touchpoint/canal dominante para ese segmento en esa fase.</p>
+
+      <div style="overflow-x:auto;">
+        <table class="matrix-table">
+          <tr>
+            <th></th><th>F0 Awareness</th><th>F1 Diagnostico</th><th>F2 Diseno</th><th>F3 Practica</th><th>F4 Autonomia</th><th>F5 Advocacy</th>
+          </tr>
+          <tr><td><strong style="color:#a5b4fc">P1</strong> Profesional</td><td>LinkedIn, IG, Ref</td><td>Diag 1:1 Express</td><td>Ruta Personal</td><td>Bootcamp IA+Certif</td><td>Autonomy Kit Personal</td><td>LinkedIn Testimonios</td></tr>
+          <tr><td><strong style="color:#a5b4fc">P2</strong> Estudiante</td><td>IG, TikTok, Campus</td><td>Auto-diag Digital</td><td>Micro-Ruta</td><td>Bootcamp Grupal</td><td>Templates + Prompts</td><td>UGC, Referral Grupal</td></tr>
+          <tr><td><strong style="color:#a5b4fc">P3</strong> Ejecutivo</td><td>LinkedIn, Referrals</td><td>Diag VIP Ejecutivo</td><td>Ruta Executive</td><td>Coaching 1:1 Exec</td><td>Mentoria Async VIP</td><td>Speaking, Case Study</td></tr>
+          <tr><td><strong style="color:#a5b4fc">P4</strong> Autodidacta</td><td>Facebook, WhatsApp</td><td>Diag Amigable</td><td>Ruta Basica</td><td>Bootcamp Ofimatica</td><td>Guias Paso a Paso</td><td>Boca a Boca</td></tr>
+          <tr style="border-top:2px solid var(--accent3)"><td><strong style="color:#67e8f9">E1</strong> Small Biz</td><td>IG, WA, Local</td><td>Diag Biz Express</td><td>Workshop Express</td><td>Bootcamp Equipo</td><td>Playbook Basico</td><td>Referral Alianza</td></tr>
+          <tr><td><strong style="color:#67e8f9">E2</strong> Enterprise</td><td>LinkedIn, Aliados</td><td>Discovery Corporat.</td><td>Roadmap + B.Case</td><td>Bootcamp Corp+Impl</td><td>Champions Internos</td><td>Case Study, QBR</td></tr>
+          <tr><td><strong style="color:#67e8f9">E3</strong> Corporate</td><td>C-Level Referrals</td><td>Discovery Multi-area</td><td>Programa A medida</td><td>Deploy Multi-area</td><td>Cultura AI-native</td><td>Expansion Upsell</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Prioridad -->
+    <div class="card">
+      <h3>Prioridad de Desarrollo de Journeys</h3>
+      <div class="priority-chart">
+        <div class="priority-quad">
+          <div class="pq-title">P0 — Critico</div>
+          <div class="priority-item p0">J0: CJ General MetodologIA</div>
+        </div>
+        <div class="priority-quad">
+          <div class="pq-title">P1 — Alta</div>
+          <div class="priority-item p1">J1: CJ Profesional (P1)</div>
+          <div class="priority-item p1">J2: CJ Ejecutivo (P3)</div>
+          <div class="priority-item p1">J3: CJ Enterprise (E2)</div>
+        </div>
+        <div class="priority-quad">
+          <div class="pq-title">P2 — Media</div>
+          <div class="priority-item p2">J4: CJ Estudiante (P2)</div>
+          <div class="priority-item p2">J5: CJ Small Biz (E1)</div>
+          <div class="priority-item p2">J6: CJ Corporate (E3)</div>
+        </div>
+        <div class="priority-quad">
+          <div class="pq-title">P3 — Baja</div>
+          <div class="priority-item p3">J7: CJ Autodidacta (P4)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GAPS ============ -->
+  <div id="gaps" class="section">
+    <div class="card">
+      <h3>Gaps Documentales Detectados</h3>
+      <div class="gap-item">
+        <div class="gap-badge resolved">RESUELTO</div>
+        <div class="gap-info">
+          <div class="gap-title">G1: No existe SOP de delivery/practica B2C</div>
+          <div class="gap-desc">Fase F3 sin procedimiento formalizado para personas</div>
+          <div class="gap-note">v2.0 creado 2026-03-24</div>
+        </div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-badge resolved">RESUELTO</div>
+        <div class="gap-info">
+          <div class="gap-title">G2: No existe SOP de delivery/practica B2B</div>
+          <div class="gap-desc">Fase F3 sin procedimiento formalizado para empresas</div>
+          <div class="gap-note">v2.0 creado 2026-03-24</div>
+        </div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-badge med">MEDIO</div>
+        <div class="gap-info">
+          <div class="gap-title">G3: Blueprint web desactualizado (4 fases vs 6)</div>
+          <div class="gap-desc">metodologia.info/ruta/service_blueprint.html necesita actualizacion</div>
+        </div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-badge resolved">RESUELTO</div>
+        <div class="gap-info">
+          <div class="gap-title">G4: No habia journey maps formalizados</div>
+          <div class="gap-desc">RESUELTO con este paquete documental</div>
+        </div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-badge med">MEDIO</div>
+        <div class="gap-info">
+          <div class="gap-title">G5: P2 (estudiantes) sin SOPs propios</div>
+          <div class="gap-desc">Crear variantes simplificadas de SOPs personas</div>
+        </div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-badge med">MEDIO</div>
+        <div class="gap-info">
+          <div class="gap-title">G6: E3 (corporate) sin proceso diferenciado</div>
+          <div class="gap-desc">Crear proceso enterprise con governance y compliance</div>
+        </div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-badge med">MEDIO</div>
+        <div class="gap-info">
+          <div class="gap-title">G7: Assumptions Register pendiente de validación Q2</div>
+          <div class="gap-desc">Registro de supuestos clave del modelo de delivery y segmentacion</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Assumptions Register (Supuestos Clave)</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Supuestos validados y por validar del sistema operativo:</p>
+      <table class="matrix-table">
+        <tr><th>#</th><th>Supuesto</th><th>Critico</th><th>Status</th><th>Validacion</th></tr>
+        <tr><td>A1</td><td>F3 es el momento de "aha" que motiva referrals (MOT-3)</td><td style="color:#ef4444">Si</td><td style="color:#6ee7b7">Validado</td><td>NPS F3 > 8</td></tr>
+        <tr><td>A2</td><td>B2C/B2B requieren SOPs completamente diferentes en F3</td><td style="color:#ef4444">Si</td><td style="color:#f59e0b">En validacion</td><td>Q2 2026</td></tr>
+        <tr><td>A3</td><td>P1 genera 40% del revenue, P3 genera 35%</td><td style="color:#ef4444">Si</td><td style="color:#6ee7b7">Validado</td><td>Pipeline analysis</td></tr>
+        <tr><td>A4</td><td>Conversion F0→F1 es gating factor (debe ser >40%)</td><td style="color:#f59e0b">Medio</td><td style="color:#6ee7b7">Validado</td><td>CTR 3.5% avg</td></tr>
+        <tr><td>A5</td><td>E3 needs 3-5 discovery sesiones vs E1 needs 1</td><td style="color:#f59e0b">Medio</td><td style="color:#f59e0b">En validacion</td><td>Q2 2026</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Puntos de Friccion Mapeados</h3>
+      <div class="friction-bar">
+        <div class="friction-label">PF-1: Sobrecarga opciones landing (F0)</div>
+        <div class="friction-fill high" style="width:80%;"></div>
+      </div>
+      <div class="friction-bar">
+        <div class="friction-label">PF-2: Cuestionario percibido largo (F1)</div>
+        <div class="friction-fill med" style="width:50%;"></div>
+      </div>
+      <div class="friction-bar">
+        <div class="friction-label">PF-3: Salto de precio gratis→pago (F1→F2)</div>
+        <div class="friction-fill high" style="width:85%;"></div>
+      </div>
+      <div class="friction-bar">
+        <div class="friction-label">PF-4: Falta seguimiento entre sesiones (F3)</div>
+        <div class="friction-fill med" style="width:55%;"></div>
+      </div>
+      <div class="friction-bar">
+        <div class="friction-label">PF-5: "Ya aprendi" prematuro (F3→F4)</div>
+        <div class="friction-fill high" style="width:75%;"></div>
+      </div>
+      <div class="friction-bar">
+        <div class="friction-label">PF-6: No saber como referir (F5)</div>
+        <div class="friction-fill med" style="width:45%;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Oportunidades de Mejora</h3>
+      <table class="matrix-table">
+        <tr><th>#</th><th>Oportunidad</th><th>Fase</th><th>Impacto</th></tr>
+        <tr><td>O1</td><td>Automatizar nurturing post-awareness con IA</td><td>F0→F1</td><td style="color:#6ee7b7">+30% conversion</td></tr>
+        <tr><td>O2</td><td>Auto-diagnostico digital para P2 y P4</td><td>F1</td><td style="color:#6ee7b7">-50% costo adquisicion</td></tr>
+        <tr><td>O3</td><td>Micro-oferta "Taller $200k" como escalon</td><td>F1→F2</td><td style="color:#6ee7b7">+25% conversion</td></tr>
+        <tr><td>O4</td><td>WhatsApp bot check-ins mid-programa</td><td>F3</td><td style="color:#6ee7b7">-40% desercion</td></tr>
+        <tr><td>O5</td><td>Dashboard progreso visible para cliente</td><td>F3→F4</td><td style="color:#6ee7b7">+20% engagement</td></tr>
+        <tr><td>O6</td><td>Kit referral digital con tracking auto</td><td>F5</td><td style="color:#6ee7b7">+50% referral rate</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ RACI ============ -->
+  <div id="raci" class="section">
+    <div class="card">
+      <h3>RACI Matrix — Roles x Fases</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Responsabilidad, Acountability, Consulted, Informed por fase del blueprint:</p>
+
+      <div style="overflow-x:auto;">
+        <div class="raci-grid">
+          <div class="raci-role">Rol / Fase</div>
+          <div class="raci-cell raci-phase">F0 Awareness</div>
+          <div class="raci-cell raci-phase">F1 Diagnostico</div>
+          <div class="raci-cell raci-phase">F2 Diseno</div>
+          <div class="raci-cell raci-phase">F3 Practica</div>
+          <div class="raci-cell raci-phase">F4 Autonomia</div>
+          <div class="raci-cell raci-phase">F5 Advocacy</div>
+
+          <div class="raci-role">Leadership</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-a">A</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-i">I</div>
+
+          <div class="raci-role">Coach</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-i">I</div>
+
+          <div class="raci-role">Sales</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-c">C</div>
+
+          <div class="raci-role">Content</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-i">I</div>
+
+          <div class="raci-role">Tech/Platform</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-i">I</div>
+
+          <div class="raci-role">Operations</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-c">C</div>
+
+          <div class="raci-role">Client Success</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-i">I</div>
+          <div class="raci-cell raci-c">C</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+          <div class="raci-cell raci-r">R</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Escalation Matrix</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Criterios de escalación entre fases y puntos de decision clave:</p>
+      <table class="matrix-table">
+        <tr><th>Escenario</th><th>Trigger</th><th>Owner</th><th>Resolucion</th></tr>
+        <tr><td>Cliente No retorna (F0→F1)</td><td>3+ intentos sin respuesta</td><td>Sales</td><td>Cambio canal o propuesta alternativa</td></tr>
+        <tr><td>Bajo NPS Diagnostico (F1)</td><td>NPS < 6</td><td>Coach</td><td>Sesion adicional o cambio enfocar</td></tr>
+        <tr><td>Friccion Precio (F1→F2)</td><td>Cliente rechaza propuesta</td><td>Leadership</td><td>Micro-oferta o plan flexible</td></tr>
+        <tr><td>Baja Asistencia (F3)</td><td>< 50% asistencia</td><td>Coach</td><td>Check-in personal o cambio horario</td></tr>
+        <tr><td>Riesgo Abandono (F3→F4)</td><td>Sentiment negativo 2+ sesiones</td><td>Coach</td><td>Plan intervencion o coaching intensivo</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ DECISIONES ============ -->
+  <div id="decisiones" class="section">
+    <div class="card">
+      <h3>Decision Log (Decisiones Criticas del Modelo)</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Decisiones arquitectonicas clave del blueprint y su status de reversibilidad:</p>
+
+      <div style="margin-bottom:16px;"><strong style="color:var(--accent3);">Decisiones ACTIVAS (Vigentes)</strong></div>
+
+      <div class="decision-card">
+        <div class="decision-id">ADR-001</div>
+        <div class="decision-title">6 fases vs 4 fases originales (F0 Awareness + F5 Advocacy)</div>
+        <div class="decision-meta">
+          <span class="decision-badge decision-status">Active</span>
+          <span class="decision-badge decision-risk-low">Risk: Low</span>
+          <span class="decision-dots" style="color:#6ee7b7;">● ● ● ● ●</span>
+        </div>
+        <div class="decision-summary">Expansion to 6 phases provides better customer segmentation and clearer journey mapping. Reversibility: High (can revert to 4-phase if needed).</div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-id">ADR-002</div>
+        <div class="decision-title">Separate B2C y B2B SOPs completamente (no overlap)</div>
+        <div class="decision-meta">
+          <span class="decision-badge decision-status">Active</span>
+          <span class="decision-badge decision-risk-med">Risk: Medium</span>
+          <span class="decision-dots" style="color:var(--warning);">● ● ● ●</span>
+        </div>
+        <div class="decision-summary">Different personas require different coaching styles. Reduces operational complexity. Reversibility: Medium (would need template refactoring).</div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-id">ADR-003</div>
+        <div class="decision-title">P1 (Profesional) como segmento prioritario (40% resources)</div>
+        <div class="decision-meta">
+          <span class="decision-badge decision-status">Active</span>
+          <span class="decision-badge decision-risk-high">Risk: High</span>
+          <span class="decision-dots" style="color:var(--danger);">● ● ●</span>
+        </div>
+        <div class="decision-summary">Highest LTV and referral potential. Reversibility: Low (requires full resource reallocation if changed).</div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-id">ADR-004</div>
+        <div class="decision-title">F3 Practica as bottleneck phase (max 10 clientes/coach)</div>
+        <div class="decision-meta">
+          <span class="decision-badge decision-status">Active</span>
+          <span class="decision-badge decision-risk-med">Risk: Medium</span>
+          <span class="decision-dots" style="color:var(--warning);">● ● ●</span>
+        </div>
+        <div class="decision-summary">Quality over scale during delivery. Maintains NPS > 70. Reversibility: Medium (impacts hiring and capacity planning).</div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-id">ADR-005</div>
+        <div class="decision-title">MOT-3 "Aha!" es metric canonica de CJ health</div>
+        <div class="decision-meta">
+          <span class="decision-badge decision-status">Active</span>
+          <span class="decision-badge decision-risk-low">Risk: Low</span>
+          <span class="decision-dots" style="color:#6ee7b7;">● ● ● ●</span>
+        </div>
+        <div class="decision-summary">Single measure of journey success. Correlates with NPS, referrals, and long-term retention. Reversibility: High.</div>
+      </div>
+
+      <div style="margin-top:20px;margin-bottom:16px;"><strong style="color:var(--text3);">Decisiones DEPRECATED (Historicas)</strong></div>
+
+      <div class="decision-card" style="opacity:0.7;">
+        <div class="decision-id">ADR-000</div>
+        <div class="decision-title">4-phase original modelo (Diagnostico→Autonomia) — DEPRECATED 2026-03</div>
+        <div class="decision-meta">
+          <span class="decision-badge" style="background:rgba(100,116,139,.2);color:var(--text3);">Deprecated</span>
+          <span class="decision-badge decision-risk-low">Risk: Low</span>
+          <span class="decision-dots" style="color:var(--text3);">● ●</span>
+        </div>
+        <div class="decision-summary">Replaced by 6-phase model. Archived but still referenced in v1 documentation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HANDOFFS ============ -->
+  <div id="handoffs" class="section">
+    <div class="card">
+      <h3>Handoff Protocol — F0→F1→F2→F3→F4→F5</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Flujo de transferencia entre fases con SLAs, artefactos y quality gates:</p>
+
+      <div style="overflow-x:auto;margin:20px 0;">
+        <div class="handoff-flow">
+          <div class="handoff-node">F0 AWARE</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-sla">5d SLA</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-node">F1 DIAG</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-sla">7d SLA</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-node">F2 DISE</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-sla">14d SLA</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-node">F3 PRAC</div>
+        </div>
+        <div class="handoff-flow">
+          <div class="handoff-node">F3 PRAC</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-sla">21d SLA</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-node">F4 AUTO</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-sla">30d SLA</div>
+          <div class="handoff-arrow">→</div>
+          <div class="handoff-node">F5 ADVO</div>
+        </div>
+      </div>
+
+      <div style="margin:20px 0;"><strong>Artefactos transferidos por handoff:</strong></div>
+      <table class="matrix-table">
+        <tr><th>Handoff</th><th>Artefactos Enviados</th><th>Owner</th><th>Quality Gates</th></tr>
+        <tr><td><strong>F0→F1</strong></td><td>Lead summary, Producto recomendado, Horarios disponibles</td><td>Sales</td><td>Email aceptacion confirmada</td></tr>
+        <tr><td><strong>F1→F2</strong></td><td>Baseline Report, Oportunidad mapa, Assessment resultado</td><td>Coach</td><td>Cliente score > 4/10, Decision fecha clara</td></tr>
+        <tr><td><strong>F2→F3</strong></td><td>Roadmap personal, KPIs dashboard, Calendario sesiones</td><td>Leadership</td><td>Contrato firmado, Pago recibido ✓ GATE</td></tr>
+        <tr><td><strong>F3→F4</strong></td><td>Autonomy Kit, Templates personalizados, Playlist recursos</td><td>Coach</td><td>85%+ asistencia, NPS >= 8 ✓ GATE</td></tr>
+        <tr><td><strong>F4→F5</strong></td><td>Success case, Referral link, Champion badge</td><td>Client Success</td><td>NPS post >= 8, Permiso para case study</td></tr>
+      </table>
+
+      <div style="margin:20px 0;"><strong>Regression Paths (Paths cuando cliente regresa a fase anterior):</strong></div>
+      <div class="handoff-flow" style="margin:12px 0;">
+        <div class="handoff-node" style="background:rgba(239,68,68,.2);border-color:var(--danger);">F4 AUTO</div>
+        <div style="font-size:18px;color:#b91c1c;">⤴</div>
+        <div class="handoff-node" style="background:rgba(239,68,68,.2);border-color:var(--danger);">F3 PRAC</div>
+        <div style="font-size:18px;color:#b91c1c;">⤴</div>
+        <div class="handoff-node" style="background:rgba(239,68,68,.2);border-color:var(--danger);">F2 DISE</div>
+      </div>
+      <p style="font-size:12px;color:var(--text2);">Regresion triggers: Baja asistencia, NPS drop > 2 puntos, Cambio de contexto cliente. Handled by Coach con re-engagement plan.</p>
+    </div>
+  </div>
+
+  <!-- ============ WEB RENO ============ -->
+  <div id="web-reno" class="section">
+    <div class="card">
+      <h3>Renovacion Web — metodologia.info</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Analisis del estado actual vs. estado objetivo para la experiencia web.</p>
+
+      <div class="reno-comparison">
+        <div class="reno-col old">
+          <h4>&#10060; Estado Actual (v1)</h4>
+          <div class="reno-item">4 fases lineales (Diagnostico→Autonomia)</div>
+          <div class="reno-item">3 roles: Tu, Juntos, Nosotros</div>
+          <div class="reno-item">2 tracks: Personas y Empresas</div>
+          <div class="reno-item">Metricas cualitativas</div>
+          <div class="reno-item">Fricciones no mapeadas</div>
+          <div class="reno-item">MOTs implicitos</div>
+          <div class="reno-item">Sin curva emocional visual</div>
+          <div class="reno-item">Sin sub-segmentacion</div>
+          <div class="reno-item">CTA unico general</div>
+        </div>
+        <div class="reno-col new">
+          <h4>&#9989; Estado Objetivo (v2)</h4>
+          <div class="reno-item">6 fases expandidas (Awareness→Advocacy)</div>
+          <div class="reno-item">6 capas estandar service design</div>
+          <div class="reno-item">7 sub-segmentos diferenciados</div>
+          <div class="reno-item">KPIs cuantitativos por fase</div>
+          <div class="reno-item">6 fricciones + mitigaciones</div>
+          <div class="reno-item">8 MOTs explicitos con targets</div>
+          <div class="reno-item">Curva emocional interactiva</div>
+          <div class="reno-item">Tabs "Soy Persona" / "Soy Empresa"</div>
+          <div class="reno-item">CTA diferenciado por fase y segmento</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Acciones de Renovacion Priorizadas</h3>
+      <table class="matrix-table">
+        <tr><th>#</th><th>Accion</th><th>Pagina Afectada</th><th>Prioridad</th></tr>
+        <tr><td>R1</td><td>Actualizar blueprint a 6 fases con MOTs interactivos</td><td>ruta/service_blueprint.html</td><td style="color:#fca5a5">P0</td></tr>
+        <tr><td>R2</td><td>Crear tabs de segmentacion B2C/B2B en landing</td><td>personas/index.html + empresas/index.html</td><td style="color:#fca5a5">P0</td></tr>
+        <tr><td>R3</td><td>Agregar social proof por fase (testimonios contextuales)</td><td>Todas las paginas</td><td style="color:#fcd34d">P1</td></tr>
+        <tr><td>R4</td><td>Implementar auto-diagnostico digital P2/P4</td><td>Nueva pagina</td><td style="color:#fcd34d">P1</td></tr>
+        <tr><td>R5</td><td>Mostrar metricas reales (+127% pipeline, etc.)</td><td>empresas/index.html</td><td style="color:#a5b4fc">P2</td></tr>
+        <tr><td>R6</td><td>Agregar curva emocional como elemento visual</td><td>ruta/index.html</td><td style="color:#a5b4fc">P2</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Elementos del Sitio Actual a Conservar</h3>
+      <p style="font-size:12px;color:var(--text2);">De la revision de metodologia.info, estos elementos tienen valor y deben mantenerse en la renovacion:</p>
+      <table class="matrix-table" style="margin-top:12px;">
+        <tr><th>Elemento</th><th>Ubicacion Actual</th><th>Accion</th></tr>
+        <tr><td>Metafora "Tu/Juntos/Nosotros"</td><td>Blueprint v1</td><td>Integrar como sub-narrativa dentro de las 6 capas</td></tr>
+        <tr><td>"The 100 Check Standard"</td><td>Landing principal</td><td>Mantener y vincular a KPIs del blueprint v2</td></tr>
+        <tr><td>Modelo escalonado de inversion</td><td>personas/index.html</td><td>Refinar con micro-oferta $200k como escalon</td></tr>
+        <tr><td>Dual B2B/B2C en nav</td><td>Menu principal</td><td>Expandir a sub-segmentos con tabs internos</td></tr>
+        <tr><td>Posicionamiento "Soberania Digital"</td><td>vision.html</td><td>Anclar como North Star de F4 (Autonomia)</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const section = document.getElementById(id);
+  if (section) {
+    section.classList.add('active');
+  }
+  // Find and activate the correct tab
+  document.querySelectorAll('.tab').forEach(tab => {
+    if (tab.getAttribute('onclick').includes(id)) {
+      tab.classList.add('active');
+    }
+  });
+}
+
+function showJourneyDetail(seg) {
+  const isB2C = seg.startsWith('p');
+  if (isB2C) {
+    showSection('journeys-b2c');
+  } else {
+    showSection('journeys-b2b');
+  }
+}
+
+function showB2CDetail(seg) {
+  showSection('journeys-b2c');
+}
+
+function showB2BDetail(seg) {
+  showSection('journeys-b2b');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v2.0">
+    <meta name="description" content="SOP: Diagnóstico de Madurez Digital — Proceso de Delivery MetodologIA">
+    <title>SOP: Diagnóstico de Madurez Digital — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f; --bg-2:#102346; --surface:#f7f4ec;
+            --accent:#00cde8; --gold:#ffd700; --green:#2ca56f;
+            --red:#dc5f5f; --orange:#e8a000; --purple:#9b59b6;
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0; --text-secondary:#999;
+            --border:#1a3a52; --hover-bg:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(0,205,232,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,205,232,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(0,205,232,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(0,205,232,.4);box-shadow:0 0 12px rgba(0,205,232,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(0,205,232,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(0,205,232,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(0,205,232,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(0,205,232,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(0,205,232,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(0,205,232,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Consultoria</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Diagnóstico de Madurez Digital</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Diagnóstico de Madurez Digital</h1>
+        <div class="subtitle">MetodologIA — Gobierno Operativo</div>
+        <div class="meta">Versión: 1.1 (Elevado 10x) | Fecha: 2026-03-24 | Certif. Moat: SOP-CON-DIAG-2401</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">13</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('objetivo-979b48')" aria-label="Ir a OBJETIVO">OBJETIVO</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-explcitos-c648d8')" aria-label="Ir a SUPUESTOS EXPLÍCITOS">SUPUESTOS EXPLÍCITOS</button>
+<button class="nav-btn" onclick="scrollToSection('lmites-del-proceso-5b91a0')" aria-label="Ir a LÍMITES DEL PROCESO">LÍMITES DEL PROCESO</button>
+<button class="nav-btn" onclick="scrollToSection('trigger-entrada-61c6e6')" aria-label="Ir a TRIGGER &amp; ENTRADA">TRIGGER &amp; ENTRADA</button>
+<button class="nav-btn" onclick="scrollToSection('responsables-01e009')" aria-label="Ir a RESPONSABLES">RESPONSABLES</button>
+<button class="nav-btn" onclick="scrollToSection('semana-1-discovery-34-das-71db78')" aria-label="Ir a SEMANA 1: DISCOVERY (3-4 DÍAS)">SEMANA 1: DISCOVERY (3-4 DÍAS)</button>
+<button class="nav-btn" onclick="scrollToSection('semana-2-anlisis-45-das-868b0f')" aria-label="Ir a SEMANA 2: ANÁLISIS (4-5 DÍAS)">SEMANA 2: ANÁLISIS (4-5 DÍAS)</button>
+<button class="nav-btn" onclick="scrollToSection('semana-23-sntesis-recomendaciones-4-das-e9842b')" aria-label="Ir a SEMANA 2-3: SÍNTESIS &amp; RECOMENDACIONES (4 DÍAS)">SEMANA 2-3: SÍNTESIS &amp; RECOMEND</button>
+<button class="nav-btn" onclick="scrollToSection('semana-3-presentacin-propuesta-2-das-160a70')" aria-label="Ir a SEMANA 3: PRESENTACIÓN &amp; PROPUESTA (2 DÍAS)">SEMANA 3: PRESENTACIÓN &amp; PROPUE</button>
+<button class="nav-btn" onclick="scrollToSection('documentacin-final-c711e5')" aria-label="Ir a DOCUMENTACIÓN FINAL">DOCUMENTACIÓN FINAL</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-decisiones-de-diseo-14360e')" aria-label="Ir a CASOS BORDE &amp; DECISIONES DE DISEÑO">CASOS BORDE &amp; DECISIONES DE DIS</button>
+<button class="nav-btn" onclick="scrollToSection('kpis-postdiagnstico-gates-binarios-592486')" aria-label="Ir a KPIs POST-DIAGNÓSTICO (Gates Binarios)">KPIs POST-DIAGNÓSTICO (Gates Binari</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-fin-de-diagnstico-50ca7a')" aria-label="Ir a CHECKLIST: FIN DE DIAGNÓSTICO">CHECKLIST: FIN DE DIAGNÓSTICO</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="objetivo-979b48" data-searchable aria-labelledby="head-objetivo-979b48">
+            <div class="phase-header" id="head-objetivo-979b48" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> OBJETIVO</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Evaluación holística de madurez digital cliente en 3 semanas. Output: Reporte 30-40 págs, scoring DART, recomendaciones priorizadas, propuestas Tracción/Evolución accionables.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-explcitos-c648d8" data-searchable aria-labelledby="head-supuestos-explcitos-c648d8">
+            <div class="phase-header" id="head-supuestos-explcitos-c648d8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> SUPUESTOS EXPLÍCITOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Supuesto: Acceso a liderazgo.</strong> 4-6 C-level/directores disponibles para entrevista. Si no → diagnóstico incompleto, bias hacia lower-level perceptions</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Supuesto: Stack documentado.</strong> Cliente tiene arquitectura diagramas, lista de herramientas. Si no → audit técnico +50% horas (requiere renegociación scope)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Supuesto: Honestidad en respuestas.</strong> Entrevistas asumen respuestas auténticas (no &quot;polished PR narrative&quot;). Si detectamos mentira → confrontar respetuosamente o escalate</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Supuesto: Estabilidad org.</strong> Cliente no en restructura/crisis/despidos durante diagnóstico. Si cambia → pause, re-scope, o renegociar timeline</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Supuesto: Decisor financiero claro.</strong> Sponsor + CFO alineados en budget Tracción/Evolución. Si no → propuesta va a limbo, no decision</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="lmites-del-proceso-5b91a0" data-searchable aria-labelledby="head-lmites-del-proceso-5b91a0">
+            <div class="phase-header" id="head-lmites-del-proceso-5b91a0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> LÍMITES DEL PROCESO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Diagnóstico NO cubre:</strong></p>
+<div class="bullet-item">Implementation: Somos evaluadores, no ejecutores (ver SOP-traccion, SOP-evolucion)</div>
+<div class="bullet-item">Selección de herramientas específicas: Recomendamos frameworks, no &quot;debes comprar Salesforce&quot;</div>
+<div class="bullet-item">Garantía de resultados: Diagnóstico informa, cliente decide e implementa (variabilidad en ejecución ajena a nosotros)</div>
+<div class="bullet-item">Benchmarking vs competencia: Nos comparamos a industria, no a &quot;tu rival X&quot;</div>
+<div class="bullet-item">Estrategia corporativa: Diagnosticamos madurez digital, no viabilidad negocio total</div>
+<p class="key-value"><strong>Handoff:</strong></p>
+<div class="bullet-item">Si cliente descalificado para Diagnóstico → referencia a consultor alternativo o sugerir esperar 6 meses</div>
+<div class="bullet-item">Post-Diagnóstico entregable → propuestas Tracción (ver sop-traccion.md) o Evolución (ver sop-evolucion.md)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="trigger-entrada-61c6e6" data-searchable aria-labelledby="head-trigger-entrada-61c6e6">
+            <div class="phase-header" id="head-trigger-entrada-61c6e6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> TRIGGER &amp; ENTRADA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Trigger:</strong> Cliente pasó discovery, necesidad de Diagnóstico o Consultoría identificada.</p>
+<p class="key-value"><strong>Entrada:</strong></p>
+<div class="bullet-item">Información básica cliente (industria, tamaño, contexto)</div>
+<div class="bullet-item">Contactos clave (CEO, CTO, CMO, COO)</div>
+<div class="bullet-item">Disponibilidad (cuándo pueden hacer entrevistas)</div>
+<div class="bullet-item">Budget (si hay, cuál es rango)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="responsables-01e009" data-searchable aria-labelledby="head-responsables-01e009">
+            <div class="phase-header" id="head-responsables-01e009" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> RESPONSABLES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Tarea</th><th scope="col">Horas</th></tr></thead><tbody><tr><td><strong>Consultor Senior</strong></td><td>Liderazgo, entrevistas, análisis</td><td>30h</td></tr><tr><td><strong>Analista de Datos</strong></td><td>Audit técnico, scoring, gráficos</td><td>15h</td></tr><tr><td><strong>Especialista Temático</strong></td><td>Profundización área especialidad</td><td>10h</td></tr><tr><td><strong>Admin</strong></td><td>Scheduling, documentación</td><td>5h</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="semana-1-discovery-34-das-71db78" data-searchable aria-labelledby="head-semana-1-discovery-34-das-71db78">
+            <div class="phase-header" id="head-semana-1-discovery-34-das-71db78" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> SEMANA 1: DISCOVERY (3-4 DÍAS)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="da-1-kickoff-interno-preparacin-92cb52">Día 1: Kick-off Interno + Preparación</h3>
+<p class="key-value"><strong>Actividades:</strong></p>
+<div class="bullet-item">Lectura de contexto cliente</div>
+<div class="bullet-item">Preparación de guías de entrevista (4-5 pre-drafted)</div>
+<div class="bullet-item">Setup de Miro board para mapping</div>
+<div class="bullet-item">Confirmación de calendarios con cliente</div>
+<h3 class="subsection-title" id="da-24-entrevistas-audit-ead2a7">Día 2-4: Entrevistas &amp; Audit</h3>
+<p class="key-value"><strong>Entrevistas (4-6 personas, 60 min c/una):</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>CEO/Sponsor:</strong> Visión estratégica, prioridades, frustración, presupuesto</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>CTO:</strong> Arquitectura técnica, stack, pain points, capacity</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>CMO:</strong> Estrategia digital, customer experience, marketing tech</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>COO:</strong> Procesos, eficiencia, people capability, change readiness</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Head IT:</strong> Operaciones, seguridad, compliance, modernización</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Otros (opcional):</strong> Head HR (skills/culture), Head Finance (ROI perspective)</span></div>
+<p class="key-value"><strong>Estructura de Entrevista (60 min):</strong></p>
+<div class="bullet-item">0-5: Warmup, contexto</div>
+<div class="bullet-item">5-20: Visión de futuro (3 años), estrategia</div>
+<div class="bullet-item">20-40: Desafíos &amp; pain points actuales, intentos previos de cambio</div>
+<div class="bullet-item">40-55: Capacidades actuales, recursos, presupuesto</div>
+<div class="bullet-item">55-60: Preguntas, cierre, next steps</div>
+<p class="key-value"><strong>Audit Técnico (2-3 horas, con CTO/IT):</strong></p>
+<div class="bullet-item">Stack actual (herramientas, lenguajes, frameworks)</div>
+<div class="bullet-item">Infraestructura (cloud vs on-prem, auto vs manual scaling)</div>
+<div class="bullet-item">Integración (sistemas hablan entre sí? qué datos están siloed?)</div>
+<div class="bullet-item">Seguridad &amp; compliance (GDPR, certifications, vulnerabilities)</div>
+<div class="bullet-item">Data strategy (qué datos tienen, cómo los usan, data governance)</div>
+<div class="bullet-item">Roadmap técnico actual (qué planes IT tenía)</div>
+<p class="key-value"><strong>Documentación de Discovery:</strong></p>
+<div class="bullet-item">Notas transcritas de entrevistas</div>
+<div class="bullet-item">Fotos/screenshots de sistemas</div>
+<div class="bullet-item">Org chart actual (roles, títulos, reportes)</div>
+<div class="bullet-item">Procesos críticos documentados (si existen)</div>
+<div class="bullet-item">Documentación técnica (architecture diagrams, stack, etc.)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="semana-2-anlisis-45-das-868b0f" data-searchable aria-labelledby="head-semana-2-anlisis-45-das-868b0f">
+            <div class="phase-header" id="head-semana-2-anlisis-45-das-868b0f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> SEMANA 2: ANÁLISIS (4-5 DÍAS)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="anlisis-de-madurez-digital-7ca247">Análisis de Madurez Digital</h3>
+<p class="key-value"><strong>Frameworks:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>DART (Digital Adoption Readiness Template)</strong> - 5 dimensiones</span></div>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Dimensión</th><th scope="col">Métrica</th><th scope="col">Scoring (0-20)</th><th scope="col">Notas</th></tr></thead><tbody><tr><td><strong>Tecnología</strong></td><td>Cloud, AI, data, seguridad</td><td>X/20</td><td>Ej: 15/20 = buen stack pero data governance débil</td></tr><tr><td><strong>Procesos</strong></td><td>Automatización, workflows, integración</td><td>Y/20</td><td>Ej: 10/20 = muchos procesos manuales</td></tr><tr><td><strong>People</strong></td><td>Skills, mentalidad, capacidad</td><td>Z/20</td><td>Ej: 12/20 = algunos evangelistas pero muchos novatos</td></tr><tr><td><strong>Culture</strong></td><td>Apertura cambio, velocidad, experimentación</td><td>W/20</td><td>Ej: 8/20 = risk-averse, comité approvals</td></tr><tr><td><strong>Leadership</strong></td><td>Visión, comunicación, accountability</td><td>V/20</td><td>Ej: 16/20 = CEO fuerte, algunos managers reticentes</td></tr></tbody></table></div>
+<p class="key-value"><strong>Total Score:</strong> X + Y + Z + W + V = 0-100</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Gap Analysis vs Benchmarks:</strong></span></div>
+<div class="bullet-item">Industry average (Gartner/McKinsey)</div>
+<div class="bullet-item">Best-in-class (qué sí hace bien similar industria)</div>
+<div class="bullet-item">Gaps identificados (dónde está más atrás)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Identificación de Palancas:</strong></span></div>
+<div class="bullet-item">&quot;Dónde el máximo impacto con mínima inversión?&quot;</div>
+<div class="bullet-item">Análisis de costo vs beneficio potencial</div>
+<div class="bullet-item">Ej: &quot;Automatizar onboarding (2 sem, $1M) = 200h ahorradas/año&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>ROI Potencial:</strong></span></div>
+<div class="bullet-item">Estimación de ahorro de horas (eficiencia)</div>
+<div class="bullet-item">Revenue potential (si transformación abre nuevos mercados)</div>
+<div class="bullet-item">Risk mitigation (si hay vulnerabilidades)</div>
+<div class="bullet-item">Ejemplo: &quot;Madurez digital +30 pts = $5M ingresos adicionales en 2 años&quot;</div>
+<h3 class="subsection-title" id="documentacin-de-anlisis-bf43f4">Documentación de Análisis</h3>
+<div class="bullet-item">Scoring matrix (5 dimensiones × 20 pts)</div>
+<div class="bullet-item">Gap analysis (visual comparison vs benchmarks)</div>
+<div class="bullet-item">Identification de 3-5 pain points raíz</div>
+<div class="bullet-item">ROI estimation por cada inciativa potencial</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="semana-23-sntesis-recomendaciones-4-das-e9842b" data-searchable aria-labelledby="head-semana-23-sntesis-recomendaciones-4-das-e9842b">
+            <div class="phase-header" id="head-semana-23-sntesis-recomendaciones-4-das-e9842b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> SEMANA 2-3: SÍNTESIS &amp; RECOMENDACIONES (4 DÍAS)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="redaccin-de-reporte-40-pginas-tpico-607298">Redacción de Reporte (40 páginas típico)</h3>
+<p class="key-value"><strong>Estructura:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Portada + Table of Contents</strong> (1 página)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Executive Summary</strong> (3 páginas)</span></div>
+<div class="bullet-item">Hallazgo 1 (dato impactante)</div>
+<div class="bullet-item">Hallazgo 2 (dato impactante)</div>
+<div class="bullet-item">Hallazgo 3 (dato impactante)</div>
+<div class="bullet-item">Top 3 recomendaciones (bullets)</div>
+<div class="bullet-item">Roadmap de alto nivel (1 imagen)</div>
+<div class="bullet-item">Estimación de ROI/inversión</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Análisis Detallado de Madurez</strong> (10 páginas)</span></div>
+<div class="bullet-item">DART scoring (gráfico radar + detalle)</div>
+<div class="bullet-item">Gap analysis (tabla comparativa)</div>
+<div class="bullet-item">Descripción de cada dimensión (strengths + gaps)</div>
+<div class="bullet-item">Benchmarking vs industria (visual)</div>
+<div class="bullet-item">Summary: &quot;En este momento, ustedes están en [X]% madurez digital. La industria promedio está en [Y]%&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Recomendaciones Estratégicas</strong> (5 páginas)</span></div>
+<p class="key-value"><strong>Formato para cada recomendación:</strong></p>
+<div class="bullet-item">Número &amp; Nombre (ej: &quot;Rec 1: Automatizar Order-to-Cash&quot;)</div>
+<div class="bullet-item">Descripción breve (½ página)</div>
+<div class="bullet-item">Impacto esperado (reducción de time, costo, error)</div>
+<div class="bullet-item">Inversión estimada (desarrollo, capacitación, etc.)</div>
+<div class="bullet-item">Timeline (semanas para implementar)</div>
+<div class="bullet-item">ROI ($ ahorro / inversión)</div>
+<div class="bullet-item">Facilidad (Low/Medium/High — qué tan disruptivo)</div>
+<div class="bullet-item">Dependencias (qué otros cambios requiere)</div>
+<p class="key-value"><strong>Priorización típica:</strong></p>
+<div class="bullet-item">Rec 1 (High impact, Low effort, Low disruption) = Quick Win</div>
+<div class="bullet-item">Rec 2 (High impact, Medium effort, Medium disruption) = Foundation</div>
+<div class="bullet-item">Rec 3-5 (High impact, High effort, High disruption) = Strategic</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Roadmap de Transformación</strong> (3 páginas)</span></div>
+<p class="key-value"><strong>Visual Timeline (24 meses):</strong></p>
+<div class="bullet-item">Fase 0 (Sem 1-4): Foundation (soporte, governance, team)</div>
+<div class="bullet-item">Fase 1 (Sem 5-12): Quick Wins (Rec 1, quick wins paralelos)</div>
+<div class="bullet-item">Fase 2 (Sem 13-20): Foundation Building (Rec 2, capability building)</div>
+<div class="bullet-item">Fase 3 (Sem 21-24): Strategic (Rec 3-5, escala)</div>
+<p class="key-value"><strong>Indicadores de progreso:</strong> T-Index, adoption rate, ROI acumulativo</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Apéndices</strong> (5 páginas)</span></div>
+<div class="bullet-item">Metodología (qué es DART, cómo scoramos)</div>
+<div class="bullet-item">Detalles técnicos (stack analysis, seguridad findings)</div>
+<div class="bullet-item">Entrevistas resumen (quién entrevistamos, contexto)</div>
+<div class="bullet-item">Benchmarks (datos de Gartner/McKinsey/industria)</div>
+<h3 class="subsection-title" id="creacin-de-visuales-13d9de">Creación de Visuales</h3>
+<p class="key-value"><strong>Scorecard de Madurez (1 página):</strong></p>
+<div class="bullet-item">Gráfico radar: 5 dimensiones, score actual vs target</div>
+<div class="bullet-item">Tabla: Score dimension, gap vs industry, palanca identificada</div>
+<div class="bullet-item">Resumen: &quot;En 24 meses, queremos llegar a 75/100 madurez&quot;</div>
+<p class="key-value"><strong>ROI Dashboard (1 página):</strong></p>
+<div class="bullet-item">Timeline: Qué se implementa cuándo</div>
+<div class="bullet-item">Bar chart: ROI acumulativo por fase</div>
+<div class="bullet-item">Ejemplo: &quot;Y-axis = $M saved, X-axis = semanas. Línea sube de 0 a $15M en 24 meses&quot;</div>
+<p class="key-value"><strong>Roadmap Visual (1 página):</strong></p>
+<div class="bullet-item">Gantt chart: Fases, hitos, duración</div>
+<div class="bullet-item">Dependencias: Qué debe suceder primero</div>
+<div class="bullet-item">Milestones: Qué es diferente en Sem 4, 12, 20, 24</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="semana-3-presentacin-propuesta-2-das-160a70" data-searchable aria-labelledby="head-semana-3-presentacin-propuesta-2-das-160a70">
+            <div class="phase-header" id="head-semana-3-presentacin-propuesta-2-das-160a70" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> SEMANA 3: PRESENTACIÓN &amp; PROPUESTA (2 DÍAS)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="da-1-presentation-to-leadership-90-min-9c4896">Día 1: Presentation to Leadership (90 min)</h3>
+<p class="key-value"><strong>Preparación:</strong></p>
+<div class="bullet-item">Deck 30-40 slides (keynote/PowerPoint)</div>
+<div class="bullet-item">Dry run interno (30 min)</div>
+<p class="key-value"><strong>Presentation Structure (90 min):</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Tiempo</th><th scope="col">Sección</th><th scope="col">Facilitador</th></tr></thead><tbody><tr><td>0-5</td><td>Apertura</td><td>Consultor</td><td>Contexto, estructura de conversación</td></tr><tr><td>5-20</td><td>Hallazgos Clave</td><td>Consultor</td><td>Top 3 insights (storytelling, no death by slides)</td></tr><tr><td>20-30</td><td>Madurez Digital Scoring</td><td>Analista</td><td>DART gráficos, gap analysis, benchmarking</td></tr><tr><td>30-45</td><td>Top 3 Recomendaciones</td><td>Consultor</td><td>Descripción, impact, effort, ROI</td></tr><tr><td>45-60</td><td>Roadmap &amp; Timeline</td><td>Consultor</td><td>24 meses plan, fases, hitos</td></tr><tr><td>60-75</td><td>ROI &amp; Business Case</td><td>Analista</td><td>Investment vs return, payback period</td></tr><tr><td>75-90</td><td>Q&amp;A &amp; Propuesta</td><td>Consultor</td><td>Preguntas, propuesta Tracción o Evolución</td></tr></tbody></table></div>
+<p class="key-value"><strong>Tone:</strong> Executive-friendly (números, no jargon), confident, collaborative</p>
+<h3 class="subsection-title" id="da-12-redaccin-de-propuesta-de-siguiente-paso-6a1599">Día 1-2: Redacción de Propuesta de Siguiente Paso</h3>
+<p class="key-value"><strong>Propuesta de Tracción</strong> (2 páginas):</p>
+<div class="bullet-item">Objetivo: Implementar Rec 1 (Quick Win) en 6 semanas</div>
+<div class="bullet-item">Scope: Exact entregables, timeline, equipo</div>
+<div class="bullet-item">Investment: $18M COP</div>
+<div class="bullet-item">Expected ROI: X% de la recomendación (ej: 40% del impacto total)</div>
+<div class="bullet-item">CTA: &quot;¿Aceptan que iniciemos?. Kick-off en [fecha]&quot;</div>
+<p class="key-value"><strong>Propuesta de Evolución</strong> (2 páginas):</p>
+<div class="bullet-item">Objetivo: Implementar Rec 1-3 (transformación profunda) en 16 semanas</div>
+<div class="bullet-item">Scope: Co-diseño modelo operativo, change management, transfer</div>
+<div class="bullet-item">Investment: $35M COP</div>
+<div class="bullet-item">Expected ROI: 80%+ de impacto full roadmap</div>
+<div class="bullet-item">CTA: Similar a Tracción</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documentacin-final-c711e5" data-searchable aria-labelledby="head-documentacin-final-c711e5">
+            <div class="phase-header" id="head-documentacin-final-c711e5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> DOCUMENTACIÓN FINAL</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Entregables:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><span class="status-ok" aria-label="Completado">✅</span> Reporte Diagnóstico (30-40 págs PDF)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><span class="status-ok" aria-label="Completado">✅</span> Scorecard Visual (1 sheet)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><span class="status-ok" aria-label="Completado">✅</span> ROI Dashboard (1 sheet)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><span class="status-ok" aria-label="Completado">✅</span> Roadmap Timeline (1 sheet)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><span class="status-ok" aria-label="Completado">✅</span> Presentation Deck (30-40 slides)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><span class="status-ok" aria-label="Completado">✅</span> Propuesta Tracción (2 págs)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><span class="status-ok" aria-label="Completado">✅</span> Propuesta Evolución (2 págs)</span></div>
+<p class="key-value"><strong>Almacenamiento:</strong></p>
+<div class="bullet-item">Reporte PDF: Drive compartido con cliente</div>
+<div class="bullet-item">Visuals: Tabla/infographics en Google Slides</div>
+<div class="bullet-item">Presentation: Keynote editable (para si quieren cambiar)</div>
+<div class="bullet-item">Propuestas: PDF individuales</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-decisiones-de-diseo-14360e" data-searchable aria-labelledby="head-casos-borde-decisiones-de-diseo-14360e">
+            <div class="phase-header" id="head-casos-borde-decisiones-de-diseo-14360e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> CASOS BORDE &amp; DECISIONES DE DISEÑO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-borde-1-cliente-rehsa-acceso-a-liderazgo-ej-c-1127fd">Caso Borde 1: Cliente rehúsa acceso a liderazgo (ej: CEO &quot;no tengo tiempo&quot;)</h3>
+<p class="key-value"><strong>Trigger:</strong> ≥2 C-suite declinan entrevista o ofrecen delegate subordinado</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="bullet-item">Escalate a sponsor/CFO: &quot;Diagnóstico requiere context CEO-level; sin ello, resultados serán incompletos&quot;</div>
+<div class="bullet-item">Opción A: Reprogramar después que CEO disponible (delay 2-4 weeks)</div>
+<div class="bullet-item">Opción B: Proceder con leadership disponible + nota: &quot;Diagnóstico parcial, falta contexto estratégico C-suite&quot;</div>
+<div class="bullet-item">Opción C: Rechazar engagement (if diagnóstico &lt;70% completo)</div>
+<p class="key-value"><strong>Risk:</strong> Reporte weak → propuestas débiles → baja conversion Tracción/Evolución</p>
+<hr class="divider">
+<h3 class="subsection-title" id="caso-borde-2-tech-stack-undocumented-legacy-spaghe-7406c1">Caso Borde 2: Tech stack &quot;undocumented&quot; (legacy, spaghetti code)</h3>
+<p class="key-value"><strong>Trigger:</strong> CTO &quot;no tenemos diagrams, es muy complejo&quot;</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="bullet-item">Estimación audit: +15-20h adicionales de analista de datos</div>
+<div class="bullet-item">Renegociación: (a) Extend scope + timeline, o (b) Cliente pagaa audit extra ($200-300k COP), o (c) Proceder con &quot;tech assessment incompleto&quot; disclaimer</div>
+<div class="bullet-item">Recomendación: Casi siempre opción (a) o (b) — diagnóstico deficiente = propuestas débiles</div>
+<hr class="divider">
+<h3 class="subsection-title" id="caso-borde-3-cliente-mientehides-problemas-ej-segu-48e758">Caso Borde 3: Cliente miente/hides problemas (ej: &quot;seguridad sólida&quot; pero tiene 0 encryption)</h3>
+<p class="key-value"><strong>Trigger:</strong> Durante audit técnico descubrimos contradicción vs entrevista</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="bullet-item">Validación respetuosa: &quot;Vimos [X], que contradice [Y] que mencionaste. ¿Podemos aclarar?&quot;</div>
+<div class="bullet-item">Posibilidad: Diferencia perceptual (CEO cree seguro; IT sabe que no)</div>
+<div class="bullet-item">Documentar: &quot;Hallazgo: Brecha entre percepción liderazgo vs realidad técnica&quot; (común, included en reporte)</div>
+<div class="bullet-item">Si deception intencional: Escalate a Legal (raro, &lt;1% casos)</div>
+<hr class="divider">
+<h3 class="subsection-title" id="caso-borde-4-cambio-ejecutivo-durante-diagnstico-e-f039d6">Caso Borde 4: Cambio ejecutivo durante diagnóstico (ej: CEO se va, nuevo llega)</h3>
+<p class="key-value"><strong>Trigger:</strong> Cambio leadership sem 2 de diagnóstico</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="bullet-item">Pausa 1 semana; onboard nuevo CEO a contexto diagnóstico</div>
+<div class="bullet-item">Entrevista new CEO (si perspectiva diferente, nota en reporte &quot;cambio leadership puede afectar prioritización&quot;)</div>
+<div class="bullet-item">Procede diagnosis sin delay; reporte menciona transition</div>
+<div class="bullet-item">Awareness: Recomendaciones pueden cambiar post-presentation con nueva visión</div>
+<hr class="divider">
+<h3 class="subsection-title" id="caso-borde-5-presupuesto-traccinevolucin-no-existe-7b469f">Caso Borde 5: Presupuesto Tracción/Evolución &quot;no existe&quot;</h3>
+<p class="key-value"><strong>Trigger:</strong> QBR presentation, liderazgo ama recomendaciones pero dice &quot;no hay budget&quot;</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="bullet-item">CSM: &quot;ROI de Tracción es 2-4x. ¿Podemos reasignar presupuesto de [X proyecto que ha fracasado]?&quot;</div>
+<div class="bullet-item">Opción A: Diagnóstico solo (info pura, cliente lo usa internamente)</div>
+<div class="bullet-item">Opción B: Tracción diluido (menor scope, $12M COP en lugar de $18M)</div>
+<div class="bullet-item">Opción C: Esperar siguiente ciclo budget (Q3/Q4)</div>
+<div class="bullet-item">Acción: NO forzar venta; preservar relación. Cliente volverá cuando budget exista</div>
+<hr class="divider">
+<h3 class="subsection-title" id="decisin-3-semanas-vs-5-semanas-097465">Decisión: 3 semanas vs 5 semanas</h3>
+<p class="key-value"><strong>Elegimos 3 porque:</strong></p>
+<div class="bullet-item">Cliente decision window típica = 2-3 semanas (después olvidan)</div>
+<div class="bullet-item">5 semanas → propuestas llegan tarde, momentum pierde</div>
+<div class="bullet-item">Precisión: 3 semanas = 80% calidad de diagnostic (curva diminishing returns después)</div>
+<div class="bullet-item">Trade-off: Velocidad &gt; perfección. Mejor diagnostic rápido que perfect diagnóstico tarde</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="kpis-postdiagnstico-gates-binarios-592486" data-searchable aria-labelledby="head-kpis-postdiagnstico-gates-binarios-592486">
+            <div class="phase-header" id="head-kpis-postdiagnstico-gates-binarios-592486" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> KPIs POST-DIAGNÓSTICO (Gates Binarios)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Estándar Pass</th><th scope="col">Estándar Fail</th><th scope="col">Acción si Fail</th></tr></thead><tbody><tr><td><strong>Clarity Score (encuesta post)</strong></td><td>≥8/10</td><td>&lt;8/10</td><td>Sesión claridad extra 60 min</td></tr><tr><td><strong>NPS Diagnóstico</strong></td><td>≥7/10</td><td>&lt;7</td><td>Feedback call; entender qué mejorar</td></tr><tr><td><strong>Conversion a Tracción</strong></td><td>≥30%</td><td>&lt;30%</td><td>Post-mortem: propuesta unclear? Budget no existe?</td></tr><tr><td><strong>Conversion a Evolución</strong></td><td>≥10%</td><td>&lt;10%</td><td>Esperado; Evolución es long-play</td></tr><tr><td><strong>Tiempo a Decisión</strong></td><td>≤14 días</td><td>&gt;14 días</td><td>Si &gt;21 días → probabilidad close ↓ 70%</td></tr></tbody></table></div>
+<p class="key-value"><strong>Overall Gate:</strong> ¿Clarity + NPS ambos ≥7? If Yes → propuestas enviadas, CSM toma ownership. If No → revisión interna, qué falló</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-fin-de-diagnstico-50ca7a" data-searchable aria-labelledby="head-checklist-fin-de-diagnstico-50ca7a">
+            <div class="phase-header" id="head-checklist-fin-de-diagnstico-50ca7a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> CHECKLIST: FIN DE DIAGNÓSTICO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-46-entrevistas-completadas-dfedef"><input type="checkbox" id="chk-46-entrevistas-completadas-dfedef" ><span>4-6 entrevistas completadas</span></label>
+<label class="checklist-item" for="chk-audit-tcnico-documentado-a20237"><input type="checkbox" id="chk-audit-tcnico-documentado-a20237" ><span>Audit técnico documentado</span></label>
+<label class="checklist-item" for="chk-dart-scoring-finalizado-dfbc0b"><input type="checkbox" id="chk-dart-scoring-finalizado-dfbc0b" ><span>DART scoring finalizado</span></label>
+<label class="checklist-item" for="chk-gap-analysis-vs-benchmarks-completo-1df791"><input type="checkbox" id="chk-gap-analysis-vs-benchmarks-completo-1df791" ><span>Gap analysis vs benchmarks completo</span></label>
+<label class="checklist-item" for="chk-reporte-diagnstico-escrito-3040-pgs-e3fd5e"><input type="checkbox" id="chk-reporte-diagnstico-escrito-3040-pgs-e3fd5e" ><span>Reporte diagnóstico escrito (30-40 págs)</span></label>
+<label class="checklist-item" for="chk-visuales-scorecard-roi-roadmap-creadas-34ffbf"><input type="checkbox" id="chk-visuales-scorecard-roi-roadmap-creadas-34ffbf" ><span>Visuales (scorecard, ROI, roadmap) creadas</span></label>
+<label class="checklist-item" for="chk-presentation-deck-finalizado-a37c73"><input type="checkbox" id="chk-presentation-deck-finalizado-a37c73" ><span>Presentation deck finalizado</span></label>
+<label class="checklist-item" for="chk-propuestas-traccin-evolucin-redactadas-b5dc56"><input type="checkbox" id="chk-propuestas-traccin-evolucin-redactadas-b5dc56" ><span>Propuestas Tracción + Evolución redactadas</span></label>
+<label class="checklist-item" for="chk-dry-run-de-presentation-completado-29acea"><input type="checkbox" id="chk-dry-run-de-presentation-completado-29acea" ><span>Dry run de presentation completado</span></label>
+<label class="checklist-item" for="chk-presentation-a-leadership-realizada-0cc3f0"><input type="checkbox" id="chk-presentation-a-leadership-realizada-0cc3f0" ><span>Presentation a leadership realizada</span></label>
+<label class="checklist-item" for="chk-feedback-compilado-741836"><input type="checkbox" id="chk-feedback-compilado-741836" ><span>Feedback compilado</span></label>
+<label class="checklist-item" for="chk-propuestas-enviadas-113f9f"><input type="checkbox" id="chk-propuestas-enviadas-113f9f" ><span>Propuesta(s) enviada(s)</span></label>
+<hr class="divider">
+<p class="key-value"><strong>Fin de SOP: Diagnóstico</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>MetodologIA © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v2.0 Excellence Edition — Generado: 2026-03-24 13:53</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

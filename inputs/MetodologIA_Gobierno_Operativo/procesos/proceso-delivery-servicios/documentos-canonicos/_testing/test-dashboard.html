@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Testing Dashboard — Documentos Canónicos MetodologIA</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: hsl(222,29%,12%); color: #e2e8f0; font-family: 'Montserrat', sans-serif; padding: 20px; }
+h1, h2, h3 { font-family: 'Poppins', sans-serif; color: #FFFFFF; }
+.header { text-align: center; padding: 30px 0; border-bottom: 2px solid #FFD700; margin-bottom: 30px; }
+.header h1 { font-size: 2em; }
+.header .subtitle { color: #cbd5e1; margin-top: 8px; }
+.ia-gold { background: linear-gradient(135deg, #FFD700, #FFA000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 30px; }
+.kpi { background: hsl(220,34%,18%); border-radius: 12px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.08); }
+.kpi .value { font-size: 2.4em; font-weight: 700; font-family: 'Poppins'; }
+.kpi .label { font-size: 0.85em; color: #cbd5e1; margin-top: 4px; }
+.pass { color: #34d399; }
+.warn { color: #F97316; }
+.fail { color: #ef4444; }
+.info-color { color: #FFD700; }
+.score { color: #FFD700; }
+.section { background: hsl(220,34%,18%); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.08); }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th { background: hsl(220,30%,23%); color: #FFD700; padding: 10px 12px; text-align: left; font-size: 0.85em; }
+td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85em; }
+tr:hover { background: hsl(220,30%,23%); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75em; font-weight: 600; }
+.badge-pass { background: rgba(52,211,153,0.15); color: #34d399; }
+.badge-conditional { background: rgba(249,115,22,0.15); color: #F97316; }
+.badge-fail { background: rgba(239,68,68,0.15); color: #ef4444; }
+.progress-bar { background: rgba(255,255,255,0.08); border-radius: 6px; height: 8px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 6px; transition: width 0.5s; }
+.filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.filter-btn { padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); background: hsl(220,34%,18%); color: #cbd5e1; cursor: pointer; font-size: 0.85em; }
+.filter-btn.active { background: #FFD700; color: hsl(222,29%,12%); border-color: #FFD700; font-weight: 600; }
+.timestamp { text-align: center; color: #cbd5e1; font-size: 0.8em; margin-top: 30px; }
+.heatmap-grid { display: grid; grid-template-columns: 140px repeat(5, 1fr); gap: 2px; margin-top: 16px; font-size: 0.72em; }
+.heatmap-header { background: hsl(220,30%,23%); color: #FFD700; padding: 8px 6px; text-align: center; font-weight: 700; font-family: 'Poppins', sans-serif; }
+.heatmap-label { background: hsl(220,30%,23%); color: #e2e8f0; padding: 6px 8px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.heatmap-cell { padding: 6px 4px; text-align: center; border-radius: 4px; font-weight: 600; cursor: default; position: relative; }
+.heatmap-cell.exists { background: rgba(52,211,153,0.2); color: #34d399; }
+.heatmap-cell.missing { background: rgba(239,68,68,0.25); color: #ef4444; animation: pulse-red 2s ease-in-out infinite; }
+.heatmap-cell.restricted { background: rgba(249,115,22,0.2); color: #F97316; }
+.heatmap-cell.excluded { background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.15); }
+.heatmap-cell.line-sep { border-top: 2px solid rgba(255,215,0,0.3); }
+@keyframes pulse-red { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+.heatmap-legend { display: flex; gap: 16px; margin: 12px 0; flex-wrap: wrap; font-size: 0.8em; }
+.heatmap-legend span { display: flex; align-items: center; gap: 4px; }
+.heatmap-legend .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.coverage-ring { width: 120px; height: 120px; position: relative; }
+.coverage-ring svg { transform: rotate(-90deg); }
+.coverage-ring .ring-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.6em; font-weight: 800; font-family: 'Poppins', sans-serif; }
+.tab-bar { display: flex; gap: 0; margin-bottom: 0; border-bottom: 2px solid rgba(255,255,255,0.08); }
+.tab-btn { padding: 10px 20px; border: none; background: transparent; color: #cbd5e1; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.85em; border-bottom: 3px solid transparent; transition: all 0.3s; }
+.tab-btn.active { color: #FFD700; border-bottom-color: #FFD700; }
+.tab-btn:hover { color: #FFD700; }
+.tab-content { display: none; padding-top: 20px; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>Testing & Coverage Dashboard</h1>
+    <div class="subtitle">Documentos Canónicos — Metodolog<span class="ia-gold">IA</span> Gobierno Operativo</div>
+    <div class="subtitle">2026-03-24 19:44</div>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi"><div class="value score">127/127</div><div class="label">Cobertura Matrix</div></div>
+    <div class="kpi"><div class="value pass">100%</div><div class="label">% Cobertura</div></div>
+    <div class="kpi"><div class="value fail">0</div><div class="label">Docs Pendientes</div></div>
+    <div class="kpi"><div class="value pass">129/129</div><div class="label">Tests PASS</div></div>
+    <div class="kpi"><div class="value score">98</div><div class="label">Score Promedio</div></div>
+    <div class="kpi"><div class="value fail">0</div><div class="label">Issues Críticos</div></div>
+</div>
+
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('coverage')">Cobertura Matrix</button>
+    <button class="tab-btn" onclick="showTab('health')">Salud por Línea</button>
+    <button class="tab-btn" onclick="showTab('issues')">Top Issues</button>
+    <button class="tab-btn" onclick="showTab('results')">Resultados</button>
+    <button class="tab-btn" onclick="showTab('gaps')">Gaps Pendientes</button>
+</div>
+
+<!-- TAB 1: COVERAGE HEATMAP -->
+<div class="tab-content active" id="tab-coverage">
+<div class="section">
+    <h2>Matriz de Cobertura SERVICE × SEGMENT</h2>
+    <div class="heatmap-legend">
+        <span><span class="dot" style="background:rgba(52,211,153,0.4)"></span> Existe (score)</span>
+        <span><span class="dot" style="background:rgba(239,68,68,0.4)"></span> Falta (requerido)</span>
+        <span><span class="dot" style="background:rgba(249,115,22,0.3)"></span> Falta (restringido)</span>
+        <span><span class="dot" style="background:rgba(255,255,255,0.05)"></span> N/A (excluido)</span>
+    </div>
+    <div class="heatmap-grid">
+        <div class="heatmap-header">SERVICIO</div>
+        <div class="heatmap-header">PERSONAS</div>
+        <div class="heatmap-header">EMPRESAS</div>
+        <div class="heatmap-header">ALIADOS</div>
+        <div class="heatmap-header">RESELLERS</div>
+        <div class="heatmap-header">MARCA BL.</div>
+        <div class="heatmap-label line-sep" title="WS-01: Ecosistema IA">WS-01 Ecosistema IA</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-01-personas Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-01-empresas Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-01-aliados Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-01-resellers Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-01-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="WS-02: Advanced Prompting">WS-02 Advanced Prompti</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-02-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-02-empresas Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-02-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-02-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-02-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="WS-03: Second Brain">WS-03 Second Brain</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-03-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-03-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-03-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-03-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-03-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="WS-04: Productividad GTD">WS-04 Productividad GT</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-04-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-04-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-04-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-04-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-04-marca-blanca Score:95">95</div>
+        <div class="heatmap-label" title="WS-05: Moving Motivators">WS-05 Moving Motivator</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-05-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-05-empresas Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-05-resellers Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label" title="WS-06: Happiness Canvas">WS-06 Happiness Canvas</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-06-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-06-empresas Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-06-resellers Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label" title="WS-07: Team Canvas">WS-07 Team Canvas</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-07-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-07-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-07-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-07-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-07-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="WS-08: De Ocupado a Productivo">WS-08 De Ocupado a Pro</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.15); color:#34d399;" title="ws-08-personas Score:94">94</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-08-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-08-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-08-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-08-marca-blanca Score:95">95</div>
+        <div class="heatmap-label" title="WS-09: Qué Pasa con IA">WS-09 Qué Pasa con IA</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-09-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-09-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-09-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-09-resellers Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label" title="WS-10: Ideación con IA">WS-10 Ideación con IA</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-10-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-10-empresas Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-10-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-10-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-10-marca-blanca Score:95">95</div>
+        <div class="heatmap-label" title="WS-11: Ética Gobernanza">WS-11 Ética Gobernanza</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-11-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-11-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-11-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-11-resellers Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label" title="WS-12: Exponential Leadership">WS-12 Exponential Lead</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-12-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-12-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-12-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-12-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="ws-12-marca-blanca Score:95">95</div>
+        <div class="heatmap-label line-sep" title="BC-01: Office Automation">BC-01 Office Automatio</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-01-personas Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-01-empresas Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-01-aliados Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-01-resellers Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-01-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="BC-02: Sales with AI">BC-02 Sales with AI</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-02-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-02-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-02-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-02-resellers Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label" title="BC-03: Ways of Working">BC-03 Ways of Working</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-03-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-03-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-03-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-03-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-03-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="BC-04: Amplified Work">BC-04 Amplified Work</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-04-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-04-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-04-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-04-resellers Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-04-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="BC-05: Vibe Coding">BC-05 Vibe Coding</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-05-personas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-05-empresas Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-05-resellers Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label" title="BC-06: Trabajar Amplificado">BC-06 Trabajar Amplifi</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-06-personas Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-06-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-06-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-06-resellers Score:95">95</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label" title="BC-07: Trabajo Agéntico">BC-07 Trabajo Agéntico</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.15); color:#34d399;" title="bc-07-personas Score:94">94</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.15); color:#34d399;" title="bc-07-empresas Score:89">89</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-07-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="bc-07-resellers Score:95">95</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label line-sep" title="PE-01: Empoderamiento">PE-01 Empoderamiento</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="pe-01-personas Score:99">99</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.15); color:#34d399;" title="pe-01-empresas Score:89">89</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="pe-01-aliados Score:95">95</div><div class="heatmap-cell excluded line-sep" title="N/A">—</div><div class="heatmap-cell excluded line-sep" title="N/A">—</div>
+        <div class="heatmap-label" title="PE-02: Digital Champions">PE-02 Digital Champion</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="pe-02-empresas Score:99">99</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="pe-02-aliados Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="pe-02-resellers Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="pe-02-marca-blanca Score:100">100</div>
+        <div class="heatmap-label line-sep" title="CON-T1: Diagnóstico">CON-T1 Diagnóstico</div><div class="heatmap-cell excluded line-sep" title="N/A">—</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t1-empresas Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t1-aliados Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t1-resellers Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t1-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="CON-T2: Tracción">CON-T2 Tracción</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t2-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t2-aliados Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t2-resellers Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t2-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="CON-T3: Evolución">CON-T3 Evolución</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t3-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t3-aliados Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="con-t3-marca-blanca Score:100">100</div>
+        <div class="heatmap-label line-sep" title="TEC-01: Asistentes IA">TEC-01 Asistentes IA</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-01-personas Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-01-empresas Score:100">100</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-01-aliados Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-01-resellers Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-01-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="TEC-02: Agentes IA">TEC-02 Agentes IA</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.15); color:#34d399;" title="tec-02-personas Score:90">90</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-02-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-02-aliados Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-02-resellers Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-02-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="TEC-03: Mini Apps">TEC-03 Mini Apps</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.15); color:#34d399;" title="tec-03-personas Score:90">90</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-03-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-03-aliados Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-03-resellers Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-03-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="TEC-04: Sitios Web">TEC-04 Sitios Web</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-04-personas Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="tec-04-empresas Score:100">100</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell excluded" title="N/A">—</div><div class="heatmap-cell excluded" title="N/A">—</div>
+        <div class="heatmap-label line-sep" title="EST-01: EstrategIA Empresarial">EST-01 EstrategIA Empre</div><div class="heatmap-cell excluded line-sep" title="N/A">—</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-01-empresas Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-01-aliados Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-01-resellers Score:95">95</div><div class="heatmap-cell line-sep" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-01-marca-blanca Score:100">100</div>
+        <div class="heatmap-label" title="EST-02: EstrategIA Personal">EST-02 EstrategIA Perso</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-02-personas Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-02-empresas Score:100">100</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-02-aliados Score:95">95</div><div class="heatmap-cell" style="background:rgba(52,211,153,0.25); color:#34d399;" title="est-02-resellers Score:95">95</div><div class="heatmap-cell excluded" title="N/A">—</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Cobertura por Segmento</h2>
+    <table>
+        <tr><th>Segmento</th><th>Existentes</th><th>Requeridos</th><th>Gaps</th><th>Cobertura</th></tr>
+        <tr>
+            <td><strong>PERSONAS</strong></td>
+            <td class="pass">25</td>
+            <td>25</td>
+            <td class="fail">0</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div> 100%</td>
+        </tr>
+        <tr>
+            <td><strong>EMPRESAS</strong></td>
+            <td class="pass">30</td>
+            <td>30</td>
+            <td class="fail">0</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div> 100%</td>
+        </tr>
+        <tr>
+            <td><strong>ALIADOS</strong></td>
+            <td class="pass">26</td>
+            <td>26</td>
+            <td class="fail">0</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div> 100%</td>
+        </tr>
+        <tr>
+            <td><strong>RESELLERS</strong></td>
+            <td class="pass">27</td>
+            <td>27</td>
+            <td class="fail">0</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div> 100%</td>
+        </tr>
+        <tr>
+            <td><strong>MARCA-BLANCA</strong></td>
+            <td class="pass">19</td>
+            <td>19</td>
+            <td class="fail">0</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div> 100%</td>
+        </tr>
+    </table>
+</div>
+</div>
+
+<!-- TAB 2: HEALTH BY LINE -->
+<div class="tab-content" id="tab-health">
+<div class="section">
+    <h2>Salud por Línea de Servicio</h2>
+    <table>
+        <tr><th>Línea</th><th>Docs Testeados</th><th>Docs Requeridos</th><th>PASS</th><th>FAIL</th><th>Score Avg</th><th>Cobertura</th><th>Health</th></tr>
+        <tr>
+            <td><strong>WORKSHOP</strong></td>
+            <td>54</td>
+            <td>54</td>
+            <td class="pass">54</td>
+            <td class="fail">0</td>
+            <td>99/100</td>
+            <td style="color:#34d399;font-weight:700">100%</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div></td>
+        </tr>
+        <tr>
+            <td><strong>BOOTCAMP</strong></td>
+            <td>32</td>
+            <td>30</td>
+            <td class="pass">32</td>
+            <td class="fail">0</td>
+            <td>99/100</td>
+            <td style="color:#34d399;font-weight:700">100%</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div></td>
+        </tr>
+        <tr>
+            <td><strong>PROGRAMA-ELITE</strong></td>
+            <td>7</td>
+            <td>7</td>
+            <td class="pass">7</td>
+            <td class="fail">0</td>
+            <td>96/100</td>
+            <td style="color:#34d399;font-weight:700">100%</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div></td>
+        </tr>
+        <tr>
+            <td><strong>CONSULTORIA</strong></td>
+            <td>11</td>
+            <td>11</td>
+            <td class="pass">11</td>
+            <td class="fail">0</td>
+            <td>99/100</td>
+            <td style="color:#34d399;font-weight:700">100%</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div></td>
+        </tr>
+        <tr>
+            <td><strong>TECNOLOGIA</strong></td>
+            <td>17</td>
+            <td>17</td>
+            <td class="pass">17</td>
+            <td class="fail">0</td>
+            <td>96/100</td>
+            <td style="color:#34d399;font-weight:700">100%</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div></td>
+        </tr>
+        <tr>
+            <td><strong>ESTRATEGIA</strong></td>
+            <td>8</td>
+            <td>8</td>
+            <td class="pass">8</td>
+            <td class="fail">0</td>
+            <td>96/100</td>
+            <td style="color:#34d399;font-weight:700">100%</td>
+            <td><div class="progress-bar"><div class="progress-fill" style="width:100%;background:#34d399"></div></div></td>
+        </tr>
+    </table>
+</div>
+</div>
+
+<!-- TAB 3: TOP ISSUES -->
+<div class="tab-content" id="tab-issues">
+<div class="section">
+    <h2>Top Issues por Regla</h2>
+    <table>
+        <tr><th>Regla</th><th>Count</th><th>Barra</th></tr>
+        <tr>
+            <td><code>T-STR-04</code></td>
+            <td>16</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:100%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-STR-02</code></td>
+            <td>12</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:75%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-PTH-02</code></td>
+            <td>5</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:31%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-DUR-03</code></td>
+            <td>5</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:31%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-DEP-02</code></td>
+            <td>4</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:25%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-PTH-01</code></td>
+            <td>2</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:12%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-STR-05</code></td>
+            <td>2</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:12%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-NAM-02</code></td>
+            <td>1</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:6%;background:#F97316"></div></div></td>
+        </tr>
+        <tr>
+            <td><code>T-NAM-03</code></td>
+            <td>1</td>
+            <td><div class="progress-bar" style="width:200px"><div class="progress-fill" style="width:6%;background:#F97316"></div></div></td>
+        </tr>
+    </table>
+</div>
+</div>
+
+<!-- TAB 4: FILE RESULTS -->
+<div class="tab-content" id="tab-results">
+<div class="section">
+    <h2>Resultados por Archivo</h2>
+    <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterTable('all')">Todos</button>
+        <button class="filter-btn" onclick="filterTable('FAIL')">Solo FAIL</button>
+        <button class="filter-btn" onclick="filterTable('CONDITIONAL')">Solo CONDITIONAL</button>
+        <button class="filter-btn" onclick="filterTable('PASS')">Solo PASS</button>
+    </div>
+    <table id="results-table">
+        <tr><th>#</th><th>Archivo</th><th>Servicio</th><th>Segmento</th><th>Score</th><th>Critical</th><th>Warn</th><th>Verdict</th></tr>
+        <tr data-verdict="PASS">
+            <td>1</td>
+            <td><code>bc-07-empresas.md</code></td>
+            <td>BC-07</td>
+            <td>EMPRESAS</td>
+            <td><strong>89</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">2</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>2</td>
+            <td><code>pe-01-empresas.md</code></td>
+            <td>PE-01</td>
+            <td>EMPRESAS</td>
+            <td><strong>89</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">2</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>3</td>
+            <td><code>bc-06-maestro.md</code></td>
+            <td>BC-06</td>
+            <td>MAESTRO</td>
+            <td><strong>90</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">2</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>4</td>
+            <td><code>tec-02-personas.md</code></td>
+            <td>TEC-02</td>
+            <td>PERSONAS</td>
+            <td><strong>90</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">2</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>5</td>
+            <td><code>tec-03-personas.md</code></td>
+            <td>TEC-03</td>
+            <td>PERSONAS</td>
+            <td><strong>90</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">2</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>6</td>
+            <td><code>bc-07-personas.md</code></td>
+            <td>BC-07</td>
+            <td>PERSONAS</td>
+            <td><strong>94</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>7</td>
+            <td><code>ws-08-personas.md</code></td>
+            <td>WS-08</td>
+            <td>PERSONAS</td>
+            <td><strong>94</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>8</td>
+            <td><code>bc-06-personas.md</code></td>
+            <td>BC-06</td>
+            <td>PERSONAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>9</td>
+            <td><code>bc-06-resellers.md</code></td>
+            <td>BC-06</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>10</td>
+            <td><code>bc-07-maestro.md</code></td>
+            <td>BC-07</td>
+            <td>MAESTRO</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>11</td>
+            <td><code>bc-07-resellers.md</code></td>
+            <td>BC-07</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>12</td>
+            <td><code>con-t1-resellers.md</code></td>
+            <td>CON-T1</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>13</td>
+            <td><code>con-t2-resellers.md</code></td>
+            <td>CON-T2</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>14</td>
+            <td><code>est-01-aliados.md</code></td>
+            <td>EST-01</td>
+            <td>ALIADOS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>15</td>
+            <td><code>est-01-empresas.md</code></td>
+            <td>EST-01</td>
+            <td>EMPRESAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>16</td>
+            <td><code>est-01-resellers.md</code></td>
+            <td>EST-01</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>17</td>
+            <td><code>est-02-aliados.md</code></td>
+            <td>EST-02</td>
+            <td>ALIADOS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>18</td>
+            <td><code>est-02-personas.md</code></td>
+            <td>EST-02</td>
+            <td>PERSONAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>19</td>
+            <td><code>est-02-resellers.md</code></td>
+            <td>EST-02</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>20</td>
+            <td><code>pe-01-aliados.md</code></td>
+            <td>PE-01</td>
+            <td>ALIADOS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>21</td>
+            <td><code>pe-02-aliados.md</code></td>
+            <td>PE-02</td>
+            <td>ALIADOS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>22</td>
+            <td><code>pe-02-resellers.md</code></td>
+            <td>PE-02</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>23</td>
+            <td><code>tec-01-aliados.md</code></td>
+            <td>TEC-01</td>
+            <td>ALIADOS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>24</td>
+            <td><code>tec-01-personas.md</code></td>
+            <td>TEC-01</td>
+            <td>PERSONAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>25</td>
+            <td><code>tec-01-resellers.md</code></td>
+            <td>TEC-01</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>26</td>
+            <td><code>tec-02-aliados.md</code></td>
+            <td>TEC-02</td>
+            <td>ALIADOS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>27</td>
+            <td><code>tec-02-resellers.md</code></td>
+            <td>TEC-02</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>28</td>
+            <td><code>tec-03-aliados.md</code></td>
+            <td>TEC-03</td>
+            <td>ALIADOS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>29</td>
+            <td><code>tec-03-resellers.md</code></td>
+            <td>TEC-03</td>
+            <td>RESELLERS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>30</td>
+            <td><code>tec-04-personas.md</code></td>
+            <td>TEC-04</td>
+            <td>PERSONAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>31</td>
+            <td><code>ws-01-empresas.md</code></td>
+            <td>WS-01</td>
+            <td>EMPRESAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>32</td>
+            <td><code>ws-02-empresas.md</code></td>
+            <td>WS-02</td>
+            <td>EMPRESAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>33</td>
+            <td><code>ws-04-marca-blanca.md</code></td>
+            <td>WS-04</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>34</td>
+            <td><code>ws-08-marca-blanca.md</code></td>
+            <td>WS-08</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>35</td>
+            <td><code>ws-10-empresas.md</code></td>
+            <td>WS-10</td>
+            <td>EMPRESAS</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>36</td>
+            <td><code>ws-10-marca-blanca.md</code></td>
+            <td>WS-10</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>37</td>
+            <td><code>ws-12-marca-blanca.md</code></td>
+            <td>WS-12</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>95</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">1</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>38</td>
+            <td><code>pe-01-personas.md</code></td>
+            <td>PE-01</td>
+            <td>PERSONAS</td>
+            <td><strong>99</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>39</td>
+            <td><code>pe-02-empresas.md</code></td>
+            <td>PE-02</td>
+            <td>EMPRESAS</td>
+            <td><strong>99</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>40</td>
+            <td><code>bc-01-aliados.md</code></td>
+            <td>BC-01</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>41</td>
+            <td><code>bc-01-empresas.md</code></td>
+            <td>BC-01</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>42</td>
+            <td><code>bc-01-marca-blanca.md</code></td>
+            <td>BC-01</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>43</td>
+            <td><code>bc-01-personas.md</code></td>
+            <td>BC-01</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>44</td>
+            <td><code>bc-01-resellers.md</code></td>
+            <td>BC-01</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>45</td>
+            <td><code>bc-02-aliados.md</code></td>
+            <td>BC-02</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>46</td>
+            <td><code>bc-02-empresas.md</code></td>
+            <td>BC-02</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>47</td>
+            <td><code>bc-02-personas.md</code></td>
+            <td>BC-02</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>48</td>
+            <td><code>bc-02-resellers.md</code></td>
+            <td>BC-02</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>49</td>
+            <td><code>bc-03-aliados.md</code></td>
+            <td>BC-03</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>50</td>
+            <td><code>bc-03-empresas.md</code></td>
+            <td>BC-03</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>51</td>
+            <td><code>bc-03-marca-blanca.md</code></td>
+            <td>BC-03</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>52</td>
+            <td><code>bc-03-personas.md</code></td>
+            <td>BC-03</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>53</td>
+            <td><code>bc-03-resellers.md</code></td>
+            <td>BC-03</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>54</td>
+            <td><code>bc-04-aliados.md</code></td>
+            <td>BC-04</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>55</td>
+            <td><code>bc-04-empresas.md</code></td>
+            <td>BC-04</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>56</td>
+            <td><code>bc-04-marca-blanca.md</code></td>
+            <td>BC-04</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>57</td>
+            <td><code>bc-04-personas.md</code></td>
+            <td>BC-04</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>58</td>
+            <td><code>bc-04-resellers.md</code></td>
+            <td>BC-04</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>59</td>
+            <td><code>bc-05-empresas.md</code></td>
+            <td>BC-05</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>60</td>
+            <td><code>bc-05-personas.md</code></td>
+            <td>BC-05</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>61</td>
+            <td><code>bc-05-resellers.md</code></td>
+            <td>BC-05</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>62</td>
+            <td><code>bc-06-aliados.md</code></td>
+            <td>BC-06</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>63</td>
+            <td><code>bc-06-empresas.md</code></td>
+            <td>BC-06</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>64</td>
+            <td><code>bc-07-aliados.md</code></td>
+            <td>BC-07</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>65</td>
+            <td><code>con-t1-aliados.md</code></td>
+            <td>CON-T1</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>66</td>
+            <td><code>con-t1-empresas.md</code></td>
+            <td>CON-T1</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>67</td>
+            <td><code>con-t1-marca-blanca.md</code></td>
+            <td>CON-T1</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>68</td>
+            <td><code>con-t2-aliados.md</code></td>
+            <td>CON-T2</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>69</td>
+            <td><code>con-t2-empresas.md</code></td>
+            <td>CON-T2</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>70</td>
+            <td><code>con-t2-marca-blanca.md</code></td>
+            <td>CON-T2</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>71</td>
+            <td><code>con-t3-aliados.md</code></td>
+            <td>CON-T3</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>72</td>
+            <td><code>con-t3-empresas.md</code></td>
+            <td>CON-T3</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>73</td>
+            <td><code>con-t3-marca-blanca.md</code></td>
+            <td>CON-T3</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>74</td>
+            <td><code>est-01-marca-blanca.md</code></td>
+            <td>EST-01</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>75</td>
+            <td><code>est-02-empresas.md</code></td>
+            <td>EST-02</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>76</td>
+            <td><code>pe-02-marca-blanca.md</code></td>
+            <td>PE-02</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>77</td>
+            <td><code>tec-01-empresas.md</code></td>
+            <td>TEC-01</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>78</td>
+            <td><code>tec-01-marca-blanca.md</code></td>
+            <td>TEC-01</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>79</td>
+            <td><code>tec-02-empresas.md</code></td>
+            <td>TEC-02</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>80</td>
+            <td><code>tec-02-marca-blanca.md</code></td>
+            <td>TEC-02</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>81</td>
+            <td><code>tec-03-empresas.md</code></td>
+            <td>TEC-03</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>82</td>
+            <td><code>tec-03-marca-blanca.md</code></td>
+            <td>TEC-03</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>83</td>
+            <td><code>tec-04-empresas.md</code></td>
+            <td>TEC-04</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>84</td>
+            <td><code>ws-01-aliados.md</code></td>
+            <td>WS-01</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>85</td>
+            <td><code>ws-01-marca-blanca.md</code></td>
+            <td>WS-01</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>86</td>
+            <td><code>ws-01-personas.md</code></td>
+            <td>WS-01</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>87</td>
+            <td><code>ws-01-resellers.md</code></td>
+            <td>WS-01</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>88</td>
+            <td><code>ws-02-aliados.md</code></td>
+            <td>WS-02</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>89</td>
+            <td><code>ws-02-marca-blanca.md</code></td>
+            <td>WS-02</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>90</td>
+            <td><code>ws-02-personas.md</code></td>
+            <td>WS-02</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>91</td>
+            <td><code>ws-02-resellers.md</code></td>
+            <td>WS-02</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>92</td>
+            <td><code>ws-03-aliados.md</code></td>
+            <td>WS-03</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>93</td>
+            <td><code>ws-03-empresas.md</code></td>
+            <td>WS-03</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>94</td>
+            <td><code>ws-03-marca-blanca.md</code></td>
+            <td>WS-03</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>95</td>
+            <td><code>ws-03-personas.md</code></td>
+            <td>WS-03</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>96</td>
+            <td><code>ws-03-resellers.md</code></td>
+            <td>WS-03</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>97</td>
+            <td><code>ws-04-aliados.md</code></td>
+            <td>WS-04</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>98</td>
+            <td><code>ws-04-empresas.md</code></td>
+            <td>WS-04</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>99</td>
+            <td><code>ws-04-personas.md</code></td>
+            <td>WS-04</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>100</td>
+            <td><code>ws-04-resellers.md</code></td>
+            <td>WS-04</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>101</td>
+            <td><code>ws-05-empresas.md</code></td>
+            <td>WS-05</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>102</td>
+            <td><code>ws-05-personas.md</code></td>
+            <td>WS-05</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>103</td>
+            <td><code>ws-05-resellers.md</code></td>
+            <td>WS-05</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>104</td>
+            <td><code>ws-06-empresas.md</code></td>
+            <td>WS-06</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>105</td>
+            <td><code>ws-06-personas.md</code></td>
+            <td>WS-06</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>106</td>
+            <td><code>ws-06-resellers.md</code></td>
+            <td>WS-06</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>107</td>
+            <td><code>ws-07-aliados.md</code></td>
+            <td>WS-07</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>108</td>
+            <td><code>ws-07-empresas.md</code></td>
+            <td>WS-07</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>109</td>
+            <td><code>ws-07-marca-blanca.md</code></td>
+            <td>WS-07</td>
+            <td>MARCA-BLANCA</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>110</td>
+            <td><code>ws-07-personas.md</code></td>
+            <td>WS-07</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>111</td>
+            <td><code>ws-07-resellers.md</code></td>
+            <td>WS-07</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>112</td>
+            <td><code>ws-08-aliados.md</code></td>
+            <td>WS-08</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>113</td>
+            <td><code>ws-08-empresas.md</code></td>
+            <td>WS-08</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>114</td>
+            <td><code>ws-08-resellers.md</code></td>
+            <td>WS-08</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>115</td>
+            <td><code>ws-09-aliados.md</code></td>
+            <td>WS-09</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>116</td>
+            <td><code>ws-09-empresas.md</code></td>
+            <td>WS-09</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>117</td>
+            <td><code>ws-09-personas.md</code></td>
+            <td>WS-09</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>118</td>
+            <td><code>ws-09-resellers.md</code></td>
+            <td>WS-09</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>119</td>
+            <td><code>ws-10-aliados.md</code></td>
+            <td>WS-10</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>120</td>
+            <td><code>ws-10-personas.md</code></td>
+            <td>WS-10</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>121</td>
+            <td><code>ws-10-resellers.md</code></td>
+            <td>WS-10</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>122</td>
+            <td><code>ws-11-aliados.md</code></td>
+            <td>WS-11</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>123</td>
+            <td><code>ws-11-empresas.md</code></td>
+            <td>WS-11</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>124</td>
+            <td><code>ws-11-personas.md</code></td>
+            <td>WS-11</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>125</td>
+            <td><code>ws-11-resellers.md</code></td>
+            <td>WS-11</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>126</td>
+            <td><code>ws-12-aliados.md</code></td>
+            <td>WS-12</td>
+            <td>ALIADOS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>127</td>
+            <td><code>ws-12-empresas.md</code></td>
+            <td>WS-12</td>
+            <td>EMPRESAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>128</td>
+            <td><code>ws-12-personas.md</code></td>
+            <td>WS-12</td>
+            <td>PERSONAS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+        <tr data-verdict="PASS">
+            <td>129</td>
+            <td><code>ws-12-resellers.md</code></td>
+            <td>WS-12</td>
+            <td>RESELLERS</td>
+            <td><strong>100</strong></td>
+            <td class="fail">0</td>
+            <td class="warn">0</td>
+            <td><span class="badge badge-pass">PASS</span></td>
+        </tr>
+    </table>
+</div>
+</div>
+
+<!-- TAB 5: GAPS PENDIENTES -->
+<div class="tab-content" id="tab-gaps">
+<div class="section">
+    <h2>Documentos Pendientes por Prioridad</h2><p style='color:#34d399;text-align:center;padding:40px'>Cobertura 100% — no hay gaps pendientes</p>
+</div>
+</div>
+
+<div class="timestamp">Generado por Metodolog<span class="ia-gold">IA</span> Testing Engine v2.0 — Coverage Edition</div>
+
+<script>
+function filterTable(verdict) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('#results-table tr[data-verdict]').forEach(row => {
+        row.style.display = (verdict === 'all' || row.dataset.verdict === verdict) ? '' : 'none';
+    });
+}
+function showTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tabId).classList.add('active');
+}
+</script>
+</body>
+</html>

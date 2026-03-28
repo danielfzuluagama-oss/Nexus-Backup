@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="MetodologIA Plan Mode v1.0">
+<title>PLAN MODE: Replanificacion Arquitectural — Programa de Empoderamiento</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07101f; --surface: #0d1a2d; --surface2: #132238;
+  --text: #e0e6ed; --text-muted: #8a9bb5; --accent: #00cde8;
+  --gold: #ffd700; --green: #00e676; --red: #ff5252; --orange: #ffab40;
+  --purple: #bb86fc; --pink: #ff6ec7;
+  --border: rgba(0,205,232,0.15); --glow: rgba(0,205,232,0.08);
+}
+.light {
+  --bg: #f5f7fa; --surface: #ffffff; --surface2: #eef2f7;
+  --text: #1a2332; --text-muted: #5a6a7e; --border: rgba(0,0,0,0.1);
+  --glow: rgba(0,205,232,0.05);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+header { background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%); border-bottom: 2px solid var(--accent); padding: 2rem 2rem 1.5rem; }
+header h1 { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--gold); margin-bottom: 0.3rem; }
+header .subtitle { font-size: 1rem; color: var(--accent); font-weight: 600; }
+header .meta { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+header .meta-item { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.82rem; }
+header .meta-item strong { color: var(--accent); }
+.controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.6rem 2rem; display: flex; gap: 0.8rem; align-items: center; position: sticky; top: 0; z-index: 100; }
+.controls button { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.9rem; font-size: 0.78rem; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: all 0.2s; }
+.controls button:hover { border-color: var(--accent); color: var(--accent); }
+.progress-bar { flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); width: 0%; transition: width 0.3s; }
+.progress-text { font-size: 0.75rem; color: var(--text-muted); min-width: 35px; }
+main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.2rem; overflow: hidden; }
+.section-header { padding: 1rem 1.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; user-select: none; }
+.section-header:hover { background: var(--glow); }
+.section-header h2 { font-family: 'Poppins', sans-serif; font-size: 1.15rem; font-weight: 700; flex: 1; }
+.section-header .badge { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+.badge-diagnostic { background: rgba(255,82,82,0.15); color: var(--red); border: 1px solid rgba(255,82,82,0.3); }
+.badge-architecture { background: rgba(0,205,232,0.15); color: var(--accent); border: 1px solid rgba(0,205,232,0.3); }
+.badge-operational { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
+.badge-decision { background: rgba(187,134,252,0.15); color: var(--purple); border: 1px solid rgba(187,134,252,0.3); }
+.badge-action { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+.badge-risk { background: rgba(255,171,64,0.15); color: var(--orange); border: 1px solid rgba(255,171,64,0.3); }
+.chevron { font-size: 0.9rem; color: var(--text-muted); transition: transform 0.3s; }
+.section.open .chevron { transform: rotate(90deg); }
+.section-body { display: none; padding: 0 1.5rem 1.5rem; }
+.section.open .section-body { display: block; }
+h3 { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.8rem; }
+h4 { font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--gold); margin: 1.2rem 0 0.5rem; }
+p { margin-bottom: 0.8rem; font-size: 0.9rem; }
+ul, ol { margin: 0.5rem 0 1rem 1.5rem; font-size: 0.88rem; }
+li { margin-bottom: 0.4rem; }
+li strong { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.82rem; }
+th { background: var(--surface2); color: var(--accent); font-weight: 600; text-align: left; padding: 0.6rem 0.8rem; border: 1px solid var(--border); }
+td { padding: 0.5rem 0.8rem; border: 1px solid var(--border); vertical-align: top; }
+tr:hover td { background: var(--glow); }
+.callout { border-left: 3px solid var(--accent); background: var(--glow); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; font-size: 0.88rem; }
+.callout.warning { border-left-color: var(--orange); }
+.callout.critical { border-left-color: var(--red); }
+.callout.success { border-left-color: var(--green); }
+.callout.decision { border-left-color: var(--purple); }
+.diagram { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1rem 0; font-family: 'Courier New', monospace; font-size: 0.78rem; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--text-muted); }
+.diagram .highlight { color: var(--accent); font-weight: bold; }
+.diagram .gold { color: var(--gold); font-weight: bold; }
+.diagram .green { color: var(--green); }
+.diagram .red { color: var(--red); }
+.tag { display: inline-block; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px; margin: 0.1rem; font-weight: 600; }
+.tag-new { background: rgba(0,230,118,0.15); color: var(--green); }
+.tag-modify { background: rgba(255,215,0,0.15); color: var(--gold); }
+.tag-deprecate { background: rgba(255,82,82,0.15); color: var(--red); }
+.tag-keep { background: rgba(0,205,232,0.15); color: var(--accent); }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+.kpi { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+.kpi .value { font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--gold); }
+.kpi .label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; }
+.timeline { position: relative; margin: 1.5rem 0 1.5rem 1.5rem; padding-left: 1.5rem; border-left: 2px solid var(--border); }
+.timeline-item { position: relative; margin-bottom: 1.5rem; }
+.timeline-item::before { content: ''; position: absolute; left: -1.85rem; top: 0.3rem; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+.timeline-item.gold::before { background: var(--gold); }
+.timeline-item.green::before { background: var(--green); }
+.timeline-item .time { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+.timeline-item .desc { font-size: 0.85rem; margin-top: 0.2rem; }
+footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.75rem; border-top: 1px solid var(--border); }
+footer a { color: var(--accent); text-decoration: none; }
+#scroll-top { position: fixed; bottom: 2rem; right: 2rem; background: var(--accent); color: var(--bg); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: none; z-index: 200; box-shadow: 0 2px 8px rgba(0,205,232,0.3); }
+@media print { .controls, #scroll-top { display: none !important; } .section-body { display: block !important; } body { background: white; color: black; } }
+@media (max-width: 768px) { header h1 { font-size: 1.3rem; } main { padding: 1rem; } .kpi-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <h1>PLAN MODE: Replanificacion Arquitectural</h1>
+      <div class="subtitle">Programa de Empoderamiento &mdash; Modelo de Delivery Anidado</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:0.75rem;color:var(--text-muted);">MetodologIA Gobierno Operativo</div>
+      <div style="font-size:0.75rem;color:var(--accent);margin-top:0.2rem;">2026-03-24 | Plan v1.0</div>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="meta-item"><strong>7</strong> secciones de plan</div>
+    <div class="meta-item"><strong>3</strong> sub-vehiculos identificados</div>
+    <div class="meta-item"><strong>13</strong> modulos del programa</div>
+    <div class="meta-item"><strong>16</strong> semanas de duracion</div>
+    <div class="meta-item"><strong>5</strong> decisiones arquitecturales</div>
+    <div class="meta-item"><strong>12</strong> nuevos SOPs propuestos</div>
+  </div>
+</header>
+
+<div class="controls" role="toolbar" aria-label="Controles del documento">
+  <button onclick="expandAll()">Expandir todo</button>
+  <button onclick="collapseAll()">Colapsar todo</button>
+  <button onclick="toggleTheme()">Tema</button>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">0%</div>
+</div>
+
+<main>
+
+<!-- ============================================================ -->
+<!-- SECCION 1: DIAGNOSTICO -->
+<!-- ============================================================ -->
+<div class="section open" id="s1">
+  <div class="section-header" onclick="toggleSection('s1')" role="button" tabindex="0" aria-expanded="true">
+    <span class="chevron">&#9654;</span>
+    <h2>1. Diagnostico: El Gap Arquitectural</h2>
+    <span class="badge badge-diagnostic">DIAGNOSTICO</span>
+  </div>
+  <div class="section-body">
+    <h3>1.1 Arquitectura Actual (Silos Paralelos)</h3>
+    <p>El ecosistema de Delivery actual modela <strong>4 vehiculos independientes y paralelos</strong>, cada uno con su propio proceso, SOPs, rituales y gates:</p>
+
+    <div class="diagram"><span class="highlight">DELIVERY ARCHITECTURE v1 (CURRENT)</span>
+<span class="gold">========================================</span>
+
+  <span class="highlight">Workshop</span> (3h)          &rarr;  5 SOPs  &rarr; NPS &ge;45
+  <span class="highlight">Bootcamp</span> (3 semanas)   &rarr;  6 SOPs  &rarr; NPS &ge;50
+  <span class="highlight">Programa Elite</span> (16 sem) &rarr;  7 SOPs  &rarr; NPS &ge;9/10
+  <span class="highlight">Consultoria</span> (2-24 sem) &rarr;  6 SOPs  &rarr; ROI medible
+
+  Cada vehiculo es una <span class="red">PISTA SEPARADA</span>.
+  No hay modelo de composicion ni anidamiento.
+  Un Workshop es un Workshop. Punto.</div>
+
+    <h3>1.2 Realidad del Programa de Empoderamiento</h3>
+    <p>Los PDFs del programa revelan una estructura fundamentalmente diferente. El Programa de Empoderamiento <strong>no es simplemente un "Programa Elite"</strong> &mdash; es un <strong>meta-contenedor</strong> que orquesta tres sub-vehiculos en un ciclo semanal recurrente:</p>
+
+    <div class="diagram"><span class="highlight">PROGRAMA DE EMPODERAMIENTO (REAL)</span>
+<span class="gold">========================================</span>
+
+  Semana N (cada semana, 16 semanas):
+
+  <span class="highlight">[Masterclass]</span>  1h  &rarr;  Fundamento (teoria, frameworks)
+       &darr;
+  <span class="highlight">[Workshop]</span>     1h  &rarr;  Aplicacion (playbook interactivo)
+       &darr;
+  <span class="highlight">[Clinica IA]</span>   1h  &rarr;  Profundizacion (dudas, retos reales)
+
+  + 3h trabajo personal = <span class="gold">6h/semana total</span>
+
+  <span class="green">Ciclo se repite 13 veces</span> (Sem 3-15)
+  + Sem 1: Modulo 0 (gratuito)
+  + Sem 2: Nivelacion
+  + Sem 16: Cierre y certificacion</div>
+
+    <h3>1.3 Los 5 Gaps Identificados</h3>
+    <table>
+      <tr><th>#</th><th>Gap</th><th>Impacto</th><th>Severidad</th></tr>
+      <tr>
+        <td>G1</td>
+        <td><strong>Masterclass no existe</strong> como vehiculo en la arquitectura actual</td>
+        <td>No hay SOP, no hay ritual, no hay gate para facilitar una Masterclass</td>
+        <td><span class="tag tag-new">CRITICO</span></td>
+      </tr>
+      <tr>
+        <td>G2</td>
+        <td><strong>Workshop tratado como evento aislado de 3h</strong>, no como componente anidado de 1h</td>
+        <td>Los SOPs de Workshop asumen facilitacion independiente, no composicion semanal</td>
+        <td><span class="tag tag-modify">ALTO</span></td>
+      </tr>
+      <tr>
+        <td>G3</td>
+        <td><strong>Clinica IA no existe</strong> como vehiculo ni como variante</td>
+        <td>Modalidad critica del programa sin proceso operativo definido</td>
+        <td><span class="tag tag-new">CRITICO</span></td>
+      </tr>
+      <tr>
+        <td>G4</td>
+        <td><strong>No hay modelo de composicion</strong> (Programa como orquestador de sub-vehiculos)</td>
+        <td>Programa Elite trata todo como monolitico, no como conjunto de piezas orquestadas</td>
+        <td><span class="tag tag-new">CRITICO</span></td>
+      </tr>
+      <tr>
+        <td>G5</td>
+        <td><strong>Modulo 0 gratuito sin proceso</strong> de conversion a matricula</td>
+        <td>Funnel de entrada critico sin SOP ni metricas</td>
+        <td><span class="tag tag-new">ALTO</span></td>
+      </tr>
+    </table>
+
+    <div class="callout critical">
+      <strong>Diagnostico final:</strong> La arquitectura actual trata los vehiculos de delivery como cajas negras independientes. El Programa de Empoderamiento requiere un <strong>modelo fractal de composicion</strong> donde un Programa orquesta multiples sub-vehiculos (Masterclass, Workshop, Clinica) en ciclos recurrentes con progresion curricular.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECCION 2: ARQUITECTURA PROPUESTA -->
+<!-- ============================================================ -->
+<div class="section" id="s2">
+  <div class="section-header" onclick="toggleSection('s2')" role="button" tabindex="0" aria-expanded="false">
+    <span class="chevron">&#9654;</span>
+    <h2>2. Arquitectura Propuesta: Modelo Fractal de Delivery</h2>
+    <span class="badge badge-architecture">ARQUITECTURA</span>
+  </div>
+  <div class="section-body">
+    <h3>2.1 Principio: Delivery como Composicion</h3>
+    <p>En lugar de 4 vehiculos paralelos, proponemos un modelo de <strong>3 niveles</strong>:</p>
+    <ol>
+      <li><strong>Atomos</strong> &mdash; unidades minimas de delivery (Masterclass, Workshop, Clinica IA, Mentoria 1:1)</li>
+      <li><strong>Moleculas</strong> &mdash; combinaciones recurrentes (Ciclo Semanal = MC + WS + CL)</li>
+      <li><strong>Organismos</strong> &mdash; programas completos que orquestan moleculas en el tiempo (Empoderamiento, Digital Champions, futuros)</li>
+    </ol>
+
+    <div class="diagram"><span class="highlight">DELIVERY ARCHITECTURE v2 (PROPOSED)</span>
+<span class="gold">========================================</span>
+
+<span class="red">NIVEL 3: ORGANISMOS</span> (programas de largo plazo)
+  <span class="highlight">Programa de Empoderamiento</span> [16 sem, Nivel 7]
+  <span class="highlight">Digital Champions</span>          [16 sem, Nivel 9]
+  <span class="highlight">Consultoria Continua</span>       [12-24 sem]
+  <span class="highlight">(Futuro: Programa X)</span>       [configurable]
+
+<span class="gold">NIVEL 2: MOLECULAS</span> (patrones recurrentes)
+  <span class="highlight">Ciclo Semanal Empoderamiento</span> = MC(1h) + WS(1h) + CL(1h)
+  <span class="highlight">Ciclo Semanal Champions</span>      = MC(1.5h) + Lab(2h) + CL(1h)
+  <span class="highlight">Sprint Bootcamp</span>              = WS(3h) x 5dias x 3sem
+  <span class="highlight">Sprint Consultoria</span>           = Diag(2h) + WS(3h) + Review(1h)
+
+<span class="green">NIVEL 1: ATOMOS</span> (unidades minimas)
+  <span class="highlight">Masterclass</span>  [1h-1.5h]  Fundamento teorico
+  <span class="highlight">Workshop</span>     [1h-3h]    Aplicacion practica
+  <span class="highlight">Clinica IA</span>   [1h]       Profundizacion / Q&A
+  <span class="highlight">Mentoria</span>     [1h]       Coaching 1:1
+  <span class="highlight">Lab</span>          [2h-3h]    Practica intensiva
+  <span class="highlight">Evaluacion</span>   [30min]    Assessment / gate</div>
+
+    <h3>2.2 Implicaciones para Vehiculos Existentes</h3>
+    <table>
+      <tr><th>Vehiculo Actual</th><th>Nuevo Rol</th><th>Cambio</th></tr>
+      <tr>
+        <td><strong>Workshop (3h standalone)</strong></td>
+        <td><span class="tag tag-keep">KEEP</span> como atomo independiente + <span class="tag tag-modify">MODIFY</span> como atomo composable de 1h</td>
+        <td>Agregar modo "composable" (1h dentro de Programa) vs "standalone" (3h evento unico)</td>
+      </tr>
+      <tr>
+        <td><strong>Bootcamp (3 sem)</strong></td>
+        <td><span class="tag tag-keep">KEEP</span> como organismo con molecula "Sprint Bootcamp"</td>
+        <td>Refactorizar como organismo que orquesta atomos Workshop en cadena</td>
+      </tr>
+      <tr>
+        <td><strong>Programa Elite (16 sem)</strong></td>
+        <td><span class="tag tag-modify">MODIFY</span> de monolito a <strong>orquestador de moleculas</strong></td>
+        <td>Cambio mayor: pasa de proceso lineal a compositor de ciclos semanales</td>
+      </tr>
+      <tr>
+        <td><strong>Consultoria (2-24 sem)</strong></td>
+        <td><span class="tag tag-keep">KEEP</span> estructura de tiers + <span class="tag tag-modify">MODIFY</span> sprints como moleculas</td>
+        <td>Cada tier compone atomos diferentes (Diagnostico, Workshop, Review)</td>
+      </tr>
+      <tr>
+        <td><strong>Masterclass</strong></td>
+        <td><span class="tag tag-new">NEW</span> atomo de delivery</td>
+        <td>Crear proceso completo: preparacion, facilitacion, post-sesion</td>
+      </tr>
+      <tr>
+        <td><strong>Clinica IA</strong></td>
+        <td><span class="tag tag-new">NEW</span> atomo de delivery</td>
+        <td>Crear proceso completo: triaje de casos, facilitacion, documentacion</td>
+      </tr>
+    </table>
+
+    <div class="callout decision">
+      <strong>Decision Arquitectural DA-01:</strong> Adoptar modelo Atomo-Molecula-Organismo para toda la vertical de Delivery. Esto permite que nuevos programas se compongan de atomos existentes sin crear procesos desde cero. El Programa de Empoderamiento se convierte en el <strong>primer organismo compuesto</strong> del ecosistema.
+    </div>
+
+    <h3>2.3 Mapa de Composicion del Programa de Empoderamiento</h3>
+    <div class="diagram"><span class="highlight">PROGRAMA DE EMPODERAMIENTO: COMPOSICION COMPLETA</span>
+<span class="gold">=====================================================</span>
+
+<span class="gold">FASE 0: CAPTACION</span> (pre-programa)
+  &boxdr;&boxh; <span class="highlight">Modulo 0</span>: "De Ocupado a Productivo" [GRATUITO]
+  &boxv;   Tipo: <span class="green">Workshop standalone (3h) o Masterclass (1h)</span>
+  &boxv;   Gate: <span class="red">G-CONV</span> &rarr; Conversion a matricula (&ge;20%)
+  &boxur;&boxh; Funnel: Modulo 0 &rarr; Seguimiento (7d) &rarr; Cierre matricula
+
+<span class="gold">FASE 1: ONBOARDING</span> (Sem 1-2)
+  &boxdr;&boxh; Sem 1: Modulo 0 completo (si no lo hizo)
+  &boxur;&boxh; Sem 2: Nivelacion + bienvenida cohorte
+      Gate: <span class="red">G-READY</span> &rarr; Herramientas listas, accesos OK
+
+<span class="gold">FASE 2: CICLO DE TRANSFORMACION</span> (Sem 3-15, x13 ciclos)
+  Cada semana (Molecula "Ciclo Semanal"):
+  &boxdr;&boxh; <span class="highlight">Masterclass</span> (1h) &rarr; Modulo N fundamento
+  &boxv;&boxh; <span class="highlight">Workshop</span> (1h) &rarr; Playbook interactivo aplicado
+  &boxv;&boxh; <span class="highlight">Clinica IA</span> (1h) &rarr; Dudas + retos reales
+  &boxur;&boxh; <span class="green">Trabajo personal</span> (3h) &rarr; Fieldbook + practica
+
+  <span class="gold">Modulos 1-13:</span>
+  M01: Del Automatismo a Estar en Presencia
+  M02: De Entregables que Cumplen a Excelencia
+  M03: De Trabajar Duro a Trabajar Sin Friccion
+  M04: De Dias Caoticos a Jornadas Estrategicas
+  M05: De Hacer sin Estructura a Alto Desempeno
+  M06: De Formas Efectivas a Dinamicas Alto Rendimiento
+  M07: De Bocetos a Prototipos con IA
+  M08: De Documentos a Contenido Sorprendente con IA
+  M09: De Rendimiento Convencional a Productividad con Agentes IA
+  M10: De Rendimiento a Trabajo Amplificado con Asistentes
+  M11: De Tareas Manuales a Automatizaciones No-Code (APA)
+  M12: Revolucion Digital con Mini Apps y Vibe Coding
+  M13: Empoderamiento con MetodologIA
+
+  Gates intermedios:
+  <span class="red">G-M04</span>: Checkpoint Semana 6 (Modulos 1-4 completados)
+  <span class="red">G-M08</span>: Checkpoint Semana 10 (entregables IA validados)
+  <span class="red">G-M12</span>: Checkpoint Semana 14 (automatizacion funcional)
+
+<span class="gold">FASE 3: CONSOLIDACION Y CERTIFICACION</span> (Sem 16)
+  &boxdr;&boxh; Presentacion de portafolio
+  &boxv;&boxh; Evaluacion contra 5 criterios de aprobacion
+  &boxur;&boxh; Certificacion + invitacion Comunidad Embajadores
+      Gate: <span class="red">G-CERT</span> &rarr; 5/5 criterios aprobados</div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECCION 3: NUEVOS ATOMOS -->
+<!-- ============================================================ -->
+<div class="section" id="s3">
+  <div class="section-header" onclick="toggleSection('s3')" role="button" tabindex="0" aria-expanded="false">
+    <span class="chevron">&#9654;</span>
+    <h2>3. Nuevos Atomos de Delivery: Masterclass y Clinica IA</h2>
+    <span class="badge badge-operational">OPERACIONAL</span>
+  </div>
+  <div class="section-body">
+    <h3>3.1 Atomo: Masterclass</h3>
+    <p>Sesion participativa de <strong>fundamento teorico</strong>. Presenta principios clave, marcos de referencia y estrategias de alto impacto.</p>
+
+    <table>
+      <tr><th>Dimension</th><th>Especificacion</th></tr>
+      <tr><td><strong>Duracion</strong></td><td>1h (composable) | 1.5h (standalone)</td></tr>
+      <tr><td><strong>Formato</strong></td><td>Foro participativo, no clase magistral unidireccional</td></tr>
+      <tr><td><strong>Rol del facilitador</strong></td><td>Experto tematico + MetodologIA como co-facilitador</td></tr>
+      <tr><td><strong>Entregable al participante</strong></td><td>Resumen conceptual, framework del modulo, prompt starter</td></tr>
+      <tr><td><strong>Input requerido</strong></td><td>Contenido del modulo (M01-M13), slides, guia de facilitacion</td></tr>
+      <tr><td><strong>KPI</strong></td><td>Engagement rate &ge;80%, comprension post-sesion &ge;70%</td></tr>
+    </table>
+
+    <h4>SOP Propuesto: facilitar-masterclass-sop.md</h4>
+    <ol>
+      <li><strong>Pre-sesion (T-48h):</strong> Revisar contenido del modulo, preparar slides, configurar sala virtual, enviar pre-work a participantes</li>
+      <li><strong>Apertura (0-5min):</strong> Check-in energetico, contexto del modulo en la ruta de 13, objetivo de la sesion</li>
+      <li><strong>Desarrollo (5-45min):</strong> Presentacion de framework con pausas participativas cada 10min. Preguntas tipo Socratico, no expositivo puro</li>
+      <li><strong>Cierre (45-55min):</strong> Sintesis de 3 takeaways, preview del Workshop asociado, prompt starter para practica</li>
+      <li><strong>Post-sesion (T+1h):</strong> Grabar memoria, subir a repositorio, enviar resumen + materiales</li>
+    </ol>
+
+    <h3>3.2 Atomo: Clinica IA</h3>
+    <p>Espacio interactivo para <strong>resolver dudas y trabajar retos reales</strong> con soporte experto, metodologias e IA.</p>
+
+    <table>
+      <tr><th>Dimension</th><th>Especificacion</th></tr>
+      <tr><td><strong>Duracion</strong></td><td>1h (siempre composable, nunca standalone)</td></tr>
+      <tr><td><strong>Formato</strong></td><td>Q&A estructurado + live debugging + pair prompting</td></tr>
+      <tr><td><strong>Rol del facilitador</strong></td><td>Coach IA + troubleshooter, no expositor</td></tr>
+      <tr><td><strong>Entregable al participante</strong></td><td>Solucion documentada, prompt refinado, caso resuelto</td></tr>
+      <tr><td><strong>Input requerido</strong></td><td>Casos pre-triageados (enviados 24h antes por participantes)</td></tr>
+      <tr><td><strong>KPI</strong></td><td>Resolucion de casos &ge;80%, satisfaccion &ge;8/10</td></tr>
+      <tr><td><strong>Nota</strong></td><td>No cuenta para asistencia obligatoria (politica del programa)</td></tr>
+    </table>
+
+    <h4>SOP Propuesto: facilitar-clinica-ia-sop.md</h4>
+    <ol>
+      <li><strong>Pre-sesion (T-24h):</strong> Recoger casos via formulario, triar por complejidad, agrupar temas comunes, preparar demos</li>
+      <li><strong>Apertura (0-5min):</strong> Agenda de casos priorizados, reglas de participacion (camara on, compartir pantalla)</li>
+      <li><strong>Rondas de caso (5-50min):</strong> 3-5 casos en vivo, 8-12min cada uno. Formato: contexto (2min) &rarr; debugging colaborativo (5min) &rarr; solucion + documentacion (3min)</li>
+      <li><strong>Cierre (50-55min):</strong> Patrones comunes del dia, recurso bonus, preview proxima sesion</li>
+      <li><strong>Post-sesion (T+2h):</strong> Subir soluciones al repositorio compartido, actualizar FAQ del modulo</li>
+    </ol>
+
+    <h3>3.3 Atomo Modificado: Workshop (modo composable)</h3>
+    <p>El Workshop existente mantiene su proceso de 3h para eventos standalone, pero gana un <strong>modo composable de 1h</strong> para operar dentro de programas:</p>
+
+    <table>
+      <tr><th>Dimension</th><th>Standalone (3h)</th><th>Composable (1h)</th></tr>
+      <tr><td>Preparacion</td><td>T-14 a T-1 (full)</td><td>Heredada del Masterclass previo (T-0)</td></tr>
+      <tr><td>Contenido</td><td>Completo, autocontenido</td><td>Aplicacion directa del framework de la Masterclass</td></tr>
+      <tr><td>Playbook</td><td>Entregable standalone</td><td>Seccion del Fieldbook del modulo</td></tr>
+      <tr><td>Cierre</td><td>NPS + nurturing</td><td>Transicion a Clinica IA</td></tr>
+      <tr><td>NPS</td><td>Medido individualmente</td><td>Medido como parte del ciclo semanal</td></tr>
+    </table>
+
+    <div class="callout success">
+      <strong>Beneficio:</strong> Los atomos son reutilizables. Una Masterclass de "Productividad con Agentes IA" puede servir como modulo 9 del Empoderamiento, como sesion suelta para prospeccion B2C, o como componente de un futuro programa "Digital Champions".
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECCION 4: SOPs Y RITUALES -->
+<!-- ============================================================ -->
+<div class="section" id="s4">
+  <div class="section-header" onclick="toggleSection('s4')" role="button" tabindex="0" aria-expanded="false">
+    <span class="chevron">&#9654;</span>
+    <h2>4. Mapa Completo de SOPs y Rituales</h2>
+    <span class="badge badge-operational">OPERACIONAL</span>
+  </div>
+  <div class="section-body">
+
+    <h3>4.1 Nuevos SOPs a Crear</h3>
+    <table>
+      <tr><th>#</th><th>SOP</th><th>Atomo/Nivel</th><th>Descripcion</th><th>Prioridad</th></tr>
+      <tr><td>S01</td><td><strong>facilitar-masterclass-sop.md</strong></td><td>Atomo MC</td><td>Preparar, ejecutar y cerrar una Masterclass de 1h</td><td><span class="tag tag-new">P0</span></td></tr>
+      <tr><td>S02</td><td><strong>facilitar-clinica-ia-sop.md</strong></td><td>Atomo CL</td><td>Triar, facilitar y documentar una Clinica IA</td><td><span class="tag tag-new">P0</span></td></tr>
+      <tr><td>S03</td><td><strong>operar-ciclo-semanal-sop.md</strong></td><td>Molecula</td><td>Orquestar MC+WS+CL en secuencia semanal</td><td><span class="tag tag-new">P0</span></td></tr>
+      <tr><td>S04</td><td><strong>gestionar-cohorte-sop.md</strong></td><td>Organismo</td><td>Formar, monitorear y graduar cohortes de 5-10</td><td><span class="tag tag-new">P0</span></td></tr>
+      <tr><td>S05</td><td><strong>convertir-modulo-cero-sop.md</strong></td><td>Funnel</td><td>Ejecutar Modulo 0 gratuito y convertir a matricula</td><td><span class="tag tag-new">P0</span></td></tr>
+      <tr><td>S06</td><td><strong>adaptar-workshop-composable-sop.md</strong></td><td>Atomo WS</td><td>Configurar Workshop en modo 1h para programas</td><td><span class="tag tag-modify">P1</span></td></tr>
+      <tr><td>S07</td><td><strong>evaluar-criterios-aprobacion-sop.md</strong></td><td>Organismo</td><td>Validar 5 criterios de certificacion</td><td><span class="tag tag-new">P1</span></td></tr>
+      <tr><td>S08</td><td><strong>gestionar-fieldbook-sop.md</strong></td><td>Transversal</td><td>Crear, distribuir y evaluar Fieldbooks por modulo</td><td><span class="tag tag-new">P1</span></td></tr>
+      <tr><td>S09</td><td><strong>onboarding-comunidad-embajadores-sop.md</strong></td><td>Post-programa</td><td>Activar egresados en comunidad de embajadores</td><td><span class="tag tag-new">P2</span></td></tr>
+      <tr><td>S10</td><td><strong>escalar-horarios-sop.md</strong></td><td>Operaciones</td><td>Gestionar 3 franjas (matutina, nocturna, sabatina)</td><td><span class="tag tag-new">P2</span></td></tr>
+      <tr><td>S11</td><td><strong>grabar-y-distribuir-memorias-sop.md</strong></td><td>Transversal</td><td>Grabar sesiones, editar, subir a repositorio</td><td><span class="tag tag-new">P2</span></td></tr>
+      <tr><td>S12</td><td><strong>activar-triadas-accountability-sop.md</strong></td><td>Organismo</td><td>Formar y monitorear triadas de cambio (Sem 8+)</td><td><span class="tag tag-new">P2</span></td></tr>
+    </table>
+
+    <h3>4.2 Rituales del Ciclo Semanal</h3>
+    <table>
+      <tr><th>Ritual</th><th>Frecuencia</th><th>Participantes</th><th>Duracion</th><th>Entregable</th></tr>
+      <tr>
+        <td><strong>Pre-ciclo</strong></td>
+        <td>Lunes (T-48h)</td>
+        <td>Facilitador + Coord</td>
+        <td>30min</td>
+        <td>Checklist del ciclo: MC preparada, WS lista, casos CL triageados</td>
+      </tr>
+      <tr>
+        <td><strong>Ejecucion MC+WS+CL</strong></td>
+        <td>Segun franja</td>
+        <td>Facilitador + Cohorte</td>
+        <td>3h</td>
+        <td>3 sesiones ejecutadas, memorias grabadas</td>
+      </tr>
+      <tr>
+        <td><strong>Post-ciclo</strong></td>
+        <td>T+24h</td>
+        <td>Facilitador</td>
+        <td>20min</td>
+        <td>Reporte semanal: asistencia, engagement, casos resueltos</td>
+      </tr>
+      <tr>
+        <td><strong>Retrospectiva de cohorte</strong></td>
+        <td>Cada 4 semanas</td>
+        <td>Facilitador + Coord + Lider</td>
+        <td>45min</td>
+        <td>NPS parcial, ajustes al proximo bloque de 4 modulos</td>
+      </tr>
+    </table>
+
+    <h3>4.3 Sistema de Gates</h3>
+    <table>
+      <tr><th>Gate</th><th>Momento</th><th>Criterio Binario</th><th>Fallback si NO pasa</th></tr>
+      <tr>
+        <td><strong>G-CONV</strong></td>
+        <td>Post-Modulo 0</td>
+        <td>Conversion a matricula &ge;20% de asistentes</td>
+        <td>Revisar Modulo 0 content, ajustar CTA, A/B testing formato</td>
+      </tr>
+      <tr>
+        <td><strong>G-READY</strong></td>
+        <td>Fin Sem 2</td>
+        <td>100% participantes con herramientas + accesos</td>
+        <td>Sesion de soporte tecnico 1:1, extender onboarding 1 sem</td>
+      </tr>
+      <tr>
+        <td><strong>G-M04</strong></td>
+        <td>Fin Sem 6</td>
+        <td>Asistencia &ge;70% + 1/4 prompts entregados</td>
+        <td>Reunion 1:1 de reenganche, plan de recuperacion</td>
+      </tr>
+      <tr>
+        <td><strong>G-M08</strong></td>
+        <td>Fin Sem 10</td>
+        <td>2/4 asistentes entregados + 2/4 prompts</td>
+        <td>Ajuste de ritmo, sesion extra de nivelacion</td>
+      </tr>
+      <tr>
+        <td><strong>G-M12</strong></td>
+        <td>Fin Sem 14</td>
+        <td>3/4 asistentes + 1 automatizacion funcional</td>
+        <td>Extension de 2 semanas para completar entregables</td>
+      </tr>
+      <tr>
+        <td><strong>G-CERT</strong></td>
+        <td>Sem 16</td>
+        <td>5/5 criterios de aprobacion cumplidos</td>
+        <td>3 meses adicionales para completar (politica del programa)</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECCION 5: DECISIONES ARQUITECTURALES -->
+<!-- ============================================================ -->
+<div class="section" id="s5">
+  <div class="section-header" onclick="toggleSection('s5')" role="button" tabindex="0" aria-expanded="false">
+    <span class="chevron">&#9654;</span>
+    <h2>5. Decisiones Arquitecturales (ADRs)</h2>
+    <span class="badge badge-decision">DECISION</span>
+  </div>
+  <div class="section-body">
+
+    <h3>DA-01: Modelo Atomo-Molecula-Organismo</h3>
+    <div class="callout decision">
+      <strong>Contexto:</strong> Vehiculos de delivery tratados como silos paralelos impiden composicion.<br>
+      <strong>Decision:</strong> Adoptar modelo de 3 niveles (Atomo/Molecula/Organismo) para toda la vertical de Delivery.<br>
+      <strong>Justificacion:</strong> Permite reusar atomos entre programas, reduce duplicacion de SOPs, habilita nuevos organismos sin crear procesos desde cero.<br>
+      <strong>Trade-off:</strong> Mayor complejidad en la capa de orquestacion. Mitigado por el SOP operar-ciclo-semanal como coordinador central.<br>
+      <strong>Impacto:</strong> Refactorizar index.html del Delivery Hub para mostrar 3 niveles en lugar de 4 vehiculos planos.
+    </div>
+
+    <h3>DA-02: Workshop Dual-Mode (Standalone + Composable)</h3>
+    <div class="callout decision">
+      <strong>Contexto:</strong> Workshop existe como evento de 3h pero el Programa lo necesita como componente de 1h.<br>
+      <strong>Decision:</strong> Workshop mantiene ambos modos con SOP compartido y variantes documentadas.<br>
+      <strong>Justificacion:</strong> No rompe el proceso actual, agrega flexibilidad sin eliminar capacidad standalone.<br>
+      <strong>Trade-off:</strong> El SOP se bifurca con secciones condicionales. Aceptable porque el 80% del proceso es comun.<br>
+      <strong>Alternativa descartada:</strong> Crear "Mini-Workshop" como atomo separado. Rechazado por fragmentacion innecesaria.
+    </div>
+
+    <h3>DA-03: Modulo 0 como Funnel de Conversion</h3>
+    <div class="callout decision">
+      <strong>Contexto:</strong> El Modulo 0 "De Ocupado a Productivo" es gratuito y abierto, pero no tiene proceso de conversion.<br>
+      <strong>Decision:</strong> Modelar Modulo 0 como interseccion Comercial-Delivery con SOP propio y gate de conversion.<br>
+      <strong>Justificacion:</strong> Es el unico punto donde el funnel comercial (B2C) y el funnel de delivery (Programa) se solapan.<br>
+      <strong>Trade-off:</strong> Requiere coordinacion entre proceso Comercial Personas B2C y Delivery Programa Elite.<br>
+      <strong>Impacto:</strong> Crea bridge bidireccional natural entre los dos ecosistemas (R-02: Recompra desde Modulo 0).
+    </div>
+
+    <h3>DA-04: Clinica IA como Atomo Exclusivamente Composable</h3>
+    <div class="callout decision">
+      <strong>Contexto:</strong> La Clinica IA no existe como evento independiente &mdash; solo tiene sentido despues de MC+WS.<br>
+      <strong>Decision:</strong> Clinica IA es atomo composable-only. No se ofrece standalone.<br>
+      <strong>Justificacion:</strong> Sin contexto previo (el framework de la MC + la practica del WS), la Clinica no genera valor. Requiere que los participantes lleguen con dudas concretas.<br>
+      <strong>Trade-off:</strong> Limita flexibilidad futura. Aceptable: si algun dia se necesita standalone, se crea variante.
+    </div>
+
+    <h3>DA-05: Criterios de Aprobacion como Gate, no como Rubrica</h3>
+    <div class="callout decision">
+      <strong>Contexto:</strong> El programa tiene 5 criterios de aprobacion (prompts, asistentes, declaraciones, forma de trabajo, automatizaciones).<br>
+      <strong>Decision:</strong> Modelar como gate binario G-CERT con 5 sub-checks, no como rubrica continua.<br>
+      <strong>Justificacion:</strong> El programa ya define "completa a tu ritmo con 3 meses post" &mdash; es un gate de paso, no una nota.<br>
+      <strong>Trade-off:</strong> Pierde granularidad en la evaluacion. Mitigado por checkpoints intermedios (G-M04, G-M08, G-M12).
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECCION 6: RETROALIMENTACION BIDIRECCIONAL -->
+<!-- ============================================================ -->
+<div class="section" id="s6">
+  <div class="section-header" onclick="toggleSection('s6')" role="button" tabindex="0" aria-expanded="false">
+    <span class="chevron">&#9654;</span>
+    <h2>6. Retroalimentacion Comercial &harr; Delivery</h2>
+    <span class="badge badge-architecture">ARQUITECTURA</span>
+  </div>
+  <div class="section-body">
+
+    <h3>6.1 Puentes Identificados</h3>
+    <p>El Programa de Empoderamiento crea 4 puntos de contacto bidireccional entre los procesos Comercial y Delivery:</p>
+
+    <div class="diagram"><span class="highlight">FLUJO BIDIRECCIONAL COMERCIAL &harr; DELIVERY</span>
+<span class="gold">================================================</span>
+
+<span class="highlight">COMERCIAL B2C (Personas)</span>          <span class="highlight">DELIVERY (Programa)</span>
+
+Detectar Life Event
+  &boxur;&rarr; "quiero crecer profesionalmente" &rarr;&boxdr;
+                                    &boxur;&rarr; <span class="gold">Modulo 0</span> (gratuito)
+                                         &boxv;
+Mapear Ancla Emocional             <span class="red">G-CONV</span>
+  &boxur;&rarr; "miedo a quedarme atras" &rarr;&boxdr;      &boxv;
+                                    &boxur;&rarr; <span class="gold">Matricula</span>
+Oferta Valor Inmediato                   &boxv;
+  &boxur;&rarr; Modulo 0 como lead magnet&rarr;&boxdr;     &boxv;
+                                    &boxur;&rarr; <span class="gold">Sem 1-16</span> (ejecucion)
+                                         &boxv;
+                           <span class="red">G-CERT</span>  &boxdr;&boxh;&boxh;&boxh;&boxh;&boxul;
+                                    &boxv;
+Activar Referral Loop              &boxv;
+  &boxul;&rarr; Embajadores refieren nuevos &larr;&boxdr;   &boxv;
+                                    &boxur;&rarr; <span class="gold">Comunidad Embajadores</span>
+Nutrir Audiencia B2C
+  &boxul;&rarr; Casos de exito del programa &larr;&boxur;</div>
+
+    <h3>6.2 Nuevos Handoffs</h3>
+    <table>
+      <tr><th>Handoff</th><th>Desde</th><th>Hacia</th><th>Trigger</th><th>Contenido</th></tr>
+      <tr>
+        <td><strong>H-02</strong></td>
+        <td>Comercial B2C</td>
+        <td>Delivery Modulo 0</td>
+        <td>Prospecto calificado acepta invitacion</td>
+        <td>Perfil del prospecto, ancla emocional, canal de origen</td>
+      </tr>
+      <tr>
+        <td><strong>R-02</strong></td>
+        <td>Delivery Modulo 0</td>
+        <td>Comercial B2C</td>
+        <td>Asistente completa Modulo 0 sin matricularse</td>
+        <td>Engagement score, objeciones detectadas, ventana de seguimiento</td>
+      </tr>
+      <tr>
+        <td><strong>R-03</strong></td>
+        <td>Delivery G-CERT</td>
+        <td>Comercial B2C + B2B</td>
+        <td>Egresado certificado</td>
+        <td>Portafolio del egresado, NPS, caso de exito, potencial embajador</td>
+      </tr>
+      <tr>
+        <td><strong>H-03</strong></td>
+        <td>Comercial B2B</td>
+        <td>Delivery Programa</td>
+        <td>Empresa compra cohorte corporativa</td>
+        <td>Numero de participantes, nivel, personalizaciones requeridas</td>
+      </tr>
+    </table>
+
+    <div class="callout success">
+      <strong>Insight clave:</strong> El Modulo 0 gratuito es el <strong>puente natural</strong> entre Comercial y Delivery. No es solo un lead magnet &mdash; es un <strong>atomo de delivery que funciona como herramienta comercial</strong>. Esto valida el modelo Atomo-Molecula-Organismo: un mismo atomo (Workshop/Masterclass) puede operar en contexto comercial O en contexto de delivery.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECCION 7: PLAN DE EJECUCION -->
+<!-- ============================================================ -->
+<div class="section" id="s7">
+  <div class="section-header" onclick="toggleSection('s7')" role="button" tabindex="0" aria-expanded="false">
+    <span class="chevron">&#9654;</span>
+    <h2>7. Plan de Ejecucion y Proximos Pasos</h2>
+    <span class="badge badge-action">ACCION</span>
+  </div>
+  <div class="section-body">
+
+    <h3>7.1 Fases de Implementacion</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time">FASE 1: Atomos Nuevos (inmediato)</div>
+        <div class="desc">
+          Crear los 2 atomos nuevos (Masterclass + Clinica IA) con SOPs completos 10x-elevados. Modificar Workshop para modo dual. Crear SOP de Ciclo Semanal. <strong>Entregable: 4 SOPs nuevos + 1 modificado.</strong>
+        </div>
+      </div>
+      <div class="timeline-item gold">
+        <div class="time">FASE 2: Organismo Empoderamiento (siguiente)</div>
+        <div class="desc">
+          Crear el proceso completo del Programa de Empoderamiento como organismo: gestionar-cohorte-sop, convertir-modulo-cero-sop, evaluar-criterios-sop. Incluir gates y metricas. <strong>Entregable: 3 SOPs + sistema de gates.</strong>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="time">FASE 3: Soporte Operativo (posterior)</div>
+        <div class="desc">
+          Crear SOPs de soporte: fieldbook, memorias, horarios, triadas, embajadores. <strong>Entregable: 5 SOPs de soporte.</strong>
+        </div>
+      </div>
+      <div class="timeline-item green">
+        <div class="time">FASE 4: Refactorizar Arquitectura Delivery (final)</div>
+        <div class="desc">
+          Actualizar el Delivery Hub HTML para reflejar el modelo Atomo-Molecula-Organismo. Regenerar HTMLs con md2html_v2.py. Actualizar manifest.json. <strong>Entregable: Hub actualizado + HTMLs regenerados.</strong>
+        </div>
+      </div>
+    </div>
+
+    <h3>7.2 Impacto en Tareas Pendientes</h3>
+    <table>
+      <tr><th>Tarea Pendiente</th><th>Estado</th><th>Impacto de este Plan</th></tr>
+      <tr>
+        <td>5 SOPs B2C sin crear</td>
+        <td><span class="tag tag-modify">Pendiente</span></td>
+        <td>Deben incluir referencia a Modulo 0 como lead magnet en detectar-life-events y oferta-valor-inmediato</td>
+      </tr>
+      <tr>
+        <td>HTML v2 para archivos comerciales</td>
+        <td><span class="tag tag-modify">Pendiente</span></td>
+        <td>Esperar a que los SOPs comerciales referencien los nuevos handoffs H-02, R-02, R-03</td>
+      </tr>
+      <tr>
+        <td>Cross-feedback Comercial&harr;Delivery</td>
+        <td><span class="tag tag-new">Redefinido</span></td>
+        <td>Este plan DEFINE el cross-feedback. Los handoffs H-02, H-03, R-02, R-03 son el puente</td>
+      </tr>
+      <tr>
+        <td>Hub unificado Delivery+Comercial</td>
+        <td><span class="tag tag-modify">Pendiente</span></td>
+        <td>Debe reflejar el modelo de 3 niveles, no 4+3 vehiculos planos</td>
+      </tr>
+      <tr>
+        <td>Programa Elite SOPs actuales</td>
+        <td><span class="tag tag-modify">Refactorizar</span></td>
+        <td>Evolucionan de proceso monolitico a orquestador de moleculas</td>
+      </tr>
+    </table>
+
+    <h3>7.3 Metricas de Exito del Replan</h3>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="value">12</div>
+        <div class="label">Nuevos SOPs a crear</div>
+      </div>
+      <div class="kpi">
+        <div class="value">6</div>
+        <div class="label">Gates definidos</div>
+      </div>
+      <div class="kpi">
+        <div class="value">4</div>
+        <div class="label">Handoffs bidireccionales</div>
+      </div>
+      <div class="kpi">
+        <div class="value">6</div>
+        <div class="label">Atomos de delivery</div>
+      </div>
+      <div class="kpi">
+        <div class="value">&ge;20%</div>
+        <div class="label">Conversion Modulo 0</div>
+      </div>
+      <div class="kpi">
+        <div class="value">5/5</div>
+        <div class="label">Criterios G-CERT</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Proxima accion recomendada:</strong> Confirmar este plan y proceder con FASE 1 &mdash; crear los atomos Masterclass y Clinica IA con elevation 10x, seguido del SOP de Ciclo Semanal. Esto desbloquea todas las fases posteriores.
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <p>MetodologIA Gobierno Operativo &mdash; Plan Mode v1.0 &mdash; 2026-03-24</p>
+  <p><a href="index.html">Volver al Hub de Delivery</a> | Generado por MetodologIA Plan Engine</p>
+</footer>
+
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">&uarr;</button>
+
+<script>
+function toggleSection(id) {
+  const s = document.getElementById(id);
+  s.classList.toggle('open');
+  s.querySelector('.section-header').setAttribute('aria-expanded', s.classList.contains('open'));
+  updateProgress();
+}
+function expandAll() {
+  document.querySelectorAll('.section').forEach(s => { s.classList.add('open'); s.querySelector('.section-header').setAttribute('aria-expanded','true'); });
+  updateProgress();
+}
+function collapseAll() {
+  document.querySelectorAll('.section').forEach(s => { s.classList.remove('open'); s.querySelector('.section-header').setAttribute('aria-expanded','false'); });
+  updateProgress();
+}
+function updateProgress() {
+  const all = document.querySelectorAll('.section');
+  const open = document.querySelectorAll('.section.open');
+  const pct = Math.round((open.length / all.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '%';
+}
+function toggleTheme() {
+  document.body.classList.toggle('light');
+}
+// Scroll-to-top visibility
+window.addEventListener('scroll', () => {
+  document.getElementById('scroll-top').style.display = window.scrollY > 400 ? 'block' : 'none';
+});
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const sections = [...document.querySelectorAll('.section')];
+  const openIdx = sections.findIndex(s => s.classList.contains('open'));
+  if(e.key === 'j') { const next = Math.min(openIdx + 1, sections.length - 1); sections.forEach(s => s.classList.remove('open')); sections[next].classList.add('open'); sections[next].scrollIntoView({behavior:'smooth',block:'start'}); updateProgress(); }
+  if(e.key === 'k') { const prev = Math.max(openIdx - 1, 0); sections.forEach(s => s.classList.remove('open')); sections[prev].classList.add('open'); sections[prev].scrollIntoView({behavior:'smooth',block:'start'}); updateProgress(); }
+  if(e.key === 'e') expandAll();
+  if(e.key === 'c') collapseAll();
+});
+updateProgress();
+</script>
+
+</body>
+</html>

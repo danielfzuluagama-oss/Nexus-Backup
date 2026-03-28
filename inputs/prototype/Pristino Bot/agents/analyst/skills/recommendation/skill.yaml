@@ -1,0 +1,617 @@
+id: recommendation
+name: Recommendation
+purpose: >
+  Generate evidence-based recommendations backed by analysis, with clear
+  rationale, alternatives, and risk considerations.
+businessValue: >
+  Actionable recommendations backed by structured analysis that give
+  decision-makers confidence to act with full awareness of trade-offs and risks.
+triggerTypes:
+  - user_message
+owningAgent: analyst
+inputs:
+  - "context: string — the decision context or question requiring a recommendation"
+  - "recommendationType: string — single | ranked-alternatives | conditional | risk-adjusted"
+  - "options: string[] — optional pre-defined options to choose from"
+  - "constraints: string[] — optional constraints or requirements"
+  - "riskTolerance: string — optional (low, medium, high)"
+outputs:
+  - "recommendationReport: object — structured recommendation with rationale and evidence"
+  - "alternatives: object[] — ranked alternative options with trade-offs"
+  - "riskAssessment: object — risk analysis of the recommended option"
+dependencies:
+  - "llm-chat — LLM inference for recommendation generation"
+  - "security.ts — CP1/CP2/CP3 checkpoints"
+toolUsage:
+  - get_current_time
+memoryReadsWrites:
+  reads:
+    - "Delegated task context from orchestrator"
+  writes: []
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - recommendation_generated
+  - risk_assessment_completed
+  - validation_failed
+  - fallback_triggered
+failureHandling:
+  - "Insufficient context for recommendation: list what information is needed"
+  - "No clear winner among options: present conditional recommendation"
+  - "Risk data unavailable: provide recommendation with risk caveats"
+  - "LLM timeout: retry once then return preliminary recommendation with disclaimer"
+interoperabilityContract:
+  inputType: "RecommendationRequest { context: string, recommendationType: string, options?: string[], constraints?: string[], riskTolerance?: string }"
+  outputType: "RecommendationResult { recommendation: object, alternatives: object[], riskAssessment: object, metadata: object }"
+wowCriteria:
+  - "Recommendation addresses the user's actual decision, not just the surface question"
+  - "Risk assessment anticipates consequences the user hasn't considered"
+  - "Conditional logic handles multiple plausible scenarios"
+  - "Alternatives are genuinely viable, not strawmen"
+safeCriteria:
+  - "Recommendation is backed by explicit evidence and reasoning"
+  - "No personal opinions disguised as objective recommendations"
+  - "Limitations and assumptions are clearly stated"
+  - "Output passes CP3 validation without flags"
+
+workflows:
+  - id: single-recommendation
+    title: Single recommendation
+    objective: Generate a single best recommendation with thorough rationale and evidence-based justification
+    trigger: "recommendationType === 'single' or a clear best-option recommendation is requested"
+    preconditions:
+      - "Decision context is non-empty and sanitized via CP1"
+      - "Sufficient information exists to form a defensible recommendation"
+    inputs:
+      - "context: string — the decision context"
+      - "options: string[] — optional pre-defined options"
+      - "constraints: string[] — optional constraints"
+    steps:
+      - stepNumber: 1
+        title: Sanitize recommendation inputs
+        desc: Apply CP1 security checkpoint to the decision context, options, and constraints.
+        whyThisMatters: Crafted context descriptions could bias the recommendation through prompt injection.
+        inputNeeded: "Raw context, options, and constraints from the delegated task"
+        actionInstruction: "Call sanitizeInput() on context, each option, and each constraint. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized context, options[], and constraints[] with control characters stripped"
+        validationRule: "Context is non-empty after sanitization, safe === true for all inputs"
+        failureSignal: "Context is empty after sanitization or safe === false"
+        recoveryAction: "Return error to orchestrator: 'Decision context could not be sanitized for recommendation.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Analyze decision landscape
+        desc: Map the decision space including criteria, stakeholders, constraints, and available options.
+        whyThisMatters: Rushing to a recommendation without understanding the landscape leads to shallow or misguided advice.
+        inputNeeded: "Sanitized context from step 1, options and constraints"
+        actionInstruction: "Call llm.chat() with the decision landscape prompt."
+        promptToUse: |
+          You are a decision analysis specialist. Map the decision landscape for:
+          Context: {{context}}
+
+          {{#if options}}
+          Available options: {{options}}
+          {{else}}
+          No options pre-defined. Identify 3-5 viable options.
+          {{/if}}
+
+          {{#if constraints}}
+          Constraints: {{constraints}}
+          {{/if}}
+
+          Analyze:
+          1. **Core decision**: What is actually being decided? (may differ from surface question)
+          2. **Decision criteria**: What factors matter most? List 4-6 with importance
+          3. **Stakeholders**: Who is affected by this decision?
+          4. **Constraints**: Hard limits that must be respected
+          5. **Available options**: All viable options (existing + any additional ones identified)
+          6. **Information gaps**: What relevant information is missing?
+          7. **Time sensitivity**: Is there urgency that affects the recommendation?
+        expectedOutput: "DecisionLandscape { coreDecision, criteria[], stakeholders[], constraints[], options[], gaps[], urgency }"
+        validationRule: "Core decision articulated, 4+ criteria, at least 2 options identified"
+        failureSignal: "Core decision unclear, fewer than 2 options, or criteria missing"
+        recoveryAction: "Use the surface question as core decision, apply generic criteria, and note limitations."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate recommendation with rationale
+        desc: Select the best option with a thorough, evidence-based rationale addressing each criterion.
+        whyThisMatters: The recommendation must be defensible — unsupported advice is worse than no advice.
+        inputNeeded: "DecisionLandscape from step 2"
+        actionInstruction: "Call llm.chat() with the recommendation generation prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst generating a recommendation.
+
+          Decision landscape:
+          {{decisionLandscape}}
+
+          Generate a single best recommendation:
+
+          1. **Recommendation**: Clear, actionable statement of what to do
+          2. **Confidence level**: How confident are you? (high/medium/low with reasoning)
+          3. **Rationale by criterion**: For each decision criterion, explain why this option is best
+          4. **Evidence**: What facts, patterns, or reasoning support this recommendation?
+          5. **Constraints satisfied**: Confirm all constraints are met (or note which aren't)
+          6. **Stakeholder impact**: How does this affect each stakeholder?
+          7. **Implementation notes**: What should the user consider when acting on this?
+          8. **Caveats**: Conditions under which this recommendation would change
+          9. **What you'd need to be wrong**: What would have to be true for this to be bad advice?
+
+          Be explicit about your reasoning. No recommendation without evidence.
+          If the evidence doesn't clearly support one option, say so and explain why you're still recommending it.
+        expectedOutput: "Recommendation { action, confidence, rationaleBycriterion, evidence, constraints, impact, implementation, caveats, wrongConditions }"
+        validationRule: "Action is clear and actionable, confidence has reasoning, all criteria addressed in rationale"
+        failureSignal: "Vague recommendation, missing rationale for criteria, or no evidence cited"
+        recoveryAction: "Re-prompt with instruction to be more specific. If still vague, present as preliminary recommendation."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, ensure no personal opinions disguised as analysis, and format for delivery.
+        whyThisMatters: Recommendations carry weight — they must be safe, unbiased, and properly caveated before delivery.
+        inputNeeded: "Recommendation from step 3, DecisionLandscape from step 2"
+        actionInstruction: "Call validateOutput(recommendation) from security.ts. Verify no opinion-as-analysis. Add timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "RecommendationResult { recommendation: object, alternatives: [], riskAssessment: {}, metadata: object }"
+        validationRule: "CP3 passes, recommendation is evidence-backed, caveats are present"
+        failureSignal: "CP3 flags output or recommendation lacks evidence"
+        recoveryAction: "Log CP3 warning, add explicit caveat about limitations, deliver with disclaimer"
+        handoffIfNeeded: null
+
+    mainOutput: "Single best recommendation with detailed rationale, evidence, confidence level, and caveats"
+    secondaryOutputs:
+      - "decision_landscape: full analysis of the decision space"
+      - "criterion_analysis: per-criterion rationale"
+      - "recommendation_event_log: timestamps and step metrics"
+    DoD:
+      - "Clear, actionable recommendation delivered"
+      - "Rationale addresses each decision criterion"
+      - "Confidence level stated with reasoning"
+      - "Caveats and wrong-conditions documented"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Recommendation is specific enough to act on"
+      - "No personal opinions disguised as objective analysis"
+      - "Limitations and assumptions stated"
+      - "Evidence is traceable and verifiable"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "recommendation_actionability: recommendation contains specific action"
+      - "evidence_backing: every claim has cited evidence"
+      - "response_time_p95: < 18s"
+    cadence: "Per-request (when single recommendation is requested)"
+    errorHandling: "If information is insufficient, provide conditional recommendation with required information listed"
+    fallbackRoute: "Return decision framework without specific recommendation, noting what data is needed"
+    escalationRoute: "Report to orchestrator that recommendation requires external research"
+
+  - id: ranked-alternatives
+    title: Ranked alternatives
+    objective: Present multiple recommendations ranked by suitability with clear differentiation between options
+    trigger: "recommendationType === 'ranked-alternatives' or user wants to see multiple options"
+    preconditions:
+      - "Decision context is non-empty and sanitized via CP1"
+      - "Multiple viable options exist or can be generated"
+    inputs:
+      - "context: string — the decision context"
+      - "options: string[] — optional pre-defined options"
+      - "constraints: string[] — optional constraints"
+    steps:
+      - stepNumber: 1
+        title: Sanitize recommendation inputs
+        desc: Apply CP1 security checkpoint to all text inputs including context, options, and constraints.
+        whyThisMatters: Multiple options mean multiple injection vectors — each must be individually sanitized.
+        inputNeeded: "Raw context, options, and constraints from the delegated task"
+        actionInstruction: "Call sanitizeInput() on context, each option, and each constraint. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized context, options[], and constraints[] arrays"
+        validationRule: "Context is non-empty, safe === true for all inputs"
+        failureSignal: "Context empty after sanitization or safe === false"
+        recoveryAction: "Return error to orchestrator: 'Inputs could not be sanitized for recommendation.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Identify and evaluate alternatives
+        desc: Generate or validate the full set of alternatives and evaluate each on relevant criteria.
+        whyThisMatters: Ranked alternatives require comprehensive evaluation — missing a viable option undermines the ranking.
+        inputNeeded: "Sanitized context, options, and constraints from step 1"
+        actionInstruction: "Call llm.chat() with the alternatives evaluation prompt."
+        promptToUse: |
+          You are a decision alternatives specialist. For this decision context:
+          Context: {{context}}
+          Constraints: {{constraints}}
+
+          {{#if options}}
+          Pre-defined options: {{options}}
+          Validate these and identify any missing viable alternatives.
+          {{else}}
+          Generate 4-6 viable alternatives for this decision.
+          {{/if}}
+
+          For each alternative:
+          1. **Name/Label**: Clear identifier
+          2. **Description**: What this alternative involves (2-3 sentences)
+          3. **Criteria evaluation**: Score on 4-6 relevant criteria (1-10 each)
+          4. **Pros**: 2-3 key advantages
+          5. **Cons**: 2-3 key disadvantages
+          6. **Best suited for**: When/who this alternative is ideal for
+          7. **Risk level**: Low/Medium/High with brief explanation
+          8. **Constraints check**: Does it satisfy all constraints? (Yes/No with detail)
+
+          Ensure alternatives are genuinely distinct — not minor variations of the same approach.
+        expectedOutput: "AlternativeSet { alternatives: AlternativeEval[], criteria: string[], constraintsChecked: boolean }"
+        validationRule: "4-6 alternatives evaluated, each with pros/cons/scores/risk, constraint compliance checked"
+        failureSignal: "Fewer than 3 alternatives or alternatives lack evaluation detail"
+        recoveryAction: "Supplement with additional alternatives using creative brainstorming. Minimum 3 required."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Rank alternatives with differentiation
+        desc: Rank alternatives by overall suitability with clear explanation of what differentiates each rank.
+        whyThisMatters: A ranked list without differentiation rationale is just a list — the ranking logic is the value.
+        inputNeeded: "AlternativeSet from step 2"
+        actionInstruction: "Call llm.chat() with the ranking prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst ranking recommendation alternatives.
+
+          Evaluated alternatives:
+          {{alternativeSet}}
+
+          Rank these alternatives from most to least recommended:
+
+          For each ranked position:
+          1. **Rank**: Position number
+          2. **Alternative**: Name
+          3. **Overall score**: Weighted composite (show computation)
+          4. **Recommendation strength**: Strong/Moderate/Weak recommendation
+          5. **Key differentiator**: What sets this apart from the rank above/below
+          6. **When to choose this over #1**: Specific conditions where a lower-ranked option becomes the best choice
+
+          Also provide:
+          - **Top recommendation summary**: 2-3 sentence case for the #1 choice
+          - **Close alternatives**: Which alternatives are nearly tied? (within 10% score)
+          - **Eliminated options**: Any alternatives that fail constraints (moved to end with explanation)
+          - **Decision tree**: "If X, choose A. If Y, choose B. If Z, choose C."
+        expectedOutput: "RankedAlternatives { ranking[], topSummary, closeAlternatives[], eliminated[], decisionTree }"
+        validationRule: "All alternatives ranked, scores computed, differentiators specified, decision tree present"
+        failureSignal: "Alternatives missing from ranking, no differentiators, or decision tree absent"
+        recoveryAction: "Re-prompt for missing elements. If fails, deliver ranking without decision tree."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, format ranked alternatives for clear presentation, and deliver.
+        whyThisMatters: Ranked alternatives must be clearly formatted so the user can quickly identify the best option for their context.
+        inputNeeded: "RankedAlternatives from step 3"
+        actionInstruction: "Call validateOutput(ranking) from security.ts. Format output. Add timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "RecommendationResult { recommendation: TopChoice, alternatives: RankedList, riskAssessment: {}, metadata: object }"
+        validationRule: "CP3 passes, all alternatives present in ranking, decision tree is consistent with scores"
+        failureSignal: "CP3 flags output or ranking is incomplete"
+        recoveryAction: "Log CP3 warning, strip flagged content, deliver available ranking with disclaimer"
+        handoffIfNeeded: null
+
+    mainOutput: "Ranked list of alternatives with scores, differentiators, decision tree, and contextual recommendation"
+    secondaryOutputs:
+      - "alternative_evaluations: detailed per-option analysis"
+      - "scoring_details: criterion-by-criterion scores for each alternative"
+      - "decision_tree: conditional recommendation logic"
+    DoD:
+      - "All alternatives evaluated and ranked"
+      - "Each position has clear differentiator"
+      - "Decision tree provided for conditional selection"
+      - "Constraint compliance verified for all options"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Alternatives are genuinely distinct"
+      - "Ranking is consistent with scores"
+      - "Decision tree conditions are realistic and distinct"
+      - "Eliminated options have clear constraint-failure reasons"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "alternative_diversity: all alternatives are genuinely distinct"
+      - "ranking_consistency: order matches computed scores"
+      - "response_time_p95: < 22s"
+    cadence: "Per-request (when ranked alternatives are requested)"
+    errorHandling: "If too few viable alternatives exist, note the limited option space and evaluate what's available"
+    fallbackRoute: "Return single recommendation with one noted alternative"
+    escalationRoute: "Report to orchestrator if decision requires domain expertise outside analyst scope"
+
+  - id: conditional-recommendation
+    title: Conditional recommendation
+    objective: Generate recommendations that branch based on specific conditions, scenarios, or user priorities
+    trigger: "recommendationType === 'conditional' or decision depends on uncertain factors"
+    preconditions:
+      - "Decision context identifies variable conditions"
+      - "Multiple scenarios are plausible"
+      - "Input sanitized via CP1"
+    inputs:
+      - "context: string — the decision context"
+      - "conditions: string[] — variable conditions that affect the recommendation"
+      - "options: string[] — optional pre-defined options"
+      - "constraints: string[] — optional constraints"
+    steps:
+      - stepNumber: 1
+        title: Sanitize conditional inputs
+        desc: Apply CP1 security checkpoint to context, conditions, options, and constraints.
+        whyThisMatters: Condition descriptions could contain injection payloads that bias conditional logic.
+        inputNeeded: "Raw context, conditions, options, and constraints"
+        actionInstruction: "Call sanitizeInput() on all text inputs. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized context, conditions[], options[], and constraints[]"
+        validationRule: "Context and at least 1 condition non-empty after sanitization"
+        failureSignal: "Context empty or no conditions remain after sanitization"
+        recoveryAction: "Return error: 'Insufficient context for conditional recommendation.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Map condition space
+        desc: Identify all relevant conditions, their possible states, and how they interact to form scenarios.
+        whyThisMatters: Missing a key condition means the conditional recommendation has blind spots in critical scenarios.
+        inputNeeded: "Sanitized context and conditions from step 1"
+        actionInstruction: "Call llm.chat() with the condition mapping prompt."
+        promptToUse: |
+          You are a scenario analysis specialist. Map the condition space for this decision:
+          Context: {{context}}
+
+          {{#if conditions}}
+          Identified conditions: {{conditions}}
+          Validate and expand this condition set.
+          {{else}}
+          Identify the key variable conditions that affect this decision.
+          {{/if}}
+
+          For each condition:
+          1. **Condition name**: What varies
+          2. **Possible states**: 2-4 distinct states this condition can be in
+          3. **Likelihood**: Rough probability of each state (if assessable)
+          4. **Impact**: How much this condition affects the recommendation (high/medium/low)
+
+          Then identify the most important scenario combinations:
+          - List 3-5 realistic scenario combinations (not all permutations)
+          - Name each scenario descriptively
+          - Note which scenarios are most likely vs. most impactful
+        expectedOutput: "ConditionSpace { conditions[], scenarios: ScenarioDef[], mostLikely: string, mostImpactful: string }"
+        validationRule: "2+ conditions with possible states, 3-5 scenarios defined, likelihood and impact assessed"
+        failureSignal: "Fewer than 2 conditions or fewer than 2 scenarios"
+        recoveryAction: "Treat as single variable with binary states (optimistic/pessimistic). Proceed with simplified model."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate conditional recommendations
+        desc: For each scenario, determine the best recommendation with rationale and transition triggers.
+        whyThisMatters: The conditional structure is the core value — it prepares the user for multiple futures.
+        inputNeeded: "ConditionSpace from step 2, options and constraints from step 1"
+        actionInstruction: "Call llm.chat() with the conditional recommendation prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst generating conditional recommendations.
+
+          Decision context: {{context}}
+          Condition space: {{conditionSpace}}
+          Available options: {{options}}
+          Constraints: {{constraints}}
+
+          For each scenario:
+          1. **Scenario name**: Descriptive label
+          2. **Active conditions**: Which condition states define this scenario
+          3. **Recommended action**: What to do in this scenario
+          4. **Rationale**: Why this is the best action for these conditions (2-3 sentences)
+          5. **Risk level**: Low/Medium/High
+          6. **Trigger signals**: How would you know this scenario is occurring?
+
+          Then provide:
+          - **Default recommendation**: What to do right now before conditions are clear
+          - **Decision tree**: If condition A is X, then... If condition B is Y, then...
+          - **Watch list**: Specific signals to monitor that indicate which scenario is unfolding
+          - **Pivot points**: When should the user switch from one recommendation to another?
+          - **Worst-case safety net**: What to do if an unexpected scenario emerges
+
+          Be precise about trigger signals — vague triggers make conditional recommendations useless.
+        expectedOutput: "ConditionalRecommendation { scenarioRecs[], defaultRec, decisionTree, watchList, pivotPoints, safetyNet }"
+        validationRule: "Each scenario has a recommendation with rationale, decision tree covers all scenarios, trigger signals are specific"
+        failureSignal: "Scenarios without recommendations, vague trigger signals, or incomplete decision tree"
+        recoveryAction: "Re-prompt for missing scenario recommendations. If fails, deliver default recommendation with scenario awareness."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, ensure conditional logic is internally consistent, and format for delivery.
+        whyThisMatters: Inconsistent conditional logic confuses rather than helps — internal consistency is critical.
+        inputNeeded: "ConditionalRecommendation from step 3"
+        actionInstruction: "Verify decision tree consistency (no contradictions). Call validateOutput() from security.ts. Add timestamp."
+        promptToUse: null (mechanical step)
+        expectedOutput: "RecommendationResult { recommendation: ConditionalRecommendation, alternatives: [], riskAssessment: {}, metadata: object }"
+        validationRule: "CP3 passes, decision tree has no contradictions, all scenarios covered"
+        failureSignal: "Contradictions in decision tree or CP3 flags"
+        recoveryAction: "Resolve contradictions by prioritizing higher-impact scenarios, log inconsistency, deliver corrected version"
+        handoffIfNeeded: null
+
+    mainOutput: "Conditional recommendations with scenario-specific actions, decision tree, watch list, and pivot points"
+    secondaryOutputs:
+      - "condition_space_map: all conditions with states and likelihoods"
+      - "scenario_analysis: per-scenario detail"
+      - "trigger_signal_catalog: specific indicators to monitor"
+    DoD:
+      - "All scenarios have specific recommendations"
+      - "Decision tree covers all identified scenarios"
+      - "Trigger signals are specific and monitorable"
+      - "Default recommendation provided"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Decision tree has no logical contradictions"
+      - "Trigger signals are observable (not hypothetical)"
+      - "Pivot points have clear activation criteria"
+      - "Worst-case safety net is genuinely helpful"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "scenario_coverage: all identified scenarios have recommendations"
+      - "trigger_specificity: all triggers are observable and measurable"
+      - "response_time_p95: < 22s"
+    cadence: "Per-request (when conditional recommendation is requested)"
+    errorHandling: "If conditions are too uncertain, provide default recommendation with monitoring guidance"
+    fallbackRoute: "Return single recommendation with list of conditions that could change it"
+    escalationRoute: "Report to orchestrator if scenario analysis requires external data or research"
+
+  - id: risk-adjusted-recommendation
+    title: Risk-adjusted recommendation
+    objective: Generate recommendations that explicitly account for risk tolerance, probability, and impact
+    trigger: "recommendationType === 'risk-adjusted' or risk tolerance is a key factor"
+    preconditions:
+      - "Decision context is non-empty and sanitized via CP1"
+      - "Decision involves meaningful risk considerations"
+    inputs:
+      - "context: string — the decision context"
+      - "options: string[] — optional pre-defined options"
+      - "riskTolerance: string — low, medium, or high"
+      - "constraints: string[] — optional constraints"
+    steps:
+      - stepNumber: 1
+        title: Sanitize risk-adjusted inputs
+        desc: Apply CP1 security checkpoint to all inputs and validate risk tolerance parameter.
+        whyThisMatters: Risk tolerance is a critical parameter — invalid values could lead to inappropriately risky recommendations.
+        inputNeeded: "Raw context, options, riskTolerance, and constraints"
+        actionInstruction: "Call sanitizeInput() on text inputs. Validate riskTolerance is one of low, medium, high."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized inputs with validated riskTolerance (low, medium, or high)"
+        validationRule: "Context non-empty, riskTolerance is valid enum value"
+        failureSignal: "Context empty or riskTolerance not recognized"
+        recoveryAction: "Default riskTolerance to 'medium' if invalid. Return error if context is empty."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Assess risk landscape
+        desc: Identify all relevant risks for each option, assess probability and impact, and build the risk matrix.
+        whyThisMatters: Risk-adjusted recommendations require explicit risk identification — hidden risks lead to regretted decisions.
+        inputNeeded: "Sanitized inputs from step 1"
+        actionInstruction: "Call llm.chat() with the risk assessment prompt."
+        promptToUse: |
+          You are a risk assessment specialist. Analyze the risk landscape for:
+          Context: {{context}}
+          Risk tolerance: {{riskTolerance}}
+
+          {{#if options}}
+          Options to assess: {{options}}
+          {{else}}
+          Identify 3-5 viable options and assess their risks.
+          {{/if}}
+
+          For each option, identify risks:
+          1. **Risk name**: What could go wrong
+          2. **Probability**: Low (< 20%), Medium (20-50%), High (> 50%)
+          3. **Impact**: Low (minor inconvenience), Medium (significant setback), High (severe consequences)
+          4. **Risk score**: Probability x Impact (L/M/H matrix)
+          5. **Mitigation**: Can this risk be reduced? How?
+          6. **Reversibility**: If this risk materializes, how reversible is the damage?
+
+          Also assess:
+          - **Upside risks**: Positive surprises for each option
+          - **Correlated risks**: Risks that would trigger together
+          - **Black swan potential**: Low-probability, extreme-impact scenarios
+        expectedOutput: "RiskLandscape { optionRisks: { option, risks: RiskAssessment[] }[], correlations[], blackSwans[] }"
+        validationRule: "Each option has at least 2 identified risks, each with probability and impact, mitigations assessed"
+        failureSignal: "Options without risk assessment or missing probability/impact classifications"
+        recoveryAction: "Apply generic risk categories (financial, operational, reputational) to options without specific risks."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Generate risk-adjusted recommendation
+        desc: Compute risk-adjusted scores, adjust for user's risk tolerance, and generate the recommendation.
+        whyThisMatters: The risk adjustment is the core value — it transforms a generic recommendation into one calibrated to the user's comfort.
+        inputNeeded: "RiskLandscape from step 2, riskTolerance from step 1"
+        actionInstruction: "Call llm.chat() with the risk-adjusted recommendation prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst generating a risk-adjusted recommendation.
+
+          Risk landscape: {{riskLandscape}}
+          User risk tolerance: {{riskTolerance}}
+
+          Apply risk adjustment:
+          {{#if riskTolerance === 'low'}}
+          Prioritize options with lowest downside risk, even at cost of upside potential.
+          Heavily penalize high-impact risks even if low probability.
+          {{/if}}
+          {{#if riskTolerance === 'medium'}}
+          Balance risk and reward. Accept medium risks if the upside justifies them.
+          Focus mitigation recommendations on high-probability risks.
+          {{/if}}
+          {{#if riskTolerance === 'high'}}
+          Optimize for maximum potential upside. Accept higher risks if they come with higher rewards.
+          Focus on ensuring risks are survivable, not necessarily avoidable.
+          {{/if}}
+
+          Produce:
+          1. **Risk-adjusted recommendation**: Best option for this risk tolerance level
+          2. **Risk-adjusted score**: How the recommendation changes with risk weighting
+          3. **Comparison**: What would be recommended at different risk tolerances? (show all 3)
+          4. **Mitigation plan**: For the recommended option, how to reduce top risks
+          5. **Monitoring signals**: What to watch for that indicates risk is materializing
+          6. **Exit criteria**: When to abandon this recommendation and pivot
+          7. **Expected outcome range**: Best case, likely case, worst case for the recommendation
+          8. **Regret analysis**: What would you regret most if this goes wrong?
+
+          Be honest about uncertainty. Label speculative risk assessments as such.
+        expectedOutput: "RiskAdjustedRec { recommendation, riskScore, toleranceComparison, mitigationPlan, signals, exitCriteria, outcomeRange, regretAnalysis }"
+        validationRule: "Recommendation aligned with stated risk tolerance, all 3 tolerance levels compared, mitigation plan present"
+        failureSignal: "Recommendation contradicts stated risk tolerance or missing tolerance comparison"
+        recoveryAction: "Re-evaluate recommendation against risk tolerance. If inconsistent, present the tension and let user decide."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, verify risk tolerance alignment, format risk-adjusted recommendation for delivery.
+        whyThisMatters: Risk recommendations carry extra responsibility — misaligned advice could lead to significant harm.
+        inputNeeded: "RiskAdjustedRec from step 3, RiskLandscape from step 2"
+        actionInstruction: "Verify recommendation matches risk tolerance. Call validateOutput() from security.ts. Add timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "RecommendationResult { recommendation: RiskAdjustedRec, alternatives: [], riskAssessment: RiskLandscape, metadata: object }"
+        validationRule: "CP3 passes, risk tolerance alignment verified, exit criteria are specific"
+        failureSignal: "CP3 flags output or risk tolerance misalignment detected"
+        recoveryAction: "Flag misalignment to user explicitly: 'Note: the strongest option carries risk above your stated tolerance.' Deliver with caveat."
+        handoffIfNeeded: null
+
+    mainOutput: "Risk-adjusted recommendation with mitigation plan, monitoring signals, exit criteria, and outcome range"
+    secondaryOutputs:
+      - "risk_landscape: complete risk assessment for all options"
+      - "tolerance_comparison: recommendations at all 3 risk levels"
+      - "mitigation_plan: specific risk reduction actions"
+    DoD:
+      - "Recommendation aligned with user's risk tolerance"
+      - "Risk assessment completed for all options"
+      - "Mitigation plan provided for top risks"
+      - "Exit criteria defined"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Recommendation matches stated risk tolerance"
+      - "Risk assessments are realistic (not fear-mongering or dismissive)"
+      - "Mitigation actions are specific and feasible"
+      - "Exit criteria are observable and measurable"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "risk_tolerance_alignment: recommendation matches user's stated tolerance"
+      - "mitigation_specificity: each top risk has a concrete mitigation"
+      - "response_time_p95: < 22s"
+    cadence: "Per-request (when risk-adjusted recommendation is requested)"
+    errorHandling: "If risk data is insufficient, provide recommendation with explicit uncertainty bounds"
+    fallbackRoute: "Return standard recommendation with risk caveats instead of full risk-adjusted analysis"
+    escalationRoute: "Report to orchestrator if risk assessment requires domain expertise or external data"

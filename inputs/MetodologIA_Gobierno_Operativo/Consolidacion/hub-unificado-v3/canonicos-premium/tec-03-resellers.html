@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="TEC-03 — Mini Apps Inteligentes — Proceso de Delivery MetodologIA">
+    <title>TEC-03 — Mini Apps Inteligentes — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Premium</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">TEC-03 — Mini Apps Inteligentes</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>TEC-03 — Mini Apps Inteligentes</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: TEC-03-RESELLERS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">13</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-resellers-0d051b')" aria-label="Ir a Documento Canónico | Segmento: RESELLERS">Documento Canónico | Segmento: RESE</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-propuesta-de-valor-para-el-reseller-261931')" aria-label="Ir a 2. Propuesta de Valor para el Reseller">2. Propuesta de Valor para el Resel</button>
+<button class="nav-btn" onclick="scrollToSection('3-modelo-de-codelivery-e59178')" aria-label="Ir a 3. Modelo de Co-Delivery">3. Modelo de Co-Delivery</button>
+<button class="nav-btn" onclick="scrollToSection('4-requisitos-de-certificacin-55ef00')" aria-label="Ir a 4. Requisitos de Certificación">4. Requisitos de Certificación</button>
+<button class="nav-btn" onclick="scrollToSection('5-metodologa-6f3af7')" aria-label="Ir a 5. Metodología">5. Metodología</button>
+<button class="nav-btn" onclick="scrollToSection('6-branding-ae7ec0')" aria-label="Ir a 6. Branding">6. Branding</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-econmico-102070-05cded')" aria-label="Ir a 7. Modelo Económico (10/20/70)">7. Modelo Económico (10/20/70)</button>
+<button class="nav-btn" onclick="scrollToSection('8-calidad-y-estndares-b5c620')" aria-label="Ir a 8. Calidad y Estándares">8. Calidad y Estándares</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-y-handoff-d7c657')" aria-label="Ir a 9. Operación y Handoff">9. Operación y Handoff</button>
+<button class="nav-btn" onclick="scrollToSection('10-kpis-d2cd7e')" aria-label="Ir a 10. KPIs">10. KPIs</button>
+<button class="nav-btn" onclick="scrollToSection('11-trminos-889b72')" aria-label="Ir a 11. Términos">11. Términos</button>
+<button class="nav-btn" onclick="scrollToSection('12-escalacin-55d846')" aria-label="Ir a 12. Escalación">12. Escalación</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-resellers-0d051b" data-searchable aria-labelledby="head-documento-cannico-segmento-resellers-0d051b">
+            <div class="phase-header" id="head-documento-cannico-segmento-resellers-0d051b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: RESELLERS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> TEC-03-RESELLERS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Resellers (10/20/70 Revenue Share Model)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>Modelo de venta y ejecución</strong> de mini apps inteligentes a través de resellers certificados. Reseller vende y ejecuta con playbook; 10/20/70 revenue share.</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Precio mínimo cliente</strong></td><td>COP 2M (app mínima)</td></tr><tr><td><strong>Alcance</strong></td><td>1-4 mini apps por proyecto</td></tr><tr><td><strong>Modelo de ingresos</strong></td><td>10% MetodologIA, 20% Reseller venta, 70% Facilitador ejecución</td></tr><tr><td><strong>Tiempo de desarrollo</strong></td><td>4-12 semanas por app</td></tr><tr><td><strong>Tech stack</strong></td><td>React, Next.js, Flutter, custom APIs</td></tr><tr><td><strong>Certificación</strong></td><td>Requerida (comercial y técnica)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-propuesta-de-valor-para-el-reseller-261931" data-searchable aria-labelledby="head-2-propuesta-de-valor-para-el-reseller-261931">
+            <div class="phase-header" id="head-2-propuesta-de-valor-para-el-reseller-261931" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Propuesta de Valor para el Reseller</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Mercado accesible:</strong> Clientes buscan apps específicas de bajo costo.</div>
+<div class="bullet-item"><strong>Ingresos de venta:</strong> 20% comisión perpetua.</div>
+<div class="bullet-item"><strong>Menor complejidad:</strong> Smaller scope que sistemas grandes = ejecución más rápida.</div>
+<div class="bullet-item"><strong>Escalable:</strong> Un facilitador puede ejecutar 4-6 apps simultáneamente.</div>
+<div class="bullet-item"><strong>Boilerplates:</strong> Templating reduce tiempo y costo de desarrollo.</div>
+<div class="bullet-item"><strong>Soporte MetodologIA:</strong> QA, escalations, helpdesk 24h.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-modelo-de-codelivery-e59178" data-searchable aria-labelledby="head-3-modelo-de-codelivery-e59178">
+            <div class="phase-header" id="head-3-modelo-de-codelivery-e59178" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Modelo de Co-Delivery</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="estructura-102070-82b97a">Estructura 10/20/70</h3>
+<div class="bullet-item"><strong>Reseller (20%):</strong> Prospección, venta, relación cliente (pre y post-venta).</div>
+<div class="bullet-item"><strong>Facilitador (70%):</strong> Discovery, diseño, desarrollo, deployment.</div>
+<div class="bullet-item"><strong>MetodologIA (10%):</strong> Metodología, QA, escalations, soporte técnico.</div>
+<h3 class="subsection-title" id="roles-detallados-03b73b">Roles Detallados</h3>
+<p class="key-value"><strong>Reseller (Vender):</strong></p>
+<div class="bullet-item">Identificar necesidades de apps en cliente.</div>
+<div class="bullet-item">Discovery inicial (con templates MetodologIA).</div>
+<div class="bullet-item">Estimación preliminar de scope y tech.</div>
+<div class="bullet-item">Presentación de propuesta y demo.</div>
+<div class="bullet-item">Negociación comercial y contrato.</div>
+<div class="bullet-item">Relación post-venta (upgrades, nuevas apps).</div>
+<p class="key-value"><strong>Facilitador (Ejecutar):</strong></p>
+<div class="bullet-item">Discovery detallado con cliente.</div>
+<div class="bullet-item">Diseño UX/UI (wireframes, mockups).</div>
+<div class="bullet-item">Tech stack selection.</div>
+<div class="bullet-item">Desarrollo frontend y backend.</div>
+<div class="bullet-item">Testing y optimización.</div>
+<div class="bullet-item">Deployment en hosting cliente o MetodologIA.</div>
+<div class="bullet-item">Capacitación técnica del cliente.</div>
+<p class="key-value"><strong>MetodologIA (Metodología + QA):</strong></p>
+<div class="bullet-item">Discovery playbook.</div>
+<div class="bullet-item">Design system templates.</div>
+<div class="bullet-item">Boilerplate starter.</div>
+<div class="bullet-item">Tech stack decision support.</div>
+<div class="bullet-item">Code review y quality assurance.</div>
+<div class="bullet-item">Helpdesk 24h.</div>
+<div class="bullet-item">Training a Facilitador.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-requisitos-de-certificacin-55ef00" data-searchable aria-labelledby="head-4-requisitos-de-certificacin-55ef00">
+            <div class="phase-header" id="head-4-requisitos-de-certificacin-55ef00" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Requisitos de Certificación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="para-reseller-9a6a8a">Para Reseller</h3>
+<p class="key-value"><strong>Comercial:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Experiencia en venta de software/apps (2+ años).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Cartera activa: 2+ clientes actuales.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Capacitación MetodologIA: 1 día (discovery, tech choices, propuesta, playbook).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Evaluación: Presentar propuesta de mini app a caso de ejemplo.</span></div>
+<p class="key-value"><strong>Recertificación:</strong> Anual (3 horas).</p>
+<h3 class="subsection-title" id="para-facilitador-c17503">Para Facilitador</h3>
+<p class="key-value"><strong>Técnico:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Experiencia full-stack (2+ años) con React, Next.js, O Flutter.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Conocimiento de APIs, databases, deployment platforms.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Capacitación MetodologIA: 3 días (app architecture, frontend, backend, deployment, testing).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Evaluación: Desarrollar mini app en 3 semanas (observado).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Code review exitoso por lead técnico MetodologIA.</span></div>
+<p class="key-value"><strong>Recertificación:</strong> Anual (6 horas).</p>
+<h3 class="subsection-title" id="beneficios-de-certificacin-481a30">Beneficios de Certificación</h3>
+<div class="bullet-item">Discovery playbook.</div>
+<div class="bullet-item">Design system templates.</div>
+<div class="bullet-item">Boilerplate starter code (GitHub).</div>
+<div class="bullet-item">Tech stack decision guide.</div>
+<div class="bullet-item">Helpdesk prioritario.</div>
+<div class="bullet-item">Badge de certificación.</div>
+<div class="bullet-item">Acceso a comunidad de resellers.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-metodologa-6f3af7" data-searchable aria-labelledby="head-5-metodologa-6f3af7">
+            <div class="phase-header" id="head-5-metodologa-6f3af7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Metodología</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Playbook MetodologIA:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Discovery (1-2 semanas):</strong></span></div>
+<div class="bullet-item">MVP definition (user stories, wireframes).</div>
+<div class="bullet-item">Tech stack decision (React/Next.js vs Flutter).</div>
+<div class="bullet-item">Integration requirements (APIs, databases).</div>
+<div class="bullet-item">Performance targets (Lighthouse score 90+).</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Design (1 semana):</strong></span></div>
+<div class="bullet-item">UI/UX mockups (Figma).</div>
+<div class="bullet-item">Design system appliance.</div>
+<div class="bullet-item">Component planning.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Desarrollo (2-8 semanas):</strong></span></div>
+<div class="bullet-item">Frontend: Components, state, UI.</div>
+<div class="bullet-item">Backend: APIs, logic, databases.</div>
+<div class="bullet-item">Integration: Third-party APIs, IA si aplica.</div>
+<div class="bullet-item">Testing (unit, integration, e2e).</div>
+<div class="bullet-item">Performance optimization.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Piloto (1 semana):</strong></span></div>
+<div class="bullet-item">User acceptance testing.</div>
+<div class="bullet-item">Bug fixes.</div>
+<div class="bullet-item">Performance validation.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Go-Live (1 semana):</strong></span></div>
+<div class="bullet-item">Deployment (Vercel, AWS, Firebase).</div>
+<div class="bullet-item">Monitoring setup.</div>
+<div class="bullet-item">User training.</div>
+<div class="bullet-item">Documentation.</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Post-Launch (Continua):</strong></span></div>
+<div class="bullet-item">Monitoreo de performance.</div>
+<div class="bullet-item">Bug fixes y mejoras.</div>
+<div class="bullet-item">Soporte técnico (primer año).</div>
+<p class="key-value"><strong>Estándares de Calidad:</strong></p>
+<div class="bullet-item">Performance: Lighthouse 90+.</div>
+<div class="bullet-item">Security: OWASP top 10 compliance.</div>
+<div class="bullet-item">Code review: Obligatorio (MetodologIA antes de go-live).</div>
+<div class="bullet-item">Uptime: 99%+.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-branding-ae7ec0" data-searchable aria-labelledby="head-6-branding-ae7ec0">
+            <div class="phase-header" id="head-6-branding-ae7ec0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Branding</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Cliente ve:</strong> Marca del Reseller; MetodologIA como &quot;Technology Partner&quot;.</div>
+<div class="bullet-item"><strong>Internamente:</strong> Marca MetodologIA en documentación técnica.</div>
+<div class="bullet-item"><strong>Propuesta:</strong> Template MetodologIA + logo Reseller.</div>
+<div class="bullet-item"><strong>App:</strong> 100% marca cliente.</div>
+<p class="key-value"><strong>Restricciones:</strong></p>
+<div class="bullet-item">Reseller NO puede afirmar ser propietario del boilerplate.</div>
+<div class="bullet-item">DEBE atribuir framework a MetodologIA.</div>
+<div class="bullet-item">NO puede certificar otros resellers.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-econmico-102070-05cded" data-searchable aria-labelledby="head-7-modelo-econmico-102070-05cded">
+            <div class="phase-header" id="head-7-modelo-econmico-102070-05cded" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Económico (10/20/70)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ejemplo-numrico-d53f01">Ejemplo Numérico</h3>
+<p class="key-value"><strong>Cliente invierte COP 5M en mini app simple:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Porcentaje</th><th scope="col">Monto</th></tr></thead><tbody><tr><td>Reseller</td><td>20%</td><td>COP 1M</td></tr><tr><td>Facilitador</td><td>70%</td><td>COP 3.5M</td></tr><tr><td>MetodologIA</td><td>10%</td><td>COP 0.5M</td></tr></tbody></table></div>
+<p class="key-value"><strong>Cliente invierte COP 15M en mini app con IA:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Porcentaje</th><th scope="col">Monto</th></tr></thead><tbody><tr><td>Reseller</td><td>20%</td><td>COP 3M</td></tr><tr><td>Facilitador</td><td>70%</td><td>COP 10.5M</td></tr><tr><td>MetodologIA</td><td>10%</td><td>COP 1.5M</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="estructura-de-costos-33f928">Estructura de Costos</h3>
+<div class="bullet-item"><strong>Costo facilitador:</strong> COP 2-3M/app (sueldo, overhead).</div>
+<div class="bullet-item"><strong>Ingresos reseller:</strong> COP 1-3M/app (20% cliente).</div>
+<div class="bullet-item"><strong>Rentabilidad:</strong> Requiere volumen (4-6 apps/año).</div>
+<h3 class="subsection-title" id="trminos-de-pago-a31a97">Términos de Pago</h3>
+<div class="bullet-item"><strong>MetodologIA cobra directo al cliente:</strong> 10% cada milestone.</div>
+<div class="bullet-item"><strong>Reseller comisión:</strong> Después de facilitador.</div>
+<div class="bullet-item"><strong>Milestone:</strong> 30% inicio, 40% mid-dev, 30% go-live.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-calidad-y-estndares-b5c620" data-searchable aria-labelledby="head-8-calidad-y-estndares-b5c620">
+            <div class="phase-header" id="head-8-calidad-y-estndares-b5c620" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Calidad y Estándares</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="code-review-obligatorio-1c6232">Code Review Obligatorio</h3>
+<div class="bullet-item"><strong>Antes de go-live:</strong> Todo código pasa review MetodologIA.</div>
+<div class="bullet-item"><strong>Criterios:</strong> Arquitectura, seguridad, performance, best practices.</div>
+<div class="bullet-item"><strong>Tiempo:</strong> 3-5 días laborales.</div>
+<h3 class="subsection-title" id="mtricas-de-xito-9519c5">Métricas de Éxito</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Meta</th></tr></thead><tbody><tr><td>Performance (Lighthouse)</td><td>90+</td></tr><tr><td>Uptime</td><td>99%+</td></tr><tr><td>Load time</td><td>&lt;2 segundos</td></tr><tr><td>User satisfaction</td><td>4+/5 estrellas</td></tr><tr><td>Time-to-market</td><td>±1 semana estimado</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="auditora-anual-98afec">Auditoría Anual</h3>
+<div class="bullet-item">MetodologIA audita 15% de proyectos (random).</div>
+<div class="bullet-item">Evaluación de facilitador (performance, feedback).</div>
+<div class="bullet-item">Revisión de apps en producción.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-y-handoff-d7c657" data-searchable aria-labelledby="head-9-operacin-y-handoff-d7c657">
+            <div class="phase-header" id="head-9-operacin-y-handoff-d7c657" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación y Handoff</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="pre-golive-d65c07">Pre Go-Live</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Reseller confirma fecha y scope con cliente.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Facilitador prepara documentación (arquitectura, runbook, training deck).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>MetodologIA completa code review y aprueba.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>User acceptance testing.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Capacitación cliente (4-8 horas).</span></div>
+<h3 class="subsection-title" id="postlanzamiento-primer-ao-incluido-6b64b3">Post-Lanzamiento (Primer Año Incluido)</h3>
+<div class="bullet-item"><strong>Soporte técnico:</strong> Facilitador lidera; MetodologIA escalation.</div>
+<div class="bullet-item"><strong>Response time:</strong> 24-48h Facilitador, 24h MetodologIA si escalado.</div>
+<div class="bullet-item"><strong>Monitoreo:</strong> Diario primera semana; luego semanal.</div>
+<div class="bullet-item"><strong>Iteraciones:</strong> Hasta 2 menores/mes (UX tweaks, bug fixes).</div>
+<div class="bullet-item"><strong>Cambios mayores:</strong> Presupuesto adicional (COP 2M-8M).</div>
+<h3 class="subsection-title" id="postprimer-ao-247f5d">Post-Primer Año</h3>
+<div class="bullet-item">Soporte optional: 15% de inversión inicial/año.</div>
+<div class="bullet-item">Nuevas apps: Modelo 10/20/70 nuevamente.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-kpis-d2cd7e" data-searchable aria-labelledby="head-10-kpis-d2cd7e">
+            <div class="phase-header" id="head-10-kpis-d2cd7e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. KPIs</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="para-reseller-9a6a8a">Para Reseller</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th></tr></thead><tbody><tr><td>Clientes anuales</td><td>4-8</td></tr><tr><td>Apps anuales</td><td>6-12</td></tr><tr><td>Valor promedio/app</td><td>COP 5M-10M</td></tr><tr><td>Ingresos anuales</td><td>COP 6M-18M</td></tr><tr><td>Client satisfaction</td><td>4+/5 estrellas</td></tr><tr><td>Repeat rate</td><td>70%+ (nuevas apps)</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="para-facilitador-c17503">Para Facilitador</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th></tr></thead><tbody><tr><td>Apps completadas/año</td><td>6-8</td></tr><tr><td>Apps en producción</td><td>24-32</td></tr><tr><td>Performance (Lighthouse avg)</td><td>92+</td></tr><tr><td>Code review pass rate</td><td>95%+ (1st attempt)</td></tr><tr><td>Client satisfaction</td><td>4+/5 estrellas</td></tr><tr><td>Uptime avg</td><td>99.5%+</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-trminos-889b72" data-searchable aria-labelledby="head-11-trminos-889b72">
+            <div class="phase-header" id="head-11-trminos-889b72" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Términos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Vigencia:</strong> 2 años; renovación automática anual.</div>
+<div class="bullet-item"><strong>Exclusividad:</strong> No exclusivo.</div>
+<div class="bullet-item"><strong>Territorios:</strong> Sin restricción.</div>
+<div class="bullet-item"><strong>Rescisión:</strong> 30 días por incumplimiento.</div>
+<div class="bullet-item"><strong>IP:</strong> App = cliente; Boilerplate = MetodologIA.</div>
+<div class="bullet-item"><strong>Confidencialidad:</strong> NDA.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-escalacin-55d846" data-searchable aria-labelledby="head-12-escalacin-55d846">
+            <div class="phase-header" id="head-12-escalacin-55d846" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Escalación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Conflictos Reseller ↔ Facilitador:</strong></p>
+<div class="bullet-item">Mediación MetodologIA.</div>
+<div class="bullet-item">Arbitraje final por MetodologIA.</div>
+<p class="key-value"><strong>Calidad incumplida:</strong></p>
+<div class="bullet-item">MetodologIA interviene y corrige (sin costo).</div>
+<div class="bullet-item">Riesgo de descertificación si patrón de incumplimiento.</div>
+<hr class="divider">
+<p class="key-value"><strong>Próximo paso:</strong> Contacto con Equipo de Canales de MetodologIA para onboarding y capacitación.</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Bootcamp BC-06 — Trabajar Amplificado — Proceso de Delivery MetodologIA">
+    <title>Bootcamp BC-06 — Trabajar Amplificado — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Bc</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Bootcamp BC-06 — Trabajar Amplificado</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Bootcamp BC-06 — Trabajar Amplificado</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: BC-06-EMPRESAS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">13</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-empresas-b2b-5820a3')" aria-label="Ir a Documento Canónico | Segmento: EMPRESAS (B2B)">Documento Canónico | Segmento: EMPR</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-audiencia-del-segmento-adb370')" aria-label="Ir a 2. Audiencia del Segmento">2. Audiencia del Segmento</button>
+<button class="nav-btn" onclick="scrollToSection('3-propuesta-de-valor-diferenciada-34d599')" aria-label="Ir a 3. Propuesta de Valor Diferenciada">3. Propuesta de Valor Diferenciada</button>
+<button class="nav-btn" onclick="scrollToSection('4-estructura-de-contenido-50f119')" aria-label="Ir a 4. Estructura de Contenido">4. Estructura de Contenido</button>
+<button class="nav-btn" onclick="scrollToSection('5-entregables-del-segmento-cc1471')" aria-label="Ir a 5. Entregables del Segmento">5. Entregables del Segmento</button>
+<button class="nav-btn" onclick="scrollToSection('6-modelo-comercial-80acab')" aria-label="Ir a 6. Modelo Comercial">6. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('7-canal-de-venta-y-distribucin-d55275')" aria-label="Ir a 7. Canal de Venta y Distribución">7. Canal de Venta y Distribución</button>
+<button class="nav-btn" onclick="scrollToSection('8-operacin-y-logstica-3a7a57')" aria-label="Ir a 8. Operación y Logística">8. Operación y Logística</button>
+<button class="nav-btn" onclick="scrollToSection('9-capstone-y-certificacin-3fb3ef')" aria-label="Ir a 9. Capstone y Certificación">9. Capstone y Certificación</button>
+<button class="nav-btn" onclick="scrollToSection('10-puente-educativo-upgrade-path-ce8265')" aria-label="Ir a 10. Puente Educativo (Upgrade Path)">10. Puente Educativo (Upgrade Path)</button>
+<button class="nav-btn" onclick="scrollToSection('11-compensacin-102070-146584')" aria-label="Ir a 11. Compensación (10/20/70)">11. Compensación (10/20/70)</button>
+<button class="nav-btn" onclick="scrollToSection('12-trminos-comerciales-293dca')" aria-label="Ir a 12. Términos Comerciales">12. Términos Comerciales</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-empresas-b2b-5820a3" data-searchable aria-labelledby="head-documento-cannico-segmento-empresas-b2b-5820a3">
+            <div class="phase-header" id="head-documento-cannico-segmento-empresas-b2b-5820a3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: EMPRESAS (B2B)</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> BC-06-EMPRESAS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Empresas (B2B — Equipos corporativos)</p>
+<p class="key-value"><strong>Precio canónico:</strong> COP 12,000,000 (hasta 20 participantes)</p>
+<p class="key-value"><strong>Duración:</strong> 3 semanas (20 horas: 18h núcleo + 2h contexto)</p>
+<p class="key-value"><strong>Modalidad:</strong> Híbrida (presencial día 1 + virtual sincrónico + asincrónico)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Objetivo</strong></td><td>Diseñar sistema departamental de productividad amplificada, integrado con herramientas cliente + metodología MetodologIA</td></tr><tr><td><strong>Público</strong></td><td>Equipos de 8-20 personas: departamentos, startups, división, área especializada</td></tr><tr><td><strong>Formato</strong></td><td>3 semanas: 4h semanales sincrónicas + 2h asincrónicas + contextualización cliente</td></tr><tr><td><strong>Entregable principal</strong></td><td>Sistema departamental documentado + AI workflows integrados</td></tr><tr><td><strong>Precio</strong></td><td>COP 12,000,000 (hasta 20 personas; COP 600k/persona variable)</td></tr><tr><td><strong>Promesa</strong></td><td>&quot;Tu equipo amplificado: sincronización + metodología + tecnología&quot;</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-audiencia-del-segmento-adb370" data-searchable aria-labelledby="head-2-audiencia-del-segmento-adb370">
+            <div class="phase-header" id="head-2-audiencia-del-segmento-adb370" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Audiencia del Segmento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="perfil-primario-a39942">Perfil primario</h3>
+<div class="bullet-item">Directores/Managers de departamento (Ventas, Marketing, Producto, Finanzas)</div>
+<div class="bullet-item">Equipos en transformación digital (pre-productivo)</div>
+<div class="bullet-item">Startups Series A/B con equipo nuevo (sin procesos)</div>
+<div class="bullet-item">Empresas consolidadas con urgencia de productividad</div>
+<div class="bullet-item">Áreas con alta rotación (necesitan systemization)</div>
+<h3 class="subsection-title" id="dolornecesidad-ee32d7">Dolor/necesidad</h3>
+<div class="bullet-item">&quot;El equipo trabaja desorganizado; hay silos&quot;</div>
+<div class="bullet-item">&quot;Nos cuesta meses implementar cambios&quot;</div>
+<div class="bullet-item">&quot;Pierdo talento porque el sistema es caótico&quot;</div>
+<div class="bullet-item">&quot;Quiero que el equipo sea más autónomo pero conozco poco de productividad&quot;</div>
+<div class="bullet-item">&quot;Tenemos herramientas pero no las usamos bien&quot;</div>
+<h3 class="subsection-title" id="nivel-de-preparacin-7de1d8">Nivel de preparación</h3>
+<div class="bullet-item">Acceso a laptop para todos</div>
+<div class="bullet-item">Disposición del equipo (buy-in necesario)</div>
+<div class="bullet-item">4h semanales disponibles por participante</div>
+<div class="bullet-item">Disponibilidad de facilitador cliente (opcional)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-propuesta-de-valor-diferenciada-34d599" data-searchable aria-labelledby="head-3-propuesta-de-valor-diferenciada-34d599">
+            <div class="phase-header" id="head-3-propuesta-de-valor-diferenciada-34d599" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Propuesta de Valor Diferenciada</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Para el segmento EMPRESAS:</strong></p>
+<div class="bullet-item">Framework modular: adaptable a departamento específico</div>
+<div class="bullet-item">30% contextualización: integramos tus herramientas (Salesforce, Slack, etc.)</div>
+<div class="bullet-item">Sincronización del equipo: todos en mismo ritual productivo</div>
+<div class="bullet-item">Capstone compartido: sistema documentado + procesos</div>
+<div class="bullet-item">Facilitador + champion interno: cambio sostenible post-bootcamp</div>
+<div class="bullet-item">ROI medible: métricas antes/después (tiempo, calidad, autonomía)</div>
+<p class="key-value"><strong>Diferenciador:</strong></p>
+<div class="bullet-item">No es &quot;capacitación genérica&quot;; tu equipo sale con workflows específicos</div>
+<div class="bullet-item">Incluye sesión de kickoff + revisión de herramientas cliente</div>
+<div class="bullet-item">Certificación colectiva: reputación del equipo mejora</div>
+<div class="bullet-item">6 meses de soporte post-bootcamp (no desaparecemos)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-estructura-de-contenido-50f119" data-searchable aria-labelledby="head-4-estructura-de-contenido-50f119">
+            <div class="phase-header" id="head-4-estructura-de-contenido-50f119" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Estructura de Contenido</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="semana-0-diagnstico-cliente-prebootcamp-0bd77c">Semana 0: Diagnóstico Cliente (Pre-bootcamp)</h3>
+<div class="bullet-item">Entrevista director + 3 miembros clave</div>
+<div class="bullet-item">Auditoría de herramientas actuales (Salesforce, Slack, etc.)</div>
+<div class="bullet-item">Identificar 3-5 pain points específicos del equipo</div>
+<div class="bullet-item">Diseño custom: qué 30% contextualizamos</div>
+<h3 class="subsection-title" id="semana-12-claridad-metodologa-base-6b1443">Semana 1-2: Claridad + Metodología Base</h3>
+<div class="bullet-item">Kick-off presencial (8h): alineación de equipo</div>
+<div class="bullet-item">Definición colectiva: qué es &quot;amplificado&quot; para ustedes</div>
+<div class="bullet-item">Matriz Eisenhower: priorización en contexto departamental</div>
+<div class="bullet-item">Introducción a PDCA semanal + daily standup</div>
+<h3 class="subsection-title" id="semana-34-procesos-departamentales-3165ae">Semana 3-4: Procesos Departamentales</h3>
+<div class="bullet-item">Diseño de workflows: cómo salen ideas → ejecución en tu equipo</div>
+<div class="bullet-item">Integración Herramientas: Salesforce/Slack/herramienta X</div>
+<div class="bullet-item">Roles y responsabilidades: quién hace qué sin confusión</div>
+<div class="bullet-item">Primera métrica: tiempo promedio de ciclo (idea → entrega)</div>
+<h3 class="subsection-title" id="semana-56-ai-y-automatizacin-4b4b52">Semana 5-6: AI y Automatización</h3>
+<div class="bullet-item">AI workflows adaptados a departamento (ej: síntesis de llamadas de ventas)</div>
+<div class="bullet-item">Bots y automatizaciones integradas</div>
+<div class="bullet-item">Dashboard compartido: visibilidad de equipo</div>
+<div class="bullet-item">Segunda métrica: velocidad y calidad mejoradas</div>
+<h3 class="subsection-title" id="semana-78-integracin-sostenibilidad-y-capstone-946884">Semana 7-8: Integración, Sostenibilidad y Capstone</h3>
+<div class="bullet-item">Ritmo sostenible: revisión semanal + monthly retrospective</div>
+<div class="bullet-item">Identificar champion interno: quién lidera sostenimiento</div>
+<div class="bullet-item">Capstone: Playbook departamental + templates + procesos</div>
+<div class="bullet-item">Plan de transferencia: cómo el equipo mantiene sin facilitador</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-entregables-del-segmento-cc1471" data-searchable aria-labelledby="head-5-entregables-del-segmento-cc1471">
+            <div class="phase-header" id="head-5-entregables-del-segmento-cc1471" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Entregables del Segmento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Sistema Departamental Documentado</strong></span></div>
+<div class="bullet-item">Playbook 25-30 páginas: procesos, roles, workflows</div>
+<div class="bullet-item">Diagrama de flujos: idea → ejecución en contexto específico</div>
+<div class="bullet-item">Guía de herramientas integradas (customizado)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Workflows Automatizados Integrados</strong></span></div>
+<div class="bullet-item">3-5 workflows específicos para tu departamento</div>
+<div class="bullet-item">Integración con herramientas cliente (Salesforce, Slack, etc.)</div>
+<div class="bullet-item">Documentación: cómo mantener y evolucionar</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Dashboard Compartido</strong></span></div>
+<div class="bullet-item">Métricas departamentales: velocidad, calidad, autonomía</div>
+<div class="bullet-item">Visual clara para equipo + director</div>
+<div class="bullet-item">Datos para decisiones semanales</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Templates Reutilizables</strong></span></div>
+<div class="bullet-item">Para reuniones, proyectos, 1x1, retrospectives</div>
+<div class="bullet-item">En formato cliente (Notion, Excel, Google Sheets)</div>
+<div class="bullet-item">Acceso permanente al equipo</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Comunidad Cerrada (12 meses post-bootcamp)</strong></span></div>
+<div class="bullet-item">Slack: otros equipos con bootcamp similar</div>
+<div class="bullet-item">Sesión trimestral: evoluciones, mejoras, best practices</div>
+<div class="bullet-item">Soporte directo: preguntas sobre sistema (48h máximo)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Certificado Colectivo</strong></span></div>
+<div class="bullet-item">Diploma de equipo: &quot;Trabajar Amplificado — Nivel Departamental&quot;</div>
+<div class="bullet-item">Reconocimiento: en LinkedIn, en sitio MetodologIA</div>
+<div class="bullet-item">Ventaja en futuras contrataciones</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-modelo-comercial-80acab" data-searchable aria-labelledby="head-6-modelo-comercial-80acab">
+            <div class="phase-header" id="head-6-modelo-comercial-80acab" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Componente</th><th scope="col">Especificación</th></tr></thead><tbody><tr><td><strong>Precio público</strong></td><td>COP 12,000,000 (hasta 20 personas)</td></tr><tr><td><strong>Costo de entrega (est.)</strong></td><td>38% del precio (facilitador senior, custom, integración herramientas, soporte)</td></tr><tr><td><strong>Margen esperado</strong></td><td>62%</td></tr><tr><td><strong>Personas adicionales</strong></td><td>COP 600,000 por persona (máx. 20)</td></tr><tr><td><strong>Pago</strong></td><td>Según ciclo de compra cliente (30/60/90 días)</td></tr><tr><td><strong>Descuentos</strong></td><td>Referral partner: 8%</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-canal-de-venta-y-distribucin-d55275" data-searchable aria-labelledby="head-7-canal-de-venta-y-distribucin-d55275">
+            <div class="phase-header" id="head-7-canal-de-venta-y-distribucin-d55275" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Canal de Venta y Distribución</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="canales-prioritarios-b26329">Canales prioritarios</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Account executives MetodologIA</strong> — Relación directa con directors/VPs</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>LinkedIn Sales Navigator</strong> — Target: Heads of Department</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Partners estratégicos</strong> — Consultoras, agencias, coworking</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Referral B2B</strong> — Clientes anteriores recomiendan</span></div>
+<h3 class="subsection-title" id="copywriting-b2b-0f321f">Copywriting B2B</h3>
+<div class="bullet-item">&quot;Equipo sincronizado = resultados 30% mejores&quot;</div>
+<div class="bullet-item">&quot;Sistema documentado = talento retiene&quot;</div>
+<div class="bullet-item">Caso: &quot;De 12 semanas de ciclo a 4 semanas de ejecución&quot;</div>
+<h3 class="subsection-title" id="proceso-de-venta-d89fc4">Proceso de venta</h3>
+<div class="bullet-item">Descubrimiento: entrevista 60 min con director</div>
+<div class="bullet-item">Propuesta custom: basada en diagnóstico (no template)</div>
+<div class="bullet-item">Piloto opcional: 2 semanas antes de commit (COP 2M, aplica a bootcamp)</div>
+<div class="bullet-item">Contrato: SLA con métricas esperadas</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-operacin-y-logstica-3a7a57" data-searchable aria-labelledby="head-8-operacin-y-logstica-3a7a57">
+            <div class="phase-header" id="head-8-operacin-y-logstica-3a7a57" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Operación y Logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="facilitador-2afd1c">Facilitador</h3>
+<div class="bullet-item">MetodologIA Certified Productividad Empresarial (experiencia management 10+)</div>
+<div class="bullet-item">Bilingual recomendado (si equipo internacional)</div>
+<div class="bullet-item">Ha trabajado en contexto similar (startup/corporativo)</div>
+<div class="bullet-item">Capacitación: 40h prep (incluyendo diagnóstico cliente) + 32h vivo + 60h soporte</div>
+<h3 class="subsection-title" id="diagnosticador-primer-23-das-4f83ed">Diagnosticador (primer 2-3 días)</h3>
+<div class="bullet-item">Senior facilitador: entrevistas cliente, auditoría herramientas</div>
+<div class="bullet-item">Entrega: reporte diagnóstico + plan de contextualización</div>
+<h3 class="subsection-title" id="champion-interno-identificado-semana-1-da344f">Champion Interno (identificado semana 1)</h3>
+<div class="bullet-item">Miembro del equipo cliente designado por director</div>
+<div class="bullet-item">Capacitado por facilitador: lidera sostenimiento post-bootcamp</div>
+<div class="bullet-item">Acceso a recursos avanzados MetodologIA</div>
+<div class="bullet-item">Apoyo facilitador por 6 meses post-bootcamp</div>
+<h3 class="subsection-title" id="plataforma-cd56c8">Plataforma</h3>
+<div class="bullet-item">Zoom (sesiones sincrónicas + grabación)</div>
+<div class="bullet-item">Slack workspace compartida (equipo + facilitador)</div>
+<div class="bullet-item">Notion (hub central: diagnóstico, playbook en construcción, recursos)</div>
+<div class="bullet-item">Herramientas cliente integradas (Salesforce API, Slack API, etc.)</div>
+<h3 class="subsection-title" id="timing-d3b69e">Timing</h3>
+<div class="bullet-item">Semana 0 (pre-bootcamp): diagnóstico y kick-off presencial</div>
+<div class="bullet-item">Semanas 1-8: 4h semanales sincrónicas (adaptadas a horario equipo)</div>
+<div class="bullet-item">Post-semana 8: sesión de transferencia con champion (2h)</div>
+<div class="bullet-item">Meses 2-6: sesiones de soporte trimestral (2h cada una)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-capstone-y-certificacin-3fb3ef" data-searchable aria-labelledby="head-9-capstone-y-certificacin-3fb3ef">
+            <div class="phase-header" id="head-9-capstone-y-certificacin-3fb3ef" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Capstone y Certificación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="capstone-departamental-8e0e70">Capstone Departamental</h3>
+<div class="bullet-item">Entrega: final semana 8</div>
+<div class="bullet-item">Componentes:</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Playbook departamental (25-30 páginas): sistema completo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Workflows + automatizaciones documentadas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Dashboard: métricas antes/después</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Plan de sostenimiento (6 meses): quién, cuándo, cómo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Presentación al directorio: 15 min pitch del sistema</span></div>
+<h3 class="subsection-title" id="evaluacin-f65268">Evaluación</h3>
+<div class="bullet-item">Autoevaluación equipo + feedback facilitador</div>
+<div class="bullet-item">Rubric: completitud, usabilidad, alineación a objetivos</div>
+<div class="bullet-item">Calificación: &quot;Completado&quot; (todos lo alcanzan con rework)</div>
+<h3 class="subsection-title" id="certificado-colectivo-93a86f">Certificado Colectivo</h3>
+<div class="bullet-item">Diploma digital: &quot;Equipo Trabajar Amplificado — Nivel Departamental&quot;</div>
+<div class="bullet-item">LinkedIn badge (colectivo)</div>
+<div class="bullet-item">Reconocimiento en sitio MetodologIA (caso anónimo)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-puente-educativo-upgrade-path-ce8265" data-searchable aria-labelledby="head-10-puente-educativo-upgrade-path-ce8265">
+            <div class="phase-header" id="head-10-puente-educativo-upgrade-path-ce8265" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Puente Educativo (Upgrade Path)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Objetivo:</strong> BC-06-EMPRESAS → EstrategIA Personal (EST-02) → PE-01 Empoderamiento | Alternativa B2B: Consultoría Tracción</p>
+<h3 class="subsection-title" id="trigger-de-conversin-d76b03">Trigger de conversión</h3>
+<div class="bullet-item">Semana 7: &quot;De sistema departamental a transformación empresarial&quot;</div>
+<div class="bullet-item">Post-capstone: propuesta de consultoría basada en resultados</div>
+<div class="bullet-item">Showcase: transformaciones de otros equipos</div>
+<h3 class="subsection-title" id="oferta-puente-opcin-a-d68ff7">Oferta puente (opción A)</h3>
+<div class="bullet-item"><strong>Consultoría Tracción:</strong> implementación de sistema en más departamentos</div>
+<div class="bullet-item">Descuento 20% si bootcamp fue exitoso (NPS ≥8)</div>
+<div class="bullet-item">Timeline: 12 semanas, COP 30-50M según scope</div>
+<h3 class="subsection-title" id="oferta-puente-opcin-b-040ef8">Oferta puente (opción B)</h3>
+<div class="bullet-item"><strong>Digital Champions:</strong> liderazgo de transformación empresa-wide</div>
+<div class="bullet-item">Programa 16 semanas, COP 18M por participante clave</div>
+<div class="bullet-item">Objetivo: 5-10 líderes que escalen en organización</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-compensacin-102070-146584" data-searchable aria-labelledby="head-11-compensacin-102070-146584">
+            <div class="phase-header" id="head-11-compensacin-102070-146584" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Compensación (10/20/70)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Modelo de ingresos del bootcamp:</strong></p>
+<div class="bullet-item"><strong>10%</strong> Coste de operación (plataforma, diagnóstico, integraciones herramientas)</div>
+<div class="bullet-item"><strong>20%</strong> Facilitadores y staff (facilitador senior, diagnosticador, soporte comunitario)</div>
+<div class="bullet-item"><strong>70%</strong> Margen MetodologIA (reinversión en producto, partnerships, escala)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-trminos-comerciales-293dca" data-searchable aria-labelledby="head-12-trminos-comerciales-293dca">
+            <div class="phase-header" id="head-12-trminos-comerciales-293dca" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Términos Comerciales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="inscripcin-y-pago-c09cd6">Inscripción y pago</h3>
+<div class="bullet-item">Contrato B2B estándar (30/60/90 días según política cliente)</div>
+<div class="bullet-item">Facturación según ciclos aceptados</div>
+<div class="bullet-item">Mínimo: 8 participantes para confirmar cohort</div>
+<div class="bullet-item">Máximo: 20 participantes (facilita interacción)</div>
+<h3 class="subsection-title" id="requisitos-previos-c97b09">Requisitos previos</h3>
+<div class="bullet-item">Director/PM disponible para alineaciones (mínimo 2h semana)</div>
+<div class="bullet-item">Equipo con 4h semanales mínimo</div>
+<div class="bullet-item">Acceso compartido a herramientas actuales (Salesforce, Slack, etc.)</div>
+<div class="bullet-item">Commitment de al menos 80% de asistencia</div>
+<h3 class="subsection-title" id="reembolso-c801b2">Reembolso</h3>
+<div class="bullet-item">Pre-kick-off presencial: 50% si se cancela</div>
+<div class="bullet-item">Post-kick-off: no reembolso (contrato corporativo)</div>
+<h3 class="subsection-title" id="reglas-de-participacin-3e0737">Reglas de participación</h3>
+<div class="bullet-item">Asistencia mínima 80% de sesiones</div>
+<div class="bullet-item">Participación honesta en ejercicios</div>
+<div class="bullet-item">Confidencialidad: aprendizajes del equipo son propios</div>
+<div class="bullet-item">Código de conducta: colaboración + respeto</div>
+<h3 class="subsection-title" id="propiedad-intelectual-55f5c9">Propiedad intelectual</h3>
+<div class="bullet-item">Playbook departamental: propiedad del cliente</div>
+<div class="bullet-item">Workflows: propiedad del cliente (custom)</div>
+<div class="bullet-item">Framework MetodologIA: uso interno</div>
+<div class="bullet-item">Case study anónimo: requiere consentimiento escrito</div>
+<h3 class="subsection-title" id="soporte-postbootcamp-fea597">Soporte post-bootcamp</h3>
+<div class="bullet-item">6 meses: respuesta 48h a preguntas (soporte@metodologia.co)</div>
+<div class="bullet-item">3 sesiones trimestrales de 2h: evolución + ajustes</div>
+<div class="bullet-item">Acceso a recursos avanzados: nuevos workflows, case studies</div>
+<h3 class="subsection-title" id="vigencia-b09392">Vigencia</h3>
+<div class="bullet-item">Contrato válido desde 2026-03-24</div>
+<div class="bullet-item">Revisión anual según evolución en productividad empresarial</div>
+<div class="bullet-item">Cambios comunicados 30 días antes de implementar</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

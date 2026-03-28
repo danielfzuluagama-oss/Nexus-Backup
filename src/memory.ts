@@ -38,6 +38,16 @@ const VALID_ROLES = new Set(["user", "assistant", "system"]);
 const TTL_DAYS = 30;
 const TTL_MS = TTL_DAYS * 24 * 60 * 60 * 1000;
 
+function isManagedGoogleRuntime(): boolean {
+  return Boolean(
+    process.env.FIREBASE_CONFIG ||
+    process.env.FUNCTION_TARGET ||
+    process.env.K_SERVICE ||
+    process.env.GCLOUD_PROJECT ||
+    process.env.GOOGLE_CLOUD_PROJECT,
+  );
+}
+
 function formatDateTitle(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -229,6 +239,10 @@ export class Memory {
               absolute: absoluteCredPath 
             });
           }
+        } else if (isManagedGoogleRuntime()) {
+          initializeApp();
+          this.useFirestore = true;
+          logger.info("Using managed Google runtime credentials for Firestore");
         } else {
           logger.warn("No GOOGLE_APPLICATION_CREDENTIALS in env. Using in-memory fallback (volatile).");
         }
@@ -811,7 +825,7 @@ export class Memory {
     } else {
       // In-memory: remove from all local stores
       // Working layer
-      for (const [threadId, messages] of this.localMessages.entries()) {
+      for (const messages of this.localMessages.values()) {
         const surviving = messages.filter(m => m.threadId && !this.localThreads.has(m.threadId)
           ? true
           : messages.every(msg => {

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Preparar Contenido de Sesión — SOP — Proceso de Delivery MetodologIA">
+    <title>Preparar Contenido de Sesión — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Operaciones Transversales</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Preparar Contenido de Sesión — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Preparar Contenido de Sesión — SOP</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">17</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-fdec8e')" aria-label="Ir a Propósito">Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('1-supuestos-explcitos-9-fbbcfe')" aria-label="Ir a 1. SUPUESTOS EXPLÍCITOS (9)">1. SUPUESTOS EXPLÍCITOS (9)</button>
+<button class="nav-btn" onclick="scrollToSection('2-lmites-scope-1bce22')" aria-label="Ir a 2. LÍMITES (Scope)">2. LÍMITES (Scope)</button>
+<button class="nav-btn" onclick="scrollToSection('3-criterios-de-aceptacin-10-23d955')" aria-label="Ir a 3. CRITERIOS DE ACEPTACIÓN (10)">3. CRITERIOS DE ACEPTACIÓN (10)</button>
+<button class="nav-btn" onclick="scrollToSection('4-casos-borde-7-6d037e')" aria-label="Ir a 4. CASOS BORDE (7)">4. CASOS BORDE (7)</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-5-fb462a')" aria-label="Ir a 5. DECISIONES DE DISEÑO (5)">5. DECISIONES DE DISEÑO (5)</button>
+<button class="nav-btn" onclick="scrollToSection('6-antipatterns-qu-no-hacer-e87fa3')" aria-label="Ir a 6. ANTI-PATTERNS (Qué NO hacer)">6. ANTI-PATTERNS (Qué NO hacer)</button>
+<button class="nav-btn" onclick="scrollToSection('7-fallbacks-contingencias-9912b2')" aria-label="Ir a 7. FALLBACKS (Contingencias)">7. FALLBACKS (Contingencias)</button>
+<button class="nav-btn" onclick="scrollToSection('workflows-wf01-a-wf05-0b3b0f')" aria-label="Ir a WORKFLOWS (WF-01 a WF-05)">WORKFLOWS (WF-01 a WF-05)</button>
+<button class="nav-btn" onclick="scrollToSection('content-checklist-por-tipo-de-tomo-b0d86d')" aria-label="Ir a CONTENT CHECKLIST POR TIPO DE ÁTOMO">CONTENT CHECKLIST POR TIPO DE ÁTOMO</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-de-calidad-ff1bd7')" aria-label="Ir a MÉTRICAS DE CALIDAD">MÉTRICAS DE CALIDAD</button>
+<button class="nav-btn" onclick="scrollToSection('conexiones-con-otros-sops-7268c6')" aria-label="Ir a CONEXIONES CON OTROS SOPS">CONEXIONES CON OTROS SOPS</button>
+<button class="nav-btn" onclick="scrollToSection('ecuacin-metodoloa-b1bbe5')" aria-label="Ir a ECUACIÓN METODOLOÍA">ECUACIÓN METODOLOÍA</button>
+<button class="nav-btn" onclick="scrollToSection('responsabilidades-2bb438')" aria-label="Ir a RESPONSABILIDADES">RESPONSABILIDADES</button>
+<button class="nav-btn" onclick="scrollToSection('plantillas-y-artefactos-0c1d69')" aria-label="Ir a PLANTILLAS Y ARTEFACTOS">PLANTILLAS Y ARTEFACTOS</button>
+<button class="nav-btn" onclick="scrollToSection('versin-y-control-1a0d1d')" aria-label="Ir a VERSIÓN Y CONTROL">VERSIÓN Y CONTROL</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vehículo</strong>: Operación Transversal (Pre-delivery)</div>
+<div class="bullet-item"><strong>Proceso padre</strong>: Operaciones Transversales</div>
+<div class="bullet-item"><strong>Frecuencia</strong>: Pre cada sesión de delivery (masterclass, workshop, clínica, mentoría, lab)</div>
+<div class="bullet-item"><strong>Owner</strong>: Facilitador asignado (C-Level o Embajador)</div>
+<div class="bullet-item"><strong>Última actualización</strong>: 2026-03-24</div>
+<div class="bullet-item"><strong>Versión</strong>: 1.0</div>
+<div class="bullet-item"><strong>Clasificación</strong>: Operativo-Core</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-fdec8e" data-searchable aria-labelledby="head-propsito-fdec8e">
+            <div class="phase-header" id="head-propsito-fdec8e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Estandarizar la preparación de contenido antes de CUALQUIER sesión de delivery en MetodologIA. Este SOP cubre la cadena completa de preparación para cinco tipos de átomos de aprendizaje:</p>
+<div class="bullet-item"><strong>Masterclass</strong>: presentación estructurada (60 min), slides + guía facilitación + pre-work</div>
+<div class="bullet-item"><strong>Workshop</strong>: práctico intensivo (60-180 min), ejercicios + herramientas + datasets</div>
+<div class="bullet-item"><strong>Clínica IA</strong>: consultoría grupal (60 min), casos reales + prompts + troubleshooting guide</div>
+<div class="bullet-item"><strong>Mentoría</strong>: 1:1 personalizada (60 min), agenda adaptada + progress review</div>
+<div class="bullet-item"><strong>Lab</strong>: ambiente técnico (120-180 min), sandbox + datasets + instrucciones paso a paso</div>
+<p>MetodologIA utiliza arquitectura de <strong>Atom-Molecule-Organism</strong>:</p>
+<p class="key-value"><strong>ATOMS</strong> (unidades atómicas):</p>
+<div class="bullet-item">Masterclass (1h)</div>
+<div class="bullet-item">Workshop (1h-3h)</div>
+<div class="bullet-item">Clínica IA (1h)</div>
+<div class="bullet-item">Mentoría (1h)</div>
+<div class="bullet-item">Lab (2-3h)</div>
+<p class="key-value"><strong>MOLECULES</strong> (combinaciones de atoms):</p>
+<div class="bullet-item">Ciclo Semanal: MC + WS + Clínica</div>
+<div class="bullet-item">Sprint Bootcamp: MC + Lab + Workshop intensivo</div>
+<div class="bullet-item">Sprint Consultoría: Mentoría + Clínica + Workshop aplicado</div>
+<p class="key-value"><strong>ORGANISMS</strong> (organismos completos):</p>
+<div class="bullet-item">Empoderamiento IA (16 semanas)</div>
+<div class="bullet-item">Digital Champions (programa anual)</div>
+<div class="bullet-item">Consultoría Continua (modular)</div>
+<p>Cada átomo requiere preparación específica. Este SOP <strong>estandariza el prep</strong> garantizando consistencia, calidad y adaptabilidad across all atoms y molecules.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-supuestos-explcitos-9-fbbcfe" data-searchable aria-labelledby="head-1-supuestos-explcitos-9-fbbcfe">
+            <div class="phase-header" id="head-1-supuestos-explcitos-9-fbbcfe" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 1. SUPUESTOS EXPLÍCITOS (9)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Antes de iniciar preparación, validar que TODOS estos supuestos sean verdaderos:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Sesión programada y confirmada</strong>: fecha, hora, duración en calendario + confirmación de asistentes</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Tipo de sesión identificado</strong>: Masterclass | Workshop | Clínica | Mentoría | Lab (determina template + workflow)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Módulo/tema asignado</strong>: alineado a curriculum y producto estratégico (ej: &quot;IA Generativa para RH&quot;, &quot;Prompting Avanzado&quot;)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Outcomes sesión anterior disponibles</strong>: si es secuencial, resultados/retroalimentación de sesión N-1</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Lista de participantes confirmada</strong>: con levels (beginner/intermediate/advanced) y roles</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Acceso a plataforma/herramientas validado</strong>: Slack, Zoom, Google Drive, sandbox técnico, LMS</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Facilitador tiene expertise</strong>: domain knowledge + experiencia facilitando ese tema específico</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Librería de contenido existe</strong>: templates base, frameworks, ejercicios previos, guías de referencia</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Ventana T-48h disponible mínimo</strong>: no comprometer con crisis operativas; si &lt;48h, invocar fallback</span></div>
+<p>Si algún supuesto falla: <strong>detener prep</strong> y escalar a Operations Lead.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-lmites-scope-1bce22" data-searchable aria-labelledby="head-2-lmites-scope-1bce22">
+            <div class="phase-header" id="head-2-lmites-scope-1bce22" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 2. LÍMITES (Scope)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Dimension</th><th scope="col">Incluido</th><th scope="col">NO incluido</th></tr></thead><tbody><tr><td><strong>Inicio temporal</strong></td><td>T-72h (inicio prep contenido)</td><td>T-73h o antes (curricular design)</td></tr><tr><td><strong>Fin temporal</strong></td><td>T-2h (contenido locked)</td><td>T-1h o después (cambios post-lock)</td></tr><tr><td><strong>Tipos de sesión</strong></td><td>MC, WS, Clínica, Mentoría, Lab</td><td>Otros formatos ad-hoc</td></tr><tr><td><strong>Actividades</strong></td><td>diseño contenido, validación, peer review</td><td>Facilitar la sesión (facilitar-* SOPs)</td></tr><tr><td><strong>Post-sesión</strong></td><td>NO incluido</td><td>Análisis, retro, iteration (post-delivery SOPs)</td></tr><tr><td><strong>Curricular</strong></td><td>NO: diseño curriculum o programa</td><td>Contenido específico sesión</td></tr><tr><td><strong>Infraestructura</strong></td><td>Validar acceso (no setup)</td><td>Setup plataforma (IT ops)</td></tr></tbody></table></div>
+<p class="key-value"><strong>Responsable de límites</strong>: Operations Lead ratifica T-72h window al asignar facilitador.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-criterios-de-aceptacin-10-23d955" data-searchable aria-labelledby="head-3-criterios-de-aceptacin-10-23d955">
+            <div class="phase-header" id="head-3-criterios-de-aceptacin-10-23d955" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 3. CRITERIOS DE ACEPTACIÓN (10)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Sesión lista para delivery si y solo si TODOS estos criterios pasan:</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Criterio</th><th scope="col">Validación</th><th scope="col">Responsable</th></tr></thead><tbody><tr><td>1</td><td>Slides/materiales listos T-48h</td><td>Slides versionadas, peer-reviewed, assets embebidos</td><td>Facilitador</td></tr><tr><td>2</td><td>Ejercicios testeados y validados</td><td>Ran end-to-end, timing probado, soluciones listas</td><td>Facilitador</td></tr><tr><td>3</td><td>Pre-work diseñado y enviado T-48h</td><td>Actividad pre-sesión, max 30 min, envío a cohort</td><td>Facilitador</td></tr><tr><td>4</td><td>Facilitator guide completado</td><td>Timings exactos, transiciones, preguntas clave, notas</td><td>Facilitador</td></tr><tr><td>5</td><td>Tech requirements documentados</td><td>Herramientas, accesos, backups, contingencias</td><td>Facilitador</td></tr><tr><td>6</td><td>Backup content ready</td><td>Si demo falla, pivot plan documentado</td><td>Facilitador</td></tr><tr><td>7</td><td>Contenido personalizado por cohort</td><td>Level-appropriate, contexto empresa si B2B, idioma OK</td><td>Facilitador</td></tr><tr><td>8</td><td>Accessibility check pass (DUA)</td><td>Color contrast, text size, alt text, transcripts</td><td>QA Lead</td></tr><tr><td>9</td><td>Tiempo estimado = slot</td><td>Contenido cabe en duración asignada ±5 min max</td><td>Facilitador</td></tr><tr><td>10</td><td>Peer review completado</td><td>Otro facilitador o C-Level review + sign-off</td><td>Peer/C-Level</td></tr></tbody></table></div>
+<p class="key-value"><strong>Handoff</strong>: Solo cuando todos 10 criterios = ✓ puede moverse a &quot;Ready for Delivery&quot;</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-casos-borde-7-6d037e" data-searchable aria-labelledby="head-4-casos-borde-7-6d037e">
+            <div class="phase-header" id="head-4-casos-borde-7-6d037e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 4. CASOS BORDE (7)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Caso</th><th scope="col">Trigger</th><th scope="col">Protocolo</th><th scope="col">Escalation</th></tr></thead><tbody><tr><td><strong>Cambio facilitador last-minute</strong></td><td>&lt;48h antes sesión</td><td>Content handoff checklist: sync call 30min, materiales en Drive, facilitator guide walkthrought, cobertura de Q&amp;A anticipated</td><td>Ops Lead + new facilitator</td></tr><tr><td><strong>Cambio tema &lt;48h</strong></td><td>Pivote curricular</td><td>Rapid content pivot: usar template de tema, ejercicios core, pre-work simplified, skip nice-to-haves, self-review (no peer review si time crunch)</td><td>C-Level approval</td></tr><tr><td><strong>Cohort level inesperado</strong></td><td>Arrived mix de levels</td><td>Tiered content: 2-3 versions (básico/intermedio), ejercicios con paths, post-sesión material for catch-up</td><td>Facilitador + Mentors</td></tr><tr><td><strong>Sesión anterior no se entregó</strong></td><td>Catch-up necesario</td><td>Condensed recap (10min): key concepts de N-1, link a recording/slides, ejercicio summary, move forward</td><td>Facilitador + Mentoría</td></tr><tr><td><strong>Guest speaker se integra</strong></td><td>Guest join 1-2 semanas antes</td><td>Integration protocol: briefing call (45min), slot asignado claro en agenda, slides guest + facilitador aligned, practice run con transitions</td><td>Facilitador + Speaker</td></tr><tr><td><strong>Materiales requieren traducción</strong></td><td>Cohort multiidioma</td><td>Translation workflow: inglés primary, simultaneous translation para sesión o pre-translated docs, glossary shared, +30% time budget</td><td>Ops Lead + translator</td></tr><tr><td><strong>Tools/versiones desactualizadas</strong></td><td>Content references outdated tech</td><td>Update protocol: version check 1 semana antes, tools upgrade en sandbox, nuevas screenshots, new walkthroughs, test completamente</td><td>Tech Lead + Facilitador</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-5-fb462a" data-searchable aria-labelledby="head-5-decisiones-de-diseo-5-fb462a">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-5-fb462a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5. DECISIONES DE DISEÑO (5)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>T-72h start</strong> → Serio prep, no last-minute panic. Obliga planificación real. Owner: Ops Lead (confirma window).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Materials lock T-2h</strong> → Previene tweaking infinito. Qué está locked: slides finales, ejercicios, pre-work, facilitator guide. Qué permite: anotaciones minuto último (~5 notas máximo). Owner: Facilitador.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Peer review mandatory</strong> → QA gate. Otro facilitador o C-Level revisa contenido antes de sesión. Catches: errors, timing issues, alignment gaps, accessibility. Owner: Peer/C-Level designado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Pre-work siempre incluido</strong> → Activates prior knowledge. Evita &quot;cold start&quot;. Máx 30 min, entregado T-48h. Puede ser: video corto, lectura, quiz, ejercicio warm-up. Owner: Facilitador.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Content by atom type, no by program</strong> → Reusabilidad. Masterclass &quot;IA Generativa&quot; = reutilizable en Empoderamiento AND Champions AND Consultoría. Reduces duplication, improves consistency. Owner: Content Library Lead.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-antipatterns-qu-no-hacer-e87fa3" data-searchable aria-labelledby="head-6-antipatterns-qu-no-hacer-e87fa3">
+            <div class="phase-header" id="head-6-antipatterns-qu-no-hacer-e87fa3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 6. ANTI-PATTERNS (Qué NO hacer)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Anti-Pattern</th><th scope="col">Impacto</th><th scope="col">Mitigación</th></tr></thead><tbody><tr><td>Preparar contenido noche anterior</td><td>Calidad baja, no testiado, facilitador stresado</td><td>T-72h window, Ops enforces</td></tr><tr><td>No facilitator guide (improvising)</td><td>Incoherencia, timing blown, cohort confused</td><td>Guide template + checklist</td></tr><tr><td>Copy-paste sesión anterior sin adaptación</td><td>Desconexión con cohort actual, contexts outdated</td><td>Personalization checklist (3 items min)</td></tr><tr><td>Sin backup plan si tech falla</td><td>Demo breaks = sesión compromised</td><td>Fallback protocol mandatory</td></tr><tr><td>Sin pre-work (cold start)</td><td>Cohort no activated, low engagement</td><td>Pre-work template (30 min max)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-fallbacks-contingencias-9912b2" data-searchable aria-labelledby="head-7-fallbacks-contingencias-9912b2">
+            <div class="phase-header" id="head-7-fallbacks-contingencias-9912b2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 7. FALLBACKS (Contingencias)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Contingencia</th><th scope="col">Criterio Trigger</th><th scope="col">Protocolo</th></tr></thead><tbody><tr><td><strong>Librería contenido vacía para tema</strong></td><td>Topic nuevo, no templates disponibles</td><td>Crear desde scratch con quality flag. Peer review + QA mandatory. T-72h minimiza este risk.</td></tr><tr><td><strong>Peer reviewer no disponible</strong></td><td>Busy o sick</td><td>Self-review checklist (12 items, 30 min), C-Level spot-check, reduce scope si necesario</td></tr><tr><td><strong>T-48h no cumplido</strong></td><td>Crisis operativa comprime timeline</td><td>Compressed prep: T-12h mínimum mandatorio. Skip nice-to-haves. Peer review = self-review checklist. Ops Lead approval.</td></tr><tr><td><strong>Materiales requieren traducción última hora</strong></td><td>Cohort multiidioma inesperado</td><td>English primary delivery + live translation. Pre-translated docs opcional (slower). +30% budget sesión.</td></tr><tr><td><strong>Facilitador no puede preparar contenido</strong></td><td>Illness, otro commitment</td><td>Delegate a co-facilitador (con handoff call 1h). O reschedule sesión. Nunca deliver sin prep.</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="workflows-wf01-a-wf05-0b3b0f" data-searchable aria-labelledby="head-workflows-wf01-a-wf05-0b3b0f">
+            <div class="phase-header" id="head-workflows-wf01-a-wf05-0b3b0f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> WORKFLOWS (WF-01 a WF-05)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="wf01-preparar-masterclass-249a2d">WF-01: Preparar Masterclass</h3>
+<p class="key-value"><strong>Duración</strong>: 60 min | <strong>Owner</strong>: Facilitador | <strong>T-window</strong>: T-72h a T-2h</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Template masterclass: slide structure (opening, 3-5 core concepts, closing), speaker notes</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Diseñar pre-work: actividad 20-30 min (video, quiz, reading) enviada T-48h</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Crear facilitator guide: timings exact, transiciones, 5+ key questions, stories/examples</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Testear slides: visual check, embebidos assets, video plays, no typos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Facilitator guide walkthrough: 1h private run, timing verification</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Pre-work validation: send to 2-3 cohort members, gather feedback</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Peer review: otro facilitador lee guide + slides, signs off</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span>Materials lock: versión final en Google Drive, read-only access para cohort</span></div>
+<p class="key-value"><strong>Validar</strong>: slides (✓), pre-work (✓), guide (✓), peer review (✓), timing (✓)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf02-preparar-workshop-4ad8d4">WF-02: Preparar Workshop</h3>
+<p class="key-value"><strong>Duración</strong>: 90 min | <strong>Owner</strong>: Facilitador | <strong>T-window</strong>: T-72h a T-2h</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Template workshop: objective clara, 2-3 ejercicios progresivos, herramientas requeridas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Diseñar ejercicios: instrucciones claras (step-by-step), archivos template, soluciones</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Preparar datasets: datos reales o simulados, cleaned, en formato accesible (CSV, JSON, Google Sheets)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Test completo: run ejercicios end-to-end, timing por ejercicio, notas de troubleshooting</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Herramientas checklist: acceso confirmado, permisos OK, sandbox listo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Facilitator guide: instrucciones, timing, Q&amp;A anticipated, troubleshooting guide</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Pre-work: ejercicio warm-up o lectura (máx 20 min)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span>Peer review: otro facilitador valida ejercicios, data, timing</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span>Materials lock: ejercicios, datasets, guide en Google Drive</span></div>
+<p class="key-value"><strong>Validar</strong>: ejercicios (✓), datasets (✓), herramientas (✓), timings (✓), peer review (✓)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf03-preparar-clnica-ia-ea3a45">WF-03: Preparar Clínica IA</h3>
+<p class="key-value"><strong>Duración</strong>: 60 min | <strong>Owner</strong>: Facilitador | <strong>T-window</strong>: T-72h a T-2h</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Casos reales: seleccionar 2-3 casos (de client, de cohort, de portfolio), anonymized si necesario</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Prompts estructurados: prompt template para cada caso, show bad/good examples</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Troubleshooting guide: errores comunes, cómo detectar, cómo pivot</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Facilitator guide: flujo de preguntas, cuándo intervenir, cómo guiar sin dar soluciones</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Pre-work: caso preview + prompt básico para que intenten antes</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Test de casos: run cases end-to-end, timing por caso, notas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Peer review: otro facilitador valida casos, prompts, guide</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span>Materials lock: casos (slides), prompts, troubleshooting guide, recordings ejemplo si hay</span></div>
+<p class="key-value"><strong>Validar</strong>: casos reales (✓), prompts (✓), guide (✓), timing (✓), peer review (✓)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf04-preparar-mentora-8e3948">WF-04: Preparar Mentoría</h3>
+<p class="key-value"><strong>Duración</strong>: 60 min | <strong>Owner</strong>: Mentor | <strong>T-window</strong>: T-72h a T-2h</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Agenda personalizada: revisión previa mentee (goals, blockers, progress), temas para sesión</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Progress review template: qué hizo desde última sesión, qué aprendió, qué blocked</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Framework consultivo: preguntas Socráticas, reflection prompts, action items</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Recursos contexto: papers, ejemplos, templates relevantes para goals del mentee</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Pre-work: mentee prepara 5-10 min notas de progress/blockers</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Facilitator notes: coach personalization, anticipated challenges, follow-up actions</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Self-review: mentor valida agenda relevancia, timing, recursos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span>Materials lock: agenda + resources en Drive, acceso mentee</span></div>
+<p class="key-value"><strong>Validar</strong>: agenda personalizada (✓), resources (✓), framework (✓), notas prep (✓)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf05-preparar-lab-2b9195">WF-05: Preparar Lab</h3>
+<p class="key-value"><strong>Duración</strong>: 120-180 min | <strong>Owner</strong>: Facilitador | <strong>T-window</strong>: T-72h a T-2h</p>
+<p class="key-value"><strong>Pasos</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Ambiente técnico: sandbox setup (VM, cloud instance, repo), credenciales, acceso verificado</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Datasets: archivos en sandbox, versiones correctas, paths documentados</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Instrucciones paso a paso: screenshots, video walkthrough (5-10 min), docs con pasos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Ejercicios graduales: comenzar simple, incrementar complejidad, cada ejercicio 30-45 min</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Test completo: facilitador run todo el lab, timing total, notas de troubleshooting</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Troubleshooting guide: errores comunes, cómo debuggear, cuando/cómo pedir help</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Post-lab resources: documentación, código snippets, fuentes de referencia</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span>Pre-work: intro sandbox, login test, environment check (15 min)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span>Peer review: otro facilitador valida setup, ejercicios, timing, guide</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">10</span><span>Materials lock: sandbox access URLs, instrucciones, guide, troubleshooting en Drive</span></div>
+<p class="key-value"><strong>Validar</strong>: sandbox (✓), datasets (✓), ejercicios (✓), timings (✓), troubleshooting guide (✓), peer review (✓)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="content-checklist-por-tipo-de-tomo-b0d86d" data-searchable aria-labelledby="head-content-checklist-por-tipo-de-tomo-b0d86d">
+            <div class="phase-header" id="head-content-checklist-por-tipo-de-tomo-b0d86d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> CONTENT CHECKLIST POR TIPO DE ÁTOMO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Item</th><th scope="col">Masterclass</th><th scope="col">Workshop</th><th scope="col">Clínica</th><th scope="col">Mentoría</th><th scope="col">Lab</th></tr></thead><tbody><tr><td><strong>Slides/Contenido Visual</strong></td><td>Sí (requerido)</td><td>Sí (ejercicios)</td><td>Sí (casos)</td><td>No</td><td>No</td></tr><tr><td><strong>Facilitator Guide</strong></td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí (agenda)</td><td>Sí</td></tr><tr><td><strong>Pre-work</strong></td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr><tr><td><strong>Ejercicios</strong></td><td>No</td><td>Sí (2-3 min)</td><td>Sí (2-3 casos)</td><td>No</td><td>Sí (3-5 ejercicios)</td></tr><tr><td><strong>Datasets</strong></td><td>No</td><td>Sí (requerido)</td><td>No</td><td>No</td><td>Sí (requerido)</td></tr><tr><td><strong>Ambiente Técnico</strong></td><td>No</td><td>Opcional</td><td>No</td><td>No</td><td>Sí (requerido)</td></tr><tr><td><strong>Troubleshooting Guide</strong></td><td>No</td><td>Sí</td><td>Sí</td><td>No</td><td>Sí</td></tr><tr><td><strong>Peer Review</strong></td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí (self-review)</td><td>Sí</td></tr><tr><td><strong>Timing Validation</strong></td><td>Sí (60 min)</td><td>Sí (60-180 min)</td><td>Sí (60 min)</td><td>Sí (60 min)</td><td>Sí (120-180 min)</td></tr><tr><td><strong>Backup Content</strong></td><td>Sí</td><td>Sí</td><td>Sí</td><td>No</td><td>Sí</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-de-calidad-ff1bd7" data-searchable aria-labelledby="head-mtricas-de-calidad-ff1bd7">
+            <div class="phase-header" id="head-mtricas-de-calidad-ff1bd7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> MÉTRICAS DE CALIDAD</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Frecuencia</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>% Content ready T-48h</td><td>100%</td><td>Per sesión</td><td>Facilitador</td></tr><tr><td>% Peer review completado</td><td>100%</td><td>Per sesión</td><td>QA Lead</td></tr><tr><td>% Facilitator guide quality score</td><td>≥85/100</td><td>Per sesión</td><td>Peer reviewer</td></tr><tr><td>% Pre-work submission rate</td><td>≥70%</td><td>Post-sesión</td><td>Cohort</td></tr><tr><td>% Timing accuracy (est vs actual)</td><td>±5 min</td><td>Post-sesión</td><td>Facilitador</td></tr><tr><td>% Accessibility pass rate (DUA)</td><td>100%</td><td>Per sesión</td><td>QA Lead</td></tr><tr><td>% Content personalization items (min 3)</td><td>100%</td><td>Per sesión</td><td>Facilitador</td></tr><tr><td>% Cohort satisfaction (NPS contenido)</td><td>≥8.0/10</td><td>Post-sesión</td><td>Analytics</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="conexiones-con-otros-sops-7268c6" data-searchable aria-labelledby="head-conexiones-con-otros-sops-7268c6">
+            <div class="phase-header" id="head-conexiones-con-otros-sops-7268c6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> CONEXIONES CON OTROS SOPS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>facilitar-masterclass-sop</strong>: ejecución de contenido prep-ready</div>
+<div class="bullet-item"><strong>facilitar-workshop-sop</strong>: delivery de workshop con dataset + ejercicios</div>
+<div class="bullet-item"><strong>facilitar-clinica-ia-sop</strong>: facilitar casos + prompts durante sesión</div>
+<div class="bullet-item"><strong>facilitar-mentoria-sop</strong>: 1:1 con agenda personalizada</div>
+<div class="bullet-item"><strong>facilitar-lab-sop</strong>: guiar cohort en sandbox técnico</div>
+<div class="bullet-item"><strong>diseño-curricular-sop</strong>: mapea contenido a outcomes; precursor a prep</div>
+<div class="bullet-item"><strong>post-delivery-analisis-sop</strong>: analiza calidad contenido entregado</div>
+<div class="bullet-item"><strong>content-library-management-sop</strong>: mantiene templates + frameworks</div>
+<div class="bullet-item"><strong>accessibility-compliance-sop</strong>: DUA validation</div>
+<div class="bullet-item"><strong>platform-tools-setup-sop</strong>: acceso plataforma (precondición)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ecuacin-metodoloa-b1bbe5" data-searchable aria-labelledby="head-ecuacin-metodoloa-b1bbe5">
+            <div class="phase-header" id="head-ecuacin-metodoloa-b1bbe5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> ECUACIÓN METODOLOÍA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>Calidad Sesión = (Prep Rigor × Facilitador Expertise × Peer Review × Personalization × Tech Readiness) / (Time Pressure × Scope Creep × Fatiga Facilitador)</code></pre>
+<p class="key-value"><strong>Componentes optimizadores</strong>:</p>
+<div class="bullet-item">Prep Rigor = T-72h window + artifact checklist (10 items) + fallbacks</div>
+<div class="bullet-item">Facilitador Expertise = domain knowledge + facilitation experience (supuesto #7)</div>
+<div class="bullet-item">Peer Review = otro set de ojos, QA gate (criterio #10)</div>
+<div class="bullet-item">Personalization = 3+ items por cohort (criterio #7, WF design)</div>
+<div class="bullet-item">Tech Readiness = acceso validado + backup plans (criterio #5-6, WF-02/WF-05)</div>
+<p class="key-value"><strong>Componentes que introducen riesgo</strong>:</p>
+<div class="bullet-item">Time Pressure = &lt;T-48h → compressed prep</div>
+<div class="bullet-item">Scope Creep = cambios post-lock (prohibido por design)</div>
+<div class="bullet-item">Fatiga Facilitador = acumular muchas sesiones sin descanso</div>
+<p class="key-value"><strong>Objetivo</strong>: Mantener ratio ~3:1 o mejor (3 optimizadores por cada 1 riesgo).</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="responsabilidades-2bb438" data-searchable aria-labelledby="head-responsabilidades-2bb438">
+            <div class="phase-header" id="head-responsabilidades-2bb438" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> RESPONSABILIDADES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Responsabilidad Principal</th><th scope="col">Inputs Requeridos</th><th scope="col">Outputs</th></tr></thead><tbody><tr><td><strong>Facilitador</strong></td><td>Preparar contenido end-to-end</td><td>Topic, cohort profile, T-72h window</td><td>Slides, ejercicios, guide, pre-work, locked materials T-2h</td></tr><tr><td><strong>Peer Reviewer</strong></td><td>QA contenido + sign-off</td><td>Materiales facilitador</td><td>Checklist review, feedback, sign-off</td></tr><tr><td><strong>Operations Lead</strong></td><td>Enforce T-72h window, escalate issues</td><td>Calendario sesiones</td><td>Confirmación window, escalations</td></tr><tr><td><strong>C-Level/Mentor</strong></td><td>Mentoría prep validation</td><td>Agenda mentee</td><td>Sign-off personalización, context</td></tr><tr><td><strong>QA Lead</strong></td><td>Accessibility + compliance</td><td>Materiales finales</td><td>DUA check pass/fail</td></tr><tr><td><strong>Tech Lead</strong></td><td>Tool version + sandbox validation</td><td>WF-02/WF-05 reqs</td><td>Confirmación tools, datasets, troubleshooting</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="plantillas-y-artefactos-0c1d69" data-searchable aria-labelledby="head-plantillas-y-artefactos-0c1d69">
+            <div class="phase-header" id="head-plantillas-y-artefactos-0c1d69" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> PLANTILLAS Y ARTEFACTOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Disponibles en Content Library</strong>:</p>
+<div class="bullet-item">Masterclass Slide Template (Google Slides)</div>
+<div class="bullet-item">Workshop Exercise Template (Google Docs)</div>
+<div class="bullet-item">Clínica AI Case Template (Google Docs)</div>
+<div class="bullet-item">Mentoría Agenda Template (Google Docs)</div>
+<div class="bullet-item">Lab Instructions Template (Markdown)</div>
+<div class="bullet-item">Facilitator Guide Template (Google Docs)</div>
+<div class="bullet-item">Pre-work Activity Template (Google Forms)</div>
+<div class="bullet-item">Peer Review Checklist (Google Sheets)</div>
+<div class="bullet-item">Troubleshooting Guide Template (Markdown)</div>
+<div class="bullet-item">Accessibility Checklist (Google Sheets)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="versin-y-control-1a0d1d" data-searchable aria-labelledby="head-versin-y-control-1a0d1d">
+            <div class="phase-header" id="head-versin-y-control-1a0d1d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> VERSIÓN Y CONTROL</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Versión</th><th scope="col">Fecha</th><th scope="col">Cambio</th><th scope="col">Author</th></tr></thead><tbody><tr><td>1.0</td><td>2026-03-24</td><td>Initial SOP con 7 sections + 5 WFs</td><td>MetodologIA Ops</td></tr></tbody></table></div>
+<hr class="divider">
+<p class="key-value"><strong>Última revisión</strong>: 2026-03-24</p>
+<p class="key-value"><strong>Próxima revisión</strong>: 2026-06-24 (Q2 learning cycle)</p>
+<p class="key-value"><strong>Dueño de documento</strong>: Operations Lead, MetodologIA Gobierno Operativo</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

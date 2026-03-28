@@ -1,0 +1,647 @@
+id: aggregation
+name: Perspective Aggregation
+purpose: Combine multiple agent perspectives into a unified, coherent view that preserves important nuances while eliminating redundancy and resolving conflicts where possible.
+businessValue: Transforms fragmented multi-agent outputs into a single, high-quality response that is more valuable than any individual perspective, saving users from reading and reconciling multiple answers.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: synthesizer
+
+inputs:
+  - "perspectives: AgentResponse[] - Multiple agent responses to aggregate"
+  - "originalQuery: string - The original user question or task"
+  - "aggregationMode: string - 'equal'|'weighted'|'conflict-aware'"
+  - "weights: object - Optional weights per agent for weighted aggregation"
+
+outputs:
+  - "aggregatedResponse: string - Unified synthesized response"
+  - "agreementAreas: string[] - Where perspectives converge"
+  - "disagreementAreas: string[] - Where perspectives diverge with characterization"
+  - "synthesisConfidence: string - Confidence in the aggregation quality"
+
+dependencies:
+  - "agents/synthesizer/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task with agent responses from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - perspectives_aligned
+  - conflict_detected
+  - conflict_resolved
+  - synthesis_completed
+  - fallback_triggered
+
+failureHandling:
+  - "Single perspective only: Return as-is with note (nothing to aggregate)"
+  - "Irreconcilable conflict: Report conflict transparently rather than forcing resolution"
+  - "Perspectives on different topics: Report misalignment to orchestrator"
+  - "Empty perspective from an agent: Proceed with available perspectives"
+
+interoperabilityContract:
+  inputType: "AggregationRequest { perspectives: AgentResponse[], originalQuery: string, aggregationMode: string, weights?: object }"
+  outputType: "AggregationResult { aggregatedResponse: string, agreementAreas: string[], disagreementAreas: string[], synthesisConfidence: string }"
+
+wowCriteria:
+  - "Unified response reads as a single coherent answer, not a patchwork"
+  - "All perspectives are faithfully represented without attribution to specific agents"
+  - "Conflicts are resolved where possible, transparently declared where not"
+  - "Aggregation adds insight beyond what any single perspective provides"
+
+safeCriteria:
+  - "No perspective silently omitted from aggregation"
+  - "Conflicts declared, not hidden"
+  - "No fabrication of consensus where none exists"
+  - "Original perspectives faithfully represented"
+
+workflows:
+  - id: dual-perspective-aggregation
+    title: Dual Perspective Aggregation
+    objective: Aggregate two agent perspectives into a unified response, optimized for the common terna-minus-one or two-agent delegation pattern
+    trigger: "perspectives.length === 2"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Exactly 2 agent perspectives provided"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[2] (sanitized)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Align perspective topics
+        desc: Sanitize inputs and verify that both perspectives address the same question, identifying shared and unique coverage areas.
+        whyThisMatters: Aggregating perspectives on different topics produces incoherent output; alignment verification prevents this failure mode.
+        inputNeeded: "Two agent responses and original query"
+        actionInstruction: "Call sanitizeInput() on all inputs. Call llm.chat() with alignment verification prompt."
+        promptToUse: |
+          You are the Synthesizer agent verifying perspective alignment.
+
+          Original query: {{originalQuery}}
+          Perspective A: {{perspectives[0]}}
+          Perspective B: {{perspectives[1]}}
+
+          Verify alignment:
+          1. Do both perspectives address the original query?
+          2. What topics does A cover that B does not?
+          3. What topics does B cover that A does not?
+          4. What topics do both cover?
+          5. Alignment score: high (same topics) / medium (overlapping) / low (different topics)
+        expectedOutput: "AlignmentCheck { bothOnTopic: boolean, sharedTopics: string[], uniqueToA: string[], uniqueToB: string[], alignmentScore: string }"
+        validationRule: "Alignment score assigned, shared and unique topics identified"
+        failureSignal: "Alignment score is 'low' or perspectives do not address the query"
+        recoveryAction: "Report misalignment to orchestrator and return the most relevant perspective"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Identify agreements and differences
+        desc: Map specific areas of agreement and disagreement between the two perspectives.
+        whyThisMatters: Precise mapping prevents the synthesis from accidentally merging contradictory claims and enables informed conflict resolution.
+        inputNeeded: "AlignmentCheck, both perspectives"
+        actionInstruction: "Call llm.chat() with agreement mapping prompt."
+        promptToUse: |
+          You are the Synthesizer agent mapping agreements and differences between two perspectives.
+
+          Original query: {{originalQuery}}
+          Shared topics: {{sharedTopics}}
+          Perspective A: {{perspectives[0]}}
+          Perspective B: {{perspectives[1]}}
+
+          Map precisely:
+          1. Points of agreement (both say the same thing)
+          2. Complementary points (different information, no conflict)
+          3. Points of disagreement (contradictory claims)
+          4. For each disagreement: Which perspective has stronger evidence?
+
+          Do not force agreement where there is genuine disagreement.
+        expectedOutput: "AgreementMap { agreements: string[], complementary: string[], disagreements: Disagreement[], overallAlignment: string }"
+        validationRule: "At least one category has items, disagreements include evidence assessment"
+        failureSignal: "Everything mapped as agreement without analysis or all as disagreement"
+        recoveryAction: "Re-analyze with explicit instruction to look for both agreements and disagreements"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Synthesize unified response
+        desc: Combine agreements, merge complementary information, and resolve or declare disagreements to produce a single unified response.
+        whyThisMatters: The unified response is the core deliverable; it must be coherent, complete, and honest about where perspectives diverge.
+        inputNeeded: "AgreementMap, both perspectives, original query"
+        actionInstruction: "Call llm.chat() with synthesis prompt."
+        promptToUse: |
+          You are the Synthesizer agent producing a unified response from two perspectives.
+
+          Original query: {{originalQuery}}
+          Agreement map:
+          {{agreementMap}}
+          Perspective A: {{perspectives[0]}}
+          Perspective B: {{perspectives[1]}}
+
+          Synthesize:
+          1. Start with agreed-upon points (strongest foundation)
+          2. Integrate complementary information (adds breadth)
+          3. For disagreements: resolve if evidence clearly favors one side; otherwise note the disagreement transparently
+          4. Produce a single coherent response that addresses the original query
+
+          Rules:
+          - Do NOT attribute responses to specific agents
+          - Do NOT simply concatenate perspectives
+          - Preserve nuances from both perspectives
+          - The synthesis must read as one unified answer
+        expectedOutput: "SynthesizedResponse { response: string, resolvedConflicts: string[], unresolvedConflicts: string[], synthesisConfidence: string }"
+        validationRule: "Response is coherent single narrative, unresolved conflicts explicitly noted"
+        failureSignal: "Response reads as concatenation or attributes to agents"
+        recoveryAction: "Re-synthesize with stricter coherence instruction"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 validation, verify no agent attribution leaks, and deliver to orchestrator.
+        whyThisMatters: Security validation and attribution check ensure the output is safe and maintains the synthesizer's mandate to not reveal agent identities.
+        inputNeeded: "SynthesizedResponse"
+        actionInstruction: "Call validateOutput(). Check for agent attribution leaks. Format as AggregationResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated AggregationResult with unified response and agreement/disagreement mapping"
+        validationRule: "CP3 passed, no agent names in output, output matches contract"
+        failureSignal: "CP3 flags content or agent names detected in response"
+        recoveryAction: "Strip agent references, re-validate, deliver sanitized response"
+        handoffIfNeeded: null
+
+    mainOutput: "Unified dual-perspective response with agreement and disagreement mapping"
+    secondaryOutputs:
+      - "alignment_check for routing quality assessment"
+      - "agreement_map for audit trail"
+      - "synthesis_metrics (agreement ratio, conflict count, confidence)"
+    DoD:
+      - "Both perspectives represented in synthesis"
+      - "Agreements and disagreements mapped"
+      - "Unified response reads as single coherent answer"
+      - "No agent attribution in output"
+      - "CP3 passed"
+    qaChecklist:
+      - "Both perspectives faithfully represented"
+      - "Disagreements not hidden"
+      - "Response is coherent, not concatenated"
+      - "No agent names leaked"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "perspective_coverage: both perspectives represented"
+      - "coherence: response reads as unified narrative"
+      - "conflict_transparency: all disagreements declared"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when 2 perspectives need aggregation)"
+    errorHandling: "If perspectives are completely misaligned, return most relevant with note"
+    fallbackRoute: "Return the more complete perspective with note about synthesis failure"
+    escalationRoute: "Report to orchestrator that perspectives are irreconcilably different"
+
+  - id: multi-perspective-aggregation
+    title: Multi-Perspective Aggregation
+    objective: Aggregate 3 or more agent perspectives into a unified response, handling the full complexity of terna and committee patterns
+    trigger: "perspectives.length >= 3"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "3 or more agent perspectives provided"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[3+] (sanitized)"
+      - "originalQuery: string"
+      - "aggregationMode: string"
+    steps:
+      - stepNumber: 1
+        title: Catalog and align perspectives
+        desc: Sanitize all inputs, catalog each perspective's coverage, and verify they address the original query.
+        whyThisMatters: With 3+ perspectives, misalignment is more likely and harder to detect; systematic cataloging prevents silent coverage gaps.
+        inputNeeded: "All agent responses and original query"
+        actionInstruction: "Call sanitizeInput() on all inputs. Call llm.chat() with multi-perspective cataloging prompt."
+        promptToUse: |
+          You are the Synthesizer agent cataloging multiple perspectives for aggregation.
+
+          Original query: {{originalQuery}}
+          Number of perspectives: {{perspectives.length}}
+          Perspectives:
+          {{perspectives}}
+
+          Catalog each perspective:
+          1. Topics covered by each
+          2. Unique contributions of each (what only this perspective provides)
+          3. Coverage overlap matrix (which perspectives cover the same topics)
+          4. Overall coverage: What percentage of the query is addressed?
+
+          Identify any perspective that is off-topic or does not address the query.
+        expectedOutput: "PerspectiveCatalog { perPerspective: CatalogEntry[], coverageMatrix: object, overallCoverage: string, offTopicPerspectives: string[] }"
+        validationRule: "All perspectives cataloged, coverage assessed"
+        failureSignal: "Perspectives missing from catalog or coverage cannot be assessed"
+        recoveryAction: "Catalog available perspectives, note uncataloged ones as 'unable to assess'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Build consensus map
+        desc: Identify points where multiple perspectives agree, partially agree, or disagree, building a comprehensive consensus map.
+        whyThisMatters: The consensus map is the analytical foundation for the synthesis; without it, the aggregation is arbitrary rather than evidence-based.
+        inputNeeded: "PerspectiveCatalog, all perspectives"
+        actionInstruction: "Call llm.chat() with consensus mapping prompt."
+        promptToUse: |
+          You are the Synthesizer agent building a consensus map across multiple perspectives.
+
+          Perspectives:
+          {{perspectives}}
+          Coverage matrix: {{coverageMatrix}}
+
+          Build consensus map:
+          1. Full agreement: Points where all (or nearly all) perspectives agree
+          2. Majority agreement: Points where most perspectives agree (with dissent noted)
+          3. Split positions: Points where perspectives are divided
+          4. Unique insights: Points raised by only one perspective (not contradicted)
+          5. Contradictions: Points where perspectives directly conflict
+
+          For each category, note which perspectives are in each position.
+          Do not force consensus. Be honest about disagreements.
+        expectedOutput: "ConsensusMap { fullAgreement: string[], majorityAgreement: MajorityItem[], splits: SplitItem[], uniqueInsights: UniqueItem[], contradictions: Contradiction[] }"
+        validationRule: "At least one category populated, contradictions include which perspectives conflict"
+        failureSignal: "All points in one category or contradictions not characterized"
+        recoveryAction: "Simplify to binary agree/disagree mapping"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Synthesize unified response
+        desc: Produce a unified response that leads with consensus, integrates unique insights, and transparently handles disagreements.
+        whyThisMatters: Multi-perspective synthesis is the highest-value deliverable in the Pristino ecosystem; it must be significantly better than any individual response.
+        inputNeeded: "ConsensusMap, all perspectives, original query"
+        actionInstruction: "Call llm.chat() with multi-perspective synthesis prompt."
+        promptToUse: |
+          You are the Synthesizer agent producing a unified multi-perspective response.
+
+          Original query: {{originalQuery}}
+          Consensus map:
+          {{consensusMap}}
+
+          Synthesize following this hierarchy:
+          1. Lead with full agreement points (highest confidence)
+          2. Include majority agreement with brief note of dissent
+          3. Integrate unique insights that add value
+          4. Address splits honestly: present both sides
+          5. Declare contradictions: do not resolve by force
+
+          Rules:
+          - Never attribute to specific agents
+          - The response must be cohesive, not a list of viewpoints
+          - Preserve important nuances from minority positions
+          - Confidence should reflect consensus level
+          - The synthesis must address the original query completely
+        expectedOutput: "MultiSynthesis { response: string, consensusLevel: string, unresolvedItems: string[], synthesisConfidence: string }"
+        validationRule: "Response addresses query, consensus level stated, unresolved items listed"
+        failureSignal: "Response does not address query or reads as list of viewpoints"
+        recoveryAction: "Restructure around the original query, using consensus as supporting evidence"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3, verify no agent attribution, and deliver the multi-perspective synthesis.
+        whyThisMatters: Final validation ensures safe, policy-compliant delivery of the synthesis.
+        inputNeeded: "MultiSynthesis with all metadata"
+        actionInstruction: "Call validateOutput(). Verify no agent attribution. Format as AggregationResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated AggregationResult with unified multi-perspective response"
+        validationRule: "CP3 passed, no agent names in output"
+        failureSignal: "CP3 flags content or agent names detected"
+        recoveryAction: "Strip agent references, deliver sanitized synthesis"
+        handoffIfNeeded: null
+
+    mainOutput: "Unified multi-perspective response with consensus mapping and transparency about disagreements"
+    secondaryOutputs:
+      - "perspective_catalog for coverage audit"
+      - "consensus_map for detailed analysis"
+      - "aggregation_metrics (perspective count, consensus level, unresolved count)"
+    DoD:
+      - "All on-topic perspectives represented"
+      - "Consensus map built with all categories"
+      - "Unified response is cohesive narrative"
+      - "Disagreements transparently handled"
+      - "CP3 passed"
+    qaChecklist:
+      - "No perspective silently omitted"
+      - "Consensus claims supported by actual agreement"
+      - "Minority positions preserved where important"
+      - "Response reads as unified answer"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "perspective_coverage: >= 90% of perspectives represented"
+      - "consensus_accuracy: claims match actual agreement level"
+      - "coherence: unified narrative quality"
+      - "response_time_p95: < 40s"
+    cadence: "Per-request (when 3+ perspectives need aggregation)"
+    errorHandling: "If one perspective is off-topic, exclude with note and aggregate remaining"
+    fallbackRoute: "Return best 2 perspectives for dual-perspective-aggregation if full synthesis fails"
+    escalationRoute: "Report to orchestrator that perspectives are too divergent for meaningful synthesis"
+
+  - id: weighted-aggregation
+    title: Weighted Aggregation
+    objective: Aggregate perspectives with different weights based on agent expertise, relevance, or confidence levels
+    trigger: "aggregationMode === 'weighted' or weights provided"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple perspectives with weights or weight-assignable criteria"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[] (sanitized)"
+      - "originalQuery: string"
+      - "weights: object - per-agent weights or weighting criteria"
+    steps:
+      - stepNumber: 1
+        title: Determine perspective weights
+        desc: Sanitize inputs and establish weights for each perspective based on provided weights or inferred relevance criteria.
+        whyThisMatters: Equal weighting can undervalue expert perspectives and overvalue tangential ones; proper weighting produces more accurate synthesis.
+        inputNeeded: "Perspectives, weights or weighting criteria, original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Apply provided weights or call llm.chat() to infer weights."
+        promptToUse: |
+          You are the Synthesizer agent determining perspective weights for weighted aggregation.
+
+          Original query: {{originalQuery}}
+          Perspectives:
+          {{perspectives}}
+          Provided weights: {{weights}}
+
+          If weights not provided, assess based on:
+          1. Relevance: How directly does this perspective address the query?
+          2. Depth: How thorough is the analysis?
+          3. Evidence quality: How well-supported are the claims?
+          4. Confidence: How confident is the perspective in its own conclusions?
+
+          Assign normalized weights (sum to 1.0) with justification.
+          Note: Higher weight means more influence on the final synthesis.
+        expectedOutput: "WeightAssignment { weights: PerspectiveWeight[], justification: string, isExplicit: boolean }"
+        validationRule: "Weights sum to 1.0 (within 0.01 tolerance), each perspective has a weight"
+        failureSignal: "Weights do not sum correctly or perspectives missing weights"
+        recoveryAction: "Apply equal weights and proceed with standard aggregation"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Weight-aware synthesis
+        desc: Synthesize perspectives giving proportional emphasis based on assigned weights.
+        whyThisMatters: The synthesis must reflect the weighting so that higher-weighted perspectives have more influence on the final output.
+        inputNeeded: "WeightAssignment, all perspectives, original query"
+        actionInstruction: "Call llm.chat() with weighted synthesis prompt."
+        promptToUse: |
+          You are the Synthesizer agent performing weighted synthesis.
+
+          Original query: {{originalQuery}}
+          Weighted perspectives:
+          {{weightedPerspectives}}
+
+          Synthesize with weighting:
+          1. Higher-weighted perspectives should have more influence on conclusions
+          2. Lower-weighted perspectives contribute supplementary detail
+          3. If high-weight and low-weight perspectives conflict, favor high-weight but note the dissent
+          4. Weight does not mean silence: even low-weight perspectives with unique insights should be included
+
+          Rules:
+          - Response must reflect the weighting naturally
+          - Do not explicitly state weights in the output
+          - Do not attribute to specific agents
+          - Produce a coherent unified response
+        expectedOutput: "WeightedSynthesis { response: string, dominantPerspective: string, supplementaryInsights: string[], conflicts: string[], confidence: string }"
+        validationRule: "Response reflects weighting, highest-weighted perspective is well-represented"
+        failureSignal: "Low-weight perspective dominates or weighting has no visible effect"
+        recoveryAction: "Re-synthesize with explicit instruction to lead with highest-weighted perspective"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Validate weighting fairness
+        desc: Verify that the weighting did not unfairly silence important perspectives or overamplify weak ones.
+        whyThisMatters: Weighted synthesis risks distortion if weights are poorly calibrated; fairness validation catches this before delivery.
+        inputNeeded: "WeightedSynthesis, all original perspectives, weight assignments"
+        actionInstruction: "Call llm.chat() with fairness validation prompt."
+        promptToUse: |
+          You are the Synthesizer agent validating weighted synthesis fairness.
+
+          Weighted synthesis: {{synthesis}}
+          Original perspectives: {{perspectives}}
+          Weights: {{weights}}
+
+          Validate:
+          1. Are high-weight perspectives proportionally represented?
+          2. Are low-weight perspectives with unique critical insights still included?
+          3. Did weighting cause any factually important information to be lost?
+          4. Is the overall synthesis more accurate than an unweighted version would be?
+          5. Fairness assessment: fair / slightly biased / significantly biased
+        expectedOutput: "FairnessCheck { isFair: boolean, lostInsights: string[], biasDirection: string, recommendation: string }"
+        validationRule: "Fairness assessed, lost insights cataloged"
+        failureSignal: "Assessment finds significant bias or critical information lost"
+        recoveryAction: "Re-integrate lost critical insights and adjust synthesis"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the weighted synthesis with transparency metadata.
+        whyThisMatters: Final validation ensures safe delivery with proper transparency about the weighting methodology.
+        inputNeeded: "Validated WeightedSynthesis"
+        actionInstruction: "Call validateOutput(). Format as AggregationResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated AggregationResult with weighted synthesis and weighting metadata"
+        validationRule: "CP3 passed, no agent names in output"
+        failureSignal: "CP3 flags content or metadata incomplete"
+        recoveryAction: "Deliver synthesis without weighting metadata"
+        handoffIfNeeded: null
+
+    mainOutput: "Weighted multi-perspective synthesis with proportional representation based on expertise or relevance"
+    secondaryOutputs:
+      - "weight_assignments with justification"
+      - "fairness_validation for audit"
+      - "weighting_metrics (weight distribution, influence analysis)"
+    DoD:
+      - "Weights assigned and justified"
+      - "Synthesis reflects weighting"
+      - "Fairness validated"
+      - "No agent attribution in output"
+      - "CP3 passed"
+    qaChecklist:
+      - "Weighting is justified and transparent"
+      - "Critical insights not lost due to low weighting"
+      - "Synthesis is more accurate than unweighted would be"
+      - "Output reads as unified response"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "weight_accuracy: weights sum to 1.0"
+      - "fairness: no critical insights lost"
+      - "coherence: unified narrative quality"
+      - "response_time_p95: < 35s"
+    cadence: "Per-request (when weighted aggregation is needed)"
+    errorHandling: "If weights are invalid, fall back to equal weighting"
+    fallbackRoute: "Use multi-perspective-aggregation with equal weights"
+    escalationRoute: "Report to orchestrator that weighting criteria are ambiguous"
+
+  - id: conflict-aware-aggregation
+    title: Conflict-Aware Aggregation
+    objective: Aggregate perspectives with explicit focus on identifying, characterizing, and transparently handling conflicts between perspectives
+    trigger: "aggregationMode === 'conflict-aware' or known conflicts between perspectives"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Multiple perspectives with known or suspected conflicts"
+      - "Synthesizer agent available at depth 1"
+    inputs:
+      - "perspectives: AgentResponse[] (sanitized)"
+      - "originalQuery: string"
+      - "knownConflicts: string[] - pre-identified conflicts if any"
+    steps:
+      - stepNumber: 1
+        title: Deep conflict detection
+        desc: Sanitize inputs and perform systematic conflict detection across all perspective pairs, identifying explicit and implicit contradictions.
+        whyThisMatters: Hidden conflicts that are synthesized as if they agree produce misleading outputs; thorough detection prevents this critical failure.
+        inputNeeded: "All perspectives, known conflicts, original query"
+        actionInstruction: "Call sanitizeInput() on inputs. Call llm.chat() with conflict detection prompt."
+        promptToUse: |
+          You are the Synthesizer agent performing deep conflict detection.
+
+          Original query: {{originalQuery}}
+          Perspectives:
+          {{perspectives}}
+          Known conflicts: {{knownConflicts}}
+
+          Detect ALL conflicts:
+          1. Direct contradictions (A says X, B says not-X)
+          2. Implicit tensions (A's reasoning undermines B's conclusion)
+          3. Scope conflicts (A and B define the problem differently)
+          4. Priority conflicts (A and B agree on facts but disagree on importance)
+          5. Temporal conflicts (A and B describe different time frames)
+
+          For each conflict:
+          - Which perspectives are involved?
+          - What is the specific point of conflict?
+          - How severe is it? (critical / significant / minor)
+          - Can it be resolved with available information?
+        expectedOutput: "ConflictInventory { conflicts: Conflict[], conflictCount: number, resolvableCount: number, severity: string }"
+        validationRule: "Each conflict has involved perspectives, specific point, and severity"
+        failureSignal: "No conflicts found when known conflicts were provided"
+        recoveryAction: "Re-analyze with focus on known conflicts as seed for deeper detection"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Attempt conflict resolution
+        desc: For each resolvable conflict, attempt resolution using evidence strength, logical analysis, or by identifying the root cause of the disagreement.
+        whyThisMatters: Resolved conflicts strengthen the synthesis; but forced resolution of unresolvable conflicts weakens it. Distinguishing the two is essential.
+        inputNeeded: "ConflictInventory with resolvable and unresolvable conflicts"
+        actionInstruction: "For each resolvable conflict, call llm.chat() with conflict resolution prompt."
+        promptToUse: |
+          You are the Synthesizer agent attempting to resolve a conflict between perspectives.
+
+          Conflict: {{conflict}}
+          Perspective A position: {{perspectiveA}}
+          Perspective B position: {{perspectiveB}}
+          Original query: {{originalQuery}}
+
+          Attempt resolution:
+          1. Root cause: Why do these perspectives disagree?
+          2. Evidence comparison: Which side has stronger evidence?
+          3. Logic check: Is either position logically flawed?
+          4. Synthesis possible? Can both be true under different conditions?
+          5. Resolution: If resolvable, state the resolution. If not, explain why.
+
+          Do NOT force resolution. It is better to declare 'unresolvable' than to fabricate consensus.
+        expectedOutput: "ResolutionAttempt { conflict: string, resolved: boolean, resolution: string, reasoning: string, confidence: string }"
+        validationRule: "Resolution attempt has clear resolved/unresolved status with reasoning"
+        failureSignal: "Resolution is forced without adequate reasoning"
+        recoveryAction: "Mark as unresolved and include both positions in synthesis"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Synthesize with conflict transparency
+        desc: Produce unified response that integrates resolved conflicts and transparently presents unresolved ones.
+        whyThisMatters: Transparent conflict handling builds trust and gives users the information they need to form their own judgment on contested points.
+        inputNeeded: "Resolved and unresolved conflicts, all perspectives, original query"
+        actionInstruction: "Call llm.chat() with conflict-transparent synthesis prompt."
+        promptToUse: |
+          You are the Synthesizer agent producing a conflict-aware synthesis.
+
+          Original query: {{originalQuery}}
+          Resolved conflicts: {{resolvedConflicts}}
+          Unresolved conflicts: {{unresolvedConflicts}}
+          Non-conflicting points: {{agreementAreas}}
+
+          Synthesize with conflict transparency:
+          1. Present agreed-upon points as the foundation
+          2. Integrate resolved conflicts naturally (presenting the resolution)
+          3. For unresolved conflicts: Present both positions fairly, explain why they conflict, and note that resolution was not possible
+          4. End with overall assessment acknowledging both certainties and uncertainties
+
+          Rules:
+          - Never hide conflicts
+          - Never fabricate resolutions
+          - Do not attribute to specific agents
+          - Present unresolved conflicts as genuine uncertainty, which is valuable information
+        expectedOutput: "ConflictAwareSynthesis { response: string, resolvedConflicts: string[], unresolvedConflicts: string[], overallCertainty: string }"
+        validationRule: "All conflicts accounted for (resolved or presented), response is coherent"
+        failureSignal: "Conflicts missing from synthesis or false consensus presented"
+        recoveryAction: "Re-synthesize with explicit list of conflicts to address"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the conflict-aware synthesis with full conflict metadata.
+        whyThisMatters: The metadata about conflicts is as valuable as the synthesis itself for downstream decision-making.
+        inputNeeded: "ConflictAwareSynthesis with all metadata"
+        actionInstruction: "Call validateOutput(). Format as AggregationResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated AggregationResult with conflict-aware synthesis and conflict metadata"
+        validationRule: "CP3 passed, conflict metadata included, no agent names"
+        failureSignal: "CP3 flags content or conflict metadata missing"
+        recoveryAction: "Deliver synthesis with basic conflict list"
+        handoffIfNeeded: null
+
+    mainOutput: "Conflict-aware synthesis with transparent handling of resolved and unresolved conflicts"
+    secondaryOutputs:
+      - "conflict_inventory for detailed reference"
+      - "resolution_attempts for audit"
+      - "conflict_metrics (total, resolved, unresolved, severity distribution)"
+    DoD:
+      - "All conflicts detected and inventoried"
+      - "Resolution attempted for resolvable conflicts"
+      - "Unresolved conflicts transparently presented"
+      - "Synthesis is coherent and honest"
+      - "CP3 passed"
+    qaChecklist:
+      - "No conflicts hidden or minimized"
+      - "Resolutions are evidence-based"
+      - "Unresolved conflicts fairly present both sides"
+      - "False consensus not fabricated"
+    raci:
+      responsible: synthesizer
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "conflict_detection_rate: all known conflicts found plus new ones"
+      - "resolution_rate: percentage of conflicts successfully resolved"
+      - "transparency: all unresolved conflicts in output"
+      - "response_time_p95: < 45s"
+    cadence: "Per-request (when conflict-aware aggregation is needed)"
+    errorHandling: "If all conflicts are unresolvable, present balanced summary of positions"
+    fallbackRoute: "Return individual perspectives with conflict summary if synthesis fails"
+    escalationRoute: "Report to orchestrator that conflicts require user input or additional agent analysis to resolve"

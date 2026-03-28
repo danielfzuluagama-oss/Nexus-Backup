@@ -1,0 +1,157 @@
+========================================
+REPORTE DE AUDITORÍA UX/UI + TÉCNICA
+Archivo: index.html (Homepage / Gateway)
+Fecha Original: 2026-01-23
+Fecha Actualización: 2026-01-27
+Auditor: Gemini + UX Specialist + Performance Engineering
+Metodología: Red-Team Testing [P11], Heurísticas H1-H10, Core Web Vitals
+========================================
+
+## RESUMEN EJECUTIVO
+
+Homepage funciona como Gateway con 2 entradas claras (Empresas/Personas). 
+Estructura simplificada desde última auditoría. Persisten issues de mezcla 
+de idiomas y jerga técnica. Se agregan nuevos hallazgos técnicos de 
+performance y mejores prácticas.
+
+--------------------------------------------------------------------------------
+## MÉTRICAS CLAVE (Actualizado)
+
+- Líneas de código: 255
+- Secciones totales: 3 (Nav, Hero + Gateway, About Snippet)
+- CTAs identificados: 5 (1 principal + 2 cards + 2 footer links)
+- Nivel de complejidad estructural: BAJO ✓
+- Nivel técnico del lenguaje: MEDIO-ALTO ⚠️
+
+--------------------------------------------------------------------------------
+## HALLAZGOS POR SEVERIDAD
+
+### 🔴 CRÍTICOS (Bloquean conversión)
+
+1. **Jerga B2B/B2C visible al usuario final** [Líneas 189, 195, 214, 220]
+   - "B2B / Organizations", "B2C / Professional", "Ver Soluciones B2B", "Explorar Ruta B2C"
+   - PENDIENTE DESDE AUDITORÍA ANTERIOR
+   - Violación: UP06 (evitar jargon interno)
+   - Recomendación: "Para tu empresa" / "Para ti" o similar
+
+### 🟠 ALTOS (Impacto significativo)
+
+2. **Tailwind CDN en producción** [Línea 93]
+   - `<script src="https://cdn.tailwindcss.com">` bloquea render
+   - Impacto LCP estimado: +500-800ms
+   - Recomendación: Build production CSS o JIT local
+   
+3. **Scripts no diferidos correctamente** [Líneas 93, 97-125]
+   - Tailwind config inline ejecuta antes de DOM ready
+   - Impacto FID: Alto
+   - Recomendación: Mover config a archivo externo con defer
+
+4. **CSS no crítico cargado síncronamente** [Líneas 87-90]
+   - 4 hojas CSS cargan bloqueando render
+   - Recomendación: Inline critical CSS, defer resto
+
+### 🟡 MEDIOS (Fricción innecesaria)
+
+5. **CTA principal mantiene texto genérico** [Línea 168]
+   - "Conocer más de MetodologIA" no comunica beneficio
+   - Recomendación: "Ver cómo funciona" o "Empezar evaluación"
+
+6. **Mezcla de idiomas en título** [Línea 159]
+   - "Success as a Service" en h1 para audiencia hispanohablante
+   - Nota: Se mantiene por branding, pero agregar subtexto
+
+7. **Container no cerrado correctamente** [Línea 150 → 227]
+   - `<div class="container">` abierto en L150, cerrado en L227 (fuera de section)
+   - Potencial issue de layout
+   - Requiere verificación visual
+
+### 🟢 BAJOS (Mejoras incrementales)
+
+8. **Web Components sin fallback**
+   - `<site-header>` y `<site-footer>` sin contenido fallback
+   - Si JS falla, usuario ve nada
+   - Recomendación: Agregar contenido noscript
+
+9. **Preconnect sin preload complementario** [Líneas 80-81]
+   - Preconnect a Google Fonts pero font load async
+   - Potencial FOUT (Flash of Unstyled Text)
+
+10. **Falta meta theme-color** 
+    - Para PWA/mobile address bar styling
+    - Recomendación: Agregar `<meta name="theme-color" content="#020617">`
+
+--------------------------------------------------------------------------------
+## ANÁLISIS DE PERFORMANCE (NUEVO)
+
+### Core Web Vitals Estimados
+| Métrica | Estimado | Target | Status |
+|---------|----------|--------|--------|
+| LCP     | ~2.5-3s  | <2.5s  | ⚠️     |
+| FID     | ~150ms   | <100ms | ⚠️     |
+| CLS     | <0.1     | <0.1   | ✓      |
+
+### Oportunidades de Mejora
+1. Eliminar Tailwind CDN → Build local (-800ms)
+2. Inline critical CSS → Faster first paint (-200ms)
+3. Defer non-critical JS → Reduce main thread blocking
+
+--------------------------------------------------------------------------------
+## ANÁLISIS DE CÓDIGO
+
+### Buenas Prácticas Detectadas ✓
+- HTML semántico (section, main, nav)
+- Schema.org JSON-LD presente
+- Font preload con onload pattern
+- Lazy icon loading (defer)
+- Web Components para nav/footer (DRY)
+
+### Issues de Código
+- Tailwind CDN no es production-ready
+- 4 CSS files = 4 HTTP requests (considerar bundle)
+- SVG icons inline podrían extraerse a sprite
+
+--------------------------------------------------------------------------------
+## ACCIONES RECOMENDADAS (Prioridad)
+
+| # | Acción | Impacto | Esfuerzo | Prioridad |
+|---|--------|---------|----------|-----------|
+| 1 | Reemplazar jerga B2B/B2C | UX | Bajo | P0 |
+| 2 | Build Tailwind local | Perf | Medio | P1 |
+| 3 | Inline critical CSS | Perf | Medio | P1 |
+| 4 | Defer non-critical JS | Perf | Bajo | P1 |
+| 5 | Agregar fallback noscript | Accesibilidad | Bajo | P2 |
+| 6 | Agregar theme-color | PWA | Bajo | P2 |
+
+--------------------------------------------------------------------------------
+## PUNTUACIÓN HEURÍSTICA (H1-H10) - Actualizada
+
+| Heurística | Puntuación | Notas |
+|------------|------------|-------|
+| H1. Visibilidad del estado | 3/4 | Mejorado (badge "(R)Evolución") |
+| H2. Correspondencia sistema-mundo | 2/4 | Jerga técnica persiste |
+| H3. Control y libertad | 4/4 | Links claros |
+| H4. Consistencia | 3/4 | Mejorado, aún mezcla idiomas |
+| H5. Prevención errores | 4/4 | N/A |
+| H6. Reconocer vs recordar | 4/4 | OK |
+| H7. Flexibilidad | 3/4 | Sin Search visible |
+| H8. Diseño estético | 4/4 | Premium ✓ |
+| H9. Ayuda ante errores | 4/4 | N/A |
+| H10. Ayuda y documentación | 2/4 | Sin FAQ visible |
+
+**PROMEDIO: 3.3/4.0** (Target: >3.5) - Mejora vs 3.1 anterior
+
+--------------------------------------------------------------------------------
+## COMPARATIVA VS AUDITORÍA ANTERIOR
+
+| Hallazgo Original | Status |
+|-------------------|--------|
+| Tagline en inglés | PENDIENTE (branding decision) |
+| Jerga B2B/B2C | PENDIENTE |
+| Falta Search Box | PENDIENTE (decision de diseño) |
+| "Powered by Pristino" en footer | RESUELTO (ahora en web component) |
+| Mezcla idiomas categorías | MEJORADO (ya no hay 4 cards) |
+| CTA débil | PENDIENTE |
+| Mobile menu pequeño | VERIFICAR (ahora en web component) |
+
+--------------------------------------------------------------------------------
+## FIN DEL REPORTE

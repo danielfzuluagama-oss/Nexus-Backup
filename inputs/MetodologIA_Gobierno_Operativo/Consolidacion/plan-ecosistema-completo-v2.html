@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLAN MODE v2: Auditoria Ecosistema Completo — MetodologIA</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07101f;--surface:#0d1a2d;--surface2:#132238;--text:#e0e6ed;--text-muted:#8a9bb5;--accent:#00cde8;--gold:#ffd700;--green:#00e676;--red:#ff5252;--orange:#ffab40;--purple:#bb86fc;--pink:#ff6ec7;--border:rgba(0,205,232,0.15);--glow:rgba(0,205,232,0.08)}.light{--bg:#f5f7fa;--surface:#fff;--surface2:#eef2f7;--text:#1a2332;--text-muted:#5a6a7e;--border:rgba(0,0,0,0.1);--glow:rgba(0,205,232,0.05)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}header{background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);border-bottom:2px solid var(--gold);padding:2rem}header h1{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:800;color:var(--gold)}header .subtitle{font-size:1rem;color:var(--accent);font-weight:600;margin-top:.3rem}header .meta{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.8rem}header .meta-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.4rem .9rem;font-size:.78rem}header .meta-item strong{color:var(--accent)}.controls{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 2rem;display:flex;gap:.7rem;align-items:center;position:sticky;top:0;z-index:100}.controls button{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.35rem .8rem;font-size:.75rem;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s}.controls button:hover{border-color:var(--accent);color:var(--accent)}.progress-bar{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));width:0%;transition:width .3s}.progress-text{font-size:.72rem;color:var(--text-muted);min-width:35px}main{max-width:1150px;margin:0 auto;padding:2rem}.section{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden}.section-header{padding:.9rem 1.4rem;cursor:pointer;display:flex;align-items:center;gap:.7rem;user-select:none}.section-header:hover{background:var(--glow)}.section-header h2{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;flex:1}.badge{font-size:.65rem;padding:.15rem .5rem;border-radius:20px;font-weight:600;text-transform:uppercase}.b-audit{background:rgba(255,82,82,.15);color:var(--red);border:1px solid rgba(255,82,82,.3)}.b-arch{background:rgba(0,205,232,.15);color:var(--accent);border:1px solid rgba(0,205,232,.3)}.b-ops{background:rgba(255,215,0,.15);color:var(--gold);border:1px solid rgba(255,215,0,.3)}.b-dec{background:rgba(187,134,252,.15);color:var(--purple);border:1px solid rgba(187,134,252,.3)}.b-act{background:rgba(0,230,118,.15);color:var(--green);border:1px solid rgba(0,230,118,.3)}.chevron{font-size:.85rem;color:var(--text-muted);transition:transform .3s}.section.open .chevron{transform:rotate(90deg)}.section-body{display:none;padding:0 1.4rem 1.4rem}.section.open .section-body{display:block}h3{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:700;color:var(--accent);margin:1.3rem 0 .7rem}h4{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;color:var(--gold);margin:1rem 0 .4rem}p{margin-bottom:.7rem;font-size:.87rem}ul,ol{margin:.4rem 0 .8rem 1.5rem;font-size:.85rem}li{margin-bottom:.3rem}li strong{color:var(--accent)}table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.78rem}th{background:var(--surface2);color:var(--accent);font-weight:600;text-align:left;padding:.5rem .7rem;border:1px solid var(--border)}td{padding:.4rem .7rem;border:1px solid var(--border);vertical-align:top}tr:hover td{background:var(--glow)}.callout{border-left:3px solid var(--accent);background:var(--glow);padding:.8rem 1rem;border-radius:0 8px 8px 0;margin:.8rem 0;font-size:.85rem}.callout.warning{border-left-color:var(--orange)}.callout.critical{border-left-color:var(--red)}.callout.success{border-left-color:var(--green)}.callout.decision{border-left-color:var(--purple)}.diagram{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin:.8rem 0;font-family:'Courier New',monospace;font-size:.72rem;line-height:1.5;white-space:pre;overflow-x:auto;color:var(--text-muted)}.tag{display:inline-block;font-size:.65rem;padding:.12rem .4rem;border-radius:4px;margin:.1rem;font-weight:600}.t-new{background:rgba(0,230,118,.15);color:var(--green)}.t-mod{background:rgba(255,215,0,.15);color:var(--gold)}.t-gap{background:rgba(255,82,82,.15);color:var(--red)}.t-ok{background:rgba(0,205,232,.15);color:var(--accent)}.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.7rem;margin:.8rem 0}.kpi{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.8rem;text-align:center}.kpi .value{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold)}.kpi .label{font-size:.7rem;color:var(--text-muted);margin-top:.2rem}footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.72rem;border-top:1px solid var(--border)}#scroll-top{position:fixed;bottom:2rem;right:2rem;background:var(--accent);color:var(--bg);border:none;border-radius:50%;width:38px;height:38px;font-size:1.1rem;cursor:pointer;display:none;z-index:200}@media print{.controls,#scroll-top{display:none!important}.section-body{display:block!important}body{background:#fff;color:#000}}@media(max-width:768px){header h1{font-size:1.2rem}main{padding:.8rem}.kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+<div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:1rem">
+<div>
+<h1>PLAN MODE v2: Auditoria y Replanificacion del Ecosistema Completo</h1>
+<div class="subtitle">MetodologIA Gobierno Operativo &mdash; Backcasting Proceso &rarr; SOP &rarr; Workflow</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:.72rem;color:var(--text-muted)">MetodologIA &mdash; 4 C-Levels | 10 Niveles | 6 Verticales</div>
+<div style="font-size:.72rem;color:var(--accent);margin-top:.2rem">2026-03-24 | Plan v2.0</div>
+</div>
+</div>
+<div class="meta">
+<div class="meta-item"><strong>6</strong> verticales de delivery</div>
+<div class="meta-item"><strong>10</strong> niveles Ruta Digital</div>
+<div class="meta-item"><strong>12</strong> workshops catalogo</div>
+<div class="meta-item"><strong>5</strong> bootcamps catalogo</div>
+<div class="meta-item"><strong>4</strong> servicios TecnologIA</div>
+<div class="meta-item"><strong>47</strong> SOPs existentes</div>
+<div class="meta-item"><strong>23</strong> SOPs faltantes identificados</div>
+<div class="meta-item"><strong>~70</strong> workflows por definir</div>
+</div>
+</header>
+<div class="controls" role="toolbar"><button onclick="expandAll()">Expandir</button><button onclick="collapseAll()">Colapsar</button><button onclick="toggleTheme()">Tema</button><div class="progress-bar"><div class="progress-fill" id="pf"></div></div><div class="progress-text" id="pt">0%</div></div>
+
+<main>
+
+<!-- ===== S1: MAPA ORGANIZACIONAL ===== -->
+<div class="section open" id="s1">
+<div class="section-header" onclick="toggle('s1')"><span class="chevron">&#9654;</span><h2>1. Mapa Organizacional Real (del sitio web)</h2><span class="badge b-audit">DISCOVERY</span></div>
+<div class="section-body">
+
+<h3>1.1 Los 4 C-Levels de MetodologIA</h3>
+<table>
+<tr><th>Rol</th><th>Persona</th><th>Foco</th><th>Dominio Operativo</th></tr>
+<tr><td><strong>Chief Empowerment Officer</strong></td><td>Javier Montano</td><td>Revolucion estrategica + IA</td><td>Diseno de sistemas, IA estrategica, metodologias de alto rendimiento</td></tr>
+<tr><td><strong>Chief Efficiency Officer</strong></td><td>Daniel Zuluaga</td><td>Optimizacion de procesos</td><td>Eficiencia operativa, automatizacion, sistemas de medicion</td></tr>
+<tr><td><strong>Chief Ecosystem Officer</strong></td><td>German E. Sepulveda</td><td>Ecosistema digital y alianzas</td><td>Comunidad, embajadores, cultura, alianzas estrategicas</td></tr>
+<tr><td><strong>Chief Enablement Officer</strong></td><td>Katherine Oquendo</td><td>Diseno de experiencia</td><td>Operaciones, cultura org, calidad de servicio, experiencia</td></tr>
+</table>
+
+<div class="callout decision">
+<strong>Insight critico:</strong> German Sepulveda es el <strong>Chief Ecosystem Officer</strong> &mdash; su dominio INCLUYE la gestion de embajadores y comunidad. Esto confirma que el Embajador no es un "alumni" pasivo sino una <strong>pieza central del modelo de negocio</strong> bajo responsabilidad directa de un C-level.
+</div>
+
+<h3>1.2 Ruta de Evolucion Digital (10 Niveles)</h3>
+<div class="diagram"><span style="color:var(--gold);font-weight:bold">RUTA DE EVOLUCION DIGITAL — 10 NIVELES</span>
+<span style="color:var(--gold)">================================================</span>
+
+<span style="color:var(--green)">FASE 1: FUNDAMENTAR</span>
+  N0: Diagnostico Estrategico     [GRATIS, 30min 1:1]
+  N1: EstrategIA Personal         [Coaching, 18h]
+
+<span style="color:var(--accent)">FASE 2: ACELERAR</span>
+  N2: Ofimatica + IA (M365)      [Bootcamp BC-01, 18h]
+  N3: Gestion Comercial           [Bootcamp BC-02, 18h]
+  N4: Formas de Trabajo Agile     [Bootcamp BC-03, 18h]
+
+<span style="color:var(--gold)">FASE 3: CATALIZAR</span>
+  N5: Trabajo Amplificado         [Bootcamp BC-04, 18h]
+  N6: Gestion de Proyectos        [Bootcamp BC-05, 18h]
+  N7: Empoderamiento              [Programa Elite, 48h, 16 sem]
+
+<span style="color:var(--purple)">FASE 4: AMPLIFICAR</span>
+  N8: Vibe Coding                 [Bootcamp BC-06?, 18h]
+  N9: Digital Champions           [Programa Elite, 48h, 16 sem]
+
+<span style="color:var(--red)">POST-RUTA: EMBAJADOR</span>
+  Bootcamp de Certificacion       [3 sem, 20h sync, GRATIS para egresados]
+  Licencia de marca MetodologIA
+  Capacidad de entregar servicios
+  <span style="color:var(--gold)">= RED DE DELIVERY DISTRIBUIDA</span></div>
+
+<h3>1.3 El Modelo Embajador (Hallazgo Clave)</h3>
+<p>El sitio web revela que MetodologIA opera un <strong>modelo de red de delivery distribuida</strong>:</p>
+<ol>
+<li>El profesional hace la Ruta (N0-N9) como <strong>cliente</strong></li>
+<li>Al graduarse de N7 (Empoderamiento) o N9 (Digital Champions), accede al <strong>Bootcamp de Certificacion</strong> (3 semanas, gratis)</li>
+<li>Se convierte en <strong>Embajador certificado</strong> con licencia de marca</li>
+<li>El Embajador <strong>entrega servicios MetodologIA</strong> (workshops, bootcamps, consultoria) a SUS clientes</li>
+<li>German Sepulveda (Chief Ecosystem Officer) gestiona esta red</li>
+</ol>
+
+<div class="callout critical">
+<strong>Gap operativo mayor:</strong> El Embajador es el <strong>eslabón final de toda la cadena de valor</strong> &mdash; es el que ENTREGA servicios al mercado. Sin embargo, NO tiene procesos operativos definidos en el ecosistema actual. No hay SOP de certificación de embajador, no hay SOP de delivery por embajador, no hay feedback loops documentados.
+</div>
+</div>
+</div>
+
+<!-- ===== S2: AUDIT COMPLETO ===== -->
+<div class="section" id="s2">
+<div class="section-header" onclick="toggle('s2')"><span class="chevron">&#9654;</span><h2>2. Auditoria: SOPs Existentes vs. Faltantes por Vertical</h2><span class="badge b-audit">AUDIT</span></div>
+<div class="section-body">
+
+<h3>2.1 Inventario de SOPs Existentes (47 total)</h3>
+<table>
+<tr><th>Vertical</th><th>Proceso</th><th>SOPs</th><th>Count</th><th>Estado</th></tr>
+<tr><td rowspan="3"><strong>Workshop</strong></td><td>entregar-workshop-proceso</td><td></td><td></td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>preparar-workshop, facilitar-workshop, cerrar-workshop</td><td>3</td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>catalogo-workshops (12 WS)</td><td>1</td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td rowspan="3"><strong>Bootcamp</strong></td><td>entregar-bootcamp-proceso</td><td></td><td></td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>diseno-curricular, onboarding-cohorte, facilitacion-semanal, graduacion</td><td>4</td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>catalogo-bootcamps (5 BC)</td><td>1</td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td rowspan="3"><strong>Programa Elite</strong></td><td>entregar-programa-elite-proceso</td><td></td><td></td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>Original: diseno-transf, inmersion, acompanamiento, consolidacion, alumni</td><td>5</td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>Nuevos: masterclass, clinica-ia, ciclo-semanal, cohorte, modulo-cero, certificacion</td><td>6</td><td><span class="tag t-new">NEW</span></td></tr>
+<tr><td rowspan="2"><strong>TecnologIA</strong></td><td>entregar-tecnologia-proceso</td><td></td><td></td><td><span class="tag t-new">NEW</span></td></tr>
+<tr><td></td><td>asistentes-ia, agentes-ia, mini-apps, sitios-web</td><td>4</td><td><span class="tag t-new">NEW</span></td></tr>
+<tr><td rowspan="2"><strong>Consultoria</strong></td><td>entregar-consultoria-proceso</td><td></td><td></td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>diagnostico, traccion, evolucion, handoff-success</td><td>4</td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td rowspan="3"><strong>Comercial</strong></td><td>B2B: vender-empresas-proceso</td><td>scouting, discovery, structuring, success</td><td>4</td><td><span class="tag t-ok">OK</span></td></tr>
+<tr><td></td><td>B2C: vender-personas-proceso</td><td>life-events, ancla, oferta, nutrir, referral</td><td>5</td><td><span class="tag t-gap">5 PENDIENTES</span></td></tr>
+<tr><td></td><td>Aliados: gestionar-aliados-proceso</td><td>evaluar-fit, certificar, coselling, auditar</td><td>4</td><td><span class="tag t-ok">OK</span></td></tr>
+</table>
+
+<h3>2.2 SOPs FALTANTES Identificados (23 gaps)</h3>
+<table>
+<tr><th>#</th><th>SOP Faltante</th><th>Vertical</th><th>Justificacion</th><th>Prioridad</th></tr>
+<tr><td colspan="5" style="background:var(--surface2);color:var(--gold);font-weight:700">PREPARACIONES (el usuario pidio "preparar follow-up, meeting, masterclass")</td></tr>
+<tr><td>1</td><td><strong>preparar-follow-up-sop.md</strong></td><td>Transversal</td><td>Preparar seguimiento post-sesion (email, WA, call) para CUALQUIER servicio</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>2</td><td><strong>preparar-meeting-sop.md</strong></td><td>Transversal</td><td>Preparar reuniones (comerciales, kickoff, demos, retros) con agenda, brief, pre-read</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>3</td><td><strong>preparar-contenido-sesion-sop.md</strong></td><td>Delivery</td><td>Preparar material para masterclass, workshop, clinica, bootcamp (slides, playbook, demos)</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>4</td><td><strong>preparar-propuesta-comercial-sop.md</strong></td><td>Comercial</td><td>Armar propuesta para B2B/B2C con pricing, scope, timeline, ROI estimado</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>5</td><td><strong>preparar-entregable-tecnologia-sop.md</strong></td><td>TecnologIA</td><td>QA, testing, documentacion antes de entregar asistente/agente/app/sitio</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td colspan="5" style="background:var(--surface2);color:var(--gold);font-weight:700">EMBAJADOR (end-to-end success owner)</td></tr>
+<tr><td>6</td><td><strong>certificar-embajador-sop.md</strong></td><td>Ecosistema</td><td>Proceso de certificacion: bootcamp 3 sem, evaluacion, licencia de marca</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>7</td><td><strong>operar-como-embajador-sop.md</strong></td><td>Ecosistema</td><td>Como un embajador entrega servicios: prospectar, vender, entregar, cerrar</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>8</td><td><strong>gestionar-red-embajadores-sop.md</strong></td><td>Ecosistema</td><td>German (CEO) gestiona la red: onboarding, QA, feedback, revenue share</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>9</td><td><strong>feedback-loop-embajador-sop.md</strong></td><td>Ecosistema</td><td>Loops: NPS de clientes del embajador, QA de delivery, mejora continua</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td colspan="5" style="background:var(--surface2);color:var(--gold);font-weight:700">ACTIVACION (bridge Comercial &harr; Delivery)</td></tr>
+<tr><td>10</td><td><strong>ejecutar-evento-activacion-sop.md</strong></td><td>Bridge</td><td>WS/Talks/Talleres de activacion: planeacion, ejecucion, conversion</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>11</td><td><strong>gestionar-diagnostico-gratis-sop.md</strong></td><td>Bridge</td><td>Nivel 0 de la Ruta: sesion 1:1 30min gratuita, conversion a N1+</td><td><span class="tag t-gap">P1</span></td></tr>
+<tr><td>12</td><td><strong>gestionar-ruta-participante-sop.md</strong></td><td>Ruta Digital</td><td>Trackear progreso N0&rarr;N9 de cada participante, recomendar siguiente nivel</td><td><span class="tag t-gap">P1</span></td></tr>
+<tr><td colspan="5" style="background:var(--surface2);color:var(--gold);font-weight:700">OPERACIONES TRANSVERSALES</td></tr>
+<tr><td>13</td><td><strong>gestionar-fieldbook-sop.md</strong></td><td>Programa Elite</td><td>Crear, distribuir, evaluar Fieldbooks por modulo</td><td><span class="tag t-mod">P1</span></td></tr>
+<tr><td>14</td><td><strong>escalar-horarios-sop.md</strong></td><td>Programa Elite</td><td>Gestionar 3 franjas (matutina, nocturna, sabatina) con multiples cohortes</td><td><span class="tag t-mod">P2</span></td></tr>
+<tr><td>15</td><td><strong>grabar-distribuir-memorias-sop.md</strong></td><td>Transversal</td><td>Grabar sesiones, editar, subir a repositorio, distribuir</td><td><span class="tag t-mod">P2</span></td></tr>
+<tr><td>16</td><td><strong>activar-triadas-accountability-sop.md</strong></td><td>Programa Elite</td><td>Formar y monitorear triadas de cambio (Sem 8+)</td><td><span class="tag t-mod">P2</span></td></tr>
+<tr><td>17</td><td><strong>onboarding-comunidad-embajadores-sop.md</strong></td><td>Ecosistema</td><td>Activar egresados en comunidad tras certificacion</td><td><span class="tag t-mod">P2</span></td></tr>
+<tr><td colspan="5" style="background:var(--surface2);color:var(--gold);font-weight:700">COMERCIAL (gaps pendientes)</td></tr>
+<tr><td>18</td><td><strong>detectar-life-events-sop.md</strong></td><td>B2C</td><td>Pendiente de sesion anterior (EDEADLK)</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>19</td><td><strong>mapear-ancla-emocional-sop.md</strong></td><td>B2C</td><td>Pendiente de sesion anterior</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>20</td><td><strong>oferta-valor-inmediato-sop.md</strong></td><td>B2C</td><td>Pendiente de sesion anterior</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>21</td><td><strong>nutrir-audiencia-b2c-sop.md</strong></td><td>B2C</td><td>Pendiente de sesion anterior</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>22</td><td><strong>activar-referral-loop-sop.md</strong></td><td>B2C</td><td>Pendiente de sesion anterior</td><td><span class="tag t-gap">P0</span></td></tr>
+<tr><td>23</td><td><strong>coaching-estrategia-personal-sop.md</strong></td><td>N1</td><td>Nivel 1 de la Ruta no tiene SOP (coaching 18h)</td><td><span class="tag t-gap">P1</span></td></tr>
+</table>
+
+<div class="kpi-grid">
+<div class="kpi"><div class="value">47</div><div class="label">SOPs existentes</div></div>
+<div class="kpi"><div class="value" style="color:var(--red)">23</div><div class="label">SOPs faltantes</div></div>
+<div class="kpi"><div class="value">70</div><div class="label">SOPs objetivo (47+23)</div></div>
+<div class="kpi"><div class="value">67%</div><div class="label">Cobertura actual</div></div>
+</div>
+</div>
+</div>
+
+<!-- ===== S3: EMBAJADOR ===== -->
+<div class="section" id="s3">
+<div class="section-header" onclick="toggle('s3')"><span class="chevron">&#9654;</span><h2>3. El Embajador: Owner End-to-End del Success</h2><span class="badge b-arch">ARQUITECTURA</span></div>
+<div class="section-body">
+
+<h3>3.1 Ciclo de Vida del Embajador</h3>
+<div class="diagram"><span style="color:var(--gold);font-weight:bold">CICLO DE VIDA DEL EMBAJADOR MetodologIA</span>
+<span style="color:var(--gold)">================================================</span>
+
+<span style="color:var(--green)">FASE 1: CLIENTE</span> (N0-N9)
+  Persona entra como cliente a la Ruta
+  Completa N7 (Empoderamiento) o N9 (Digital Champions)
+  Experimenta MetodologIA como RECEPTOR del servicio
+
+<span style="color:var(--accent)">FASE 2: CANDIDATO</span> (Post-graduacion)
+  Invitacion a Bootcamp de Certificacion [3 sem, 20h, GRATIS]
+  Aprende a ENTREGAR servicios MetodologIA
+  Evaluacion: puede facilitar? puede vender? puede acompanar?
+  Gate G-EMB: Certificado como Embajador
+
+<span style="color:var(--gold)">FASE 3: EMBAJADOR ACTIVO</span>
+  Recibe licencia de marca MetodologIA
+  Puede entregar: Workshops, Bootcamps, Diagnosticos, TecnologIA
+  Opera con los SOPs del Gobierno Operativo
+  Reporta a German Sepulveda (Chief Ecosystem Officer)
+
+<span style="color:var(--purple)">FASE 4: FEEDBACK LOOPS</span>
+  Loop 1: NPS de SUS clientes &rarr; MetodologIA QA
+  Loop 2: Casos de exito &rarr; Marketing + Comercial
+  Loop 3: Gaps encontrados &rarr; Mejora de SOPs
+  Loop 4: Revenue share &rarr; Sostenibilidad
+  Loop 5: Referidos &rarr; Nuevos clientes para MetodologIA
+  Loop 6: Mentoria reversa &rarr; Embajador retroalimenta contenido</div>
+
+<h3>3.2 Feedback Loops Validados</h3>
+<table>
+<tr><th>Loop</th><th>De</th><th>Hacia</th><th>Trigger</th><th>Contenido</th><th>SOP Requerido</th></tr>
+<tr><td><strong>L1: QA</strong></td><td>Cliente del Embajador</td><td>MetodologIA (German)</td><td>Post-servicio</td><td>NPS, feedback cualitativo, incidencias</td><td><span class="tag t-gap">feedback-loop-embajador-sop</span></td></tr>
+<tr><td><strong>L2: Success</strong></td><td>Embajador</td><td>Marketing</td><td>Cliente exitoso</td><td>Caso de exito documentado, testimonio, metricas</td><td><span class="tag t-gap">operar-como-embajador-sop</span></td></tr>
+<tr><td><strong>L3: Mejora</strong></td><td>Embajador</td><td>Ops (Daniel)</td><td>Gap identificado</td><td>SOP incompleto, caso borde no cubierto, tool faltante</td><td><span class="tag t-gap">gestionar-red-embajadores-sop</span></td></tr>
+<tr><td><strong>L4: Revenue</strong></td><td>Embajador</td><td>Finance</td><td>Servicio facturado</td><td>Revenue share, comision, reinversion</td><td><span class="tag t-gap">operar-como-embajador-sop</span></td></tr>
+<tr><td><strong>L5: Referral</strong></td><td>Embajador</td><td>Comercial B2C/B2B</td><td>Lead calificado</td><td>Prospecto referido, contexto, ancla emocional</td><td><span class="tag t-ok">activar-referral-loop-sop</span></td></tr>
+<tr><td><strong>L6: Contenido</strong></td><td>Embajador</td><td>Curriculum (Javier)</td><td>Trimestral</td><td>Retroalimentacion sobre contenido, sugerencias, nuevos casos</td><td><span class="tag t-gap">gestionar-red-embajadores-sop</span></td></tr>
+</table>
+
+<div class="callout success">
+<strong>Validacion:</strong> El Embajador ES el owner end-to-end del success porque: (1) FUE cliente &rarr; entiende la experiencia, (2) FUE certificado &rarr; domina la metodologia, (3) ENTREGA el servicio &rarr; controla la calidad, (4) RETROALIMENTA &rarr; mejora continua. Los 6 loops cubren: calidad, marketing, operaciones, finanzas, comercial y contenido.
+</div>
+</div>
+</div>
+
+<!-- ===== S4: EVENTOS DE ACTIVACION ===== -->
+<div class="section" id="s4">
+<div class="section-header" onclick="toggle('s4')"><span class="chevron">&#9654;</span><h2>4. Eventos de Activacion: Bridge Comercial &harr; Delivery</h2><span class="badge b-ops">BRIDGE</span></div>
+<div class="section-body">
+
+<h3>4.1 Taxonomia de Eventos de Activacion</h3>
+<p>Los eventos de activacion son <strong>atomos de delivery que funcionan como herramientas comerciales</strong>. Son el puente natural entre los dos procesos:</p>
+
+<table>
+<tr><th>Tipo</th><th>Duracion</th><th>Costo</th><th>Objetivo</th><th>Conversion Target</th><th>Mapea a</th></tr>
+<tr><td><strong>Talk</strong></td><td>30-45min</td><td>Gratis</td><td>Awareness: "MetodologIA existe"</td><td>Asistente &rarr; registrado a WS/Diagnostico</td><td>Comercial B2C + B2B</td></tr>
+<tr><td><strong>Diagnostico N0</strong></td><td>30min 1:1</td><td>Gratis</td><td>Clarity: "Se donde estoy"</td><td>Diagnosticado &rarr; matriculado N1+</td><td>Ruta Nivel 0</td></tr>
+<tr><td><strong>Taller de Activacion</strong></td><td>1.5-2h</td><td>Gratis/Low</td><td>Experience: "Esto funciona"</td><td>Asistente &rarr; matriculado Bootcamp/Programa</td><td>Bridge</td></tr>
+<tr><td><strong>Workshop WS-08</strong></td><td>3h</td><td>Gratis (Mod 0)</td><td>Transform: "Quiero mas"</td><td>Asistente &rarr; matriculado Empoderamiento</td><td>Modulo 0 = Programa Elite</td></tr>
+<tr><td><strong>Modulo 1 Programas</strong></td><td>Sem 1</td><td>Gratis</td><td>Validate: "Vale la inversion"</td><td>Participante &rarr; continua pagando</td><td>Programa Elite/Champions</td></tr>
+</table>
+
+<div class="callout decision">
+<strong>Decision Arquitectural DA-06:</strong> TODO Modulo 1 de cualquier programa es <strong>sin costo y sin riesgo</strong>. El participante experimenta el valor antes de comprometerse financieramente. Esto alinea con la filosofia MetodologIA: "dar primero, demostrar valor, luego pedir inversion." El funnel es: Talk (gratis) &rarr; Diagnostico N0 (gratis) &rarr; Taller (gratis) &rarr; Modulo 1 (gratis) &rarr; Matricula (pago).
+</div>
+
+<h3>4.2 Flujo Completo de Activacion</h3>
+<div class="diagram"><span style="color:var(--gold);font-weight:bold">FUNNEL DE ACTIVACION COMPLETO</span>
+<span style="color:var(--gold)">================================================</span>
+
+<span style="color:var(--green)">AWARENESS</span>
+  Talk (30min, gratis, online/presencial)
+  Redes sociales / contenido / referidos
+  &darr; <span style="color:var(--text-muted)">~100 personas expuestas</span>
+
+<span style="color:var(--accent)">INTERES</span>
+  Diagnostico N0 (30min 1:1, gratis)
+  Taller de Activacion (1.5h, gratis)
+  &darr; <span style="color:var(--text-muted)">~30 personas interesadas</span>
+
+<span style="color:var(--gold)">EXPERIENCIA</span>
+  Workshop WS-08 / Modulo 0 (3h, gratis)
+  Modulo 1 de Programa (1 semana, gratis)
+  &darr; <span style="color:var(--text-muted)">~15 personas experimentan</span>
+
+<span style="color:var(--purple)">DECISION</span>
+  Follow-up personalizado (7 dias)
+  Resolucion de objeciones
+  &darr; <span style="color:var(--text-muted)">~5 personas matriculadas (&ge;20% conversion)</span>
+
+<span style="color:var(--red)">ENTREGA</span>
+  Programa/Bootcamp/TecnologIA
+  &darr;
+
+<span style="color:var(--green)">EMBAJADOR</span>
+  Certificacion &rarr; Entrega servicios &rarr; Refiere nuevos
+  <span style="color:var(--gold)">&darr; LOOP: El embajador ejecuta el mismo funnel para SUS clientes</span></div>
+</div>
+</div>
+
+<!-- ===== S5: BACKCASTING ===== -->
+<div class="section" id="s5">
+<div class="section-header" onclick="toggle('s5')"><span class="chevron">&#9654;</span><h2>5. Backcasting: Proceso &rarr; SOP &rarr; Workflow</h2><span class="badge b-arch">SCAFFOLDING</span></div>
+<div class="section-body">
+
+<h3>5.1 Jerarquia de 3 Niveles</h3>
+<div class="diagram"><span style="color:var(--gold);font-weight:bold">JERARQUIA OPERATIVA</span>
+<span style="color:var(--gold)">================================================</span>
+
+<span style="color:var(--red)">PROCESO</span> (QUE hacemos)
+  Documento estrategico: objetivo, alcance, KPIs, gates
+  1 por vertical (ej: entregar-workshop-proceso.md)
+  Owner: C-Level responsable
+
+<span style="color:var(--accent)">SOP</span> (COMO lo hacemos)
+  Procedimiento paso a paso con 10x elevation
+  3-7 por proceso (ej: preparar-workshop-sop.md)
+  Owner: Lider de servicio
+
+<span style="color:var(--green)">WORKFLOW</span> (CON QUE lo hacemos)
+  Secuencia de acciones atomicas con tools + templates
+  2-5 por SOP (ej: WF-crear-slides-workshop)
+  Owner: Ejecutor (facilitador, embajador)
+  Incluye: checklist, template, tool, tiempo estimado</div>
+
+<h3>5.2 Ejemplo de Backcasting: Workshop</h3>
+<table>
+<tr><th>Proceso</th><th>SOP</th><th>Workflows (2-5 por SOP)</th></tr>
+<tr>
+<td rowspan="12"><strong>entregar-workshop-proceso</strong></td>
+<td rowspan="4"><strong>preparar-workshop-sop</strong></td>
+<td>WF-01: Adaptar slides del catalogo al contexto del cliente</td>
+</tr>
+<tr><td>WF-02: Configurar sala virtual (Zoom/Meet/Teams)</td></tr>
+<tr><td>WF-03: Enviar invitaciones y pre-work</td></tr>
+<tr><td>WF-04: Hacer dry-run con co-facilitador</td></tr>
+<tr>
+<td rowspan="4"><strong>facilitar-workshop-sop</strong></td>
+<td>WF-05: Ejecutar apertura (check-in + contexto)</td>
+</tr>
+<tr><td>WF-06: Facilitar bloques de contenido con pausas</td></tr>
+<tr><td>WF-07: Manejar Q&A y ejercicios practicos</td></tr>
+<tr><td>WF-08: Ejecutar cierre (takeaways + CTA)</td></tr>
+<tr>
+<td rowspan="4"><strong>cerrar-workshop-sop</strong></td>
+<td>WF-09: Enviar encuesta NPS</td>
+</tr>
+<tr><td>WF-10: Subir grabacion y materiales</td></tr>
+<tr><td>WF-11: Enviar follow-up (resumen + CTA)</td></tr>
+<tr><td>WF-12: Generar reporte de cierre</td></tr>
+</table>
+
+<h3>5.3 Workflows Requeridos por Vertical (estimado)</h3>
+<table>
+<tr><th>Vertical</th><th>SOPs</th><th>Workflows Est.</th><th>Estado</th></tr>
+<tr><td>Workshop</td><td>3 (+2 prep)</td><td>~15</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Bootcamp</td><td>4 (+2 prep)</td><td>~18</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Programa Elite</td><td>11 (+2 prep)</td><td>~35</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>TecnologIA</td><td>4 (+1 prep)</td><td>~15</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Consultoria</td><td>4 (+1 prep)</td><td>~12</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Ecosistema/Embajador</td><td>4 (nuevos)</td><td>~12</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Comercial B2B</td><td>4</td><td>~12</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Comercial B2C</td><td>5 (+5 pendientes)</td><td>~15</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Comercial Aliados</td><td>4</td><td>~10</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td>Activacion/Bridge</td><td>3 (nuevos)</td><td>~9</td><td><span class="tag t-gap">0 definidos</span></td></tr>
+<tr><td><strong>TOTAL</strong></td><td><strong>~70</strong></td><td><strong>~153</strong></td><td><span class="tag t-gap">0% definidos</span></td></tr>
+</table>
+
+<div class="callout warning">
+<strong>Realidad:</strong> Tenemos 47 SOPs creados pero <strong>0 workflows definidos</strong>. El SOP dice "que hacer paso a paso" pero no tiene el "con que herramienta, que template, cuanto tiempo" a nivel atomico. La capa de Workflow es lo que permite que un <strong>Embajador nuevo pueda ejecutar</strong> sin depender de los fundadores.
+</div>
+</div>
+</div>
+
+<!-- ===== S6: COHERENCIA ===== -->
+<div class="section" id="s6">
+<div class="section-header" onclick="toggle('s6')"><span class="chevron">&#9654;</span><h2>6. Validacion de Coherencia del Ecosistema</h2><span class="badge b-audit">VALIDACION</span></div>
+<div class="section-body">
+
+<h3>6.1 Cross-Reference: Sitio Web vs. Gobierno Operativo</h3>
+<table>
+<tr><th>Elemento del Sitio</th><th>Existe en Gov Ops?</th><th>Estado</th><th>Gap</th></tr>
+<tr><td>12 Workshops (WS-01 a WS-12)</td><td>catalogo-workshops.md</td><td><span class="tag t-ok">OK</span></td><td>Verificar que los 12 estan en el catalogo</td></tr>
+<tr><td>5 Bootcamps (BC-01 a BC-05)</td><td>catalogo-bootcamps.md</td><td><span class="tag t-ok">OK</span></td><td>Verificar que los 5 estan</td></tr>
+<tr><td>N8: Vibe Coding (bootcamp)</td><td>No existe</td><td><span class="tag t-gap">GAP</span></td><td>Nivel 8 del sitio no tiene SOP — es un bootcamp extra</td></tr>
+<tr><td>2 Programas Elite (N7 + N9)</td><td>Empoderamiento SI, Champions NO</td><td><span class="tag t-gap">GAP</span></td><td>Digital Champions (N9) no tiene proceso definido</td></tr>
+<tr><td>4 Modalidades Consultoria</td><td>4 SOPs consultoria</td><td><span class="tag t-ok">OK</span></td><td>&mdash;</td></tr>
+<tr><td>Servicios TecnologIA</td><td>6 archivos nuevos</td><td><span class="tag t-new">NEW</span></td><td>No visible en sitio aun</td></tr>
+<tr><td>Diagnostico gratis N0</td><td>No existe SOP</td><td><span class="tag t-gap">GAP</span></td><td>Necesita gestionar-diagnostico-gratis-sop</td></tr>
+<tr><td>Coaching N1</td><td>No existe SOP</td><td><span class="tag t-gap">GAP</span></td><td>Necesita coaching-estrategia-personal-sop</td></tr>
+<tr><td>Bootcamp Certificacion (embajadores)</td><td>No existe</td><td><span class="tag t-gap">GAP</span></td><td>Necesita certificar-embajador-sop</td></tr>
+<tr><td>Cotizador interactivo</td><td>No existe</td><td><span class="tag t-gap">GAP</span></td><td>Herramienta web — candidato para Mini App TecnologIA</td></tr>
+<tr><td>Reschedule fee $200K</td><td>No documentado</td><td><span class="tag t-gap">GAP</span></td><td>Politica comercial sin SOP de enforcement</td></tr>
+</table>
+
+<h3>6.2 Incoherencias Detectadas</h3>
+<ol>
+<li><strong>Nivel 8 (Vibe Coding)</strong> existe en el sitio como bootcamp pero no tiene proceso ni SOP en el Gobierno Operativo. Deberia estar en catalogo-bootcamps.md como BC-06.</li>
+<li><strong>Digital Champions (N9)</strong> existe en el sitio como programa elite pero solo hay SOPs para Empoderamiento. Champions necesita su propio set de SOPs o documentar como variante de Programa Elite.</li>
+<li><strong>Los 4 C-Levels no tienen roles operativos mapeados</strong> en los procesos. Cada C-Level deberia ser owner de verticales especificas:
+<ul>
+<li>Javier (Empowerment): Programa Elite + Curriculo</li>
+<li>Daniel (Efficiency): Procesos + TecnologIA + Consultoria</li>
+<li>German (Ecosystem): Embajadores + Aliados + Comunidad</li>
+<li>Katherine (Enablement): Workshop + Bootcamp + Experiencia</li>
+</ul>
+</li>
+<li><strong>El Embajador entrega servicios pero no tiene acceso al Gobierno Operativo</strong>. Necesita un "Embajador Playbook" que sea el subset de SOPs + Workflows que el embajador necesita para operar.</li>
+</ol>
+
+</div>
+</div>
+
+<!-- ===== S7: PLAN DE EJECUCION ===== -->
+<div class="section" id="s7">
+<div class="section-header" onclick="toggle('s7')"><span class="chevron">&#9654;</span><h2>7. Plan de Ejecucion Priorizado</h2><span class="badge b-act">ACCION</span></div>
+<div class="section-body">
+
+<h3>7.1 Olas de Implementacion</h3>
+<table>
+<tr><th>Ola</th><th>Scope</th><th>SOPs</th><th>Workflows</th><th>Deliverable</th></tr>
+<tr>
+<td><strong>OLA 1<br>Embajador + Bridge</strong></td>
+<td>Lo que habilita al embajador para operar</td>
+<td>certificar-embajador, operar-como-embajador, gestionar-red, feedback-loop, ejecutar-evento-activacion</td>
+<td>~15 WF criticos</td>
+<td>Embajador Playbook v1</td>
+</tr>
+<tr>
+<td><strong>OLA 2<br>Preparaciones</strong></td>
+<td>SOPs de preparacion que aplican a TODOS los servicios</td>
+<td>preparar-follow-up, preparar-meeting, preparar-contenido, preparar-propuesta, preparar-entregable</td>
+<td>~15 WF transversales</td>
+<td>Kit de Preparaciones</td>
+</tr>
+<tr>
+<td><strong>OLA 3<br>B2C + Ruta</strong></td>
+<td>5 SOPs B2C pendientes + Ruta digital + Diagnostico N0 + Coaching N1</td>
+<td>5 B2C + diagnostico-gratis + coaching-personal + gestionar-ruta</td>
+<td>~25 WF</td>
+<td>Funnel B2C completo + Ruta operativa</td>
+</tr>
+<tr>
+<td><strong>OLA 4<br>Champions + N8</strong></td>
+<td>Digital Champions como variante de Programa Elite + BC-06 Vibe Coding</td>
+<td>SOPs Champions (variante) + BC-06 bootcamp</td>
+<td>~10 WF</td>
+<td>Ruta N8-N9 operativa</td>
+</tr>
+<tr>
+<td><strong>OLA 5<br>Workflows Full</strong></td>
+<td>Definir workflows atomicos para TODOS los SOPs existentes</td>
+<td>0 nuevos</td>
+<td>~100+ WF</td>
+<td>Workflow Library completa</td>
+</tr>
+</table>
+
+<h3>7.2 Metricas del Ecosistema Post-Plan</h3>
+<div class="kpi-grid">
+<div class="kpi"><div class="value">6</div><div class="label">Verticales de Delivery</div></div>
+<div class="kpi"><div class="value">10</div><div class="label">Niveles Ruta Digital</div></div>
+<div class="kpi"><div class="value">70</div><div class="label">SOPs Target</div></div>
+<div class="kpi"><div class="value">~153</div><div class="label">Workflows Target</div></div>
+<div class="kpi"><div class="value">4</div><div class="label">C-Levels mapeados</div></div>
+<div class="kpi"><div class="value">6</div><div class="label">Feedback Loops Embajador</div></div>
+<div class="kpi"><div class="value">5</div><div class="label">Tipos de Activacion</div></div>
+<div class="kpi"><div class="value">5</div><div class="label">Olas de implementacion</div></div>
+</div>
+
+<div class="callout">
+<strong>Proxima accion recomendada:</strong> Confirmar prioridades y arrancar con <strong>OLA 1 (Embajador + Bridge)</strong>. Esto desbloquea la capacidad de escalar el delivery a traves de la red de embajadores, que es el multiplicador de impacto mas grande del ecosistema MetodologIA.
+</div>
+</div>
+</div>
+
+</main>
+
+<footer>
+<p>MetodologIA Gobierno Operativo &mdash; Plan Mode v2.0 Ecosistema Completo &mdash; 2026-03-24</p>
+<p>Fuentes: metodologia.info, PDFs Empoderamiento, repositorio-canonico.json, 47 SOPs existentes</p>
+</footer>
+
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr;</button>
+
+<script>
+function toggle(id){const s=document.getElementById(id);s.classList.toggle('open');updateProgress()}
+function expandAll(){document.querySelectorAll('.section').forEach(s=>s.classList.add('open'));updateProgress()}
+function collapseAll(){document.querySelectorAll('.section').forEach(s=>s.classList.remove('open'));updateProgress()}
+function updateProgress(){const a=document.querySelectorAll('.section'),o=document.querySelectorAll('.section.open'),p=Math.round(o.length/a.length*100);document.getElementById('pf').style.width=p+'%';document.getElementById('pt').textContent=p+'%'}
+function toggleTheme(){document.body.classList.toggle('light')}
+window.addEventListener('scroll',()=>{document.getElementById('scroll-top').style.display=window.scrollY>400?'block':'none'});
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;const s=[...document.querySelectorAll('.section')];if(e.key==='e')expandAll();if(e.key==='c')collapseAll()});
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puntos de Control Legal-Comercial | MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: hsl(222, 29%, 12%);
+            color: #f0f0f0;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: hsl(220, 34%, 18%);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFD700;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFA000;
+        }
+
+        header {
+            background: linear-gradient(135deg, hsl(220, 34%, 18%) 0%, hsl(220, 30%, 23%) 100%);
+            padding: 2rem 0;
+            border-bottom: 2px solid #FFD700;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .brand span {
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .header-nav a {
+            color: #f0f0f0;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .header-nav a:hover {
+            color: #FFD700;
+        }
+
+        .header-nav a.active {
+            color: #FFD700;
+            border-bottom: 2px solid #FFD700;
+            padding-bottom: 0.25rem;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #FFD700;
+        }
+
+        .subtitle {
+            color: #b0b0b0;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ===== SECTION 1: DASHBOARD ===== */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .kpi-card {
+            background: hsl(220, 34%, 18%);
+            border: 2px solid hsl(220, 30%, 25%);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover::before {
+            top: -30%;
+            right: -30%;
+        }
+
+        .kpi-card:hover {
+            border-color: #FFD700;
+            transform: translateY(-5px);
+        }
+
+        .kpi-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .kpi-label {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pipeline {
+            background: hsl(220, 34%, 18%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 2px solid hsl(220, 30%, 25%);
+        }
+
+        .pipeline-stages {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stage {
+            background: hsl(220, 30%, 23%);
+            border-radius: 10px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .stage:hover {
+            border-left-color: #FFD700;
+            transform: translateY(-3px);
+        }
+
+        .stage-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stage-count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .stage-risk {
+            font-size: 0.75rem;
+            color: #b0b0b0;
+        }
+
+        /* ===== SECTION 2: 7 DEADLY SINS ===== */
+        .sins-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .sin-card {
+            background: hsl(220, 34%, 18%);
+            border-left: 5px solid #ef4444;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sin-card:hover {
+            border-left-color: #FFD700;
+            transform: translateX(5px);
+        }
+
+        .sin-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: hsl(220, 30%, 23%);
+            user-select: none;
+        }
+
+        .sin-icon {
+            font-size: 1.8rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .sin-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #FFD700;
+            flex: 1;
+        }
+
+        .sin-toggle {
+            color: #b0b0b0;
+            transition: transform 0.3s ease;
+            font-size: 1.3rem;
+        }
+
+        .sin-card.expanded .sin-toggle {
+            transform: rotate(180deg);
+        }
+
+        .sin-body {
+            padding: 1.5rem;
+            display: none;
+            background: hsl(220, 34%, 18%);
+        }
+
+        .sin-card.expanded .sin-body {
+            display: block;
+        }
+
+        .sin-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .sin-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .sin-section-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #FFD700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .sin-section-content {
+            color: #d0d0d0;
+            line-height: 1.7;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-exists {
+            background: rgba(52, 211, 153, 0.2);
+            color: #34d399;
+            border: 1px solid #34d399;
+        }
+
+        .status-partial {
+            background: rgba(249, 115, 22, 0.2);
+            color: #F97316;
+            border: 1px solid #F97316;
+        }
+
+        .status-missing {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        /* ===== SECTION 3: MATRIX ===== */
+        .matrix-container {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: hsl(220, 30%, 23%);
+            color: #f0f0f0;
+            border: 2px solid hsl(220, 30%, 25%);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+
+        .filter-btn.active {
+            background: #FFD700;
+            color: hsl(222, 29%, 12%);
+            border-color: #FFD700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: hsl(220, 34%, 18%);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: hsl(220, 30%, 23%);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #FFD700;
+            border-bottom: 2px solid hsl(220, 30%, 25%);
+        }
+
+        td {
+            padding: 0.9rem;
+            border-bottom: 1px solid hsl(220, 30%, 25%);
+            text-align: center;
+        }
+
+        td:first-child {
+            text-align: left;
+            color: #d0d0d0;
+            font-weight: 500;
+        }
+
+        .status-cell {
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .status-cell:hover {
+            transform: scale(1.2);
+        }
+
+        .status-cell.ok { color: #34d399; }
+        .status-cell.warning { color: #F97316; }
+        .status-cell.critical {
+            color: #ef4444;
+            animation: pulse 2s infinite;
+        }
+        .status-cell.na { color: #6b7280; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ===== SECTION 4: TIMELINE ===== */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #FFD700, #FFA000, transparent);
+        }
+
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 0;
+            margin-right: 52%;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 52%;
+            margin-right: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #FFD700;
+            border: 3px solid hsl(222, 29%, 12%);
+            border-radius: 50%;
+            top: 0;
+            z-index: 10;
+        }
+
+        .timeline-content {
+            background: hsl(220, 34%, 18%);
+            border: 2px solid hsl(220, 30%, 25%);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: #FFD700;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .timeline-phase {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #FFD700;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .timeline-controls {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .timeline-control {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid hsl(220, 30%, 25%);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+            color: #d0d0d0;
+        }
+
+        .timeline-control:last-child {
+            border-bottom: none;
+        }
+
+        .control-icon {
+            min-width: 20px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* ===== SECTION 5: REMEDIATION ===== */
+        .remediation-list {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .remediation-priority {
+            background: hsl(220, 34%, 18%);
+            border-left: 5px solid #FFD700;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .remediation-priority.p0 {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, hsl(220, 34%, 18%) 0%, rgba(239, 68, 68, 0.05) 100%);
+        }
+
+        .remediation-priority.p1 {
+            border-left-color: #F97316;
+            background: linear-gradient(135deg, hsl(220, 34%, 18%) 0%, rgba(249, 115, 22, 0.05) 100%);
+        }
+
+        .remediation-priority.p2 {
+            border-left-color: #3b82f6;
+            background: linear-gradient(135deg, hsl(220, 34%, 18%) 0%, rgba(59, 130, 246, 0.05) 100%);
+        }
+
+        .remediation-priority.p3 {
+            border-left-color: #6b7280;
+            background: linear-gradient(135deg, hsl(220, 34%, 18%) 0%, rgba(107, 114, 128, 0.05) 100%);
+        }
+
+        .priority-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid hsl(220, 30%, 25%);
+        }
+
+        .priority-badge {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .priority-badge.p0 {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .priority-badge.p1 {
+            background: rgba(249, 115, 22, 0.2);
+            color: #F97316;
+        }
+
+        .priority-badge.p2 {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .priority-badge.p3 {
+            background: rgba(107, 114, 128, 0.2);
+            color: #6b7280;
+        }
+
+        .priority-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .remediation-item {
+            background: hsl(220, 30%, 23%);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .remediation-number {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #FFD700;
+            min-width: 30px;
+        }
+
+        .remediation-text {
+            color: #d0d0d0;
+            flex: 1;
+        }
+
+        /* ===== SECTION 6: SCORING ===== */
+        .scoring-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .chart-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .scoring-details {
+            background: hsl(220, 34%, 18%);
+            border: 2px solid hsl(220, 30%, 25%);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid hsl(220, 30%, 25%);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .detail-indicator.green {
+            background: #34d399;
+        }
+
+        .detail-indicator.orange {
+            background: #F97316;
+        }
+
+        .detail-indicator.red {
+            background: #ef4444;
+        }
+
+        .detail-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            margin-left: auto;
+            color: #b0b0b0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .pipeline-stages {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .timeline::before {
+                display: none;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .timeline-dot {
+                left: 0;
+                transform: translateX(0);
+            }
+
+            .scoring-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header-nav {
+                gap: 1rem;
+            }
+
+            .header-nav a {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .pipeline-stages {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .header-nav a {
+                padding: 0.5rem;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 1.5rem 1rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.6rem 0.4rem;
+            }
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            header {
+                position: relative;
+            }
+
+            .section {
+                display: block !important;
+                page-break-after: always;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .filter-controls {
+                display: none;
+            }
+        }
+
+        /* ===== UTILITIES ===== */
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            margin: 2rem 0;
+        }
+
+        .text-muted {
+            color: #b0b0b0;
+        }
+
+        .text-gold {
+            color: #FFD700;
+        }
+
+        .mt-2 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .icon-circle.gold {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .icon-circle.red {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .tooltip-hint {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 18px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: help;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="brand">
+                Metodolog<span>IA</span>
+            </div>
+            <ul class="header-nav">
+                <li><a onclick="switchTab('dashboard')" class="nav-link active">Resumen Ejecutivo</a></li>
+                <li><a onclick="switchTab('sins')" class="nav-link">7 Pecados Mortales</a></li>
+                <li><a onclick="switchTab('matrix')" class="nav-link">Matriz de Control</a></li>
+                <li><a onclick="switchTab('timeline')" class="nav-link">Timeline del Deal</a></li>
+                <li><a onclick="switchTab('remediation')" class="nav-link">Remediación</a></li>
+                <li><a onclick="switchTab('scoring')" class="nav-link">Scoring</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- ===== SECTION 1: EXECUTIVE DASHBOARD ===== -->
+        <section id="dashboard" class="section active">
+            <h1>Puntos de Control Legal-Comercial</h1>
+            <p class="subtitle">Mapa maestro de controles preventivos para evitar costosos errores en operaciones comerciales de MetodologIA</p>
+
+            <div class="divider"></div>
+
+            <h2>
+                <span>📊</span>
+                Resumen de KPIs
+            </h2>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-number">42</div>
+                    <div class="kpi-label">Puntos de Control</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number" style="color: #34d399;">32</div>
+                    <div class="kpi-label">Cubiertos (76%)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number" style="color: #F97316;">8</div>
+                    <div class="kpi-label">Parcialmente (19%)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number" style="color: #ef4444;">2</div>
+                    <div class="kpi-label">Faltantes (5%)</div>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 3rem;">
+                <span>🚀</span>
+                Pipeline de Fases del Deal
+            </h2>
+
+            <div class="pipeline">
+                <p style="color: #b0b0b0; margin-bottom: 1rem;">Los 7 estadios críticos donde se aplican controles preventivos:</p>
+                <div class="pipeline-stages">
+                    <div class="stage">
+                        <div class="stage-name">Scouting</div>
+                        <div class="stage-count">2</div>
+                        <div class="stage-risk">✅ OK</div>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-name">Discovery</div>
+                        <div class="stage-count">2</div>
+                        <div class="stage-risk">⚠️ Parcial</div>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-name">Proposal</div>
+                        <div class="stage-count">3</div>
+                        <div class="stage-risk">⚠️ Parcial</div>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-name">Negotiation</div>
+                        <div class="stage-count">3</div>
+                        <div class="stage-risk">🔴 Crítico</div>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-name">Signature</div>
+                        <div class="stage-count">5</div>
+                        <div class="stage-risk">⚠️ Parcial</div>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-name">Onboarding</div>
+                        <div class="stage-count">4</div>
+                        <div class="stage-risk">⚠️ Parcial</div>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-name">Delivery</div>
+                        <div class="stage-count">3</div>
+                        <div class="stage-risk">⚠️ Parcial</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <p style="color: #b0b0b0; font-size: 0.95rem; line-height: 1.8;">
+                <strong style="color: #FFD700;">Este documento es un guardián preventivo.</strong> Está diseñado para que operadores inexpertos
+                eviten los 7 errores más costosos que pueden cometer en negociaciones, firmas y entregas comerciales.
+                Cada control, cada documento, cada cláusula que falta, representa un riesgo financiero, legal o reputacional para MetodologIA.
+            </p>
+        </section>
+
+        <!-- ===== SECTION 2: 7 DEADLY SINS ===== -->
+        <section id="sins" class="section">
+            <h1>Los 7 Pecados Mortales del Inexperto</h1>
+            <p class="subtitle">Errores costosos que DEBEN evitarse en toda negociación comercial</p>
+
+            <div class="divider"></div>
+
+            <div class="sins-container">
+                <!-- SIN 1 -->
+                <div class="sin-card">
+                    <div class="sin-header" onclick="toggleSin(this)">
+                        <div class="sin-icon">⚠️</div>
+                        <div class="sin-title">Entregar sin NDA</div>
+                        <div class="sin-toggle">▼</div>
+                    </div>
+                    <div class="sin-body">
+                        <div class="sin-section">
+                            <div class="sin-section-label">El Error</div>
+                            <div class="sin-section-content">
+                                Comenzar trabajo o compartir metodología propietaria ANTES de que se firme un Acuerdo de Confidencialidad (NDA).
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Consecuencias Reales</div>
+                            <div class="sin-section-content">
+                                • Fuga de propiedad intelectual hacia competidores<br>
+                                • Cliente accede a metodología sin pagar<br>
+                                • Socio reseller ofrece servicios con tu metodología a otros<br>
+                                • Pérdida de ventaja competitiva irreversible
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Control que lo Previene</div>
+                            <div class="sin-section-content">
+                                Gate obligatorio: No iniciar Discovery hasta firma de NDA.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Estado Actual</div>
+                            <div>
+                                <span class="status-badge status-ok">✅ CUBIERTO</span>
+                                <div class="sin-section-content" style="margin-top: 0.8rem;">
+                                    NDAs creados para 4/5 segmentos: Personas (✅), Empresas B2B (✅), Aliados (✅), Resellers (✅).
+                                    Solo Marca Blanca tiene NDA dentro del contrato de licencia. Control de firma digital pendiente.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIN 2 -->
+                <div class="sin-card">
+                    <div class="sin-header" onclick="toggleSin(this)">
+                        <div class="sin-icon">⚠️</div>
+                        <div class="sin-title">Firmar sin revisar Términos de IP</div>
+                        <div class="sin-toggle">▼</div>
+                    </div>
+                    <div class="sin-body">
+                        <div class="sin-section">
+                            <div class="sin-section-label">El Error</div>
+                            <div class="sin-section-content">
+                                Firmar un contrato sin cláusulas claras de propiedad intelectual. Cliente puede reclamar
+                                que TODO lo desarrollado (incluyendo la metodología base) es suyo.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Consecuencias Reales</div>
+                            <div class="sin-section-content">
+                                • Cliente reclama propiedad de la metodología MetodologIA core<br>
+                                • No puedes reutilizar frameworks en otros clientes<br>
+                                • Disputa legal costosa y años de litigio<br>
+                                • Pérdida del valor intelectual de la empresa
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Control que lo Previene</div>
+                            <div class="sin-section-content">
+                                Cláusula obligatoria: "IP Schedule" separando pre-existente vs work product.
+                                Metodología core siempre propiedad de MetodologIA.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Estado Actual</div>
+                            <div>
+                                <span class="status-badge status-ok">✅ CUBIERTO</span>
+                                <div class="sin-section-content" style="margin-top: 0.8rem;">
+                                    Cláusula IP estándar CL-04 creada e integrada en TODOS los contratos.
+                                    Define claramente propiedad de pre-existing (MetodologIA) vs work product (cliente puede usar, no reutilizar).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIN 3 -->
+                <div class="sin-card">
+                    <div class="sin-header" onclick="toggleSin(this)">
+                        <div class="sin-icon">⚠️</div>
+                        <div class="sin-title">Facturar sin Orden de Servicio</div>
+                        <div class="sin-toggle">▼</div>
+                    </div>
+                    <div class="sin-body">
+                        <div class="sin-section">
+                            <div class="sin-section-label">El Error</div>
+                            <div class="sin-section-content">
+                                Emitir factura sin Orden de Servicio (ODS) formal. Sin documento que acredite
+                                qué servicios se prestaron, en qué fecha, a qué precio.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Consecuencias Reales</div>
+                            <div class="sin-section-content">
+                                • Cliente disputa factura: "Eso no lo pedí" o "fue menos trabajo"<br>
+                                • Scope creep sin compensación documentada<br>
+                                • Auditoría tributaria rechaza factura sin soporte<br>
+                                • Falta de trazabilidad en conflictos futuros
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Control que lo Previene</div>
+                            <div class="sin-section-content">
+                                Gate obligatorio: No facturar sin ODS anexa y firmada. ODS debe estar ligada
+                                a master agreement y debe especificar servicio, fecha, entregables, precio.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Estado Actual</div>
+                            <div>
+                                <span class="status-badge status-ok">✅ CUBIERTO</span>
+                                <div class="sin-section-content" style="margin-top: 0.8rem;">
+                                    ODS completos para TODOS los servicios: 8+ aliados, 4 empresas B2B, 2 resellers (Tecnología + Estrategia).
+                                    Cada ODS está ligado a master agreement y especifica servicio, entregables, horas, precio.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIN 4 -->
+                <div class="sin-card">
+                    <div class="sin-header" onclick="toggleSin(this)">
+                        <div class="sin-icon">🔴</div>
+                        <div class="sin-title">Ignorar HABEAS DATA Colombia</div>
+                        <div class="sin-toggle">▼</div>
+                    </div>
+                    <div class="sin-body">
+                        <div class="sin-section">
+                            <div class="sin-section-label">El Error</div>
+                            <div class="sin-section-content">
+                                Recopilar datos personales (emails, teléfonos, datos de participantes) sin autorización
+                                conforme a Ley 1581/2012 de Protección de Datos Personales en Colombia.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Consecuencias Reales</div>
+                            <div class="sin-section-content">
+                                • Multa SIC hasta 2,000 SMLMV (≈COP 2.6 BILLONES en 2026)<br>
+                                • Bloqueo de bases de datos por autoridades<br>
+                                • Sanciones penales para responsables<br>
+                                • Daño reputacional severo e irreversible
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Control que lo Previene</div>
+                            <div class="sin-section-content">
+                                Autorización explícita previa por cada dato. Política de privacidad en web.
+                                DPA (Data Processing Agreement) con clientes que procesen datos.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Estado Actual</div>
+                            <div>
+                                <span class="status-badge status-ok">✅ CUBIERTO</span>
+                                <div class="sin-section-content" style="margin-top: 0.8rem;">
+                                    Template HABEAS DATA autorización creado para TODOS los segmentos (Ley 1581/2012).
+                                    DPA (Data Processing Agreement) B2B integrado. Todos los contratos incluyen cláusula de protección de datos.
+                                    Riesgo regulatorio eliminado.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIN 5 -->
+                <div class="sin-card">
+                    <div class="sin-header" onclick="toggleSin(this)">
+                        <div class="sin-icon">⚠️</div>
+                        <div class="sin-title">Empezar Delivery sin Contrato Marco Firmado</div>
+                        <div class="sin-toggle">▼</div>
+                    </div>
+                    <div class="sin-body">
+                        <div class="sin-section">
+                            <div class="sin-section-label">El Error</div>
+                            <div class="sin-section-content">
+                                Iniciar entrega de servicios con solo acuerdo verbal, email o propuesta.
+                                Sin contrato formal que acredite términos, responsabilidades y condiciones de pago.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Consecuencias Reales</div>
+                            <div class="sin-section-content">
+                                • Cliente abandona proyecto sin pagar servicios ya entregados<br>
+                                • Cero recourse legal si no hay contrato firmado<br>
+                                • Disputa sobre términos de pago, plazo, alcance<br>
+                                • Imposible cobrar en juzgado sin documento contractual
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Control que lo Previene</div>
+                            <div class="sin-section-label">Gate obligatorio ANTES de Delivery:</div>
+                            <div class="sin-section-content">
+                                Master agreement FIRMADO + Service Order FIRMADA. Sin excepciones.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Estado Actual</div>
+                            <div>
+                                <span class="status-badge status-partial">⚠️ PARCIALMENTE CUBIERTO</span>
+                                <div class="sin-section-content" style="margin-top: 0.8rem;">
+                                    Master agreements para 4/5 segmentos: Empresas B2B (✅), Aliados GTM (✅), Resellers (✅ contrato marco creado).
+                                    SOLO Personas falta MSA formal (solo tienen matrícula/registro). Requiere crear MSA dedicado para personas.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIN 6 -->
+                <div class="sin-card">
+                    <div class="sin-header" onclick="toggleSin(this)">
+                        <div class="sin-icon">⚠️</div>
+                        <div class="sin-title">Olvidar Cláusulas de Salida</div>
+                        <div class="sin-toggle">▼</div>
+                    </div>
+                    <div class="sin-body">
+                        <div class="sin-section">
+                            <div class="sin-section-label">El Error</div>
+                            <div class="sin-section-content">
+                                Contratos sin cláusulas de terminación, force majeure, resolución de disputas,
+                                caps de responsabilidad. Quedar atrapado en engagements no rentables sin salida legal.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Consecuencias Reales</div>
+                            <div class="sin-section-content">
+                                • Eres acreedor de un cliente insolvente sin poder terminar<br>
+                                • Disputa lleva a litigio costoso por 2-3 años<br>
+                                • Sin liability caps, un error tuyo = daño ilimitado<br>
+                                • Sin governing law, no sabes qué ley te aplica
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Control que lo Previene</div>
+                            <div class="sin-section-content">
+                                Cláusulas estándar obligatorias: 30-90 días terminación, force majeure,
+                                arbitraje (no litigio), liability cap = facturado anual, indemnificación.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Estado Actual</div>
+                            <div>
+                                <span class="status-badge status-ok">✅ CUBIERTO</span>
+                                <div class="sin-section-content" style="margin-top: 0.8rem;">
+                                    Cláusulas estándar completas implementadas en TODOS los contratos:
+                                    CL-01 Dispute Resolution + CL-02 Force Majeure + CL-03 Liability Caps + CL-05 Governing Law.
+                                    Riesgo de exposición legal no acotada eliminado.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIN 7 -->
+                <div class="sin-card">
+                    <div class="sin-header" onclick="toggleSin(this)">
+                        <div class="sin-icon">⚠️</div>
+                        <div class="sin-title">No Verificar Certificaciones antes de Co-Delivery</div>
+                        <div class="sin-toggle">▼</div>
+                    </div>
+                    <div class="sin-body">
+                        <div class="sin-section">
+                            <div class="sin-section-label">El Error</div>
+                            <div class="sin-section-content">
+                                Permitir que partners o resellers no certificados entreguen servicios MetodologIA.
+                                Sin verificación previa de competencias.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Consecuencias Reales</div>
+                            <div class="sin-section-content">
+                                • Baja calidad de entrega = cliente insatisfecho<br>
+                                • Cliente reclama reembolso por mala ejecución<br>
+                                • Daño a marca MetodologIA por asociación<br>
+                                • Responsabilidad legal compartida por negligencia
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Control que lo Previene</div>
+                            <div class="sin-section-label">Gate obligatorio ANTES de cada engagement:</div>
+                            <div class="sin-section-content">
+                                Verificación de certificación vigente. Certificación requiere: 16 horas formación +
+                                examen. Decertificación si hay incumplimientos de calidad.
+                            </div>
+                        </div>
+                        <div class="sin-section">
+                            <div class="sin-section-label">Estado Actual</div>
+                            <div>
+                                <span class="status-badge status-partial">⚠️ PARCIALMENTE CUBIERTO</span>
+                                <div class="sin-section-content" style="margin-top: 0.8rem;">
+                                    Requisitos de certificación mencionados en docs.
+                                    Falta: registry de certificados, verificación gate, proceso de decertificación.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 3: CONTROL MATRIX ===== -->
+        <section id="matrix" class="section">
+            <h1>Matriz de Control por Segmento</h1>
+            <p class="subtitle">Estado de cobertura de 14 puntos de control críticos en 5 segmentos comerciales</p>
+
+            <div class="divider"></div>
+
+            <h2>Leyenda</h2>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div style="background: hsl(220, 34%, 18%); padding: 1rem; border-radius: 8px; border-left: 4px solid #34d399;">
+                    <div style="font-weight: 600; color: #34d399;">✅ EXISTE</div>
+                    <div style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.3rem;">Control totalmente cubierto</div>
+                </div>
+                <div style="background: hsl(220, 34%, 18%); padding: 1rem; border-radius: 8px; border-left: 4px solid #F97316;">
+                    <div style="font-weight: 600; color: #F97316;">⚠️ PARCIAL</div>
+                    <div style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.3rem;">Parcialmente cubierto o vago</div>
+                </div>
+                <div style="background: hsl(220, 34%, 18%); padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                    <div style="font-weight: 600; color: #ef4444;">❌ FALTA</div>
+                    <div style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.3rem;">Control ausente - riesgo crítico</div>
+                </div>
+                <div style="background: hsl(220, 34%, 18%); padding: 1rem; border-radius: 8px; border-left: 4px solid #6b7280;">
+                    <div style="font-weight: 600; color: #6b7280;">N/A</div>
+                    <div style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.3rem;">No aplica para este segmento</div>
+                </div>
+            </div>
+
+            <h2>Filtros</h2>
+            <div class="filter-controls">
+                <button class="filter-btn active" onclick="filterMatrix('all')">Todos</button>
+                <button class="filter-btn" onclick="filterMatrix('personas')">👤 Personas</button>
+                <button class="filter-btn" onclick="filterMatrix('empresas')">🏢 Empresas</button>
+                <button class="filter-btn" onclick="filterMatrix('aliados')">🤝 Aliados</button>
+                <button class="filter-btn" onclick="filterMatrix('resellers')">🔄 Resellers</button>
+                <button class="filter-btn" onclick="filterMatrix('blanca')">🎨 Marca Blanca</button>
+            </div>
+
+            <div class="matrix-container">
+                <table id="controlMatrix">
+                    <thead>
+                        <tr>
+                            <th>Punto de Control</th>
+                            <th>Personas</th>
+                            <th>Empresas</th>
+                            <th>Aliados</th>
+                            <th>Resellers</th>
+                            <th>Marca Blanca</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-status="mixed">
+                            <td><strong>NDA Firmado</strong><span class="tooltip-hint" title="Acuerdo de confidencialidad antes de compartir metodología">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="NDA para personas existe">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="NDA para empresas B2B - NUEVO">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="NDA para aliados existe">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="NDA para resellers - NUEVO">✅</td>
+                            <td class="status-cell warning" data-segment="blanca" title="NDA en contrato marca blanca">⚠️</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Contrato Marco</strong><span class="tooltip-hint" title="Master agreement base para todos los servicios">i</span></td>
+                            <td class="status-cell warning" data-segment="personas" title="Matrícula, no MSA formal">⚠️</td>
+                            <td class="status-cell ok" data-segment="empresas" title="Master agreement B2B existe">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="Master agreement GTM existe">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="Master agreement resellers - NUEVO">✅</td>
+                            <td class="status-cell warning" data-segment="blanca" title="En licencia marca blanca">⚠️</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Orden de Servicio</strong><span class="tooltip-hint" title="Documento que especifica servicios, fechas, precios">i</span></td>
+                            <td class="status-cell warning" data-segment="personas" title="Formulario de matrícula parcial">⚠️</td>
+                            <td class="status-cell ok" data-segment="empresas" title="ODS completo para servicios B2B">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="8+ ODS templates para aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="ODS Tecnología y Estrategia - NUEVO">✅</td>
+                            <td class="status-cell warning" data-segment="blanca" title="Solo ODT, no ODS">⚠️</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Cláusula IP</strong><span class="tooltip-hint" title="Definición clara de propiedad intelectual">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="CL-04 para personas">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="CL-04 para empresas">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="CL-04 para aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="CL-04 para resellers">✅</td>
+                            <td class="status-cell ok" data-segment="blanca" title="IP white-label definida">✅</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>HABEAS DATA</strong><span class="tooltip-hint" title="Cumplimiento Ley 1581/2012 protección datos">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="HABEAS DATA autorización - NUEVO">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="HABEAS DATA + DPA - NUEVO">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="HABEAS DATA - NUEVO">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="HABEAS DATA - NUEVO">✅</td>
+                            <td class="status-cell ok" data-segment="blanca" title="HABEAS DATA - NUEVO">✅</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>SLA Definido</strong><span class="tooltip-hint" title="Service Level Agreement - métricas de calidad">i</span></td>
+                            <td class="status-cell warning" data-segment="personas" title="SLA en anexo personas">⚠️</td>
+                            <td class="status-cell warning" data-segment="empresas" title="KPIs en empresas pero incompleto">⚠️</td>
+                            <td class="status-cell ok" data-segment="aliados" title="SLA Anexo-A para aliados">✅</td>
+                            <td class="status-cell warning" data-segment="resellers" title="SLA en ODS resellers">⚠️</td>
+                            <td class="status-cell warning" data-segment="blanca" title="SLA marca blanca vago">⚠️</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Términos de Pago</strong><span class="tooltip-hint" title="Plazos, formas de pago, sanciones por atraso">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="Pagaré para personas">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="Términos en ODS empresas">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="10/20/70 para aliados">✅</td>
+                            <td class="status-cell warning" data-segment="resellers" title="Términos en canónico resellers">⚠️</td>
+                            <td class="status-cell warning" data-segment="blanca" title="Licencia de marca blanca parcial">⚠️</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Cláusula de Salida</strong><span class="tooltip-hint" title="Terminación, indemnización, liability caps">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="CL-02 para personas">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="CL-02 para empresas">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="CL-02 para aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="CL-02 para resellers">✅</td>
+                            <td class="status-cell ok" data-segment="blanca" title="CL-02 para marca blanca">✅</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Dispute Resolution</strong><span class="tooltip-hint" title="Arbitraje, mediación, governing law">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="CL-01 para personas">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="CL-01 para empresas">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="CL-01 para aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="CL-01 para resellers">✅</td>
+                            <td class="status-cell ok" data-segment="blanca" title="CL-01 para marca blanca">✅</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Force Majeure</strong><span class="tooltip-hint" title="Exoneración por eventos no prevenibles">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="CL-02 para personas">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="CL-02 para empresas">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="CL-02 para aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="CL-02 para resellers">✅</td>
+                            <td class="status-cell ok" data-segment="blanca" title="CL-02 para marca blanca">✅</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Liability Caps</strong><span class="tooltip-hint" title="Límites de responsabilidad por daños">i</span></td>
+                            <td class="status-cell ok" data-segment="personas" title="CL-03 para personas">✅</td>
+                            <td class="status-cell ok" data-segment="empresas" title="CL-03 para empresas">✅</td>
+                            <td class="status-cell ok" data-segment="aliados" title="CL-03 para aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="CL-03 para resellers">✅</td>
+                            <td class="status-cell ok" data-segment="blanca" title="CL-03 para marca blanca">✅</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Non-Compete</strong><span class="tooltip-hint" title="Restricción de competencia con cláusulas">i</span></td>
+                            <td class="status-cell na" data-segment="personas" title="N/A para personas">N/A</td>
+                            <td class="status-cell warning" data-segment="empresas" title="CL-07 para empresas">⚠️</td>
+                            <td class="status-cell ok" data-segment="aliados" title="CL-07 para aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="CL-07 + NDA para resellers">✅</td>
+                            <td class="status-cell ok" data-segment="blanca" title="CL-07 para marca blanca">✅</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Certificación Verificada</strong><span class="tooltip-hint" title="Validar operadores/partners certificados">i</span></td>
+                            <td class="status-cell na" data-segment="personas" title="N/A para personas">N/A</td>
+                            <td class="status-cell na" data-segment="empresas" title="N/A para empresas">N/A</td>
+                            <td class="status-cell warning" data-segment="aliados" title="Certificación descrita aliados">⚠️</td>
+                            <td class="status-cell ok" data-segment="resellers" title="En contrato resellers">✅</td>
+                            <td class="status-cell warning" data-segment="blanca" title="Certificación descrita marca blanca">⚠️</td>
+                        </tr>
+                        <tr data-status="mixed">
+                            <td><strong>Auditoría Compliance</strong><span class="tooltip-hint" title="Revisión de cumplimiento contractual">i</span></td>
+                            <td class="status-cell warning" data-segment="personas" title="Auditoría básica personas">⚠️</td>
+                            <td class="status-cell warning" data-segment="empresas" title="Auditoría básica empresas">⚠️</td>
+                            <td class="status-cell ok" data-segment="aliados" title="Framework auditoría aliados">✅</td>
+                            <td class="status-cell ok" data-segment="resellers" title="En contrato resellers">✅</td>
+                            <td class="status-cell warning" data-segment="blanca" title="En licencia marca blanca">⚠️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.5rem; background: hsl(220, 34%, 18%); border-radius: 8px; border-left: 4px solid #34d399;">
+                <p style="color: #b0b0b0; font-size: 0.95rem; line-height: 1.8;">
+                    <strong style="color: #34d399;">✅ Actualización:</strong>
+                    Con la creación de 10 nuevos assets legales, la cobertura global ha mejorado a <strong>76%</strong> (32/42 controles cubiertos).
+                    HABEAS DATA ahora tiene <strong>100% cobertura</strong> en todos los segmentos.
+                    Solo 2 controles pendientes: MSA para Personas y NDA dedicado para Marca Blanca.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 4: TIMELINE ===== -->
+        <section id="timeline" class="section">
+            <h1>Timeline del Deal: Controles por Fase</h1>
+            <p class="subtitle">Los 7 hitos críticos donde deben validarse controles preventivos</p>
+
+            <div class="divider"></div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">🎯 Fase 1: SCOUTING (Día 0-10)</div>
+                        <p style="color: #b0b0b0; margin-bottom: 1rem;">Primera identificación y calificación de lead</p>
+                        <ul class="timeline-controls">
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>ICP Qualification Score ≥70 <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>Lead source documentado <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">🔍 Fase 2: DISCOVERY (Día 10-30)</div>
+                        <p style="color: #b0b0b0; margin-bottom: 1rem;">Conocimiento profundo del cliente y necesidades</p>
+                        <ul class="timeline-controls">
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>NDA firmado antes de compartir metodología <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>Discovery checklist completado <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">📋 Fase 3: PROPOSAL (Día 30-45)</div>
+                        <p style="color: #b0b0b0; margin-bottom: 1rem;">Presentación de solución y términos comerciales</p>
+                        <ul class="timeline-controls">
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>Green Light gate (tech + political) <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>Pricing from canonical docs (no improvisation) <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Propuesta con términos correctos <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">⚖️ Fase 4: NEGOTIATION (Día 45-60)</div>
+                        <p style="color: #b0b0b0; margin-bottom: 1rem;">Negociación de términos finales y cláusulas</p>
+                        <ul class="timeline-controls">
+                            <li class="timeline-control">
+                                <span class="control-icon">❌</span>
+                                <span>Revisión legal de términos custom <strong style="color: #ef4444;">FALTA</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>IP ownership claramente definida <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">❌</span>
+                                <span>HABEAS DATA autorización <strong style="color: #ef4444;">FALTA</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">✍️ Fase 5: SIGNATURE (Día 60-75)</div>
+                        <p style="color: #b0b0b0; margin-bottom: 1rem;">Firma de contratos y documentos vinculantes</p>
+                        <ul class="timeline-controls">
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Master agreement firmado <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Orden de servicio anexada <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Términos de pago confirmados <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>SLA anexado <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Todos los anexos completos <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">🚀 Fase 6: ONBOARDING (Día 75-90)</div>
+                        <p style="color: #b0b0b0; margin-bottom: 1rem;">Preparación de equipo y recursos</p>
+                        <ul class="timeline-controls">
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>Kick-off checklist completado <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>Equipo asignado y confirmado <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>SPOC contacts registrados (Anexo-B) <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Certificación de partner verificada <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-phase">📦 Fase 7: DELIVERY (Día 90+)</div>
+                        <p style="color: #b0b0b0; margin-bottom: 1rem;">Ejecución y entrega de servicios</p>
+                        <ul class="timeline-controls">
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Quality audit programada <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">✅</span>
+                                <span>NPS/satisfaction survey gate <strong style="color: #34d399;">EXISTE</strong></span>
+                            </li>
+                            <li class="timeline-control">
+                                <span class="control-icon">⚠️</span>
+                                <span>Factura matches ODS <strong style="color: #F97316;">PARCIAL</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 5: REMEDIATION ===== -->
+        <section id="remediation" class="section">
+            <h1>Plan de Remediación Priorizado</h1>
+            <p class="subtitle">Acciones ordenadas por riesgo × impacto operacional</p>
+
+            <div class="divider"></div>
+
+            <div class="remediation-list">
+                <!-- P0 -->
+                <div class="remediation-priority p0">
+                    <div class="priority-header">
+                        <span class="priority-badge p0">P0 - ✅ DONE</span>
+                        <span class="priority-title">Completado - Riesgo legal inmediato mitigado</span>
+                    </div>
+                    <div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">1</div>
+                            <div class="remediation-text">
+                                <strong>Crear template HABEAS DATA autorización</strong> (Ley 1581/2012) para TODOS los segmentos.
+                                Incluir: consentimiento explícito, derechos del titular, retención de datos, acceso a datos.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Riesgo: Multa SIC hasta COP 2.6B + reputación</span>
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">2</div>
+                            <div class="remediation-text">
+                                <strong>Crear Data Processing Agreement (DPA)</strong> para cada cliente que procese datos personales.
+                                Template estándar con obligaciones de responsable y encargado.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Responsabilidad: Conforme a GDPR/HABEAS DATA</span>
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">3</div>
+                            <div class="remediation-text">
+                                <strong>Agregar cláusula Dispute Resolution formal</strong> a TODOS los contratos.
+                                Incluir: ley aplicable (Colombia), arbitraje (no litigio), proceso de escalación.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Impacto: Reduce litigio 60%, acelera resolución</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- P1 -->
+                <div class="remediation-priority p1">
+                    <div class="priority-header">
+                        <span class="priority-badge p1">P1 - ✅ DONE</span>
+                        <span class="priority-title">Completado - Riesgo operativo mitigado</span>
+                    </div>
+                    <div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">4</div>
+                            <div class="remediation-text">
+                                <strong>Crear NDA template para empresas B2B y resellers.</strong>
+                                Estándar en industria: 3 años confidencialidad, excepciones legales mínimas.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Cobertura: Todos los descubrimientos pre-contrato</span>
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">5</div>
+                            <div class="remediation-text">
+                                <strong>Crear Master Agreement para resellers.</strong>
+                                Incluir: términos de reventa, comisiones, certificación obligatoria, IP propiedad MetodologIA.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Protección: Evita disputas por alcance de reventa</span>
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">6</div>
+                            <div class="remediation-text">
+                                <strong>Crear ODS templates para servicios de Tecnología y Estrategia.</strong>
+                                Cada ODS debe referenciar master agreement, especificar entregables, horas, SLA.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Trazabilidad: Línea de base para facturación</span>
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">7</div>
+                            <div class="remediation-text">
+                                <strong>Crear IP Ownership Schedule template.</strong>
+                                Matriz: Pre-existing IP (MetodologIA) vs Work Product (custom). Client puede usar pero no reutilizar.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Claridad: Evita disputa sobre propiedad futura</span>
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">8</div>
+                            <div class="remediation-text">
+                                <strong>Agregar Liability Caps e Indemnification a TODOS los contratos.</strong>
+                                Cap = 1 año de fees facturados. Indemnización para IP infringement del cliente.
+                                <br><span style="color: #b0b0b0; font-size: 0.9rem; margin-top: 0.5rem; display: block;">Protección: Limita exposición catastrófica</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- P2 -->
+                <div class="remediation-priority p2">
+                    <div class="priority-header">
+                        <span class="priority-badge p2">P2 - MEDIO</span>
+                        <span class="priority-title">Este trimestre - Mejora operativa</span>
+                    </div>
+                    <div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">9</div>
+                            <div class="remediation-text">
+                                <strong>Crear Force Majeure cláusula estándar.</strong>
+                                Eventos: pandemia, desastres naturales, conflicto civil. Notificación 48h. Suspensión 30 días, luego rescisión.
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">10</div>
+                            <div class="remediation-text">
+                                <strong>Crear Non-Compete/Non-Solicitation para aliados.</strong>
+                                Plazo: 12 meses post-terminación. Restricción: no pueden ofrecer servicios competidores con clientes de MetodologIA.
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">11</div>
+                            <div class="remediation-text">
+                                <strong>Crear Certification Registry y Verification Gate.</strong>
+                                Sistema: Cada partner/operador tiene registro de certificación + fecha vencimiento + auditorías.
+                                Gate antes de cada engagement: Verificar vigencia de certificado.
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">12</div>
+                            <div class="remediation-text">
+                                <strong>Crear workflow de firma electrónica.</strong>
+                                Plataforma: DocuSign o equivalente. NDAs, contratos, ODS deben tener firma digital trazable.
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">13</div>
+                            <div class="remediation-text">
+                                <strong>Agregar Governing Law cláusula a TODOS los contratos.</strong>
+                                "Estos términos se rigen por la ley de la República de Colombia. Competencia: tribunales de Bogotá."
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">14</div>
+                            <div class="remediation-text">
+                                <strong>Crear Pre-Contract / Letter of Intent (LOI) template.</strong>
+                                Para descubrimientos de alto valor: acuerdo de principios antes de master agreement formal.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- P3 -->
+                <div class="remediation-priority p3">
+                    <div class="priority-header">
+                        <span class="priority-badge p3">P3 - BAJO</span>
+                        <span class="priority-title">Backlog - Mejora futura</span>
+                    </div>
+                    <div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">15</div>
+                            <div class="remediation-text">
+                                Crear Amendment Process template para cambios contractuales post-firma.
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">16</div>
+                            <div class="remediation-text">
+                                Crear Third-Party Subcontractor Approval Process para deliveries externas.
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">17</div>
+                            <div class="remediation-text">
+                                Crear Insurance Requirements document (E&O, Responsabilidad civil).
+                            </div>
+                        </div>
+                        <div class="remediation-item">
+                            <div class="remediation-number">18</div>
+                            <div class="remediation-text">
+                                Crear Regulatory Compliance Checklist por sector (Finanzas, Salud, Educación, Gobierno).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 6: SCORING ===== -->
+        <section id="scoring" class="section">
+            <h1>Scoring: Cobertura de Controles</h1>
+            <p class="subtitle">Situación actual vs. meta de cobertura</p>
+
+            <div class="divider"></div>
+
+            <div class="scoring-container">
+                <div class="chart-wrapper">
+                    <svg width="300" height="300" viewBox="0 0 300 300">
+                        <!-- Background circle -->
+                        <circle cx="150" cy="150" r="140" fill="hsl(220, 34%, 18%)" stroke="hsl(220, 30%, 25%)" stroke-width="2"/>
+
+                        <!-- Green segment (76% - Covered) -->
+                        <path d="M 150 10 A 140 140 0 1 1 79.6 284.4 L 103.1 239.6 A 100 100 0 1 0 150 50 Z" fill="#34d399" opacity="0.8"/>
+
+                        <!-- Orange segment (19% - Partial) -->
+                        <path d="M 79.6 284.4 A 140 140 0 0 1 19.8 188.5 L 64.2 192.4 A 100 100 0 0 0 103.1 239.6 Z" fill="#F97316" opacity="0.8"/>
+
+                        <!-- Red segment (5% - Missing) -->
+                        <path d="M 19.8 188.5 A 140 140 0 0 1 10.5 161.7 L 57 125.5 A 100 100 0 0 0 64.2 192.4 Z" fill="#ef4444" opacity="0.8"/>
+
+                        <!-- Inner circle for donut -->
+                        <circle cx="150" cy="150" r="90" fill="hsl(222, 29%, 12%)"/>
+
+                        <!-- Center text -->
+                        <text x="150" y="150" text-anchor="middle" dy="0.3em" font-size="32" font-weight="700" fill="#FFD700" font-family="Poppins">42</text>
+                        <text x="150" y="175" text-anchor="middle" font-size="12" fill="#b0b0b0" font-family="Montserrat">Puntos de Control</text>
+                    </svg>
+                </div>
+
+                <div class="scoring-details">
+                    <div class="detail-row">
+                        <div class="detail-indicator green">✅</div>
+                        <div class="detail-label">Totalmente Cubiertos</div>
+                        <div class="detail-value"><strong>32</strong> (76%)</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-indicator orange">⚠️</div>
+                        <div class="detail-label">Parcialmente Cubiertos</div>
+                        <div class="detail-value"><strong>8</strong> (19%)</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-indicator red">❌</div>
+                        <div class="detail-label">Faltantes/Críticos</div>
+                        <div class="detail-value"><strong>2</strong> (5%)</div>
+                    </div>
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid hsl(220, 30%, 25%);">
+                        <p style="color: #b0b0b0; font-size: 0.9rem; line-height: 1.8;">
+                            <strong style="color: #FFD700; display: block; margin-bottom: 0.5rem;">Meta recomendada: 85% de cobertura completa</strong>
+                            Con las 18 acciones de remediación (P0+P1+P2), la cobertura alcanzaría <strong style="color: #34d399;">78%</strong> en 90 días.
+                            Los 12 items P3 del backlog llevarían la cobertura a <strong style="color: #34d399;">95%</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider" style="margin-top: 3rem;"></div>
+
+            <h2 style="margin-top: 3rem;">Insights Finales</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div style="background: hsl(220, 34%, 18%); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #34d399;">
+                    <div style="font-weight: 600; color: #34d399; margin-bottom: 0.5rem;">✅ Riesgo Resellers Mitigado</div>
+                    <p style="color: #d0d0d0; font-size: 0.95rem;">
+                        Segmento <strong>Resellers</strong> ahora tiene cobertura completa:
+                        NDA (✅), Master Agreement (✅), ODS Tecnología/Estrategia (✅), Cláusulas estándar (✅).
+                    </p>
+                </div>
+                <div style="background: hsl(220, 34%, 18%); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #34d399;">
+                    <div style="font-weight: 600; color: #34d399; margin-bottom: 0.5rem;">✅ Cumplimiento HABEAS DATA</div>
+                    <p style="color: #d0d0d0; font-size: 0.95rem;">
+                        HABEAS DATA: <strong>100% cobertura</strong> en TODOS los segmentos.
+                        Riesgo regulatorio eliminado. Template autorización + DPA implementados.
+                    </p>
+                </div>
+                <div style="background: hsl(220, 34%, 18%); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #34d399;">
+                    <div style="font-weight: 600; color: #34d399; margin-bottom: 0.5rem;">✅ Cláusulas Estándar Completas</div>
+                    <p style="color: #d0d0d0; font-size: 0.95rem;">
+                        CL-01 (Dispute Resolution), CL-02 (Force Majeure), CL-03 (Liability Caps), CL-05 (Governing Law)
+                        implementadas en TODOS los contratos. Exposición legal acotada.
+                    </p>
+                </div>
+                <div style="background: hsl(220, 34%, 18%); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #FFD700;">
+                    <div style="font-weight: 600; color: #FFD700; margin-bottom: 0.5rem;">🎯 Pendientes (5%)</div>
+                    <p style="color: #d0d0d0; font-size: 0.95rem;">
+                        Solo 2 items: MSA formal para Personas (tiene matrícula), NDA dedicado para Marca Blanca (tiene en licencia).
+                        Métrica de cobertura: <strong>76%</strong> (32/42 controles). Meta: 85%.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ===== TAB SWITCHING =====
+        function switchTab(tabName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+
+            // Remove active from all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            // Show selected section
+            const selectedSection = document.getElementById(tabName);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+
+            // Set active nav link
+            event.target.classList.add('active');
+        }
+
+        // ===== SIN CARDS TOGGLE =====
+        function toggleSin(header) {
+            const card = header.closest('.sin-card');
+            card.classList.toggle('expanded');
+        }
+
+        // ===== MATRIX FILTERING =====
+        function filterMatrix(segment) {
+            // Update button active state
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter table rows
+            const table = document.getElementById('controlMatrix');
+            const rows = table.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                if (segment === 'all') {
+                    row.style.display = '';
+                } else {
+                    const statusCell = row.querySelector(`[data-segment="${segment}"]`);
+                    if (statusCell) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // ===== INITIALIZE =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set first nav link as active
+            document.querySelector('.nav-link').classList.add('active');
+
+            // Add hover tooltips
+            const tooltips = document.querySelectorAll('.tooltip-hint');
+            tooltips.forEach(tooltip => {
+                tooltip.style.cursor = 'help';
+            });
+        });
+
+        // ===== PRINT FUNCTION =====
+        function printDocument() {
+            window.print();
+        }
+
+        // ===== KEYBOARD SHORTCUTS =====
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+P para imprimir
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printDocument();
+            }
+        });
+    </script>
+</body>
+</html>

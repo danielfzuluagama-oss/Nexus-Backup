@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA — Plan de Consolidación del Gobierno Operativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f;--bg-2:#102346;--surface:#f7f4ec;
+            --accent:#00cde8;--gold:#ffd700;--green:#2ca56f;
+            --red:#dc5f5f;--orange:#e8a000;--purple:#9b59b6;
+            --font-head:"Poppins",sans-serif;--font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0;--text-secondary:#999;--border:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.7}
+        body.light{--bg-1:#fff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;--border:#e2e8f0}
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .card,.body.light .phase{background:#fff;border-color:#e2e8f0}
+        body.light .radiografia{background:#f5f7fa}
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:3px solid var(--gold);padding:50px 20px 40px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-40%;right:-8%;width:700px;height:700px;background:radial-gradient(circle,rgba(255,215,0,.06),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.6rem;font-weight:800;margin-bottom:8px;background:linear-gradient(90deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:1.05rem;color:var(--gold);margin-bottom:6px;font-weight:600}
+        .header .meta{font-size:.85rem;color:var(--text-secondary)}
+
+        .container{max-width:1000px;margin:0 auto;padding:24px 20px}
+
+        /* RADIOGRAFIA */
+        .radiografia{background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:28px;margin:24px 0}
+        .radiografia h2{font-family:var(--font-head);font-size:1.4rem;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+        .stat-card{background:rgba(0,205,232,.05);border:1px solid rgba(0,205,232,.15);border-radius:12px;padding:16px;text-align:center}
+        .stat-card .number{font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--accent)}
+        .stat-card .label{font-size:.75rem;color:var(--text-secondary);margin-top:4px}
+        .stat-card.warning{border-color:rgba(232,160,0,.3);background:rgba(232,160,0,.05)}
+        .stat-card.warning .number{color:var(--orange)}
+        .stat-card.danger{border-color:rgba(220,95,95,.3);background:rgba(220,95,95,.05)}
+        .stat-card.danger .number{color:var(--red)}
+        .stat-card.gold{border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.05)}
+        .stat-card.gold .number{color:var(--gold)}
+
+        /* HEALTH BAR */
+        .health{margin:20px 0}
+        .health-label{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px}
+        .health-bar{height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+        .health-fill{height:100%;border-radius:5px;transition:width .8s ease}
+        .health-fill.good{background:linear-gradient(90deg,var(--green),var(--accent))}
+        .health-fill.mid{background:linear-gradient(90deg,var(--orange),var(--gold))}
+        .health-fill.low{background:linear-gradient(90deg,var(--red),var(--orange))}
+
+        /* DIAGNÓSTICO TABLE */
+        .diag-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.82rem}
+        .diag-table th{background:rgba(0,205,232,.1);color:var(--accent);padding:10px 12px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        .diag-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+        .diag-table tr:hover{background:rgba(0,205,232,.03)}
+        .badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+        .badge.ok{background:rgba(44,165,111,.15);color:var(--green)}
+        .badge.warn{background:rgba(232,160,0,.15);color:var(--orange)}
+        .badge.crit{background:rgba(220,95,95,.15);color:var(--red)}
+        .badge.info{background:rgba(0,205,232,.15);color:var(--accent)}
+        .badge.gold{background:rgba(255,215,0,.15);color:var(--gold)}
+
+        /* TESIS */
+        .tesis{background:linear-gradient(135deg,rgba(255,215,0,.06),rgba(0,205,232,.06));border:2px solid var(--gold);border-radius:16px;padding:28px;margin:32px 0;position:relative}
+        .tesis::before{content:'💡';position:absolute;top:-14px;left:24px;background:var(--bg-1);padding:0 8px;font-size:1.4rem}
+        .tesis h2{font-family:var(--font-head);color:var(--gold);font-size:1.3rem;margin-bottom:12px}
+        .tesis p{font-size:.92rem;line-height:1.8}
+        .tesis .highlight{color:var(--accent);font-weight:700}
+
+        /* EJES */
+        .eje{margin:32px 0;border:1px solid var(--border);border-radius:16px;overflow:hidden}
+        .eje-header{padding:20px 24px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .3s}
+        .eje-header:hover{background:rgba(0,205,232,.03)}
+        .eje-header .eje-icon{font-size:1.6rem;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;flex-shrink:0}
+        .eje-header h3{font-family:var(--font-head);font-size:1.15rem;flex:1}
+        .eje-header .eje-meta{display:flex;gap:8px;flex-wrap:wrap}
+        .eje-header .arrow{font-size:1.2rem;color:var(--accent);transition:transform .3s}
+        .eje.open .arrow{transform:rotate(180deg)}
+        .eje-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+        .eje.open .eje-body{max-height:5000px}
+        .eje-content{padding:0 24px 24px}
+
+        .eje-1 .eje-header{border-bottom:3px solid var(--red)}
+        .eje-1 .eje-icon{background:rgba(220,95,95,.12);color:var(--red)}
+        .eje-2 .eje-header{border-bottom:3px solid var(--accent)}
+        .eje-2 .eje-icon{background:rgba(0,205,232,.12);color:var(--accent)}
+        .eje-3 .eje-header{border-bottom:3px solid var(--gold)}
+        .eje-3 .eje-icon{background:rgba(255,215,0,.12);color:var(--gold)}
+        .eje-4 .eje-header{border-bottom:3px solid var(--purple)}
+        .eje-4 .eje-icon{background:rgba(155,89,182,.12);color:var(--purple)}
+
+        /* TAREAS */
+        .task{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:10px;margin:8px 0;transition:all .3s}
+        .task:hover{border-color:var(--accent);background:rgba(0,205,232,.02)}
+        .task-check{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;font-size:.7rem}
+        .task-check:hover{border-color:var(--accent)}
+        .task.done .task-check{background:var(--green);border-color:var(--green);color:#fff}
+        .task.done .task-check::after{content:'✓'}
+        .task.done .task-text{text-decoration:line-through;opacity:.5}
+        .task-text{flex:1;font-size:.88rem}
+        .task-text strong{color:var(--accent);font-weight:600}
+        .task-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+        .tag{font-size:.65rem;padding:2px 6px;border-radius:4px;font-weight:600}
+        .tag.quick{background:rgba(44,165,111,.12);color:var(--green)}
+        .tag.deep{background:rgba(155,89,182,.12);color:var(--purple)}
+        .tag.auto{background:rgba(0,205,232,.12);color:var(--accent)}
+        .tag.manual{background:rgba(232,160,0,.12);color:var(--orange)}
+
+        /* NIVELES DE MADUREZ */
+        .maturity{display:flex;gap:0;margin:24px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+        .maturity-level{flex:1;padding:16px 12px;text-align:center;position:relative;transition:all .3s}
+        .maturity-level .level-num{font-family:var(--font-head);font-size:1.8rem;font-weight:800;opacity:.3}
+        .maturity-level .level-name{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+        .maturity-level .level-desc{font-size:.68rem;color:var(--text-secondary);margin-top:4px}
+        .maturity-level.current{background:rgba(255,215,0,.08);border:2px solid var(--gold)}
+        .maturity-level.current .level-num{opacity:1;color:var(--gold)}
+        .maturity-level.target{background:rgba(0,205,232,.05);border:2px dashed var(--accent)}
+        .maturity-level.target .level-num{opacity:.7;color:var(--accent)}
+        .maturity-level.past{background:rgba(44,165,111,.05)}
+        .maturity-level.past .level-num{opacity:.5;color:var(--green)}
+
+        /* TIMELINE */
+        .timeline{position:relative;margin:24px 0;padding-left:30px}
+        .timeline::before{content:'';position:absolute;left:12px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--gold),var(--purple))}
+        .tl-item{position:relative;margin:16px 0}
+        .tl-dot{position:absolute;left:-24px;top:8px;width:14px;height:14px;border-radius:50%;border:3px solid var(--accent);background:var(--bg-1)}
+        .tl-item.phase-2 .tl-dot{border-color:var(--gold)}
+        .tl-item.phase-3 .tl-dot{border-color:var(--purple)}
+        .tl-phase{font-family:var(--font-head);font-size:.85rem;font-weight:700;color:var(--accent);margin-bottom:4px}
+        .tl-item.phase-2 .tl-phase{color:var(--gold)}
+        .tl-item.phase-3 .tl-phase{color:var(--purple)}
+        .tl-desc{font-size:.82rem;color:var(--text-secondary)}
+        .tl-deliverables{font-size:.78rem;margin-top:4px;color:var(--text-primary)}
+
+        /* DECISION BOX */
+        .decision{background:rgba(255,215,0,.04);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:20px;margin:16px 0}
+        .decision h4{font-family:var(--font-head);color:var(--gold);font-size:.95rem;margin-bottom:8px}
+        .decision p{font-size:.85rem;line-height:1.7}
+
+        /* ANTI-PATTERN */
+        .antipattern{background:rgba(220,95,95,.04);border-left:4px solid var(--red);border-radius:0 10px 10px 0;padding:14px 18px;margin:10px 0}
+        .antipattern strong{color:var(--red);font-size:.85rem}
+        .antipattern p{font-size:.82rem;margin-top:4px}
+
+        /* IMPACT MATRIX */
+        .impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+        .impact-card{background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+        .impact-card h5{font-family:var(--font-head);font-size:.82rem;color:var(--accent);margin-bottom:6px}
+        .impact-card .impact-before{font-size:.78rem;color:var(--red);text-decoration:line-through}
+        .impact-card .impact-after{font-size:1rem;font-weight:700;color:var(--green)}
+
+        .section-divider{text-align:center;margin:40px 0 20px;font-family:var(--font-head);font-size:.8rem;color:var(--text-secondary);letter-spacing:3px;text-transform:uppercase}
+        .section-divider::before,.section-divider::after{content:'';display:inline-block;width:40px;height:1px;background:var(--border);vertical-align:middle;margin:0 12px}
+
+        .footer{text-align:center;padding:28px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:40px}
+
+        @media(max-width:768px){
+            .header h1{font-size:1.8rem}
+            .stats-grid{grid-template-columns:repeat(3,1fr)}
+            .maturity{flex-direction:column}
+            .impact-grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="document.body.classList.toggle('light')" aria-label="Cambiar tema">☀️ / 🌙</button>
+
+    <header class="header">
+        <h1>Plan de Consolidación</h1>
+        <div class="subtitle">Gobierno Operativo MetodologIA — Del Documento al Sistema Vivo</div>
+        <div class="meta">Generado: 24 marzo 2026 | Clasificación: Estratégico-Operativo</div>
+    </header>
+
+    <div class="container">
+
+        <!-- ═══════════════ RADIOGRAFÍA ═══════════════ -->
+        <div class="radiografia">
+            <h2>🔬 Radiografía del Ecosistema — Estado Actual</h2>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="number">381</div><div class="label">Archivos .md</div></div>
+                <div class="stat-card"><div class="number">59</div><div class="label">SOPs definidos</div></div>
+                <div class="stat-card"><div class="number">8</div><div class="label">Procesos padre</div></div>
+                <div class="stat-card"><div class="number">88</div><div class="label">Rituales</div></div>
+                <div class="stat-card gold"><div class="number">54</div><div class="label">HTMLs en Hub</div></div>
+                <div class="stat-card"><div class="number">13</div><div class="label">RAG files</div></div>
+                <div class="stat-card warning"><div class="number">0</div><div class="label">Workflows</div></div>
+                <div class="stat-card danger"><div class="number">0</div><div class="label">SPOC asignados</div></div>
+            </div>
+
+            <h3 style="font-family:var(--font-head);font-size:1rem;color:var(--accent);margin:20px 0 12px">Cobertura por Vertical</h3>
+            <table class="diag-table">
+                <thead>
+                    <tr>
+                        <th>Vertical</th>
+                        <th>SOPs</th>
+                        <th>HTMLs</th>
+                        <th>Cobertura HTML</th>
+                        <th>10x Elevation</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Delivery / Workshop</strong></td><td>3</td><td>5</td><td><span class="badge ok">100%</span></td><td><span class="badge ok">parcial</span></td><td><span class="badge ok">COMPLETO</span></td></tr>
+                    <tr><td><strong>Delivery / Bootcamp</strong></td><td>4</td><td>6</td><td><span class="badge ok">100%</span></td><td><span class="badge ok">parcial</span></td><td><span class="badge ok">COMPLETO</span></td></tr>
+                    <tr><td><strong>Delivery / Programa Elite</strong></td><td>15</td><td>17</td><td><span class="badge ok">100%</span></td><td><span class="badge ok">full en 4</span></td><td><span class="badge ok">COMPLETO</span></td></tr>
+                    <tr><td><strong>Delivery / Consultoría</strong></td><td>4</td><td>6</td><td><span class="badge ok">100%</span></td><td><span class="badge ok">parcial</span></td><td><span class="badge ok">COMPLETO</span></td></tr>
+                    <tr><td><strong>Delivery / Tecnología</strong></td><td>4</td><td>6</td><td><span class="badge ok">100%</span></td><td><span class="badge ok">parcial</span></td><td><span class="badge ok">COMPLETO</span></td></tr>
+                    <tr><td><strong>Delivery / Ops Transversales</strong></td><td>8</td><td>5</td><td><span class="badge warn">63%</span></td><td><span class="badge ok">full en 3</span></td><td><span class="badge warn">3 rituales sin HTML</span></td></tr>
+                    <tr><td><strong>Comercial / Aliados (nuevo)</strong></td><td>5</td><td>5</td><td><span class="badge ok">100%</span></td><td><span class="badge ok">full</span></td><td><span class="badge ok">COMPLETO</span></td></tr>
+                    <tr><td><strong>Comercial / Aliados (GTM orig.)</strong></td><td>4</td><td>0</td><td><span class="badge crit">0%</span></td><td><span class="badge warn">legacy</span></td><td><span class="badge crit">SIN HTML</span></td></tr>
+                    <tr><td><strong>Comercial / Empresas B2B</strong></td><td>7</td><td>0</td><td><span class="badge crit">0%</span></td><td><span class="badge warn">mixto</span></td><td><span class="badge crit">SIN HTML</span></td></tr>
+                    <tr><td><strong>Comercial / Personas B2C</strong></td><td>5</td><td>0</td><td><span class="badge crit">0%</span></td><td><span class="badge warn">legacy</span></td><td><span class="badge crit">SIN HTML</span></td></tr>
+                </tbody>
+            </table>
+
+            <h3 style="font-family:var(--font-head);font-size:1rem;color:var(--accent);margin:20px 0 12px">Indicadores de Salud</h3>
+
+            <div class="health">
+                <div class="health-label"><span>Cobertura HTML (SOPs con HTML / SOPs totales)</span><span style="color:var(--orange)">54/59 = 67%</span></div>
+                <div class="health-bar"><div class="health-fill mid" style="width:67%"></div></div>
+            </div>
+            <div class="health">
+                <div class="health-label"><span>10x Elevation (SOPs con 7 dimensiones completas)</span><span style="color:var(--orange)">~22/59 = 37%</span></div>
+                <div class="health-bar"><div class="health-fill low" style="width:37%"></div></div>
+            </div>
+            <div class="health">
+                <div class="health-label"><span>Gobernanza (SPOC + Review Cycle + Versión)</span><span style="color:var(--red)">0%</span></div>
+                <div class="health-bar"><div class="health-fill low" style="width:0%"></div></div>
+            </div>
+            <div class="health">
+                <div class="health-label"><span>Workflows definidos</span><span style="color:var(--red)">0/~150 = 0%</span></div>
+                <div class="health-bar"><div class="health-fill low" style="width:0%"></div></div>
+            </div>
+        </div>
+
+        <!-- ═══════════════ DIAGNÓSTICO PROBLEMAS ═══════════════ -->
+        <div class="radiografia" style="border-color:var(--red)">
+            <h2 style="color:var(--red)">⚠️ Problemas Identificados</h2>
+
+            <table class="diag-table">
+                <thead>
+                    <tr><th>ID</th><th>Problema</th><th>Severidad</th><th>Impacto</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>P1</td>
+                        <td><strong>3 SOPs tácticos mal ubicados</strong> — habilitar-canal-iac, ejecutar-webinar-captacion, lanzar-infoproductos están en proceso-comercial/empresas/ como si fueran procesos permanentes. Son planes de Q1, no SOPs repetibles. IAC es un cliente marca blanca, no una vertical.</td>
+                        <td><span class="badge crit">CRÍTICO</span></td>
+                        <td>Confusión arquitectónica, precedente peligroso</td>
+                    </tr>
+                    <tr>
+                        <td>P2</td>
+                        <td><strong>16 SOPs comerciales sin HTML</strong> — Todo el frente comercial (B2B + B2C + aliados GTM originales) existe solo como .md. El Hub v2 solo cubre delivery.</td>
+                        <td><span class="badge crit">CRÍTICO</span></td>
+                        <td>33% del ecosistema invisible para navegación</td>
+                    </tr>
+                    <tr>
+                        <td>P3</td>
+                        <td><strong>Catálogo de programas duplicado</strong> — catalogo-programas.md (programa-elite/) vs catalogo-programas-metodologia.md (references/). Además GerencIA no está integrado.</td>
+                        <td><span class="badge warn">MEDIO</span></td>
+                        <td>Ambigüedad sobre fuente de verdad</td>
+                    </tr>
+                    <tr>
+                        <td>P4</td>
+                        <td><strong>Legacy html-delivery/ v1 coexiste con v2</strong> — Carpeta obsoleta genera confusión sobre qué versión usar.</td>
+                        <td><span class="badge warn">BAJO</span></td>
+                        <td>Ruido en filesystem</td>
+                    </tr>
+                    <tr>
+                        <td>P5</td>
+                        <td><strong>0% gobernanza</strong> — Ningún SOP tiene owner (SPOC), fecha de revisión, versión semántica, ni ciclo de vida. El ecosistema puede degradarse sin que nadie lo note.</td>
+                        <td><span class="badge crit">CRÍTICO</span></td>
+                        <td>Riesgo de entropía sistémica a mediano plazo</td>
+                    </tr>
+                    <tr>
+                        <td>P6</td>
+                        <td><strong>Procesos y SOPs desconectados</strong> — Los 8 procesos padre no tienen un mapa de navegación que muestre cómo se conectan entre sí. El BRIDGE es un documento standalone, no un sistema.</td>
+                        <td><span class="badge warn">MEDIO</span></td>
+                        <td>Cada vertical opera como isla</td>
+                    </tr>
+                    <tr>
+                        <td>P7</td>
+                        <td><strong>Delivery tiene subdirectorios {empresas, personas, aliados}</strong> que duplican la taxonomía comercial sin SOPs propios. ¿Son placeholders vacíos? ¿Delivery por segmento?</td>
+                        <td><span class="badge warn">MEDIO</span></td>
+                        <td>Ambigüedad estructural</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ═══════════════ TESIS CENTRAL ═══════════════ -->
+        <div class="tesis">
+            <h2>Tesis: Del Documento al Sistema Vivo</h2>
+            <p>El Gobierno Operativo ha alcanzado <span class="highlight">masa crítica documental</span> — 59 SOPs, 88 rituales, 381 archivos. Pero documentar no es operar. El siguiente nivel no es "más SOPs" sino <span class="highlight">menos fricción para usarlos</span>.</p>
+            <p style="margin-top:12px">La consolidación se organiza en <span class="highlight">4 ejes</span> con una lógica secuencial clara: primero limpiar lo que está mal (Eje 1), luego completar lo que falta (Eje 2), después instalar gobernanza para que no degrade (Eje 3), y finalmente conectar con la ejecución real (Eje 4).</p>
+            <p style="margin-top:12px">El criterio de éxito no es "cuántos documentos tenemos" sino <span class="highlight">"en cuántos clics un operador encuentra lo que necesita para actuar"</span>.</p>
+        </div>
+
+        <!-- ═══════════════ MODELO DE MADUREZ ═══════════════ -->
+        <div class="section-divider">Modelo de Madurez</div>
+
+        <div class="maturity">
+            <div class="maturity-level past">
+                <div class="level-num">N1</div>
+                <div class="level-name">Ad Hoc</div>
+                <div class="level-desc">Conocimiento en cabezas. Sin documentación.</div>
+            </div>
+            <div class="maturity-level current">
+                <div class="level-num">N2</div>
+                <div class="level-name">Documentado</div>
+                <div class="level-desc">SOPs existen. Navegación parcial. Sin gobernanza.</div>
+            </div>
+            <div class="maturity-level target">
+                <div class="level-num">N3</div>
+                <div class="level-name">Operativo</div>
+                <div class="level-desc">Hub unificado. SPOC por SOP. Ciclo de revisión. Métricas.</div>
+            </div>
+            <div class="maturity-level">
+                <div class="level-num">N4</div>
+                <div class="level-name">Optimizado</div>
+                <div class="level-desc">Workflows automatizados. Feedback loops. Mejora continua.</div>
+            </div>
+            <div class="maturity-level">
+                <div class="level-num">N5</div>
+                <div class="level-name">Predictivo</div>
+                <div class="level-desc">IA detecta brechas. Auto-actualización. Gobernanza autónoma.</div>
+            </div>
+        </div>
+
+        <p style="font-size:.85rem;text-align:center;color:var(--text-secondary);margin:8px 0 24px">Estamos en <strong style="color:var(--gold)">N2</strong>. Este plan nos lleva a <strong style="color:var(--accent)">N3</strong>.</p>
+
+        <!-- ═══════════════ 4 EJES ═══════════════ -->
+        <div class="section-divider">Los 4 Ejes de Consolidación</div>
+
+        <!-- EJE 1: LIMPIEZA -->
+        <div class="eje eje-1 open" onclick="this.classList.toggle('open')">
+            <div class="eje-header">
+                <div class="eje-icon">🧹</div>
+                <h3>Eje 1: Limpieza Arquitectónica</h3>
+                <div class="eje-meta">
+                    <span class="badge crit">PRIORIDAD ALTA</span>
+                    <span class="badge info">~2h trabajo</span>
+                </div>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="eje-body">
+                <div class="eje-content">
+                    <p style="font-size:.88rem;margin-bottom:16px"><strong>Principio:</strong> Antes de construir más, arreglar lo que está mal. Deuda arquitectónica se paga con intereses exponenciales.</p>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>L1.</strong> Reclasificar 3 SOPs tácticos de empresas/ → mover a Consolidacion/rag/ como contexto estratégico (no son SOPs repetibles: habilitar-canal-iac, ejecutar-webinar-captacion, lanzar-infoproductos)
+                            <div class="task-tags"><span class="tag quick">QUICK WIN</span><span class="tag auto">AUTOMATIZABLE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>L2.</strong> Eliminar carpeta html-delivery/ v1 (legacy). Solo html-delivery-v2/ debe existir.
+                            <div class="task-tags"><span class="tag quick">QUICK WIN</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>L3.</strong> Resolver catálogo duplicado: unificar catalogo-programas.md y catalogo-programas-metodologia.md en un solo archivo canónico que incluya Empoderamiento (M0-M12) + GerencIA (3 pilares). Ubicar en programa-elite/catalogo-programas.md
+                            <div class="task-tags"><span class="tag quick">QUICK WIN</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>L4.</strong> Auditar delivery/{empresas,personas,aliados}: verificar si contienen SOPs propios de delivery segmentado o son placeholders vacíos. Si vacíos → eliminar. Si tienen contenido → documentar su propósito.
+                            <div class="task-tags"><span class="tag manual">REQUIERE DECISIÓN</span></div>
+                        </div>
+                    </div>
+
+                    <div class="antipattern" onclick="event.stopPropagation()">
+                        <strong>❌ Anti-pattern a evitar:</strong>
+                        <p>"Crear SOPs para cada plan táctico de cada trimestre." Los SOPs son procesos permanentes. Los planes de Q van a RAG o a una carpeta de estrategia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EJE 2: COBERTURA -->
+        <div class="eje eje-2" onclick="this.classList.toggle('open')">
+            <div class="eje-header">
+                <div class="eje-icon">🗺️</div>
+                <h3>Eje 2: Cobertura Completa — Hub Unificado v3</h3>
+                <div class="eje-meta">
+                    <span class="badge crit">PRIORIDAD ALTA</span>
+                    <span class="badge info">~4-6h trabajo</span>
+                </div>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="eje-body">
+                <div class="eje-content">
+                    <p style="font-size:.88rem;margin-bottom:16px"><strong>Principio:</strong> Si no está en el Hub, no existe operativamente. El Hub debe ser la interfaz única para navegar TODO el Gobierno Operativo.</p>
+
+                    <div class="decision" onclick="event.stopPropagation()">
+                        <h4>Decisión Arquitectónica: Hub Unificado vs Hub Separado</h4>
+                        <p><strong>Opción A (recomendada):</strong> Un solo Hub con secciones — Delivery, Comercial, Transversales, Integración. Un index.html, múltiples verticales. Ventaja: una sola puerta de entrada, contexto completo.</p>
+                        <p style="margin-top:6px"><strong>Opción B:</strong> Hubs separados (Delivery Hub + Comercial Hub + Transversal Hub). Ventaja: independencia de dominio. Desventaja: fragmentación, duplicar design system.</p>
+                        <p style="margin-top:6px;color:var(--gold)"><strong>Recomendación:</strong> Opción A. Un sistema, una puerta. El Hub unificado refleja que MetodologIA es UNA empresa con procesos integrados, no silos.</p>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>C1.</strong> Generar HTMLs para SOPs comerciales B2B: prospectar-cuentas-b2b, descubrir-dolores-b2b, estructurar-oferta-b2b, gestionar-exito-b2b (4 SOPs core, excluyendo los 3 tácticos reclasificados)
+                            <div class="task-tags"><span class="tag auto">AUTOMATIZABLE</span><span class="tag deep">md2html_v2.py</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>C2.</strong> Generar HTMLs para SOPs comerciales B2C: detectar-life-events, mapear-ancla-emocional, oferta-valor-inmediato, nutrir-audiencia-b2c, activar-referral-loop (5 SOPs)
+                            <div class="task-tags"><span class="tag auto">AUTOMATIZABLE</span><span class="tag deep">md2html_v2.py</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>C3.</strong> Generar HTMLs para SOPs aliados GTM originales: evaluar-fit-aliado, certificar-aliado, ejecutar-coselling, auditar-ecosistema (4 SOPs)
+                            <div class="task-tags"><span class="tag auto">AUTOMATIZABLE</span><span class="tag deep">md2html_v2.py</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>C4.</strong> Generar HTMLs para 3 rituales estratégicos: ejecutar-strategy-day, ejecutar-11-star-check, ejecutar-retrospectiva-trimestral
+                            <div class="task-tags"><span class="tag auto">AUTOMATIZABLE</span><span class="tag deep">md2html_v2.py</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>C5.</strong> Generar HTMLs para 3 procesos padre comerciales: vender-empresas-b2b-proceso, vender-personas-b2c-proceso, gestionar-aliados-gtm-proceso
+                            <div class="task-tags"><span class="tag auto">AUTOMATIZABLE</span><span class="tag deep">md2html_v2.py</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>C6.</strong> Refactorizar md2html_v2.py → md2html_v3.py con soporte multi-proceso (delivery + comercial + transversales). Nuevo index.html unificado con secciones colapsables por dominio.
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span><span class="tag auto">AUTOMATIZABLE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>C7.</strong> Generar manifest.json v3 con metadata completa: dominio, vertical, tipo, SPOC (placeholder), versión, fecha creación, líneas, marcadores 10x.
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:16px;padding:12px;background:rgba(0,205,232,.04);border-radius:8px;font-size:.85rem" onclick="event.stopPropagation()">
+                        <strong style="color:var(--accent)">Resultado esperado:</strong> Hub Unificado v3 con ~73 HTMLs: 54 actuales + 4 B2B + 5 B2C + 4 aliados GTM + 3 rituales + 3 procesos comerciales. Un solo index.html que navega TODO.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EJE 3: GOBERNANZA -->
+        <div class="eje eje-3" onclick="this.classList.toggle('open')">
+            <div class="eje-header">
+                <div class="eje-icon">🏛️</div>
+                <h3>Eje 3: Gobernanza — El SOP de los SOPs</h3>
+                <div class="eje-meta">
+                    <span class="badge gold">PRIORIDAD MEDIA</span>
+                    <span class="badge info">~3-4h trabajo</span>
+                </div>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="eje-body">
+                <div class="eje-content">
+                    <p style="font-size:.88rem;margin-bottom:16px"><strong>Principio:</strong> Un ecosistema sin gobernanza degrada. Cada SOP necesita un dueño, una fecha de revisión, y un criterio de vigencia. Esto es lo que separa un wiki muerto de un sistema operativo vivo.</p>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>G1.</strong> Crear <code>governance-registry.json</code> — Registro maestro con cada SOP mapeado a: SPOC (owner), dominio, fecha creación, última revisión, próxima revisión (trimestral), versión semántica, estado (draft/active/deprecated), nivel 10x (completo/parcial/legacy).
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span><span class="tag auto">AUTOMATIZABLE PARCIAL</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>G2.</strong> Definir SPOC por SOP con los 4 C-levels: Javier (Empowerment → programa-elite, ops transversales), Daniel (Efficiency → tecnología, bootcamp), Germán (Ecosystem → aliados, embajadores), Katherine (Enablement → workshop, B2C, B2B)
+                            <div class="task-tags"><span class="tag manual">REQUIERE DECISIÓN DE JAVI</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>G3.</strong> Instalar ciclo de revisión trimestral alineado con el Strategy Day (Semana 1 de cada Q). El Strategy Day incluye un checkpoint: "¿Los SOPs reflejan cómo realmente operamos?" Si no → se abre ticket de actualización.
+                            <div class="task-tags"><span class="tag manual">PROCESO</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>G4.</strong> Crear <code>HEALTH-DASHBOARD.html</code> — Dashboard interactivo auto-generado desde governance-registry.json que muestra: SOPs por estado, SOPs vencidos (sin revisión en >90 días), cobertura 10x, cobertura HTML, distribución por SPOC.
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span><span class="tag auto">AUTOMATIZABLE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>G5.</strong> Crear SOP de gobernanza: <code>gobernar-ecosistema-operativo-sop.md</code> — El meta-SOP que define cómo se crean, revisan, deprecan y archivan SOPs. Incluye: naming conventions, template estándar, proceso de aprobación, criterio de cuándo un SOP es necesario vs cuándo es overhead.
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span></div>
+                        </div>
+                    </div>
+
+                    <div class="antipattern" onclick="event.stopPropagation()">
+                        <strong>❌ Anti-pattern a evitar:</strong>
+                        <p>"Gobernanza burocrática." La gobernanza debe ser tan ligera que no desincentive actualizar SOPs. Un SPOC revisa 1x por trimestre, no aprueba cada cambio.</p>
+                    </div>
+
+                    <div class="decision" onclick="event.stopPropagation()">
+                        <h4>Decisión: ¿Versionado semántico o timestamps?</h4>
+                        <p><strong>Recomendación:</strong> Versionado semántico simplificado: v1.0 (primera versión), v1.1 (correcciones menores), v2.0 (reestructuración mayor). No semver completo — sería overhead para documentos operativos. El timestamp de última revisión es más útil para detectar degradación.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EJE 4: ACTIVACIÓN -->
+        <div class="eje eje-4" onclick="this.classList.toggle('open')">
+            <div class="eje-header">
+                <div class="eje-icon">⚡</div>
+                <h3>Eje 4: Activación — Del Documento al Comportamiento</h3>
+                <div class="eje-meta">
+                    <span class="badge" style="background:rgba(155,89,182,.15);color:var(--purple)">PRIORIDAD MEDIA-BAJA</span>
+                    <span class="badge info">Largo plazo</span>
+                </div>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="eje-body">
+                <div class="eje-content">
+                    <p style="font-size:.88rem;margin-bottom:16px"><strong>Principio:</strong> El mejor SOP del mundo no sirve si nadie lo consulta. La activación conecta documentos con momentos de ejecución real. Este eje es la frontera entre N3 (Operativo) y N4 (Optimizado).</p>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>A1.</strong> Definir Top 10 SOPs críticos (los que más impactan ingresos o satisfacción de cliente) y crear <strong>workflows ejecutables</strong> para cada uno: checklist interactivo con pasos, timestamps, responsable, y estado.
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span><span class="tag manual">ITERATIVO</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>A2.</strong> Crear <strong>Quick Reference Cards</strong> — versión de 1 página de los SOPs más usados. Imprimibles. Para pegar junto al monitor o tener en el celular. No reemplazan el SOP, lo hacen accesible en el momento de la acción.
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>A3.</strong> Diseñar <strong>Onboarding del Gobierno Operativo</strong> — Guía de 15 minutos para nuevos miembros del equipo (o aliados/embajadores). Cómo navegar el Hub, qué consultar primero, qué hacer cuando no encuentran algo.
+                            <div class="task-tags"><span class="tag manual">PROCESO</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>A4.</strong> Integrar <strong>triggers CRM</strong> — Cuando un deal cambia de etapa en el CRM, sugerir automáticamente el SOP relevante. Ejemplo: deal pasa a "Discovery" → link a descubrir-dolores-b2b-sop.html
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span><span class="tag auto">AUTOMATIZABLE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="task" onclick="this.classList.toggle('done');event.stopPropagation()">
+                        <div class="task-check"></div>
+                        <div class="task-text">
+                            <strong>A5.</strong> Medir <strong>adopción</strong> — Analytics básico en el Hub HTML (page views, tiempo en página, SOPs más consultados vs menos consultados). Usa Plausible o analytics ligero.
+                            <div class="task-tags"><span class="tag deep">DEEP WORK</span><span class="tag auto">AUTOMATIZABLE</span></div>
+                        </div>
+                    </div>
+
+                    <div class="antipattern" onclick="event.stopPropagation()">
+                        <strong>❌ Anti-pattern a evitar:</strong>
+                        <p>"Automatizar antes de consolidar." No tiene sentido crear workflows si los SOPs base están desactualizados o si nadie sabe que existen. Ejes 1-3 primero.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════ TIMELINE ═══════════════ -->
+        <div class="section-divider">Secuencia de Implementación</div>
+
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-phase">FASE 1: Limpieza + Quick Wins (1 sesión)</div>
+                <div class="tl-desc">Arreglar lo que está mal antes de construir más.</div>
+                <div class="tl-deliverables">→ L1-L4 completados. 3 SOPs reclasificados, legacy eliminado, catálogo unificado.</div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-phase">FASE 2: Hub Unificado v3 (1-2 sesiones)</div>
+                <div class="tl-desc">Completar cobertura HTML y crear experiencia de navegación unificada.</div>
+                <div class="tl-deliverables">→ C1-C7 completados. ~73 HTMLs, 1 index.html unificado, manifest v3.</div>
+            </div>
+            <div class="tl-item phase-2">
+                <div class="tl-dot"></div>
+                <div class="tl-phase">FASE 3: Gobernanza (1 sesión)</div>
+                <div class="tl-desc">Instalar el sistema de vida: dueños, revisión, dashboard de salud.</div>
+                <div class="tl-deliverables">→ G1-G5 completados. Registry, SPOC asignados, health dashboard, meta-SOP.</div>
+            </div>
+            <div class="tl-item phase-3">
+                <div class="tl-dot"></div>
+                <div class="tl-phase">FASE 4: Activación (gradual, post-consolidación)</div>
+                <div class="tl-desc">Conectar con la ejecución real. Iterativo, no big-bang.</div>
+                <div class="tl-deliverables">→ A1-A5 como backlog priorizado. Empezar por Top 10 workflows + onboarding.</div>
+            </div>
+        </div>
+
+        <!-- ═══════════════ IMPACTO ═══════════════ -->
+        <div class="section-divider">Impacto Esperado</div>
+
+        <div class="impact-grid">
+            <div class="impact-card">
+                <h5>Cobertura HTML</h5>
+                <div class="impact-before">54 HTMLs (67% SOPs)</div>
+                <div class="impact-after">~73 HTMLs (100% SOPs)</div>
+            </div>
+            <div class="impact-card">
+                <h5>Gobernanza</h5>
+                <div class="impact-before">0 SPOC, 0 review cycles</div>
+                <div class="impact-after">59 SPOC, ciclo trimestral</div>
+            </div>
+            <div class="impact-card">
+                <h5>Navegación</h5>
+                <div class="impact-before">2 hubs separados (delivery + comercial parcial)</div>
+                <div class="impact-after">1 Hub Unificado, 1 clic</div>
+            </div>
+            <div class="impact-card">
+                <h5>Deuda Técnica</h5>
+                <div class="impact-before">7 problemas identificados</div>
+                <div class="impact-after">0 problemas (Ejes 1-2)</div>
+            </div>
+        </div>
+
+        <!-- ═══════════════ DECISIONES PENDIENTES ═══════════════ -->
+        <div class="section-divider">Decisiones que Necesito de Ti</div>
+
+        <div class="radiografia" style="border-color:var(--gold)">
+            <h2 style="color:var(--gold)">🎯 5 Decisiones para Avanzar</h2>
+
+            <div class="decision">
+                <h4>D1. ¿Hub Unificado (A) o Hubs Separados (B)?</h4>
+                <p>Recomiendo A. Un solo Hub con secciones: Delivery, Comercial, Transversales, Integración. Pero tu equipo puede preferir dominios separados si los usan personas distintas.</p>
+            </div>
+
+            <div class="decision">
+                <h4>D2. ¿Qué hacer con delivery/{empresas, personas, aliados}?</h4>
+                <p>Estos 3 subdirectorios dentro de proceso-delivery-servicios replican la taxonomía de proceso-comercial. ¿Tienen propósito (delivery segmentado por cliente)? ¿O son placeholders que se pueden eliminar? Si los dejamos, necesitan SOPs propios para justificar su existencia.</p>
+            </div>
+
+            <div class="decision">
+                <h4>D3. ¿Quién es SPOC de cada dominio?</h4>
+                <p>Mi propuesta basada en los 4 C-levels: Javier → programa-elite + transversales. Daniel → tecnología + bootcamp. Germán → aliados + embajadores. Katherine → workshop + B2C + infoproductos. B2B empresas es compartido Javier/Katherine. ¿Correcto?</p>
+            </div>
+
+            <div class="decision">
+                <h4>D4. ¿Arrancamos con Eje 1+2 ahora, o quieres replanificar algo?</h4>
+                <p>Los Ejes 1 y 2 son los de mayor ROI inmediato y puedo ejecutarlos en esta sesión. Eje 3 requiere tus decisiones (SPOC, ciclo). Eje 4 es backlog futuro.</p>
+            </div>
+
+            <div class="decision">
+                <h4>D5. ¿Qué nombre darle al Hub Unificado?</h4>
+                <p>Opciones: "Gobierno Operativo Hub", "MetodologIA Operations Hub", "Centro de Operaciones", "El Cockpit". El nombre importa — es lo que el equipo va a decir cuando necesite consultar algo.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div>MetodologIA — Gobierno Operativo | Plan de Consolidación v1.0</div>
+        <div style="margin-top:4px">Generado: 24 marzo 2026 | Clasificación: Estratégico-Operativo | Preparado para: Javier Montaño</div>
+        <div style="margin-top:8px;font-size:.72rem;opacity:.5">De 381 archivos a un sistema que la gente USE.</div>
+    </footer>
+
+    <script>
+        // Auto-open first eje
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.eje').forEach(e => {
+                if (!e.classList.contains('eje-1')) return;
+                e.classList.add('open');
+            });
+        });
+    </script>
+</body>
+</html>

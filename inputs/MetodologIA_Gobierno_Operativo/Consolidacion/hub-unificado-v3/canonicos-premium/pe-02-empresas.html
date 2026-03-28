@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="PROGRAMA ELITE P2 — Digital Champions Corporativo — Proceso de Delivery MetodologIA">
+    <title>PROGRAMA ELITE P2 — Digital Champions Corporativo — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Premium</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">PROGRAMA ELITE P2 — Digital Champions Corporativo</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>PROGRAMA ELITE P2 — Digital Champions Corporativo</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: PE-02-EMPRESAS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-empresas-1651e9')" aria-label="Ir a Documento Canónico | Segmento: EMPRESAS">Documento Canónico | Segmento: EMPR</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-y-alcance-e4c27b')" aria-label="Ir a 2. Definición y Alcance">2. Definición y Alcance</button>
+<button class="nav-btn" onclick="scrollToSection('3-audiencia-corporativa-8698e4')" aria-label="Ir a 3. Audiencia Corporativa">3. Audiencia Corporativa</button>
+<button class="nav-btn" onclick="scrollToSection('4-propuesta-de-valor-2908ef')" aria-label="Ir a 4. Propuesta de Valor">4. Propuesta de Valor</button>
+<button class="nav-btn" onclick="scrollToSection('5-curriculum-12-semanas-corporativo-76c334')" aria-label="Ir a 5. Curriculum (12 Semanas) - Corporativo">5. Curriculum (12 Semanas) - Corpor</button>
+<button class="nav-btn" onclick="scrollToSection('6-entregables-577231')" aria-label="Ir a 6. Entregables">6. Entregables</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-comercial-4c8ca0')" aria-label="Ir a 7. Modelo Comercial">7. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('8-canal-de-venta-b4c772')" aria-label="Ir a 8. Canal de Venta">8. Canal de Venta</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-b421c5')" aria-label="Ir a 9. Operación">9. Operación</button>
+<button class="nav-btn" onclick="scrollToSection('10-estructura-semanal-participante-41e104')" aria-label="Ir a 10. Estructura Semanal (Participante)">10. Estructura Semanal (Participant</button>
+<button class="nav-btn" onclick="scrollToSection('11-diferenciadores-vs-programas-externos-e14dbc')" aria-label="Ir a 11. Diferenciadores vs. Programas Externos">11. Diferenciadores vs. Programas E</button>
+<button class="nav-btn" onclick="scrollToSection('12-kpis-15e4c5')" aria-label="Ir a 12. KPIs">12. KPIs</button>
+<button class="nav-btn" onclick="scrollToSection('13-trminos-comerciales-be9cc2')" aria-label="Ir a 13. Términos Comerciales">13. Términos Comerciales</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-empresas-1651e9" data-searchable aria-labelledby="head-documento-cannico-segmento-empresas-1651e9">
+            <div class="phase-header" id="head-documento-cannico-segmento-empresas-1651e9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: EMPRESAS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> PE-02-EMPRESAS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Empresas (B2B — Corporativo)</p>
+<p class="key-value"><strong>Precio canónico:</strong> COP 28.000.000 | <strong>Duración:</strong> 12 semanas</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Programa intensivo de formación de líderes internos de transformación IA. Diseñado para equipos corporativos (8-15 personas). Combina aprendizaje estructurado, proyecto transformador real, mentoring ejecutivo y creación de centro de excelencia interno.</p>
+<p class="key-value"><strong>Objetivo:</strong> Crear grupo de &quot;Digital Champions&quot; internos que lideren transformación en la organización.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-y-alcance-e4c27b" data-searchable aria-labelledby="head-2-definicin-y-alcance-e4c27b">
+            <div class="phase-header" id="head-2-definicin-y-alcance-e4c27b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición y Alcance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Programa corporativo de 12 semanas que capacita y empodera equipo interno para liderar iniciativas de transformación digital/IA. Cada participante trabaja en caso de uso real de su departamento, con mentoría de expertos externos y acceso a metodología de implementación.</p>
+<p class="key-value"><strong>Participantes:</strong> 8-15 personas de la organización</p>
+<div class="bullet-item">Gerentes, especialistas, leads de departamentos</div>
+<div class="bullet-item">Representación multi-funcional (operaciones, IT, RH, finanzas, etc.)</div>
+<div class="bullet-item">Personas designadas para liderar transformación</div>
+<p class="key-value"><strong>Duración:</strong> 12 semanas (84 días)</p>
+<p class="key-value"><strong>Formato:</strong> Hybrid - sesiones sincrónicas + aprendizaje asincrónico + proyecto real</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-audiencia-corporativa-8698e4" data-searchable aria-labelledby="head-3-audiencia-corporativa-8698e4">
+            <div class="phase-header" id="head-3-audiencia-corporativa-8698e4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Audiencia Corporativa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Decisor:</strong> Gerente General, COO, Sponsor de transformación</div>
+<div class="bullet-item"><strong>Participantes:</strong> Gerentes, especialistas de departamentos, future leaders</div>
+<div class="bullet-item"><strong>Beneficiario final:</strong> Toda la organización</div>
+<div class="bullet-item"><strong>Rango empresarial:</strong> PYMES medianas a grandes (100-500+ empleados)</div>
+<div class="bullet-item"><strong>Contexto:</strong> Empresa en transformación digital, con presupuesto para desarrollo</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-propuesta-de-valor-2908ef" data-searchable aria-labelledby="head-4-propuesta-de-valor-2908ef">
+            <div class="phase-header" id="head-4-propuesta-de-valor-2908ef" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Propuesta de Valor</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Capacidad interna:</strong> Crear grupo de líderes de transformación in-house</div>
+<div class="bullet-item"><strong>Velocidad de implementación:</strong> Equipo listo para ejecutar desde el inicio</div>
+<div class="bullet-item"><strong>Visión compartida:</strong> Alineación de equipo en dirección digital</div>
+<div class="bullet-item"><strong>Empoderamiento:</strong> Desarrollo profesional visible de colaboradores</div>
+<div class="bullet-item"><strong>Sostenibilidad:</strong> Transformación no depende de consultor externo</div>
+<div class="bullet-item"><strong>ROI:</strong> Multiplicador de impacto vs. consultoría tradicional</div>
+<div class="bullet-item"><strong>Cultura:</strong> Inversión en desarrollo de personas = engagement y retención</div>
+<div class="bullet-item"><strong>Red interna:</strong> Conexión entre departamentos, colaboración</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-curriculum-12-semanas-corporativo-76c334" data-searchable aria-labelledby="head-5-curriculum-12-semanas-corporativo-76c334">
+            <div class="phase-header" id="head-5-curriculum-12-semanas-corporativo-76c334" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Curriculum (12 Semanas) - Corporativo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="semana-12-fundamentos-ia-alineacin-empresarial-fbd3df">Semana 1-2: Fundamentos IA + Alineación Empresarial</h3>
+<div class="bullet-item">Qué es IA generativa en contexto corporativo</div>
+<div class="bullet-item">Oportunidades en industria/empresa específica</div>
+<div class="bullet-item">Visión y roadmap de la empresa (revisión)</div>
+<div class="bullet-item">Casos de uso por departamento</div>
+<div class="bullet-item"><strong>Proyecto:</strong> Definición de 8-15 casos por participante (1 por persona)</div>
+<h3 class="subsection-title" id="semana-34-diagnstico-y-diseo-de-soluciones-274460">Semana 3-4: Diagnóstico y Diseño de Soluciones</h3>
+<div class="bullet-item">Prompting avanzado para contexto empresarial</div>
+<div class="bullet-item">RAG y knowledge bases corporativas</div>
+<div class="bullet-item">Integración con sistemas existentes (CRM, ERP, etc.)</div>
+<div class="bullet-item">Diseño de asistentes o agentes para casos de uso</div>
+<div class="bullet-item"><strong>Proyecto:</strong> Prototipo de solución para cada caso</div>
+<h3 class="subsection-title" id="semana-56-casos-de-uso-profundos-por-rea-bb284d">Semana 5-6: Casos de Uso Profundos (Por Área)</h3>
+<div class="bullet-item">Track 1 (Operaciones): Automatización, análisis, reporting</div>
+<div class="bullet-item">Track 2 (RH): Recruitment, onboarding, talent development</div>
+<div class="bullet-item">Track 3 (Finanzas): Análisis, forecasting, compliance</div>
+<div class="bullet-item">Track 4 (Ventas/Marketing): Prospecting, personalización, analytics</div>
+<div class="bullet-item">Track 5 (IT): DevOps, seguridad, arquitectura</div>
+<div class="bullet-item"><strong>Proyecto:</strong> Detalle de implementación para cada caso</div>
+<h3 class="subsection-title" id="semana-78-implementacin-tcnica-handson-bbcc9d">Semana 7-8: Implementación Técnica (Hands-on)</h3>
+<div class="bullet-item">No-code tools (Zapier, Make, n8n) para integraciones</div>
+<div class="bullet-item">APIs y conectores</div>
+<div class="bullet-item">Testing y validación</div>
+<div class="bullet-item">MVP de soluciones prototipadas</div>
+<div class="bullet-item"><strong>Proyecto:</strong> Primera iteración funcional de casos</div>
+<h3 class="subsection-title" id="semana-910-liderazgo-y-cambio-organizacional-9ee849">Semana 9-10: Liderazgo y Cambio Organizacional</h3>
+<div class="bullet-item">Gestión del cambio en transformaciones IA</div>
+<div class="bullet-item">Comunicación a stakeholders internos</div>
+<div class="bullet-item">Métricas de éxito y ROI</div>
+<div class="bullet-item">Resistencia y mitigación</div>
+<div class="bullet-item">Governance y sostenibilidad</div>
+<div class="bullet-item"><strong>Proyecto:</strong> Plan de cambio y escalado para cada iniciativa</div>
+<h3 class="subsection-title" id="semana-1112-sntesis-y-centro-de-excelencia-515980">Semana 11-12: Síntesis y Centro de Excelencia</h3>
+<div class="bullet-item">Finalización de proyectos</div>
+<div class="bullet-item">Presentación a C-suite y stakeholders</div>
+<div class="bullet-item">Definición de Centro de Excelencia Digital interno</div>
+<div class="bullet-item">Roadmap de siguientes iniciativas</div>
+<div class="bullet-item">Certificación y reconocimiento</div>
+<div class="bullet-item"><strong>Proyecto:</strong> Launch de primeras iniciativas, documento de roadmap</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-entregables-577231" data-searchable aria-labelledby="head-6-entregables-577231">
+            <div class="phase-header" id="head-6-entregables-577231" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Entregables</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Por Programa (Empresa):</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Equipo capacitado:</strong> 8-15 Digital Champions certificados</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Proyectos completados:</strong> 8-15 casos de uso con MVP o solución funcional</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Documento de roadmap:</strong> Plan de transformación de 24 meses</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Centro de excelencia:</strong> Estructura, roles, governance interna</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Documentación:</strong> Playbooks, procesos, lecciones aprendidas</span></div>
+<p class="key-value"><strong>Por Participante:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Certificación:</strong> &quot;MetodologIA Digital Champion - Corporativo&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Proyecto:</strong> Caso de uso desarrollado hasta MVP</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Plan de desarrollo:</strong> Carrera profesional post-programa</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Network:</strong> Conexiones con otros champions internos</span></div>
+<p class="key-value"><strong>Corporativos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Módulos de aprendizaje (12 semanas)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Sesiones sincrónicas semanales (12 sesiones)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Mentoring para cada participante (2 sesiones de grupo + acceso a soporte)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Faciliación de proyecto final (presentación a junta)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Workshop de Centro de Excelencia (estructura y governance)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Documentación de procesos y playbooks compartidos</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-comercial-4c8ca0" data-searchable aria-labelledby="head-7-modelo-comercial-4c8ca0">
+            <div class="phase-header" id="head-7-modelo-comercial-4c8ca0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Precio:</strong> COP 28.000.000 (por 8-15 participantes)</p>
+<p class="key-value"><strong>Precio unitario:</strong> COP 1.9-3.5M por persona</p>
+<p class="key-value"><strong>Modelo:</strong> Programa corporativo grupo</p>
+<p class="key-value"><strong>Duración:</strong> 12 semanas</p>
+<p class="key-value"><strong>Margen:</strong> 60%+ (eficiencia de grupo vs. individual)</p>
+<p class="key-value"><strong>Ingresos recurrentes:</strong> Retainer de seguimiento (3 meses post-programa, COP 10M)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-canal-de-venta-b4c772" data-searchable aria-labelledby="head-8-canal-de-venta-b4c772">
+            <div class="phase-header" id="head-8-canal-de-venta-b4c772" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Canal de Venta</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Prospectación:</strong> Empresas en transformación identificadas vía diagnósticos previos</div>
+<div class="bullet-item"><strong>Bundling:</strong> Venta junto a CON-T2 o CON-T3 (programa de capacitación complementaria)</div>
+<div class="bullet-item"><strong>Validación:</strong> Sponsor ejecutivo confirma equipo y presupuesto</div>
+<div class="bullet-item"><strong>Propuesta:</strong> Curriculum adaptado a industria + equipo asignado</div>
+<div class="bullet-item"><strong>Cierre:</strong> Contrato corporativo + SOW + calendario</div>
+<div class="bullet-item"><strong>Activación:</strong> Kick-off ejecutivo + reclutamiento de participantes</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-b421c5" data-searchable aria-labelledby="head-9-operacin-b421c5">
+            <div class="phase-header" id="head-9-operacin-b421c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Equipo asignado:</strong></p>
+<div class="bullet-item">1 Program Director (80% dedicación, 12 semanas)</div>
+<div class="bullet-item">2-3 Mentores/Instructores (50-70% dedicación, según tracks)</div>
+<div class="bullet-item">1 Community Manager (40% dedicación, coordination y slack)</div>
+<div class="bullet-item">1 Project Facilitator (30% dedicación, soporte a proyectos)</div>
+<div class="bullet-item">Acceso a templates, frameworks, herramientas</div>
+<p class="key-value"><strong>Plataforma:</strong> Hybrid</p>
+<div class="bullet-item">LMS para contenido asincrónico</div>
+<div class="bullet-item">Zoom para sesiones sincrónicas (1x/semana)</div>
+<div class="bullet-item">Slack corporativo privado (o Teams si cliente lo prefiere)</div>
+<div class="bullet-item">GitHub/Notion para documentación de proyectos</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-estructura-semanal-participante-41e104" data-searchable aria-labelledby="head-10-estructura-semanal-participante-41e104">
+            <div class="phase-header" id="head-10-estructura-semanal-participante-41e104" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Estructura Semanal (Participante)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Asincrónico (1-2h/semana):</strong> Módulos de video, worksheets, recursos</div>
+<div class="bullet-item"><strong>Sincrónico grupal (1.5-2h/semana):</strong> Sesión de workshop o Q&amp;A + guest speaker</div>
+<div class="bullet-item"><strong>Proyecto (3-4h/semana):</strong> Desarrollo del caso de uso asignado</div>
+<div class="bullet-item"><strong>Total:</strong> 5-8h/semana (flexible, algunos son dedicados al programa)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-diferenciadores-vs-programas-externos-e14dbc" data-searchable aria-labelledby="head-11-diferenciadores-vs-programas-externos-e14dbc">
+            <div class="phase-header" id="head-11-diferenciadores-vs-programas-externos-e14dbc" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Diferenciadores vs. Programas Externos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Contexto específico:</strong> Todos los casos son de la empresa</div>
+<div class="bullet-item"><strong>Ejecución real:</strong> No es simulación, son proyectos reales con ROI</div>
+<div class="bullet-item"><strong>Internal network:</strong> Crea red de colaboradores multi-funcional</div>
+<div class="bullet-item"><strong>Escalabilidad:</strong> Diseñado para que participantes escalen iniciativas</div>
+<div class="bullet-item"><strong>Centro de excelencia:</strong> No termina en semana 12, hay continuidad</div>
+<div class="bullet-item"><strong>Soporte post-programa:</strong> 12 semanas de follow-up incluidas</div>
+<div class="bullet-item"><strong>ROI directo:</strong> Casos implementados generan ahorro/ingreso</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-kpis-15e4c5" data-searchable aria-labelledby="head-12-kpis-15e4c5">
+            <div class="phase-header" id="head-12-kpis-15e4c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. KPIs</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Ejecución:</strong></p>
+<div class="bullet-item">Finalización del programa: 95%+</div>
+<div class="bullet-item">Entrega de proyectos: 90%+ completados</div>
+<div class="bullet-item">Participación en sesiones: 85%+</div>
+<p class="key-value"><strong>Aprendizaje:</strong></p>
+<div class="bullet-item">Evaluación de competencias: Baseline → +40% mejora</div>
+<div class="bullet-item">Comprensión de IA aplicada: 80%+ pueda explicar a otros</div>
+<div class="bullet-item">Preparación para lideranza: 85%+ listos para escalar</div>
+<p class="key-value"><strong>Impacto:</strong></p>
+<div class="bullet-item">Proyectos con MVP: 80%+ funcionales al cierre</div>
+<div class="bullet-item">Proyectos escalados en primeros 6 meses: 50%+</div>
+<div class="bullet-item">ROI acumulado de proyectos: &gt;200% año 1</div>
+<div class="bullet-item">Retención de participantes: 95%+ se quedan en empresa</div>
+<div class="bullet-item">Promociones derivadas: 30%+ reciben oportunidades nuevas</div>
+<p class="key-value"><strong>Organizacional:</strong></p>
+<div class="bullet-item">Centro de excelencia operativo: Sí</div>
+<div class="bullet-item">Roadmap de transformación: Documentado y aprobado</div>
+<div class="bullet-item">Autonomía de equipo: 80%+ puede ejecutar sin consultor</div>
+<div class="bullet-item">Satisfacción de sponsor: NPS 8+/10</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-trminos-comerciales-be9cc2" data-searchable aria-labelledby="head-13-trminos-comerciales-be9cc2">
+            <div class="phase-header" id="head-13-trminos-comerciales-be9cc2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Términos Comerciales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Participación:</strong></p>
+<div class="bullet-item">Duración: 12 semanas calendario</div>
+<div class="bullet-item">Participantes: 8-15 personas</div>
+<div class="bullet-item">Dedicación: 5-8h/semana por persona</div>
+<div class="bullet-item">Horario: Flexible (asincrónico) + sesiones semanales (horario a acordar)</div>
+<div class="bullet-item">Requisitos:</div>
+<div class="bullet-item">Designación oficial como participant</div>
+<div class="bullet-item">Acceso a sistemas internos necesarios</div>
+<div class="bullet-item">Sponsor de departamento para liberar tiempo</div>
+<div class="bullet-item">Compromiso de implementación post-programa</div>
+<p class="key-value"><strong>Pago:</strong></p>
+<div class="bullet-item">50% anticipo (al firmar)</div>
+<div class="bullet-item">50% al mes 6 (mitad del programa)</div>
+<p class="key-value"><strong>Responsabilidades MetodologIA:</strong></p>
+<div class="bullet-item">Curriculum customizado a industria/empresa</div>
+<div class="bullet-item">12 sesiones sincrónicas semanales</div>
+<div class="bullet-item">Mentoring grupal (2-3h/semana)</div>
+<div class="bullet-item">Faciliación de proyectos (hands-on support)</div>
+<div class="bullet-item">Documentación y playbooks</div>
+<div class="bullet-item">Workshop de Centro de Excelencia (al cierre)</div>
+<div class="bullet-item">Soporte post-programa (12 semanas)</div>
+<div class="bullet-item">Certificación de participantes</div>
+<p class="key-value"><strong>Responsabilidades empresa:</strong></p>
+<div class="bullet-item">Liberación de tiempo de participantes (5-8h/semana)</div>
+<div class="bullet-item">Acceso a sistemas e información</div>
+<div class="bullet-item">Sponsor ejecutivo disponible (reuniones de governance)</div>
+<div class="bullet-item">Designación de &quot;Program Owner&quot; interno</div>
+<div class="bullet-item">Provisión de recursos/presupuesto para implementar MVPs</div>
+<div class="bullet-item">Participación en sesiones de presentación/governance</div>
+<p class="key-value"><strong>Cambios de alcance:</strong></p>
+<div class="bullet-item">Aumento de participantes: +COP 2M por persona</div>
+<div class="bullet-item">Extensión de programa: COP 1M por semana adicional</div>
+<div class="bullet-item">Tracking adicionales: Disponible con costo</div>
+<p class="key-value"><strong>Post-programa:</strong></p>
+<div class="bullet-item">Soporte de follow-up: 12 semanas incluidas</div>
+<div class="bullet-item">Continuación: Opción de retainer (COP 10M/trimestre)</div>
+<div class="bullet-item">Escalado de iniciativas: Disponible vía CON-T2 o CON-T3</div>
+<div class="bullet-item">Centro de excelencia: Diseño y governance primer trimestre, luego auto-sostenible</div>
+<p class="key-value"><strong>Intelectual Property:</strong></p>
+<div class="bullet-item">Código y documentación: Propiedad de empresa</div>
+<div class="bullet-item">Metodología y frameworks: Propiedad MetodologIA (uso permitido)</div>
+<div class="bullet-item">Resultados y learnings: Compartidos (con confidencialidad)</div>
+<p class="key-value"><strong>Confidencialidad:</strong></p>
+<div class="bullet-item">Todos los casos y datos son confidenciales</div>
+<div class="bullet-item">Resultados no pueden ser publicados sin permiso</div>
+<div class="bullet-item">NDA estándar ejecutado antes de inicio</div>
+<p class="key-value"><strong>Cancelación:</strong></p>
+<div class="bullet-item">Sin costo si cancela antes de semana 2</div>
+<div class="bullet-item">Penalidad 50% si cancela semana 3-6</div>
+<div class="bullet-item">Sin reembolso si cancela después de semana 6</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

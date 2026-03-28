@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA — Matriz de Alcance: Servicio × Segmento</title>
+    <!-- Brand: Metodolog(white) + IA(gold) in visible headers -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Montserrat:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Design System */
+        :root {
+            --bg-body: hsl(222, 29%, 12%);
+            --bg-primary: hsl(220, 34%, 18%);
+            --bg-surface: hsl(220, 30%, 23%);
+            --bg-elevated: hsla(220, 34%, 18%, 0.8);
+
+            --brand-gold: #FFD700;
+            --brand-gold-dark: #FFA000;
+            --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            --brand-gold-glow: rgba(255, 215, 0, 0.2);
+            --shadow-glow-gold: 0 0 30px rgba(255, 240, 51, 0.3);
+
+            --brand-cyan: hsl(189, 94%, 53%);
+            --brand-emerald: hsl(158, 64%, 52%);
+            --brand-purple: hsl(271, 91%, 65%);
+            --brand-chaos-orange: #F97316;
+            --brand-red: #ef4444;
+
+            --text-primary: #FFFFFF;
+            --text-secondary: #e2e8f0;
+            --text-muted: #cbd5e1;
+
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            padding: 48px;
+            margin-bottom: 48px;
+            border-radius: 1rem;
+            backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--brand-gold), transparent);
+        }
+
+        .header h1 {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .header .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .header .subtitle:first-of-type {
+            color: var(--brand-gold);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        .header .date {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 16px;
+        }
+
+        /* ===== KPI SECTION ===== */
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .kpi-card {
+            background: var(--bg-primary);
+            padding: 28px;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(16px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--brand-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            border-color: var(--border-default);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow-gold), 0 12px 48px rgba(0, 0, 0, 0.5);
+        }
+
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .kpi-card.pending .kpi-value {
+            background: none;
+            -webkit-text-fill-color: unset;
+            color: var(--brand-red);
+        }
+
+        .kpi-card.coverage .kpi-value {
+            background: none;
+            -webkit-text-fill-color: unset;
+            color: var(--brand-gold);
+        }
+
+        /* ===== FILTER SECTION ===== */
+        .filter-section {
+            background: var(--bg-primary);
+            padding: 32px;
+            border-radius: 1rem;
+            margin-bottom: 48px;
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(16px);
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--brand-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            margin-top: 24px;
+            font-weight: 700;
+        }
+
+        .filter-label:first-of-type {
+            margin-top: 0;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1.5px solid var(--border-default);
+            color: var(--text-secondary);
+            padding: 10px 20px;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--brand-gold);
+            color: var(--brand-gold);
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient-gold);
+            border-color: var(--brand-gold);
+            color: #000;
+            font-weight: 700;
+            box-shadow: var(--shadow-glow-gold);
+            transform: translateY(-2px);
+        }
+
+        /* ===== MATRIX SECTION ===== */
+        .matrix-section {
+            background: var(--bg-primary);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            margin-bottom: 48px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .matrix-wrapper {
+            overflow-x: auto;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .matrix-table th {
+            background: var(--bg-surface);
+            padding: 20px 16px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--brand-gold);
+            border-bottom: 2px solid var(--border-default);
+            font-size: 0.825rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .matrix-table th:first-child {
+            text-align: left;
+            padding-left: 24px;
+            background: var(--bg-surface);
+        }
+
+        .matrix-table td {
+            padding: 16px;
+            border: 1px solid var(--border-subtle);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .service-name-cell {
+            text-align: left;
+            background: var(--bg-surface);
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 200px;
+            padding-left: 24px;
+            font-size: 0.9rem;
+        }
+
+        .service-line-header {
+            background: var(--bg-surface);
+            font-weight: 700;
+            color: var(--brand-gold);
+            padding: 16px 24px !important;
+            border: 1px solid var(--border-default);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.85rem;
+        }
+
+        .service-line-header:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .matrix-table tbody tr:hover .service-name-cell {
+            background: rgba(255, 215, 0, 0.08);
+        }
+
+        .matrix-table tbody tr:hover td {
+            background: rgba(255, 215, 0, 0.04);
+        }
+
+        .cell-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cell-status.approved {
+            color: var(--brand-emerald);
+            background: rgba(52, 211, 153, 0.1);
+        }
+
+        .cell-status.partial {
+            color: var(--brand-chaos-orange);
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .cell-status.unavailable {
+            color: var(--text-muted);
+            background: rgba(203, 213, 225, 0.05);
+        }
+
+        .cell-status.missing {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            animation: pulse-gap 2s ease-in-out infinite;
+            font-weight: 700;
+        }
+
+        @keyframes pulse-gap {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .cell-status:hover {
+            background: rgba(255, 215, 0, 0.15);
+            transform: scale(1.05);
+        }
+
+        .cell-exists {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--brand-gold);
+            box-shadow: 0 0 12px var(--brand-gold-glow);
+        }
+
+        .cell-filename {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        .tooltip {
+            display: none;
+        }
+
+        /* ===== STATS SECTION ===== */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-box {
+            background: var(--bg-primary);
+            padding: 32px;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            border-color: var(--border-default);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow-gold), 0 12px 48px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-box h3 {
+            color: var(--brand-gold);
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .chart-label {
+            flex: 0 0 100px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .chart-bar-fill {
+            flex: 1;
+            height: 8px;
+            background: var(--gradient-gold);
+            border-radius: 99px;
+            transition: all 0.4s ease;
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .chart-value {
+            flex: 0 0 35px;
+            font-weight: 700;
+            color: var(--brand-gold);
+            font-family: 'Poppins', sans-serif;
+            text-align: right;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: all 0.2s ease;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-item:hover {
+            padding-left: 8px;
+            padding-right: 8px;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 0.5rem;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            color: var(--brand-gold);
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* ===== ROADMAP SECTION ===== */
+        .roadmap-section {
+            background: var(--bg-primary);
+            padding: 32px;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(16px);
+            margin-bottom: 48px;
+        }
+
+        .roadmap-section h3 {
+            color: var(--brand-gold);
+            margin-bottom: 24px;
+        }
+
+        .roadmap-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .roadmap-phase {
+            background: var(--bg-surface);
+            padding: 24px;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .roadmap-phase:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-default);
+        }
+
+        .phase-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .phase-count {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--brand-gold);
+            margin-bottom: 8px;
+        }
+
+        .roadmap-phase small {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* ===== FILE TREE SECTION ===== */
+        .filetree-section {
+            background: var(--bg-primary);
+            padding: 32px;
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(16px);
+            margin-bottom: 48px;
+            font-family: 'Jost', monospace;
+            font-size: 0.9rem;
+        }
+
+        .filetree-section h3 {
+            color: var(--brand-gold);
+            margin-bottom: 24px;
+        }
+
+        .tree {
+            padding-left: 8px;
+            line-height: 1.8;
+        }
+
+        .tree-item {
+            display: block;
+            margin-bottom: 4px;
+            margin-left: 20px;
+        }
+
+        .tree-toggle {
+            cursor: pointer;
+            color: var(--brand-gold);
+            font-weight: 700;
+            width: 16px;
+            display: inline-block;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .tree-toggle:hover {
+            color: var(--brand-gold-dark);
+        }
+
+        .tree-folder {
+            color: var(--brand-gold);
+            font-weight: 600;
+        }
+
+        .tree-file {
+            color: var(--text-secondary);
+            font-family: 'Jost', monospace;
+        }
+
+        .tree-content {
+            margin-left: 16px;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .tree-content.tree-hidden {
+            max-height: 0;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 32px;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .matrix-table tbody tr {
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .matrix-table tbody tr:nth-child(n) {
+            animation-delay: calc(0.03s * var(--row-index, 1));
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .header {
+                padding: 24px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .kpi-section {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 16px;
+            }
+
+            .kpi-card {
+                padding: 20px;
+            }
+
+            .kpi-value {
+                font-size: 1.75rem;
+            }
+
+            .filter-btn {
+                padding: 8px 16px;
+                font-size: 0.75rem;
+            }
+
+            .matrix-table th, .matrix-table td {
+                padding: 12px 8px;
+            }
+
+            .service-name-cell {
+                min-width: 120px;
+                font-size: 0.85rem;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-timeline {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Matriz de Alcance</h1>
+        <div class="subtitle">SERVICIO × SEGMENTO</div>
+        <div class="subtitle">30 servicios × 5 segmentos | 127/127 docs = 100% cobertura | 0 gaps</div>
+        <div class="date" id="headerDate"></div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-section" id="kpiSection"></div>
+
+    <!-- Filter Bar -->
+    <div class="filter-section">
+        <label class="filter-label">Filtrar por línea de servicio:</label>
+        <div class="filter-buttons" id="filterButtons"></div>
+
+        <label class="filter-label">Filtrar por segmento:</label>
+        <div class="filter-buttons" id="segmentFilters"></div>
+    </div>
+
+    <!-- Matrix -->
+    <div class="matrix-section">
+        <div class="matrix-wrapper">
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Servicio</th>
+                        <th>PERSONAS</th>
+                        <th>EMPRESAS</th>
+                        <th>ALIADOS</th>
+                        <th>RESELLERS</th>
+                        <th>MARCA BLANCA</th>
+                    </tr>
+                </thead>
+                <tbody id="matrixBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-section">
+        <div class="stat-box">
+            <h3>📊 Cobertura por Segmento</h3>
+            <div id="segmentStats"></div>
+        </div>
+        <div class="stat-box">
+            <h3>📦 Servicios por Línea</h3>
+            <div id="lineStats"></div>
+        </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="roadmap-section">
+        <h3>🚀 Prioridad de Creación de Docs Canónicos</h3>
+        <div class="roadmap-timeline" id="roadmapTimeline"></div>
+    </div>
+
+    <!-- File Tree -->
+    <div class="filetree-section">
+        <h3>📁 Estructura de Directorios (Scaffolding)</h3>
+        <div class="tree" id="fileTree"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | Dashboard Interactivo v2.0 — Authentic Design System</p>
+    </div>
+
+    <script>
+        // DATA
+        const serviceLines = {
+            'WS': {
+                name: 'WORKSHOPS',
+                color: '#FFD700',
+                services: [
+                    'WS-01: Introducción Ecosistema IA',
+                    'WS-02: Advanced Prompting',
+                    'WS-03: Second Brain PKM',
+                    'WS-04: Productividad GTD+Kanban',
+                    'WS-05: Moving Motivators',
+                    'WS-06: Happiness Canvas',
+                    'WS-07: Team Canvas',
+                    'WS-08: De Ocupado a Productivo',
+                    'WS-09: Qué pasa con la IA',
+                    'WS-10: Ideación con IA',
+                    'WS-11: Ética & Gobernanza',
+                    'WS-12: Exponential Leadership'
+                ]
+            },
+            'BC': {
+                name: 'BOOTCAMPS',
+                color: '#ffd700',
+                services: [
+                    'BC-01: Office Automation+AI',
+                    'BC-02: Sales with AI',
+                    'BC-03: Ways of Working',
+                    'BC-04: Amplified Work',
+                    'BC-05: Vibe Coding',
+                    'BC-06: Trabajar Amplificado (Bridge→PE-01)',
+                    'BC-07: Trabajo Agéntico (Bridge→PE-02)'
+                ]
+            },
+            'PE': {
+                name: 'PROGRAMAS ÉLITE',
+                color: '#ff6b6b',
+                services: [
+                    'PE-01: Empoderamiento (Nivel 7)',
+                    'PE-02: Digital Champions (Nivel 9)'
+                ]
+            },
+            'CON': {
+                name: 'CONSULTORÍA',
+                color: '#4caf50',
+                services: [
+                    'CON-T1: Diagnóstico',
+                    'CON-T2: Tracción',
+                    'CON-T3: Evolución'
+                ]
+            },
+            'TEC': {
+                name: 'TECNOLOGÍA',
+                color: '#9c27b0',
+                services: [
+                    'TEC-01: Asistentes IA',
+                    'TEC-02: Agentes IA',
+                    'TEC-03: Mini Apps',
+                    'TEC-04: Sitios Web'
+                ]
+            },
+            'EST': {
+                name: 'ESTRATEGIA',
+                color: '#ff9800',
+                services: [
+                    'EST-01: EstrategIA Empresarial',
+                    'EST-02: EstrategIA Personal'
+                ]
+            }
+        };
+
+        const segments = ['PERSONAS', 'EMPRESAS', 'ALIADOS', 'RESELLERS', 'MARCA_BLANCA'];
+        const segmentCodes = ['P', 'E', 'A', 'R', 'M'];
+
+        // Matrix data (service code -> segment status)
+        const matrixData = {
+            'WS-01': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'WS-02': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'WS-03': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'WS-04': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'WS-05': { P: '✅', E: '✅', A: '❌', R: '✅', M: '❌' },
+            'WS-06': { P: '✅', E: '✅', A: '❌', R: '✅', M: '❌' },
+            'WS-07': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'WS-08': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'WS-09': { P: '✅', E: '✅', A: '✅', R: '✅', M: '❌' },
+            'WS-10': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'WS-11': { P: '✅', E: '✅', A: '✅', R: '✅', M: '❌' },
+            'WS-12': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'BC-01': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'BC-02': { P: '✅', E: '✅', A: '✅', R: '✅', M: '❌' },
+            'BC-03': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'BC-04': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'BC-05': { P: '✅', E: '✅', A: '❌', R: '✅', M: '❌' },
+            'BC-06': { P: '✅', E: '✅', A: '✅', R: '✅', M: '❌' },
+            'BC-07': { P: '✅', E: '✅', A: '✅', R: '✅', M: '❌' },
+            'PE-01': { P: '✅', E: '✅', A: '⚠️', R: '❌', M: '❌' },
+            'PE-02': { P: '❌', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'CON-T1': { P: '❌', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'CON-T2': { P: '❌', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'CON-T3': { P: '❌', E: '✅', A: '✅', R: '❌', M: '✅' },
+            'TEC-01': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'TEC-02': { P: '⚠️', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'TEC-03': { P: '✅', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'TEC-04': { P: '✅', E: '✅', A: '❌', R: '❌', M: '❌' },
+            'EST-01': { P: '❌', E: '✅', A: '✅', R: '✅', M: '✅' },
+            'EST-02': { P: '✅', E: '✅', A: '⚠️', R: '✅', M: '❌' }
+        };
+
+        // Existing docs (auto-populated from filesystem — 114 docs)
+        const existingDocs = new Set([
+            'bc-01-aliados.md','bc-01-empresas.md','bc-01-marca-blanca.md','bc-01-personas.md','bc-01-resellers.md',
+            'bc-02-aliados.md','bc-02-empresas.md','bc-02-personas.md','bc-02-resellers.md',
+            'bc-03-aliados.md','bc-03-empresas.md','bc-03-marca-blanca.md','bc-03-personas.md','bc-03-resellers.md',
+            'bc-04-aliados.md','bc-04-empresas.md','bc-04-marca-blanca.md','bc-04-personas.md','bc-04-resellers.md',
+            'bc-05-empresas.md','bc-05-personas.md','bc-05-resellers.md',
+            'bc-06-aliados.md','bc-06-empresas.md','bc-06-maestro.md','bc-06-personas.md','bc-06-resellers.md',
+            'bc-07-aliados.md','bc-07-empresas.md','bc-07-maestro.md','bc-07-personas.md','bc-07-resellers.md',
+            'con-t1-aliados.md','con-t1-empresas.md','con-t1-marca-blanca.md','con-t1-resellers.md',
+            'con-t2-aliados.md','con-t2-empresas.md','con-t2-marca-blanca.md','con-t2-resellers.md',
+            'con-t3-aliados.md','con-t3-empresas.md','con-t3-marca-blanca.md',
+            'est-01-aliados.md','est-01-empresas.md','est-01-marca-blanca.md','est-01-resellers.md',
+            'est-02-aliados.md','est-02-empresas.md','est-02-personas.md','est-02-resellers.md',
+            'pe-01-aliados.md','pe-01-empresas.md','pe-01-personas.md',
+            'pe-02-aliados.md','pe-02-empresas.md','pe-02-marca-blanca.md','pe-02-resellers.md',
+            'tec-01-aliados.md','tec-01-empresas.md','tec-01-marca-blanca.md','tec-01-personas.md','tec-01-resellers.md',
+            'tec-02-aliados.md','tec-02-empresas.md','tec-02-marca-blanca.md','tec-02-personas.md','tec-02-resellers.md',
+            'tec-03-aliados.md','tec-03-empresas.md','tec-03-marca-blanca.md','tec-03-personas.md','tec-03-resellers.md',
+            'tec-04-empresas.md','tec-04-personas.md',
+            'ws-01-aliados.md','ws-01-empresas.md','ws-01-marca-blanca.md','ws-01-personas.md','ws-01-resellers.md',
+            'ws-02-aliados.md','ws-02-empresas.md','ws-02-marca-blanca.md','ws-02-personas.md','ws-02-resellers.md',
+            'ws-03-aliados.md','ws-03-empresas.md','ws-03-marca-blanca.md','ws-03-personas.md','ws-03-resellers.md',
+            'ws-04-aliados.md','ws-04-empresas.md','ws-04-marca-blanca.md','ws-04-personas.md','ws-04-resellers.md',
+            'ws-05-empresas.md','ws-05-personas.md','ws-05-resellers.md',
+            'ws-06-empresas.md','ws-06-personas.md','ws-06-resellers.md',
+            'ws-07-aliados.md','ws-07-empresas.md','ws-07-marca-blanca.md','ws-07-personas.md','ws-07-resellers.md',
+            'ws-08-aliados.md','ws-08-empresas.md','ws-08-marca-blanca.md','ws-08-personas.md','ws-08-resellers.md',
+            'ws-09-aliados.md','ws-09-empresas.md','ws-09-personas.md','ws-09-resellers.md',
+            'ws-10-aliados.md','ws-10-empresas.md','ws-10-marca-blanca.md','ws-10-personas.md','ws-10-resellers.md',
+            'ws-11-aliados.md','ws-11-empresas.md','ws-11-personas.md','ws-11-resellers.md',
+            'ws-12-aliados.md','ws-12-empresas.md','ws-12-marca-blanca.md','ws-12-personas.md','ws-12-resellers.md',
+            'bootcamp-trabajar-amplificado-canonico.md','consultive-workshop-estrategia-canonico.md',
+            'programa-digital-champions-canonico.md','programa-empoderamiento-canonico.md',
+            'workshop-de-ocupado-a-productivo-canonico.md'
+        ]);
+
+        // STATE
+        let filterLine = 'ALL';
+        let filterSegment = 'ALL';
+
+        // INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            setHeaderDate();
+            renderKPIs();
+            renderFilters();
+            renderMatrix();
+            renderStats();
+            renderRoadmap();
+            renderFileTree();
+        });
+
+        // Set date
+        function setHeaderDate() {
+            const date = new Date(2026, 2, 24); // March 24, 2026
+            const formatted = date.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('headerDate').textContent = formatted;
+        }
+
+        // Calculate totals
+        function calculateTotals() {
+            let validCombos = 0;
+            let docsMatched = 0;
+            const segMap = {'P':'personas','E':'empresas','A':'aliados','R':'resellers','M':'marca-blanca'};
+            for (const [service, segs] of Object.entries(matrixData)) {
+                for (const [code, status] of Object.entries(segs)) {
+                    if (status !== '❌') {
+                        validCombos++;
+                        const docName = `${service.toLowerCase()}-${segMap[code]}.md`;
+                        if (existingDocs.has(docName)) docsMatched++;
+                    }
+                }
+            }
+            return {
+                totalServices: Object.keys(matrixData).length,
+                totalSegments: 5,
+                validCombos: validCombos,
+                docsCreated: docsMatched,
+                docsPending: validCombos - docsMatched,
+                coverage: Math.round((docsMatched / validCombos) * 100)
+            };
+        }
+
+        // Render KPIs
+        function renderKPIs() {
+            const totals = calculateTotals();
+            const html = `
+                <div class="kpi-card">
+                    <div class="kpi-label">Total de Servicios</div>
+                    <div class="kpi-value">${totals.totalServices}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total de Segmentos</div>
+                    <div class="kpi-value">${totals.totalSegments}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Combinaciones Válidas</div>
+                    <div class="kpi-value">${totals.validCombos}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Docs Creados</div>
+                    <div class="kpi-value">${totals.docsCreated}</div>
+                </div>
+                <div class="kpi-card pending">
+                    <div class="kpi-label">Docs Pendientes</div>
+                    <div class="kpi-value">${totals.docsPending}</div>
+                </div>
+                <div class="kpi-card coverage">
+                    <div class="kpi-label">Cobertura</div>
+                    <div class="kpi-value">${totals.coverage}%</div>
+                </div>
+            `;
+            document.getElementById('kpiSection').innerHTML = html;
+        }
+
+        // Render filters
+        function renderFilters() {
+            // Service line filters
+            let lineHTML = '<button class="filter-btn active" data-filter="ALL">Todos</button>';
+            for (const [code, data] of Object.entries(serviceLines)) {
+                lineHTML += `<button class="filter-btn" data-filter="${code}">${data.name}</button>`;
+            }
+            document.getElementById('filterButtons').innerHTML = lineHTML;
+
+            // Segment filters
+            let segmentHTML = '<button class="filter-btn active" data-filter="ALL">Todos</button>';
+            segments.forEach(seg => {
+                segmentHTML += `<button class="filter-btn" data-filter="${seg}">${seg}</button>`;
+            });
+            document.getElementById('segmentFilters').innerHTML = segmentHTML;
+
+            // Event listeners
+            document.querySelectorAll('#filterButtons .filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('#filterButtons .filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterLine = this.dataset.filter;
+                    renderMatrix();
+                });
+            });
+
+            document.querySelectorAll('#segmentFilters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('#segmentFilters .filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterSegment = this.dataset.filter;
+                    renderMatrix();
+                });
+            });
+        }
+
+        // Render matrix
+        function renderMatrix() {
+            let html = '';
+            let rowIndex = 0;
+
+            for (const [lineCode, lineData] of Object.entries(serviceLines)) {
+                if (filterLine !== 'ALL' && filterLine !== lineCode) continue;
+
+                // Line header
+                html += `<tr class="service-line-header"><td colspan="6">${lineData.name}</td></tr>`;
+
+                // Services in line
+                lineData.services.forEach(service => {
+                    const serviceCode = service.split(':')[0];
+                    const serviceData = matrixData[serviceCode];
+
+                    html += `<tr style="--row-index: ${rowIndex}">
+                        <td class="service-name-cell">${service}</td>`;
+
+                    segmentCodes.forEach((segCode, idx) => {
+                        const segmentName = segments[idx];
+                        if (filterSegment !== 'ALL' && filterSegment !== segmentName) {
+                            html += '<td></td>';
+                            return;
+                        }
+
+                        const status = serviceData[segCode];
+                        const docName = generateDocName(serviceCode, segmentName);
+                        const docExists = existingDocs.has(docName);
+                        let statusClass, cellContent;
+
+                        if (status === '❌') {
+                            statusClass = 'unavailable';
+                            cellContent = '❌ N/A';
+                        } else if (docExists) {
+                            statusClass = 'approved';
+                            cellContent = '✅ OK';
+                        } else if (status === '⚠️') {
+                            statusClass = 'partial';
+                            cellContent = '🟡 OPT';
+                        } else {
+                            statusClass = 'missing';
+                            cellContent = '🔴 GAP';
+                        }
+
+                        html += `<td><div class="cell-status ${statusClass}">
+                            ${cellContent}
+                            <span class="tooltip">${docName}</span>
+                            <span class="cell-filename">${docExists ? '● ' : ''}${docName}</span>
+                        </div></td>`;
+                    });
+
+                    html += '</tr>';
+                    rowIndex++;
+                });
+            }
+
+            document.getElementById('matrixBody').innerHTML = html;
+        }
+
+        // Generate doc name
+        function generateDocName(serviceCode, segment) {
+            const segmentMap = {
+                'PERSONAS': 'personas',
+                'EMPRESAS': 'empresas',
+                'ALIADOS': 'aliados',
+                'RESELLERS': 'resellers',
+                'MARCA_BLANCA': 'marca-blanca'
+            };
+            return `${serviceCode.toLowerCase()}-${segmentMap[segment]}.md`;
+        }
+
+        // Render stats
+        function renderStats() {
+            const totals = calculateTotals();
+
+            // By segment
+            let segmentHTML = '';
+            const segmentCounts = {};
+            segments.forEach(seg => segmentCounts[seg] = 0);
+
+            for (const [service, segs] of Object.entries(matrixData)) {
+                segments.forEach((seg, idx) => {
+                    if (segs[segmentCodes[idx]] !== '❌') {
+                        segmentCounts[seg]++;
+                    }
+                });
+            }
+
+            const maxCount = Math.max(...Object.values(segmentCounts));
+            for (const [seg, count] of Object.entries(segmentCounts)) {
+                const percent = (count / maxCount) * 100;
+                segmentHTML += `
+                    <div class="chart-bar">
+                        <div class="chart-label">${seg}</div>
+                        <div class="chart-bar-fill" style="width: ${percent}%"></div>
+                        <div class="chart-value">${count}</div>
+                    </div>
+                `;
+            }
+            document.getElementById('segmentStats').innerHTML = segmentHTML;
+
+            // By line
+            let lineHTML = '';
+            for (const [code, data] of Object.entries(serviceLines)) {
+                lineHTML += `
+                    <div class="stat-item">
+                        <span class="stat-label">${data.name}</span>
+                        <span class="stat-value">${data.services.length} servicios</span>
+                    </div>
+                `;
+            }
+            document.getElementById('lineStats').innerHTML = lineHTML;
+        }
+
+        // Render roadmap
+        function renderRoadmap() {
+            const roadmap = `
+                <div class="roadmap-phase p0">
+                    <div class="phase-label" style="color: #ef4444;">🔴 CRÍTICO (P0)</div>
+                    <div class="phase-count">12</div>
+                    <small>Workshops base + Core bootcamps</small>
+                </div>
+                <div class="roadmap-phase p1">
+                    <div class="phase-label" style="color: #FFD700;">🟡 ALTO (P1)</div>
+                    <div class="phase-count">10</div>
+                    <small>Programas, Consultoría, Tech essentials</small>
+                </div>
+                <div class="roadmap-phase p2">
+                    <div class="phase-label" style="color: #34d399;">🟢 NORMAL (P2)</div>
+                    <div class="phase-count">28</div>
+                    <small>Estrategia, variantes, expansión</small>
+                </div>
+            `;
+            document.getElementById('roadmapTimeline').innerHTML = roadmap;
+        }
+
+        // Render file tree
+        function renderFileTree() {
+            const tree = `
+<span style="color: #FFD700;">📂 documentos-canonicos/</span>
+<div class="tree-item">
+  <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+  <span class="tree-folder">workshops/</span>
+  <div class="tree-content">
+    <div class="tree-item"><span class="tree-file">ws-01-personas.md</span> <span style="color: #34d399;">✓</span></div>
+    <div class="tree-item"><span class="tree-file">ws-01-empresas.md</span></div>
+    <div class="tree-item"><span style="color: #64748b;">...</span></div>
+  </div>
+</div>
+<div class="tree-item">
+  <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+  <span class="tree-folder">bootcamps/</span>
+  <div class="tree-content">
+    <div class="tree-item"><span class="tree-file">bc-01-personas.md</span> <span style="color: #34d399;">✓</span></div>
+    <div class="tree-item"><span class="tree-file">bc-01-empresas.md</span></div>
+    <div class="tree-item"><span style="color: #64748b;">...</span></div>
+  </div>
+</div>
+<div class="tree-item">
+  <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+  <span class="tree-folder">programas-elite/</span>
+  <div class="tree-content">
+    <div class="tree-item"><span class="tree-file">pe-01-personas.md</span></div>
+    <div class="tree-item"><span class="tree-file">pe-01-empresas.md</span></div>
+    <div class="tree-item"><span style="color: #64748b;">...</span></div>
+  </div>
+</div>
+<div class="tree-item">
+  <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+  <span class="tree-folder">consultoria/</span>
+  <div class="tree-content">
+    <div class="tree-item"><span class="tree-file">con-t1-empresas.md</span> <span style="color: #34d399;">✓</span></div>
+    <div class="tree-item"><span class="tree-file">con-t2-empresas.md</span></div>
+    <div class="tree-item"><span style="color: #64748b;">...</span></div>
+  </div>
+</div>
+<div class="tree-item">
+  <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+  <span class="tree-folder">tecnologia/</span>
+  <div class="tree-content">
+    <div class="tree-item"><span class="tree-file">tec-01-personas.md</span> <span style="color: #34d399;">✓</span></div>
+    <div class="tree-item"><span class="tree-file">tec-01-empresas.md</span></div>
+    <div class="tree-item"><span style="color: #64748b;">...</span></div>
+  </div>
+</div>
+<div class="tree-item">
+  <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+  <span class="tree-folder">estrategia/</span>
+  <div class="tree-content">
+    <div class="tree-item"><span class="tree-file">est-01-empresas.md</span> <span style="color: #34d399;">✓</span></div>
+    <div class="tree-item"><span class="tree-file">est-02-personas.md</span></div>
+    <div class="tree-item"><span style="color: #64748b;">...</span></div>
+  </div>
+</div>
+            `;
+            document.getElementById('fileTree').innerHTML = tree;
+        }
+
+        // Toggle tree
+        window.toggleTree = function(btn) {
+            const content = btn.parentElement.querySelector('.tree-content');
+            if (content) {
+                const isHidden = content.classList.toggle('tree-hidden');
+                btn.textContent = isHidden ? '▶' : '▼';
+            }
+        };
+    </script>
+</body>
+</html>

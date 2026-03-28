@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Desarrollar Agentes IA — Amplificador Operativo — Proceso de Delivery MetodologIA">
+    <title>SOP: Desarrollar Agentes IA — Amplificador Operativo — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Tecnologia</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Desarrollar Agentes IA — Amplificador Operati</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Desarrollar Agentes IA — Amplificador Operativo</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">## Versión: 1.0 | Próxima revisión: 2026-Q3 | Propietario: Vertical TecnologIA</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">15</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-propsito-y-scope-f0e3bb')" aria-label="Ir a 1. PROPÓSITO Y SCOPE">1. PROPÓSITO Y SCOPE</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-asunciones-base-ecd587')" aria-label="Ir a 2. SUPUESTOS EXPLÍCITOS (Asunciones Base)">2. SUPUESTOS EXPLÍCITOS (Asunciones</button>
+<button class="nav-btn" onclick="scrollToSection('3-lmites-qu-no-hacemos-f119e5')" aria-label="Ir a 3. LÍMITES (Qué NO Hacemos)">3. LÍMITES (Qué NO Hacemos)</button>
+<button class="nav-btn" onclick="scrollToSection('4-criterios-de-aceptacin-binarios-c2c1fa')" aria-label="Ir a 4. CRITERIOS DE ACEPTACIÓN BINARIOS">4. CRITERIOS DE ACEPTACIÓN BINARIOS</button>
+<button class="nav-btn" onclick="scrollToSection('5-casos-borde-57-escenarios-de-estrs-ab1585')" aria-label="Ir a 5. CASOS BORDE (5-7 Escenarios de Estrés)">5. CASOS BORDE (5-7 Escenarios de E</button>
+<button class="nav-btn" onclick="scrollToSection('6-decisiones-de-diseo-con-justificacin-71e9f3')" aria-label="Ir a 6. DECISIONES DE DISEÑO CON JUSTIFICACIÓN">6. DECISIONES DE DISEÑO CON JUSTIFI</button>
+<button class="nav-btn" onclick="scrollToSection('7-antipatterns-5-trampas-a-evitar-3fc8a9')" aria-label="Ir a 7. ANTI-PATTERNS (5+ Trampas a Evitar)">7. ANTI-PATTERNS (5+ Trampas a Evit</button>
+<button class="nav-btn" onclick="scrollToSection('8-tres-niveles-de-complejidad-e05c8b')" aria-label="Ir a 8. TRES NIVELES DE COMPLEJIDAD">8. TRES NIVELES DE COMPLEJIDAD</button>
+<button class="nav-btn" onclick="scrollToSection('9-proceso-paso-a-paso-6-fases-86235b')" aria-label="Ir a 9. PROCESO PASO A PASO (6 Fases)">9. PROCESO PASO A PASO (6 Fases)</button>
+<button class="nav-btn" onclick="scrollToSection('10-fallbacks-operativos-plan-b-8c5735')" aria-label="Ir a 10. FALLBACKS OPERATIVOS (Plan B)">10. FALLBACKS OPERATIVOS (Plan B)</button>
+<button class="nav-btn" onclick="scrollToSection('11-mtricas-de-xito-a26227')" aria-label="Ir a 11. MÉTRICAS DE ÉXITO">11. MÉTRICAS DE ÉXITO</button>
+<button class="nav-btn" onclick="scrollToSection('12-integraciones-upstreamdownstream-e1e314')" aria-label="Ir a 12. INTEGRACIONES UPSTREAM/DOWNSTREAM">12. INTEGRACIONES UPSTREAM/DOWNSTRE</button>
+<button class="nav-btn" onclick="scrollToSection('13-roles-y-responsabilidades-b5f80c')" aria-label="Ir a 13. ROLES Y RESPONSABILIDADES">13. ROLES Y RESPONSABILIDADES</button>
+<button class="nav-btn" onclick="scrollToSection('14-documentacin-requerida-entregables-466871')" aria-label="Ir a 14. DOCUMENTACIÓN REQUERIDA (Entregables)">14. DOCUMENTACIÓN REQUERIDA (Entreg</button>
+<button class="nav-btn" onclick="scrollToSection('versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734')" aria-label="Ir a Versión: 1.0 | Próxima revisión: 2026-Q3 | Propietario: Vertical TecnologIA">Versión: 1.0 | Próxima revisión: 20</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-propsito-y-scope-f0e3bb" data-searchable aria-labelledby="head-1-propsito-y-scope-f0e3bb">
+            <div class="phase-header" id="head-1-propsito-y-scope-f0e3bb" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. PROPÓSITO Y SCOPE</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <h3 class="subsection-title" id="propsito-estratgico-686ec8">Propósito Estratégico</h3>
+<p>Diseñar, construir y desplegar agentes de IA autónomos que ejecutan tareas, toman decisiones y operan workflows sin intervención humana constante. El agente es un <strong>Amplificador Operativo</strong> — ejecuta trabajo, no responde preguntas.</p>
+<p class="key-value"><strong>Diferencia clave con Asistentes</strong>: Un asistente RESPONDE cuando le preguntas. Un agente ACTÚA por su cuenta según triggers, reglas y objetivos.</p>
+<h3 class="subsection-title" id="scope-de-servicio-8f2bea">Scope de Servicio</h3>
+<div class="bullet-item">Cobertura: Empresas medianas a grandes (50+ empleados)</div>
+<div class="bullet-item">Plataformas soportadas: Claude Code agents, Cursor agents, n8n, Make/Zapier, Python custom agents, LangChain/LangGraph, CrewAI</div>
+<div class="bullet-item">Casos de uso: Automatización de workflows, clasificación de datos, generación de reportes, prospección, alertas, orquestación multi-step</div>
+<div class="bullet-item">Límite: No incluye infraestructura on-prem o configuración de data warehouses (scope de DevOps)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-asunciones-base-ecd587" data-searchable aria-labelledby="head-2-supuestos-explcitos-asunciones-base-ecd587">
+            <div class="phase-header" id="head-2-supuestos-explcitos-asunciones-base-ecd587" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. SUPUESTOS EXPLÍCITOS (Asunciones Base)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Workflow actual existe y es manual</strong>: El cliente ejecuta algo hoy de forma manual (o semimanual). Queremos automatizar eso.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Reglas de decisión son explícitas o inferibles</strong>: Podemos extraer &quot;si X, entonces Y&quot; del flujo actual. No requerimos ML training.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Triggers están bien definidos</strong>: Sabemos cuándo el agente debe despertar (email, mensaje, schedule, webhook).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Datos son accesibles</strong>: Las fuentes de data están accesibles vía API o exportación. No hay &quot;data en PDFs scaneados&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Escala es predecible</strong>: Cliente sabe aproximadamente cuántas veces/día el agente actuará.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Cambios de proceso son raros</strong>: Si el cliente cambia radicalmente su workflow, el agente requiere redesign.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Humano revisa en paralelo inicialmente</strong>: Durante piloto, humano y agente trabajan en paralelo.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-lmites-qu-no-hacemos-f119e5" data-searchable aria-labelledby="head-3-lmites-qu-no-hacemos-f119e5">
+            <div class="phase-header" id="head-3-lmites-qu-no-hacemos-f119e5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 3. LÍMITES (Qué NO Hacemos)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Límite</th><th scope="col">Razón</th><th scope="col">Alternativa</th></tr></thead><tbody><tr><td>Agente con ML training custom</td><td>Fuera de alcance (requiere data scientist + tiempo)</td><td>Usar reglas lógicas + IA generativa</td></tr><tr><td>Full autonomy sin human-in-the-loop</td><td>Demasiado riesgoso (errores del agente = impacto directo)</td><td>Siempre hay escalation rules</td></tr><tr><td>Soportar &gt;10 integraciones simultáneas</td><td>Costo de testing exponencial</td><td>Priorizar 3-4 integraciones core</td></tr><tr><td>Agente que modifica data crítica sin audit</td><td>Compliance + risk (quién es responsable si falla)</td><td>Audit log + aprobación humana para high-impact</td></tr><tr><td>Automatizar decisiones altamente creativas</td><td>IA no es creativa a nivel de experto humano</td><td>Asistente IA + humano creativo</td></tr><tr><td>Garantizar 99.99% uptime</td><td>Sistemas distribuidos requieren infraestructura robusta</td><td>Garantizar 99% en 1ª fase</td></tr><tr><td>Cambios post-deployment sin redesign</td><td>Agentes son frágiles a cambios de contexto</td><td>Cambios son adicionales o requieren redesign</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-criterios-de-aceptacin-binarios-c2c1fa" data-searchable aria-labelledby="head-4-criterios-de-aceptacin-binarios-c2c1fa">
+            <div class="phase-header" id="head-4-criterios-de-aceptacin-binarios-c2c1fa" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 4. CRITERIOS DE ACEPTACIÓN BINARIOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Cada criterio es <strong>sí/no</strong>. Cliente debe validar cada uno antes de movimiento a producción:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Automatización</strong>: ☐ Agente completa el workflow end-to-end sin intervención humana en ≥80% de los casos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Velocidad</strong>: ☐ Tiempo de ejecución del agente ≤50% del tiempo manual actual (medido en 10 runs reales)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Precisión</strong>: ☐ Tasa de error ≤5% (errores que requieren intervención humana post-facto)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Escalation</strong>: ☐ Escalation rules funcionan (agente sabe cuándo pedir ayuda, humano lo valida)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Monitoreo</strong>: ☐ Dashboard de monitoreo funcional (logs, alertas, métricas visibles)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Documentación</strong>: ☐ Diagrama de flujo + guía de troubleshooting entregadas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Operabilidad</strong>: ☐ Cliente puede pausar/reiniciar el agente sin soporte técnico</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Satisfacción</strong>: ☐ Net Promoter Score o survey ≥8/10 post-entrega</span></div>
+<p class="key-value"><strong>Gate Crítico</strong>: Piloto debe cumplir 6/8. Producción requiere 8/8.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-casos-borde-57-escenarios-de-estrs-ab1585" data-searchable aria-labelledby="head-5-casos-borde-57-escenarios-de-estrs-ab1585">
+            <div class="phase-header" id="head-5-casos-borde-57-escenarios-de-estrs-ab1585" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 5. CASOS BORDE (5-7 Escenarios de Estrés)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-1-decisin-incorrecta-con-alto-impacto-37e704">Caso 1: Decisión Incorrecta con Alto Impacto</h3>
+<p class="key-value"><strong>Escenario</strong>: Agente responde mal a un cliente VIP, produce churn. Impacto: revenue.</p>
+<p class="key-value"><strong>Trigger</strong>: Decisión de agente tiene downstream consequences significativas.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Human-in-the-loop obligatorio para clientes VIP. Agente genera response + humano aprueba/rechaza.</p>
+<p class="key-value"><strong>Fallback</strong>: Revert a manual (humano lo hace). Agente aprende de error.</p>
+<h3 class="subsection-title" id="caso-2-api-de-terceros-cambiafalla-f0a3ba">Caso 2: API de Terceros Cambia/Falla</h3>
+<p class="key-value"><strong>Escenario</strong>: Agente integrado a Hubspot. Hubspot actualiza API. Workflow se rompe.</p>
+<p class="key-value"><strong>Trigger</strong>: Dependencia en terceros sin control.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Versión pinning de APIs. Circuit breaker (si falla, fallback). Monitoring de API changes.</p>
+<p class="key-value"><strong>Fallback</strong>: Notificación a equipo. Rollback a versión anterior de API.</p>
+<h3 class="subsection-title" id="caso-3-volumen-de-triggers-mayor-al-esperado-69e58e">Caso 3: Volumen de Triggers Mayor al Esperado</h3>
+<p class="key-value"><strong>Escenario</strong>: Agente espera 50 emails/día. Recibe 500 emails/día. Se satura.</p>
+<p class="key-value"><strong>Trigger</strong>: Escala cambia (viral content, marketing campaign, etc.).</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Rate limiting + queue. Agente procesa en orden. Alertar si cola crece.</p>
+<p class="key-value"><strong>Fallback</strong>: Aumentar compute. Paralizar agentes (múltiples instancias).</p>
+<h3 class="subsection-title" id="caso-4-cliente-quiere-ms-scope-midproject-713f67">Caso 4: Cliente Quiere Más Scope Mid-Project</h3>
+<p class="key-value"><strong>Escenario</strong>: &quot;Agente, además de clasificar emails, quiero que genere respuestas + envíe&quot;. Scope creep.</p>
+<p class="key-value"><strong>Trigger</strong>: Producto en uso, cliente pide expansión.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Nueva tareas son adicionales (pago). Requieren redesign. No se agregan a piloto.</p>
+<p class="key-value"><strong>Fallback</strong>: Documentar request. Post-MVP, proponer Fase 2.</p>
+<h3 class="subsection-title" id="caso-5-datos-suciosinconsistentes-e4e4b9">Caso 5: Datos Sucios/Inconsistentes</h3>
+<p class="key-value"><strong>Escenario</strong>: Data en CRM es caótica (duplicados, campos vacíos, inconsistencias). Agente produce garbage output.</p>
+<p class="key-value"><strong>Trigger</strong>: Cliente tiene hygiene data pobre.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Pre-requisito: data cleaning (proyecto separado). Agente assume data limpia.</p>
+<p class="key-value"><strong>Fallback</strong>: Reducir scope (agente trabaja solo con datos limpios/validados).</p>
+<h3 class="subsection-title" id="caso-6-regulaciones-impiden-automatizacin-727bf5">Caso 6: Regulaciones Impiden Automatización</h3>
+<p class="key-value"><strong>Escenario</strong>: Fintech. Regulación exige que humano apruebe cada transacción. Agente no puede ser fully autonomous.</p>
+<p class="key-value"><strong>Trigger</strong>: Industria con regulaciones estrictas (fintech, healthcare, legal).</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Agente genera + propone. Humano aprueba (bot en Slack con approve/reject buttons).</p>
+<p class="key-value"><strong>Fallback</strong>: Audit log exhaustivo. Compliance review pre-deployment.</p>
+<h3 class="subsection-title" id="caso-7-multiagent-conflict-c4df8a">Caso 7: Multi-Agent Conflict</h3>
+<p class="key-value"><strong>Escenario</strong>: 2 agentes operan sobre el mismo recurso. Agente 1 dice &quot;hacer X&quot;. Agente 2 dice &quot;hacer Y&quot;. Conflicto.</p>
+<p class="key-value"><strong>Trigger</strong>: Multi-agent systems sin coordinación.</p>
+<p class="key-value"><strong>Decisión Diseño</strong>: Mutex / locking (solo 1 agente accede a recurso por vez). Coordinator agent.</p>
+<p class="key-value"><strong>Fallback</strong>: Simplificar a 1 agente. Evitar conflicts.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-decisiones-de-diseo-con-justificacin-71e9f3" data-searchable aria-labelledby="head-6-decisiones-de-diseo-con-justificacin-71e9f3">
+            <div class="phase-header" id="head-6-decisiones-de-diseo-con-justificacin-71e9f3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 6. DECISIONES DE DISEÑO CON JUSTIFICACIÓN</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">ID</th><th scope="col">Decisión</th><th scope="col">Justificación</th><th scope="col">Riesgo Mitigado</th></tr></thead><tbody><tr><td>DD-01</td><td><strong>Human-in-the-loop en decisiones high-impact</strong></td><td>IA puede fallar. Humano es última línea de defensa.</td><td>Errores del agente no derivan en disaster.</td></tr><tr><td>DD-02</td><td><strong>Piloto paralelo 1 semana mínimo</strong></td><td>Antes de darle autonomía total, comparar agente vs. manual.</td><td>Validar que agente es mejor (no peor).</td></tr><tr><td>DD-03</td><td><strong>Dashboard de monitoreo es entregable obligatorio</strong></td><td>Sin visibilidad, no sabemos si agente está enfermo.</td><td>Detectar problemas rápido.</td></tr><tr><td>DD-04</td><td><strong>Escalation rules definidas ANTES de construir</strong></td><td>Si las diseñamos después, el agente ya falla sin saber escalar.</td><td>Agente sabe cuándo pedir ayuda.</td></tr><tr><td>DD-05</td><td><strong>Preferir no-code cuando sea posible</strong> (Zapier/Make vs. custom code)</td><td>Menor costo de mantenimiento. Menor curva de aprendizaje.</td><td>Longevidad post-implementación.</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-antipatterns-5-trampas-a-evitar-3fc8a9" data-searchable aria-labelledby="head-7-antipatterns-5-trampas-a-evitar-3fc8a9">
+            <div class="phase-header" id="head-7-antipatterns-5-trampas-a-evitar-3fc8a9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 7. ANTI-PATTERNS (5+ Trampas a Evitar)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="antipattern-1-full-autonomy-da-1-e218aa">Anti-Pattern 1: &quot;Full Autonomy Día 1&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Lanzar agente a producción con autonomía total sin período de piloto paralelo.</p>
+<p class="key-value"><strong>Síntoma</strong>: Primer error del agente causa disaster. Cliente pierde confianza.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: Piloto paralelo es OBLIGATORIO. Mínimo 1 semana. Humano y agente trabajan en paralelo.</p>
+<h3 class="subsection-title" id="antipattern-2-el-agente-invisible-35a9b1">Anti-Pattern 2: &quot;El Agente Invisible&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: No monitorear post-deployment. Asumir que &quot;funciona solo&quot;.</p>
+<p class="key-value"><strong>Síntoma</strong>: Agente falla silenciosamente. Cliente se entera 3 días después.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: Dashboard de monitoreo + alertas. Revisión diaria en semana 1.</p>
+<h3 class="subsection-title" id="antipattern-3-scope-creep-agentico-fec505">Anti-Pattern 3: &quot;Scope Creep Agentico&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Cliente pide &quot;un poco más&quot; cada semana. Agente crece sin control.</p>
+<p class="key-value"><strong>Síntoma</strong>: Scope original: 5 tareas. Semana 3: 12 tareas. Agente es Frankenstein.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: Scope congelado en Discovery. Cambios post-piloto son Fase 2 (pago).</p>
+<h3 class="subsection-title" id="antipattern-4-sin-escalation-rules-c9f46b">Anti-Pattern 4: &quot;Sin Escalation Rules&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Agente no sabe cuándo escalar a humano. Continúa intentando cosas imposibles.</p>
+<p class="key-value"><strong>Síntoma</strong>: Agente falla, reintenta, falla, reintenta. Loop infinito.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: Escalation rules diseñadas ANTES de construcción. Agente: &quot;Si no puedo, pido ayuda&quot;.</p>
+<h3 class="subsection-title" id="antipattern-5-complexity-addiction-a99855">Anti-Pattern 5: &quot;Complexity Addiction&quot;</h3>
+<p class="key-value"><strong>Qué es</strong>: Usar multi-agent system orquestado cuando un workflow simple resuelve el problema.</p>
+<p class="key-value"><strong>Síntoma</strong>: Proyecto que debería ser 2 semanas toma 8. Costo: 4x.</p>
+<p class="key-value"><strong>Cómo evitar</strong>: &quot;La herramienta más simple que resuelve el problema&quot;. Preferir Zapier/Make/n8n antes que custom code.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-tres-niveles-de-complejidad-e05c8b" data-searchable aria-labelledby="head-8-tres-niveles-de-complejidad-e05c8b">
+            <div class="phase-header" id="head-8-tres-niveles-de-complejidad-e05c8b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. TRES NIVELES DE COMPLEJIDAD</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="nivel-1-simple-2-semanas-cop-15m-25f7da">Nivel 1: SIMPLE (2 Semanas, ~COP $1.5M)</h3>
+<p class="key-value"><strong>Qué entregamos</strong>: 1 workflow automatizado con 1 trigger, 1 decisión, 1 output.</p>
+<p class="key-value"><strong>Ejemplo</strong>: &quot;Cuando llega email de cliente, clasificar urgencia (baja/media/alta), responder con template automático, guardar en CRM.&quot;</p>
+<p class="key-value"><strong>Proceso</strong>:</p>
+<div class="bullet-item">Days 1-3: Discovery del workflow actual + mapeo</div>
+<div class="bullet-item">Days 4-5: Diseño del agente + escenarios de test</div>
+<div class="bullet-item">Days 6-9: Construcción (típicamente en Zapier/Make)</div>
+<div class="bullet-item">Days 10: Testing interno</div>
+<div class="bullet-item">Days 11: Piloto paralelo</div>
+<div class="bullet-item">Days 12: Entrega + training</div>
+<div class="bullet-item">Days 13-42: 30 días soporte</div>
+<p class="key-value"><strong>Gate de Aceptación</strong>: 6 de 8 criterios (Automatización, Velocidad, Precisión, Escalation, Documentación, Satisfacción).</p>
+<p class="key-value"><strong>Plataforma recomendada</strong>: Zapier, Make, o n8n (no-code).</p>
+<hr class="divider">
+<h3 class="subsection-title" id="nivel-2-compuesto-4-semanas-cop-4m-252a02">Nivel 2: COMPUESTO (4 Semanas, ~COP $4M)</h3>
+<p class="key-value"><strong>Qué entregamos</strong>: Multi-step workflow con 2-3 decisiones condicionales, 2-3 integraciones, monitoring.</p>
+<p class="key-value"><strong>Ejemplo</strong>: &quot;Monitorear menciones en redes (Twitter, Instagram), agrupar por sentimiento (positivo/negativo), generar reporte semanal, alertar si hay crisis.&quot;</p>
+<p class="key-value"><strong>Proceso</strong>:</p>
+<div class="bullet-item">Weeks 1: Discovery detallado + análisis de datos</div>
+<div class="bullet-item">Week 2: Diseño de agente + arquitectura de integraciones</div>
+<div class="bullet-item">Weeks 3-4: Construcción + testing iterativo + dashboard</div>
+<div class="bullet-item">Week 5: Piloto paralelo (1 semana)</div>
+<div class="bullet-item">Days 29-59: 30 días soporte</div>
+<p class="key-value"><strong>Gate de Aceptación</strong>: 7 de 8 criterios (+ Monitoreo funcional).</p>
+<p class="key-value"><strong>Plataforma recomendada</strong>: n8n (mejor para workflows complejos), o Make con custom code blocks.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="nivel-3-orquestador-8-semanas-cop-10m-2c152c">Nivel 3: ORQUESTADOR (8 Semanas, ~COP $10M)</h3>
+<p class="key-value"><strong>Qué entregamos</strong>: Multi-agent system donde agentes especializados colaboran. Orquestación, resolución de conflictos, auto-scaling.</p>
+<p class="key-value"><strong>Ejemplo</strong>: &quot;Agente de prospección&quot; (busca leads) + &quot;Agente de contenido&quot; (genera posts) + &quot;Agente de análisis&quot; (mide resultados). Los 3 se coordinan vía Coordinator agent.</p>
+<p class="key-value"><strong>Proceso</strong>:</p>
+<div class="bullet-item">Weeks 1-2: Discovery + análisis de workflows complejos</div>
+<div class="bullet-item">Weeks 3-4: Diseño arquitectónico de multi-agent</div>
+<div class="bullet-item">Weeks 5-6: Desarrollo de agentes individuales</div>
+<div class="bullet-item">Week 7: Integración + testing de colaboración</div>
+<div class="bullet-item">Week 8: Dashboard + monitoring avanzado</div>
+<div class="bullet-item">Weeks 9+: Piloto paralelo (2 semanas)</div>
+<div class="bullet-item">Days 57-87: 30 días soporte</div>
+<p class="key-value"><strong>Gate de Aceptación</strong>: Todos 8 criterios.</p>
+<p class="key-value"><strong>Plataforma recomendada</strong>: Custom (Python + LangChain/LangGraph), o Claude Code agents, o Cursor agents.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-proceso-paso-a-paso-6-fases-86235b" data-searchable aria-labelledby="head-9-proceso-paso-a-paso-6-fases-86235b">
+            <div class="phase-header" id="head-9-proceso-paso-a-paso-6-fases-86235b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. PROCESO PASO A PASO (6 Fases)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fase-1-discovery-days-13-a9dc13">Fase 1: DISCOVERY (Days 1-3)</h3>
+<p class="key-value"><strong>Entrada</strong>: Proyecto ganado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Mapeo de workflow actual (4h):</span></div>
+<div class="bullet-item">¿Qué pasos hace el usuario hoy para completar esta tarea?</div>
+<div class="bullet-item">Documentar flujo: inputs → decisiones → outputs</div>
+<div class="bullet-item">Identificar bottlenecks (dónde gasta más tiempo, dónde hay errores)</div>
+<div class="bullet-item">¿Quién ejecuta? (1 persona, equipo, sistema?)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Entrevista con usuario final (2h):</span></div>
+<div class="bullet-item">Observar usuario en contexto real</div>
+<div class="bullet-item">¿Qué datos necesita? ¿Dónde están?</div>
+<div class="bullet-item">¿Qué decisiones toma? (cómo decide entre opción A vs. B)</div>
+<div class="bullet-item">¿Cuál es el objetivo final?</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Análisis de data (4h):</span></div>
+<div class="bullet-item">¿Data está en sistemas accesibles? (CRM, email, drive)</div>
+<div class="bullet-item">¿Data es limpia? (consistente, completa)</div>
+<div class="bullet-item">¿Quién tiene acceso? (permisos, credenciales)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Crear mapa de automatización (4h):</span></div>
+<div class="bullet-item">Qué pasos pueden ser automáticos (agente)</div>
+<div class="bullet-item">Qué pasos requieren humano (escalation)</div>
+<div class="bullet-item">Triggers: cuándo el agente actúa</div>
+<div class="bullet-item">Outputs: qué hace el agente al terminar</div>
+<p class="key-value"><strong>Entrega</strong>: Documento de flujo actual + Mapa de automatización.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-2-diseo-de-agente-days-47-85d905">Fase 2: DISEÑO DE AGENTE (Days 4-7)</h3>
+<p class="key-value"><strong>Entrada</strong>: Mapa de automatización aprobado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Definir triggers (2h):</span></div>
+<div class="bullet-item">Email recibido? Schedule (cada lunes 9am)? Webhook manual?</div>
+<div class="bullet-item">Trigger debe ser específico y testeable</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Definir decisiones (4h):</span></div>
+<div class="bullet-item">¿Qué decidiría el humano en esta bifurcación?</div>
+<div class="bullet-item">Si A → acción 1. Si B → acción 2. Si C → escalar a humano.</div>
+<div class="bullet-item">Decisiones deben ser lógicas (no creativas/ambiguas)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Definir acciones (4h):</span></div>
+<div class="bullet-item">Cuando decisión = &quot;procesar&quot;, qué hace el agente? (enviar email, crear card en Trello, etc)</div>
+<div class="bullet-item">Acciones son integraciones (API calls)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Definir escalation rules (2h):</span></div>
+<div class="bullet-item">Cuándo no puede decidir, agente escala</div>
+<div class="bullet-item">Ejemplo: &quot;Si confianza &lt; 60%, pedir aprobación humana&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Diagrama de flujo (2h):</span></div>
+<div class="bullet-item">Dibujar en Miro/Figma/draw.io</div>
+<div class="bullet-item">Mostrar al cliente</div>
+<div class="bullet-item">Gate: Cliente aprueba o solicita cambios</div>
+<p class="key-value"><strong>Entrega</strong>: Diagrama de flujo + Especificación de decisiones + Especificación de acciones + Tabla de escalation rules.</p>
+<p class="key-value"><strong>Go/No-Go Gate</strong>: Cliente debe aprobar diseño antes de Construcción.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-3-construccin-days-8203050-c9cfcf">Fase 3: CONSTRUCCIÓN (Days 8-20/30/50)</h3>
+<p class="key-value"><strong>Entrada</strong>: Diseño aprobado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Setup de herramienta (2h):</span></div>
+<div class="bullet-item">Crear workspace en Zapier/Make/n8n</div>
+<div class="bullet-item">Conectar integraciones (OAuth, API keys)</div>
+<div class="bullet-item">Testear conexión a cada API</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Build del workflow (8-24h según complejidad):</span></div>
+<div class="bullet-item">Implementar en herramienta elegida</div>
+<div class="bullet-item">Paso a paso según diagrama de flujo</div>
+<div class="bullet-item">Insertar lógica condicional</div>
+<div class="bullet-item">Configurar acciones</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Integración de AI (si aplicable, 4-8h):</span></div>
+<div class="bullet-item">Llamadas a LLM (OpenAI, Claude, etc)</div>
+<div class="bullet-item">Prompt engineering para decisiones</div>
+<div class="bullet-item">Testing de respuestas</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Testing interno (4-6h):</span></div>
+<div class="bullet-item">20 test cases (happy path + edge cases)</div>
+<div class="bullet-item">Bug fixing</div>
+<div class="bullet-item">Performance testing (ejecución time)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Setup de monitoring (4h):</span></div>
+<div class="bullet-item">Logs: registrar cada ejecución del agente</div>
+<div class="bullet-item">Alertas: si falla, notificar</div>
+<div class="bullet-item">Dashboard: visualizar métricas</div>
+<p class="key-value"><strong>Entrega</strong>: Agente funcional + Logs + Alertas + Dashboard.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-4-piloto-paralelo-days-2127-3137-5157-92931d">Fase 4: PILOTO PARALELO (Days 21-27 / 31-37 / 51-57)</h3>
+<p class="key-value"><strong>Entrada</strong>: Agente funcional.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Setup paralelo (1h):</span></div>
+<div class="bullet-item">Agente opera sobre los MISMOS inputs que humano</div>
+<div class="bullet-item">Resultados del agente son revisados por humano, no ejecutados aún</div>
+<div class="bullet-item">Duración: 1 semana (100+ executions idealmente)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Comparación (daily, 1h):</span></div>
+<div class="bullet-item">¿Agente produce resultado igual o mejor que humano?</div>
+<div class="bullet-item">¿Tiempo de agente &lt; tiempo de humano?</div>
+<div class="bullet-item">¿Errores del agente?</div>
+<div class="bullet-item">Documentar en spreadsheet</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Análisis post-piloto (4h):</span></div>
+<div class="bullet-item">Revisar datos de piloto</div>
+<div class="bullet-item">Calcular: % automatización, % error, tiempo promedio</div>
+<div class="bullet-item">¿Cumple criterios de aceptación?</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Refinamiento basado en datos (4-8h):</span></div>
+<div class="bullet-item">Ajustar thresholds de decisión</div>
+<div class="bullet-item">Refinar prompts si es IA</div>
+<div class="bullet-item">Agregar escalation rules si es necesario</div>
+<p class="key-value"><strong>Entrega</strong>: Piloto report + Data de comparación (agente vs. humano) + Agente refinado.</p>
+<p class="key-value"><strong>Go/No-Go Gate</strong>: 80%+ automatización y &lt;5% error antes de pasar a Producción.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-5-deployment-a-produccin-days-2830-11d1c1">Fase 5: DEPLOYMENT A PRODUCCIÓN (Days 28-30)</h3>
+<p class="key-value"><strong>Entrada</strong>: Piloto aprobado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Pre-flight checklist (2h):</span></div>
+<div class="bullet-item">☐ Monitoring está en vivo</div>
+<div class="bullet-item">☐ Alertas están configuradas</div>
+<div class="bullet-item">☐ Escalation rules funcionan</div>
+<div class="bullet-item">☐ Rollback plan está documentado</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Deployment (2h):</span></div>
+<div class="bullet-item">Activar agente en producción</div>
+<div class="bullet-item">Humano-in-the-loop para 24-48h iniciales</div>
+<div class="bullet-item">Monitoreo intensivo (logs, alertas)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Semana 1 de producción (daily):</span></div>
+<div class="bullet-item">Revisión de ejecuciones (10-20% de casos)</div>
+<div class="bullet-item">Ajustes rápidos si es necesario</div>
+<div class="bullet-item">Comunicación con cliente (cómo va el agente)</div>
+<p class="key-value"><strong>Entrega</strong>: Agente en vivo en producción.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-6-soporte-optimizacin-days-3160-4a6731">Fase 6: SOPORTE + OPTIMIZACIÓN (Days 31-60)</h3>
+<p class="key-value"><strong>Entrada</strong>: Agente en producción.</p>
+<p class="key-value"><strong>SLA de Soporte (30 días)</strong>:</p>
+<div class="bullet-item"><strong>Outage (agente no funciona)</strong>: Respuesta &lt;1h, fix &lt;4h</div>
+<div class="bullet-item"><strong>Degradación (agente lento)</strong>: Respuesta &lt;4h, fix &lt;24h</div>
+<div class="bullet-item"><strong>Errores nuevos</strong>: Respuesta &lt;24h, fix &lt;3 días</div>
+<div class="bullet-item"><strong>Optimización</strong> (agilizar, mejorar accuracy): Incluido</div>
+<p class="key-value"><strong>Actividades típicas</strong>:</p>
+<div class="bullet-item">Cliente reporta: &quot;Agente dejó de funcionar con un tipo de email&quot;</div>
+<div class="bullet-item">Nuestro action: Investigar logs, identificar patrón, ajustar, retest</div>
+<div class="bullet-item">Comunicar: &quot;Ajustamos la lógica. Debería funcionar ahora.&quot;</div>
+<p class="key-value"><strong>Optimization post-deployment (optional, pago)</strong>:</p>
+<div class="bullet-item">Auto-scaling: Si volumen crece, agregar más instancias del agente</div>
+<div class="bullet-item">Mejora de accuracy: Entrenar modelo con feedback real</div>
+<div class="bullet-item">Expansión: Agregar nuevos workflows/decisiones</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-fallbacks-operativos-plan-b-8c5735" data-searchable aria-labelledby="head-10-fallbacks-operativos-plan-b-8c5735">
+            <div class="phase-header" id="head-10-fallbacks-operativos-plan-b-8c5735" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 10. FALLBACKS OPERATIVOS (Plan B)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Problema</th><th scope="col">Fallback</th><th scope="col">Costo</th></tr></thead><tbody><tr><td>Agente falla en producción</td><td>Rollback a proceso manual. Investigar. Redeployar en 24h.</td><td>Downtime operacional</td></tr><tr><td>API de tercero falla</td><td>Usar API backup (si existe) o fallback manual.</td><td>Downtime del agente</td></tr><tr><td>Decisiones del agente son incorrectas</td><td>Pasar a human-in-the-loop (agente propone, humano aprueba).</td><td>Reduce automatización %</td></tr><tr><td>Performance del agente degrada</td><td>Agregar compute/memory. Optimizar queries.</td><td>Costo infra adicional</td></tr><tr><td>Cliente quiere cambiar workflow mid-piloto</td><td>Documentar cambio. Nueva Fase 2. Costo adicional.</td><td>Retraso de 2-4 semanas</td></tr><tr><td>Monitoreo falla</td><td>Setup monitoring backup (email alerts). Manual checks daily.</td><td>Mayor overhead operacional</td></tr><tr><td>Multi-agent conflict</td><td>Reducir a 1 agente. Evitar parallelismo. Simplificar.</td><td>Scope reduction</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-mtricas-de-xito-a26227" data-searchable aria-labelledby="head-11-mtricas-de-xito-a26227">
+            <div class="phase-header" id="head-11-mtricas-de-xito-a26227" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. MÉTRICAS DE ÉXITO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Métrica 1: Tasa de Automatización</strong></p>
+<div class="bullet-item">KPI: ≥80% de tasks completadas sin intervención humana</div>
+<div class="bullet-item">Medición: (tasks completed by agent) / (total tasks) en 30 días</div>
+<div class="bullet-item">Owner: Arquitecto IA</div>
+<p class="key-value"><strong>Métrica 2: Precisión del Agente</strong></p>
+<div class="bullet-item">KPI: ≤5% error rate (human review post-facto)</div>
+<div class="bullet-item">Medición: (errors detected) / (total executions)</div>
+<div class="bullet-item">Owner: QA + Customer</div>
+<p class="key-value"><strong>Métrica 3: Velocidad vs. Manual</strong></p>
+<div class="bullet-item">KPI: Agente completa tarea en ≤50% del tiempo manual</div>
+<div class="bullet-item">Medición: avg(agente time) vs. avg(manual time)</div>
+<div class="bullet-item">Owner: Arquitecto IA</div>
+<p class="key-value"><strong>Métrica 4: Customer Satisfaction</strong></p>
+<div class="bullet-item">KPI: NPS ≥8/10</div>
+<div class="bullet-item">Medición: Post-deployment survey</div>
+<div class="bullet-item">Owner: Customer Success</div>
+<p class="key-value"><strong>Métrica 5: Uptime del Agente</strong></p>
+<div class="bullet-item">KPI: 99%+ uptime (excluye mantenimiento)</div>
+<div class="bullet-item">Medición: (available hours) / (total hours)</div>
+<div class="bullet-item">Owner: DevOps/SRE</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-integraciones-upstreamdownstream-e1e314" data-searchable aria-labelledby="head-12-integraciones-upstreamdownstream-e1e314">
+            <div class="phase-header" id="head-12-integraciones-upstreamdownstream-e1e314" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. INTEGRACIONES UPSTREAM/DOWNSTREAM</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Upstream</strong>:</p>
+<div class="bullet-item"><code class="inline-code">entregar-tecnologia-proceso.md</code> (framework general de delivery)</div>
+<p class="key-value"><strong>Cross-vertical</strong>:</p>
+<div class="bullet-item"><code class="inline-code">Empoderamiento M09</code> (productividad: cómo equipos usan agentes)</div>
+<div class="bullet-item"><code class="inline-code">Empoderamiento M11</code> (automatizaciones no-code: Zapier/Make)</div>
+<div class="bullet-item"><code class="inline-code">Consultoría</code> (diagnósticos identifican workflows automatizables)</div>
+<p class="key-value"><strong>Downstream</strong>:</p>
+<div class="bullet-item">Caso de éxito → Comercial para referral</div>
+<div class="bullet-item">Post-30 días: SLA adicional (monitoring/optimization contínua)</div>
+<div class="bullet-item">Expansión: Nuevos agentes / multi-agent orchestration</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-roles-y-responsabilidades-b5f80c" data-searchable aria-labelledby="head-13-roles-y-responsabilidades-b5f80c">
+            <div class="phase-header" id="head-13-roles-y-responsabilidades-b5f80c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. ROLES Y RESPONSABILIDADES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Responsabilidad</th><th scope="col">Horas Estimadas</th></tr></thead><tbody><tr><td>Arquitecto Agentes IA</td><td>Discovery, Diseño, Supervisión construcción, Piloto</td><td>50-80h</td></tr><tr><td>Especialista n8n/Zapier</td><td>Construcción del workflow, testing</td><td>30-60h</td></tr><tr><td>Especialista en IA</td><td>Prompts, LLM integrations (si aplicable)</td><td>10-20h</td></tr><tr><td>QA / Testing</td><td>Testing piloto, comparación agente vs. manual</td><td>8-12h</td></tr><tr><td>DevOps</td><td>Monitoring setup, alertas, infraestructura</td><td>4-8h</td></tr><tr><td>Customer Success</td><td>Onboarding, training, soporte post-30 días</td><td>2-4h</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-documentacin-requerida-entregables-466871" data-searchable aria-labelledby="head-14-documentacin-requerida-entregables-466871">
+            <div class="phase-header" id="head-14-documentacin-requerida-entregables-466871" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 14. DOCUMENTACIÓN REQUERIDA (Entregables)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Flujo de Diseño</strong> (Diagrama Miro/Figma)</span></div>
+<div class="bullet-item">Triggers → Decisiones → Acciones → Outputs</div>
+<div class="bullet-item">Escalation rules explícitas</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Especificación Técnica</strong></span></div>
+<div class="bullet-item">Integraciones (API endpoints, auth)</div>
+<div class="bullet-item">Decisiones (lógica condicional)</div>
+<div class="bullet-item">Acciones (qué hace el agente en cada caso)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Dashboard de Monitoreo</strong></span></div>
+<div class="bullet-item">Ejecuciones por hora/día</div>
+<div class="bullet-item">Tasa de error</div>
+<div class="bullet-item">Logs de acciones</div>
+<div class="bullet-item">Alertas activas</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Guía de Troubleshooting</strong></span></div>
+<div class="bullet-item">&quot;Si el agente no funciona, checa...&quot;</div>
+<div class="bullet-item">Pasos para pausar/reiniciar</div>
+<div class="bullet-item">Cómo escalar a soporte</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Training Presencial</strong> (1h)</span></div>
+<div class="bullet-item">Demo del agente en vivo</div>
+<div class="bullet-item">Cómo revisar logs</div>
+<div class="bullet-item">Cómo pausar si es necesario</div>
+<div class="bullet-item">Canales de comunicación para bugs</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734" data-searchable aria-labelledby="head-versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734">
+            <div class="phase-header" id="head-versin-10-prxima-revisin-2026q3-propietario-vertic-d2a734" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Versión: 1.0 | Próxima revisión: 2026-Q3 | Propietario: Vertical TecnologIA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

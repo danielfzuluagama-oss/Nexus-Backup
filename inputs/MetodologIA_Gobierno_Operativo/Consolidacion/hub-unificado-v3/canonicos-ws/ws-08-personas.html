@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Anexo C — 3 prompts estrella (copiar/pegar) — Proceso de Delivery MetodologIA">
+    <title>Anexo C — 3 prompts estrella (copiar/pegar) — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Ws</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Anexo C — 3 prompts estrella (copiar/pegar)</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Anexo C — 3 prompts estrella (copiar/pegar)</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">- Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">36</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">6</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-personas-7d8819')" aria-label="Ir a Documento Canónico | Segmento: PERSONAS">Documento Canónico | Segmento: PERS</button>
+<button class="nav-btn" onclick="scrollToSection('0-encabezado-de-autoridad-2ff580')" aria-label="Ir a 0) Encabezado de autoridad">0) Encabezado de autoridad</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-decisin-en-60s-0307f3')" aria-label="Ir a 1) Ficha rápida (decisión en 60s)">1) Ficha rápida (decisión en 60s)</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-sin-confusiones-724e1d')" aria-label="Ir a 2) Definición sin confusiones">2) Definición sin confusiones</button>
+<button class="nav-btn" onclick="scrollToSection('3-fit-antifit-f2c1f4')" aria-label="Ir a 3) Fit / anti‑fit">3) Fit / anti‑fit</button>
+<button class="nav-btn" onclick="scrollToSection('4-problema-que-resuelves-lmites-ticos-y-de-datos-cf5e3e')" aria-label="Ir a 4) Problema que resuelves + límites éticos y de datos">4) Problema que resuelves + límites</button>
+<button class="nav-btn" onclick="scrollToSection('5-diseo-pedaggico-cmo-lo-vives-2d1fe2')" aria-label="Ir a 5) Diseño pedagógico (cómo lo vives)">5) Diseño pedagógico (cómo lo vives</button>
+<button class="nav-btn" onclick="scrollToSection('6-estructura-del-programa-agenda-3-horas-vivo-c231a3')" aria-label="Ir a 6) Estructura del programa / agenda (3 horas vivo)">6) Estructura del programa / agenda</button>
+<button class="nav-btn" onclick="scrollToSection('7-entregables-y-accesos-qu-es-tuyo-884b27')" aria-label="Ir a 7) Entregables y accesos (qué es tuyo)">7) Entregables y accesos (qué es tu</button>
+<button class="nav-btn" onclick="scrollToSection('8-prerrequisitos-y-checklist-48h-antes-b3bc19')" aria-label="Ir a 8) Prerrequisitos y checklist 48h antes">8) Prerrequisitos y checklist 48h a</button>
+<button class="nav-btn" onclick="scrollToSection('9-contextualizacin-tu-industriarol-c5bd5e')" aria-label="Ir a 9) Contextualización (tu industria/rol)">9) Contextualización (tu industria/</button>
+<button class="nav-btn" onclick="scrollToSection('10-operacin-y-logstica-e95423')" aria-label="Ir a 10) Operación y logística">10) Operación y logística</button>
+<button class="nav-btn" onclick="scrollToSection('11-soporte-y-sla-oficial-4b33ce')" aria-label="Ir a 11) Soporte y SLA (oficial)">11) Soporte y SLA (oficial)</button>
+<button class="nav-btn" onclick="scrollToSection('12-condiciones-comerciales-aad470')" aria-label="Ir a 12) Condiciones comerciales">12) Condiciones comerciales</button>
+<button class="nav-btn" onclick="scrollToSection('13-mtricas-de-xito-36d778')" aria-label="Ir a 13) Métricas de éxito">13) Métricas de éxito</button>
+<button class="nav-btn" onclick="scrollToSection('14-criterios-de-aceptacin-definition-of-done-550e23')" aria-label="Ir a 14) Criterios de aceptación (Definition of Done)">14) Criterios de aceptación (Defini</button>
+<button class="nav-btn" onclick="scrollToSection('15-casos-borde-matriz-seal-decisin-mitigacin-7c934b')" aria-label="Ir a 15) Casos borde (matriz: señal → decisión + mitigación)">15) Casos borde (matriz: señal → de</button>
+<button class="nav-btn" onclick="scrollToSection('16-anexos-operativos-a95c02')" aria-label="Ir a 16) Anexos (operativos)">16) Anexos (operativos)</button>
+<button class="nav-btn" onclick="scrollToSection('17-control-de-versin-782c26')" aria-label="Ir a 17) Control de versión">17) Control de versión</button>
+<button class="nav-btn" onclick="scrollToSection('a1-confirmacin-de-asistencia-ce1bd9')" aria-label="Ir a A1. Confirmación de asistencia">A1. Confirmación de asistencia</button>
+<button class="nav-btn" onclick="scrollToSection('a2-motor-de-ia-elige-1-valida-ddb769')" aria-label="Ir a A2. Motor de IA (elige 1, valida)">A2. Motor de IA (elige 1, valida)</button>
+<button class="nav-btn" onclick="scrollToSection('a3-conectividad-9fd40f')" aria-label="Ir a A3. Conectividad">A3. Conectividad</button>
+<button class="nav-btn" onclick="scrollToSection('a4-herramientas-de-trabajo-939207')" aria-label="Ir a A4. Herramientas de trabajo">A4. Herramientas de trabajo</button>
+<button class="nav-btn" onclick="scrollToSection('a5-habilidades-mnimas-verifica-55c3a9')" aria-label="Ir a A5. Habilidades mínimas (verifica)">A5. Habilidades mínimas (verifica)</button>
+<button class="nav-btn" onclick="scrollToSection('a6-insumos-listos-084116')" aria-label="Ir a A6. Insumos listos">A6. Insumos listos</button>
+<button class="nav-btn" onclick="scrollToSection('a7-datos-aceptacin-b05706')" aria-label="Ir a A7. Datos: aceptación">A7. Datos: aceptación</button>
+<button class="nav-btn" onclick="scrollToSection('a8-miniprueba-63066a')" aria-label="Ir a A8. Mini‑prueba">A8. Mini‑prueba</button>
+<button class="nav-btn" onclick="scrollToSection('b1-quin-eres-8adce2')" aria-label="Ir a B1. Quién eres">B1. Quién eres</button>
+<button class="nav-btn" onclick="scrollToSection('b2-tu-contexto-be359b')" aria-label="Ir a B2. Tu contexto">B2. Tu contexto</button>
+<button class="nav-btn" onclick="scrollToSection('b3-restricciones-tcnicas-a8e343')" aria-label="Ir a B3. Restricciones técnicas">B3. Restricciones técnicas</button>
+<button class="nav-btn" onclick="scrollToSection('b4-tu-reto-real-para-el-ejercicio-principal-1f51e5')" aria-label="Ir a B4. Tu reto real (para el ejercicio principal)">B4. Tu reto real (para el ejercicio</button>
+<button class="nav-btn" onclick="scrollToSection('b5-herramientas-actuales-912d36')" aria-label="Ir a B5. Herramientas actuales">B5. Herramientas actuales</button>
+<button class="nav-btn" onclick="scrollToSection('b6-xito-para-ti-daa80e')" aria-label="Ir a B6. Éxito para ti">B6. Éxito para ti</button>
+<button class="nav-btn" onclick="scrollToSection('c1-diagnstico-de-tu-agenda-valor-mant-fuga-503d2f')" aria-label="Ir a C1. Diagnóstico de tu agenda (Valor / Mant. / Fuga)">C1. Diagnóstico de tu agenda (Valor</button>
+<button class="nav-btn" onclick="scrollToSection('c2-plan-para-tu-reto-smart-fases-riesgos-93428a')" aria-label="Ir a C2. Plan para tu reto (SMART + fases + riesgos)">C2. Plan para tu reto (SMART + fase</button>
+<button class="nav-btn" onclick="scrollToSection('c3-constructor-de-metaprompt-para-delegar-a-ia-8e17b7')" aria-label="Ir a C3. Constructor de meta‑prompt (para delegar a IA)">C3. Constructor de meta‑prompt (par</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-personas-7d8819" data-searchable aria-labelledby="head-documento-cannico-segmento-personas-7d8819">
+            <div class="phase-header" id="head-documento-cannico-segmento-personas-7d8819" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: PERSONAS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="0-encabezado-de-autoridad-2ff580" data-searchable aria-labelledby="head-0-encabezado-de-autoridad-2ff580">
+            <div class="phase-header" id="head-0-encabezado-de-autoridad-2ff580" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 0) Encabezado de autoridad</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Uso previsto (fuente única):</strong> web • convocatoria social • enrollment individual • operación.</p>
+<p class="key-value"><strong>Regla de autoridad:</strong> los términos y condiciones de compra individual viven en este documento. Las memorias y recursos son complementarios y <strong>no modifican</strong> el alcance ni las políticas salvo que este documento los cite explícitamente.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-decisin-en-60s-0307f3" data-searchable aria-labelledby="head-1-ficha-rpida-decisin-en-60s-0307f3">
+            <div class="phase-header" id="head-1-ficha-rpida-decisin-en-60s-0307f3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 1) Ficha rápida (decisión en 60s)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Nombre comercial:</strong> <strong>De Ocupado a Productivo — Sesión Abierta</strong></div>
+<div class="bullet-item"><strong>Tipo:</strong> Workshop transformacional (instalación guiada de método personal)</div>
+<div class="bullet-item"><strong>Ruta oficial:</strong> <strong>Ruta de (R)Evolución Personal — Soberanía Productiva</strong></div>
+<div class="bullet-item"><strong>Duración:</strong> <strong>3 horas</strong></div>
+<div class="bullet-item"><strong>Modalidad:</strong> Virtual sincrónico en vivo (default) • Presencial por demanda</div>
+<div class="bullet-item"><strong>Mecanismo didáctico:</strong> <strong>Demostración → Práctica guiada en vivo → Verificación personal</strong></div>
+<div class="bullet-item"><strong>Herramienta IA:</strong> cliente elige motor (ChatGPT, Gemini, Claude, etc.). Soporte agnóstico.</div>
+<div class="bullet-item"><strong>Entregables core (producidos en sesión):</strong></div>
+<p>1) Diagnóstico personal de fugas de tiempo (tu agenda etiquetada)</p>
+<p>2) Fuga crítica identificada + cura mínima viable específica</p>
+<p>3) Plan de acción SMART para tu reto real (con fases y riesgos)</p>
+<p>4) 1–3 meta‑prompts personalizados guardados y listos</p>
+<p>5) Tu rutina mínima (inicio/cierre) integrada a calendario</p>
+<div class="bullet-item"><strong>Certificación:</strong> Certificado de asistencia + acceso a comunidad WhatsApp privada</div>
+<div class="bullet-item"><strong>Soporte:</strong> Email + WhatsApp + embajador (30 días post-sesión)</div>
+<div class="bullet-item"><strong>Repositorio:</strong> Google Drive acceso 30 días post-cierre (copia todo lo que necesites)</div>
+<div class="bullet-item"><strong>Precio:</strong> <strong>COP 200.000</strong> individual (pago directo, Wompi/transferencia)</div>
+<div class="bullet-item"><strong>Impuestos:</strong> Incluidos en precio (facturación simplificada)</div>
+<div class="bullet-item"><strong>Puente educativo:</strong> <strong>100%</strong> del monto pagado → crédito para Bootcamp Trabajar Amplificado (válido 6 meses)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-sin-confusiones-724e1d" data-searchable aria-labelledby="head-2-definicin-sin-confusiones-724e1d">
+            <div class="phase-header" id="head-2-definicin-sin-confusiones-724e1d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2) Definición sin confusiones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="21-oferta-en-una-frase-8259d3">2.1 Oferta en una frase</h3>
+<p>Sesión intensiva de 3 horas donde aprenderás un método operativo práctico (intención + foco + delegación a IA) para pasar de estar constantemente ocupado a ser realmente productivo, completando tu primer plan de acción ejecutable en vivo.</p>
+<h3 class="subsection-title" id="22-qu-es-y-por-qu-funciona-para-ti-3ecff4">2.2 Qué es (y por qué funciona para ti)</h3>
+<div class="bullet-item"><strong>Instalación de capacidad personal</strong>, no teoría abstracta.</div>
+<div class="bullet-item">Funciona porque actúa sobre tres palancas concretas: clarificar qué importa (intención), proteger tu atención (foco) y automatizar lo repetitivo (IA con prompts claros).</div>
+<div class="bullet-item">Tu cambio se verifica por <strong>artefactos reales</strong> que produces en sesión; tu transformación sostenida depende de <strong>aplicar 3 semanas</strong>.</div>
+<div class="bullet-item">No promete milagros, pero sí recuperar <strong>~4 horas/semana</strong> por reducción de fricción operativa.</div>
+<h3 class="subsection-title" id="23-qu-no-es-0718f5">2.3 Qué NO es</h3>
+<div class="bullet-item">No es coaching o terapia; es un taller práctico operativo.</div>
+<div class="bullet-item">No es consultoría personalizada; es método + instalación en grupo.</div>
+<div class="bullet-item">No requiere que hayas usado IA antes.</div>
+<div class="bullet-item">No es un plan de negocio ni estrategia de carrera.</div>
+<div class="bullet-item">No reemplaza tu criterio en decisiones críticas (personales, legales, financieras).</div>
+<h3 class="subsection-title" id="24-ubicacin-en-tu-ruta-de-aprendizaje-3a54e4">2.4 Ubicación en tu ruta de aprendizaje</h3>
+<p>1) <strong>Este Workshop (entrada):</strong> De Ocupado a Productivo (3h)</p>
+<p>2) <strong>Siguiente paso (profundización):</strong> Bootcamp Trabajar Amplificado (18h, tu crédito cubre 100%)</p>
+<p>3) <strong>Servicios personalizados:</strong> EstrategIA Personal (1-on-1 coaching)</p>
+<p>4) <strong>Programa intensivo:</strong> Programa de Empoderamiento (PE-01, 16 semanas)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-fit-antifit-f2c1f4" data-searchable aria-labelledby="head-3-fit-antifit-f2c1f4">
+            <div class="phase-header" id="head-3-fit-antifit-f2c1f4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3) Fit / anti‑fit</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="31-eres-un-cliente-ideal-si-985174">3.1 Eres un cliente ideal si...</h3>
+<div class="bullet-item">Vives en reactividad constante (&quot;incendios&quot;, interrupciones, multitarea crónica) y quieres recuperar control.</div>
+<div class="bullet-item">Puedes dedicar <strong>3 horas consecutivas sin interrupciones</strong> y estás dispuesto a practicar en vivo.</div>
+<div class="bullet-item">Tienes acceso a un LLM (ChatGPT, Gemini, Claude u otro) y sabes copiar/pegar.</div>
+<div class="bullet-item">Estás comprometido a aplicar la rutina <strong>3 semanas mínimo</strong> para hacer el hábito sostenible.</div>
+<div class="bullet-item">Buscas evidencias concretas, no promesas vagas.</div>
+<h3 class="subsection-title" id="32-probablemente-no-es-para-ti-si-fc5e8b">3.2 Probablemente NO es para ti si...</h3>
+<div class="bullet-item">Buscas una &quot;solución mágica&quot; sin cambiar hábitos ni actuar después.</div>
+<div class="bullet-item">No tienes habilidades mínimas de computador (copiar/pegar, navegar, abrir programas).</div>
+<div class="bullet-item">No tienes acceso a ningún motor de IA ni quieres probar alternativas.</div>
+<div class="bullet-item">Necesitas intervención personalizada 1-on-1 desde el inicio.</div>
+<h3 class="subsection-title" id="33-preguntas-de-descalificacin-mnimas-48b51d">3.3 Preguntas de descalificación (mínimas)</h3>
+<p>1) ¿Cuál fue el &quot;incendio&quot; más grande de la semana pasada y cuántas horas te robó?</p>
+<p>2) ¿Tienes un reto/proyecto real en mente que quieras usar hoy para practicar?</p>
+<p>3) ¿Qué motor de IA usarás y ya validaste que funciona?</p>
+<p>4) ¿Puedes estar 3 horas con computador, cámara en, sin reuniones?</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-problema-que-resuelves-lmites-ticos-y-de-datos-cf5e3e" data-searchable aria-labelledby="head-4-problema-que-resuelves-lmites-ticos-y-de-datos-cf5e3e">
+            <div class="phase-header" id="head-4-problema-que-resuelves-lmites-ticos-y-de-datos-cf5e3e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 4) Problema que resuelves + límites éticos y de datos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="41-sntomas-que-identificamos-d77898">4.1 Síntomas que identificamos</h3>
+<div class="bullet-item">Tu jornada es completamente reactiva: interrupciones, notificaciones, cambios de contexto.</div>
+<div class="bullet-item">Trabajas muchas horas pero con sensación de poco logro.</div>
+<div class="bullet-item">Gastas energía en tareas de bajo impacto; lo importante queda para &quot;luego&quot;.</div>
+<div class="bullet-item">Tienes ideas, pero parálisis para ejecutar: análisis infinito sin acción.</div>
+<div class="bullet-item">Agotamiento sin progreso visible (burnout silencioso).</div>
+<h3 class="subsection-title" id="42-causas-raz-93a80b">4.2 Causas raíz</h3>
+<div class="bullet-item"><strong>No tienes &quot;sistema operativo personal&quot;:</strong> método claro de qué perseguir, cómo proteger tu atención, cómo ejecutar.</div>
+<div class="bullet-item"><strong>Tecnología te domina:</strong> calendario fragmentado, notificaciones dictan tu día, herramientas dispersas.</div>
+<div class="bullet-item"><strong>Falta de amplificación:</strong> tareas repetitivas sin delegación; IA existe pero no sabes cómo usarla.</div>
+<h3 class="subsection-title" id="43-consecuencias-si-sigues-igual-911548">4.3 Consecuencias (si sigues igual)</h3>
+<div class="bullet-item">Estancamiento profesional: techo de ingresos/crecimiento por falta de tiempo.</div>
+<div class="bullet-item">Riesgo creciente de burnout y deterioro del bienestar.</div>
+<div class="bullet-item">Obsolescencia: sin espacio para aprender, te rezagas.</div>
+<h3 class="subsection-title" id="44-lmites-ticos-no-negociables-ced1e0">4.4 Límites éticos (no negociables)</h3>
+<div class="bullet-item"><strong>Human-in-the-loop:</strong> IA propone; tú decides.</div>
+<div class="bullet-item">No se garantizan ahorros específicos; se instala capacidad; el resultado depende de ti.</div>
+<div class="bullet-item">No intervenimos en decisiones críticas tuyas (legales, financieras, personales).</div>
+<h3 class="subsection-title" id="45-reglas-de-datos-no-negociables-e8ba2d">4.5 Reglas de datos (no negociables)</h3>
+<div class="bullet-item"><strong>NO ingreses</strong> a IA: datos personales sensibles, información confidencial, credenciales, datos de terceros sin permiso.</div>
+<div class="bullet-item">Para casos reales: usa <strong>anonimización</strong> (borra nombres, cifras, clientes) o un <strong>caso sintético</strong> equivalente.</div>
+<div class="bullet-item"><strong>Responsabilidad tuya:</strong> lo que copies/pegues en IA es tu responsabilidad; nosotros solo enseñamos el método.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-diseo-pedaggico-cmo-lo-vives-2d1fe2" data-searchable aria-labelledby="head-5-diseo-pedaggico-cmo-lo-vives-2d1fe2">
+            <div class="phase-header" id="head-5-diseo-pedaggico-cmo-lo-vives-2d1fe2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5) Diseño pedagógico (cómo lo vives)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Tiempo es sagrado:</strong> si apremia, cortamos demo, NUNCA práctica.</div>
+<div class="bullet-item"><strong>Proporción:</strong> 20% demostración • 70% práctica guiada (en vivo con tu laptop) • 10% verificación.</div>
+<div class="bullet-item"><strong>Dos velocidades:</strong> plantillas paso a paso si eres nuevo; retos avanzados si vienes afilado.</div>
+<div class="bullet-item"><strong>El facilitador es tu copiloto:</strong> guía, no juez; pregunta frecuente es bienvenida.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-estructura-del-programa-agenda-3-horas-vivo-c231a3" data-searchable aria-labelledby="head-6-estructura-del-programa-agenda-3-horas-vivo-c231a3">
+            <div class="phase-header" id="head-6-estructura-del-programa-agenda-3-horas-vivo-c231a3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6) Estructura del programa / agenda (3 horas vivo)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Módulo</th><th scope="col">Tiempo</th><th scope="col">Qué haces</th><th scope="col">Llevas a casa</th><th scope="col">Herramientas</th></tr></thead><tbody><tr><td>1. Apertura + encuadre</td><td>10 min</td><td>Presentación, objetivos personales, reglas, confirmación de IA</td><td>Tu objetivo escrito + motor confirmado</td><td>Meet/Zoom</td></tr><tr><td>2. Diagnóstico de tu agenda</td><td>45 min</td><td>Etiquetamos tu última semana (Valor/Mant./Fuga); encuentras tu &quot;fuga crítica&quot;</td><td>Agenda analizada + 3 curas mínimas</td><td>Calendario + IA + notas</td></tr><tr><td>3. Replanificación personal</td><td>45 min</td><td>Defines 2–3 focos reales + agendas bloques de foco + primera cura</td><td>Bloques de foco agendados para esta semana</td><td>Calendario + tareas</td></tr><tr><td>4. Meta‑prompts (tu reto real)</td><td>60 min</td><td>Describes tu reto en IA; juntos construimos plan SMART (fases, riesgos, primera acción)</td><td>Meta‑prompt guardado + plan escrito</td><td>IA + doc personal</td></tr><tr><td>5. Rutina mínima + 3 semanas</td><td>15 min</td><td>Diseñamos tu ritual (inicio/cierre diarios); calendario de seguimiento</td><td>Rutina en calendario + plan 3 semanas</td><td>Calendario + doc</td></tr><tr><td>6. Verificación + cierre</td><td>5 min</td><td>Confirmamos que tienes tus artefactos; certificado + acceso comunidad</td><td>Checklist completado; eres parte del grupo</td><td>Meet</td></tr></tbody></table></div>
+<p class="key-value"><strong>Activaciones condicionadas:</strong></p>
+<div class="bullet-item">Si tu empresa tiene restricción TI: aplicamos protocolo con herramienta permitida (Sección 15).</div>
+<div class="bullet-item">Si registramos &gt;20 personas: escalamos a 2 facilitadores sin costo extra para la calidad.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-entregables-y-accesos-qu-es-tuyo-884b27" data-searchable aria-labelledby="head-7-entregables-y-accesos-qu-es-tuyo-884b27">
+            <div class="phase-header" id="head-7-entregables-y-accesos-qu-es-tuyo-884b27" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7) Entregables y accesos (qué es tuyo)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="71-entregables-core-incluidos-e3ec57">7.1 Entregables core (incluidos)</h3>
+<p>1) <strong>Playbook &quot;De Ocupado a Productivo&quot;</strong> — guía operativa tuya para mantener las rutinas.</p>
+<p>2) <strong>Biblioteca de 100+ prompts especializados</strong> — base curada, categorizada, lista para copiar/pegar.</p>
+<p>3) <strong>Pack mínimo de plantillas</strong> — diagnóstico, replanificación, plan 3 semanas, verificación.</p>
+<p>4) <strong>Artefactos personales producidos en sesión</strong> — tu meta‑prompt, tu plan SMART, tu rutina.</p>
+<p>5) <strong>Grabación + transcripción</strong> — acceso 30 días para revisar, aprender de nuevo, compartir con equipo.</p>
+<p>6) <strong>Certificado de asistencia</strong> — PDF descargable, para tu portafolio.</p>
+<p>7) <strong>Acceso comunidad WhatsApp privada</strong> — 30 días: preguntas, celebraciones, soporte peer.</p>
+<p>8) <strong>Crédito educativo 100%</strong> — hacia Bootcamp Trabajar Amplificado (válido 6 meses).</p>
+<h3 class="subsection-title" id="72-repositorio-y-vigencia-0f8c31">7.2 Repositorio y vigencia</h3>
+<div class="bullet-item"><strong>Google Drive:</strong> acceso durante 30 días posteriores al cierre. <strong>Descarga/copia lo que necesites antes.</strong></div>
+<div class="bullet-item">Campus/LMS: no incluido en este Workshop (valor agregado de Bootcamp).</div>
+<h3 class="subsection-title" id="73-grabacin-y-consentimiento-12e079">7.3 Grabación y consentimiento</h3>
+<div class="bullet-item">Te entregamos grabación y transcripción automática.</div>
+<div class="bullet-item">Enlace caduca a los 30 días; responsabilidad tuya hacer backup.</div>
+<div class="bullet-item">Si quieres grabar con tu celular: permiso explicito del grupo; usamos memorias oficiales como canon.</div>
+<h3 class="subsection-title" id="74-certificado-9dc087">7.4 Certificado</h3>
+<div class="bullet-item"><strong>Asistencia:</strong> sí, automático si completaste las 3 horas.</div>
+<div class="bullet-item"><strong>Competencia:</strong> no; competencia certificada es solo en Bootcamp/Programas (con evaluación).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-prerrequisitos-y-checklist-48h-antes-b3bc19" data-searchable aria-labelledby="head-8-prerrequisitos-y-checklist-48h-antes-b3bc19">
+            <div class="phase-header" id="head-8-prerrequisitos-y-checklist-48h-antes-b3bc19" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> 8) Prerrequisitos y checklist 48h antes</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="81-tcnicos-mnimos-c9efe9">8.1 Técnicos (mínimos)</h3>
+<div class="bullet-item">Computador (portátil/escritorio) + navegador moderno actualizado.</div>
+<div class="bullet-item">Internet estable (audio/video sin caídas).</div>
+<div class="bullet-item">Cámara y micrófono funcionales.</div>
+<div class="bullet-item">Acceso al calendario que usas (Google, Outlook, otro) para editar.</div>
+<h3 class="subsection-title" id="82-de-habilidad-mnimos-90d9cc">8.2 De habilidad (mínimos)</h3>
+<div class="bullet-item">Copiar/pegar (Ctrl+C / Ctrl+V).</div>
+<div class="bullet-item">Abrir y navegar múltiples pestañas.</div>
+<div class="bullet-item">Descargar/subir archivos.</div>
+<div class="bullet-item">Compartir pantalla si te lo pedimos.</div>
+<h3 class="subsection-title" id="83-checklist-que-completars-48h-antes-anexo-a-00adea">8.3 Checklist que completarás 48h antes (Anexo A)</h3>
+<p>Recibirás por email un formulario simple. Lo completas y nos confirmas que estás listo.</p>
+<h3 class="subsection-title" id="84-si-hay-bloqueo-tcnico-ff59ae">8.4 Si hay bloqueo técnico</h3>
+<div class="bullet-item">Sin acceso a IA: practicamos con caso de ejemplo; te damos guía para replicar luego.</div>
+<div class="bullet-item">Brecha de habilidad: entras como observador activo (documentas, extraes) o reprogramamos.</div>
+<div class="bullet-item">Internet inestable: prioridad audio; entregamos memorias para que sigas en casa.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-contextualizacin-tu-industriarol-c5bd5e" data-searchable aria-labelledby="head-9-contextualizacin-tu-industriarol-c5bd5e">
+            <div class="phase-header" id="head-9-contextualizacin-tu-industriarol-c5bd5e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9) Contextualización (tu industria/rol)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="91-regla-d4fecb">9.1 Regla</h3>
+<p>Contextualización está <strong>incluida sin costo extra</strong> y es <strong>altamente recomendada</strong>. Ajustamos ejemplos, casos, ejercicios a tu rol específico (freelancer, emprendedor, docente, etc.).</p>
+<h3 class="subsection-title" id="92-lead-time-83fc91">9.2 Lead time</h3>
+<div class="bullet-item"><strong>Primera fecha disponible:</strong> dentro de los siguientes 3 días hábiles.</div>
+<div class="bullet-item">Para contextualización profunda: necesitamos ≥3 días hábiles entre tu brief y la sesión.</div>
+<h3 class="subsection-title" id="93-brief-estndar-anexo-b-458522">9.3 Brief estándar (Anexo B)</h3>
+<p>En la primera conversación levantamos un brief rápido (nombre, rol, 3 fugas principales, reto real). Se confirma por escrito.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-operacin-y-logstica-e95423" data-searchable aria-labelledby="head-10-operacin-y-logstica-e95423">
+            <div class="phase-header" id="head-10-operacin-y-logstica-e95423" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10) Operación y logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="101-roles-clave-10a4ca">10.1 Roles clave</h3>
+<div class="bullet-item"><strong>Tú (participante):</strong> práctica en vivo, respeto de reglas de datos, compromiso a 3 semanas.</div>
+<div class="bullet-item"><strong>Facilitador:</strong> entrega, supervisión de práctica, verificación de artefactos, cierre.</div>
+<div class="bullet-item"><strong>Embajador:</strong> coordinación, agenda, repositorios, soporte post-sesión, puente a Bootcamp.</div>
+<div class="bullet-item"><strong>Comunidad:</strong> peer support en WhatsApp (opcional, self-serve).</div>
+<h3 class="subsection-title" id="102-tamao-de-grupo-y-formato-4053b2">10.2 Tamaño de grupo y formato</h3>
+<div class="bullet-item"><strong>Recomendación de efectividad:</strong> 8–15 personas (máximo intimidad, máxima atención).</div>
+<div class="bullet-item"><strong>Mínimo:</strong> 8 personas (viable operativamente).</div>
+<div class="bullet-item"><strong>Máximo:</strong> 30 personas (con 1 facilitador; si &gt;30, dividimos).</div>
+<div class="bullet-item">Dinámica: grupo abierto (gente nueva cada sesión) + peer learning.</div>
+<h3 class="subsection-title" id="103-calendario-y-convocatoria-45b2aa">10.3 Calendario y convocatoria</h3>
+<div class="bullet-item"><strong>Fechas públicas:</strong> calendario visible en web (múltiples sesiones mensuales).</div>
+<div class="bullet-item"><strong>Inscripción:</strong> online, pago inmediato (Wompi/transferencia), acceso a preparación 48h después.</div>
+<div class="bullet-item"><strong>Cupo:</strong> first-come, first-served hasta 30.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-soporte-y-sla-oficial-4b33ce" data-searchable aria-labelledby="head-11-soporte-y-sla-oficial-4b33ce">
+            <div class="phase-header" id="head-11-soporte-y-sla-oficial-4b33ce" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11) Soporte y SLA (oficial)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="111-canales-oficiales-276b47">11.1 Canales oficiales</h3>
+<div class="bullet-item"><strong>Email:</strong> oficina@metodologia.ai</div>
+<div class="bullet-item"><strong>WhatsApp:</strong> +57 1 2345 6789 (canal grupo privado post-sesión)</div>
+<div class="bullet-item"><strong>Embajador:</strong> contacto directo asignado a tu cohorte</div>
+<h3 class="subsection-title" id="112-sla-compromisos-nuestros-9c0b42">11.2 SLA (compromisos nuestros)</h3>
+<div class="bullet-item"><strong>Email:</strong> respuesta máximo siguiente día hábil.</div>
+<div class="bullet-item"><strong>WhatsApp:</strong> 9:00–17:00 (L–V), respuesta en ≤2 horas hábiles.</div>
+<div class="bullet-item"><strong>Post-sesión:</strong> soporte activo durante 30 días (repositorio, dudas, recordatorios).</div>
+<h3 class="subsection-title" id="113-alcance-del-soporte-77d726">11.3 Alcance del soporte</h3>
+<div class="bullet-item">Accesos a repositorio, dudas sobre material, guía de aplicación, recordatorios de rutina.</div>
+<div class="bullet-item"><strong>NO incluye:</strong> consultoría personalizada, ejecución de tus tareas, soporte técnico avanzado de terceros.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-condiciones-comerciales-aad470" data-searchable aria-labelledby="head-12-condiciones-comerciales-aad470">
+            <div class="phase-header" id="head-12-condiciones-comerciales-aad470" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12) Condiciones comerciales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="121-precio-y-pago-59a4b1">12.1 Precio y pago</h3>
+<div class="bullet-item"><strong>Precio:</strong> COP 200.000 por persona (pago individual, una sola cuota).</div>
+<div class="bullet-item"><strong>Métodos:</strong> Wompi (pago online) • Transferencia bancaria • Efectivo contra asistencia.</div>
+<div class="bullet-item"><strong>Impuestos:</strong> incluidos; facturación simplificada (recibo digital).</div>
+<h3 class="subsection-title" id="122-pago-y-reserva-383ead">12.2 Pago y reserva</h3>
+<div class="bullet-item"><strong>Pago = reserva:</strong> al pagar, tu cupo está garantizado en la fecha elegida.</div>
+<div class="bullet-item">Confirmación por email con link a material preparatorio (48h).</div>
+<h3 class="subsection-title" id="123-reprogramacin-cancelacin-noshow-5cdb5b">12.3 Reprogramación / cancelación / no-show</h3>
+<div class="bullet-item"><strong>1ª reprogramación (causa válida):</strong> sin costo.</div>
+<div class="bullet-item"><strong>2ª reprogramación en adelante:</strong> COP 50.000 fee.</div>
+<div class="bullet-item"><strong>No-show (no asistes, no avisan):</strong> pierdes pago; si quieres entrar después, es como &quot;nueva compra&quot;.</div>
+<div class="bullet-item"><strong>Cancelación por tu parte (≥7 días antes):</strong> devolución 100% (sin preguntas).</div>
+<div class="bullet-item"><strong>Cancelación &lt;7 días:</strong> devolución 50%.</div>
+<h3 class="subsection-title" id="124-fuerza-mayor-582852">12.4 Fuerza mayor</h3>
+<div class="bullet-item">Evento natural, pandemia, etc.: se reprograma sin costo, primer espacio disponible.</div>
+<h3 class="subsection-title" id="125-garanta-de-satisfaccin-e82d47">12.5 Garantía de satisfacción</h3>
+<div class="bullet-item"><strong>100% devolución</strong> a cambio de <strong>1 hora de feedback estructurado</strong> en sesión post-taller (opcional).</div>
+<div class="bullet-item">Solicitud dentro de <strong>48 horas</strong> posteriores a cierre.</div>
+<h3 class="subsection-title" id="126-crdito-educativo-hacia-bootcamp-0d11e3">12.6 Crédito educativo (hacia Bootcamp)</h3>
+<div class="bullet-item"><strong>Monto:</strong> 100% del valor pagado (COP 200.000).</div>
+<div class="bullet-item"><strong>Ventana:</strong> 6 meses desde la compra.</div>
+<div class="bullet-item"><strong>Aplicación:</strong> descuento directo en arancel Bootcamp; acumulable con otras promociones.</div>
+<div class="bullet-item"><strong>Máximo descuento:</strong> 100% del valor Bootcamp (no hay devoluciones adicionales).</div>
+<div class="bullet-item"><strong>Activación:</strong> solicita cotización Bootcamp por WhatsApp; te mostramos tu crédito aplicado.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-mtricas-de-xito-36d778" data-searchable aria-labelledby="head-13-mtricas-de-xito-36d778">
+            <div class="phase-header" id="head-13-mtricas-de-xito-36d778" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13) Métricas de éxito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="131-north-star-adopcin-a-3-semanas-27e0ad">13.1 North Star (adopción a 3 semanas)</h3>
+<p>A las 3 semanas de aplicar consistentemente: recuperas <strong>~4 horas/semana</strong> por reducción de fricción, mejor foco, menos &quot;incendios&quot;.</p>
+<p class="key-value"><strong>Nota ética:</strong> es meta de adopción; depende del contexto tuyo y consistencia. No es garantía.</p>
+<h3 class="subsection-title" id="132-indicadores-adelantados-uso-real-8c9ffb">13.2 Indicadores adelantados (uso real)</h3>
+<div class="bullet-item">% de días con rutina de inicio ejecutada.</div>
+<div class="bullet-item"># de bloques de foco creados y respetados.</div>
+<div class="bullet-item"># de meta‑prompts usados semana 1, 2, 3.</div>
+<div class="bullet-item"># de revisiones semanales completadas.</div>
+<h3 class="subsection-title" id="133-indicadores-rezagados-resultado-f742d2">13.3 Indicadores rezagados (resultado)</h3>
+<div class="bullet-item">Reducción de &quot;incendios&quot; (interrupciones urgentes no planificadas).</div>
+<div class="bullet-item">% de tareas críticas completadas (vs suspendidas).</div>
+<div class="bullet-item">Tu percepción de control/claridad (escala 1–5).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-criterios-de-aceptacin-definition-of-done-550e23" data-searchable aria-labelledby="head-14-criterios-de-aceptacin-definition-of-done-550e23">
+            <div class="phase-header" id="head-14-criterios-de-aceptacin-definition-of-done-550e23" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 14) Criterios de aceptación (Definition of Done)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>El Workshop se considera completado y aceptado por ti si:</p>
+<p>1) <strong>Claridad:</strong> puedes explicar el método en &lt;2 minutos a un colega.</p>
+<p>2) <strong>Verificabilidad:</strong> tienes evidencias concretas (Sección 7) producidas en vivo.</p>
+<p>3) <strong>Pedagogía:</strong> ejecutamos Demo → Práctica → Verificación.</p>
+<p>4) <strong>Ética:</strong> explicamos y respetamos reglas de datos + límites.</p>
+<p>5) <strong>Operativa:</strong> repositorio, grabación, certificado entregados; acceso WhatsApp activo.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="15-casos-borde-matriz-seal-decisin-mitigacin-7c934b" data-searchable aria-labelledby="head-15-casos-borde-matriz-seal-decisin-mitigacin-7c934b">
+            <div class="phase-header" id="head-15-casos-borde-matriz-seal-decisin-mitigacin-7c934b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 15) Casos borde (matriz: señal → decisión + mitigación)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Caso</th><th scope="col">Señal</th><th scope="col">Decisión en vivo</th><th scope="col">Mitigación previa</th></tr></thead><tbody><tr><td>Restricción TI / motor bloqueado</td><td>No puedo usar ChatGPT/Gemini</td><td>Usamos motor permitido (alternativa agnóstica); prompts equivalentes</td><td>Validar políticas TI; ofrecer Plan B</td></tr><tr><td>Quiero usar datos sensibles</td><td>Intento pegar info confidencial en IA</td><td>Exigimos anonimización o caso sintético; si no, ejemplo público</td><td>Reglas claras en Checklist 48h</td></tr><tr><td>Sin cuenta IA activa</td><td>No puedo iniciar sesión en el motor</td><td>Practicas con dataset/ejemplo; reciben guía para replicar</td><td>Checklist 48h + validación login</td></tr><tr><td>Desde móvil</td><td>Me conecto sin computador</td><td>Entras como oyente; recomendamos reprogramación</td><td>Convocatoria exige computador</td></tr><tr><td>Internet inestable</td><td>Caídas frecuentes de conexión</td><td>Prioridad audio; entregamos memorias + tareas para replicar</td><td>Checklist 48h + recom. red</td></tr><tr><td>Grupo heterogéneo</td><td>Gente básica + avanzada mezclada</td><td>Plantillas paso a paso + retos avanzados; ritmo mantiene todos</td><td>Diagnóstico rápido 48h</td></tr><tr><td>Quieren grabar privado</td><td>Me graban sin permiso grupal</td><td>Pedimos detener; referimos a memorias oficiales</td><td>Consentimiento explícito al inicio</td></tr><tr><td>Piden certificado competencia</td><td>&quot;¿Me dan certificado de competencia?&quot;</td><td>No, es asistencia; competencia solo Bootcamp/Programas con evaluación</td><td>Explicación clara en Ficha 1</td></tr><tr><td>Reprogramación 3+ veces</td><td>Insisten en mover sin fee</td><td>Aplicamos política: a partir 2ª, fee aplica</td><td>Escrito desde inicio en Sección 12</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="16-anexos-operativos-a95c02" data-searchable aria-labelledby="head-16-anexos-operativos-a95c02">
+            <div class="phase-header" id="head-16-anexos-operativos-a95c02" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 16) Anexos (operativos)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Regla:</strong> anexos apoyan operación; no modifican lo contractual salvo cita.</p>
+<div class="bullet-item"><strong>Anexo A — Checklist 48h personal</strong></div>
+<div class="bullet-item"><strong>Anexo B — Brief estándar de contextualización</strong></div>
+<div class="bullet-item"><strong>Anexo C — 3 prompts estrella (copiar/pegar, agnósticos de herramienta)</strong></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="17-control-de-versin-782c26" data-searchable aria-labelledby="head-17-control-de-versin-782c26">
+            <div class="phase-header" id="head-17-control-de-versin-782c26" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 17) Control de versión</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Versión:</strong> v1.4-PERSONAS</div>
+<div class="bullet-item"><strong>Fecha:</strong> 2026-03-24</div>
+<div class="bullet-item"><strong>Cambios vs. canónico:</strong> segmentación para personas/freelancers; énfasis en autonomía, transformación personal, peer learning; precios, canal de ventas (web/social/embajadores), SLA simplificado, crédito educativo como puente explícito a Bootcamp.</div>
+<hr class="divider">
+<p># Anexo A — Checklist 48h (personal)</p>
+<p>Recibirás este checklist por email. Complétalo y confirma. Nos ayuda a preparar la sesión sin sorpresas.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a1-confirmacin-de-asistencia-ce1bd9" data-searchable aria-labelledby="head-a1-confirmacin-de-asistencia-ce1bd9">
+            <div class="phase-header" id="head-a1-confirmacin-de-asistencia-ce1bd9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A1. Confirmación de asistencia</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-confirmo-fechahora-de-sesin-y-que-estoy-disponible-d213ff"><input type="checkbox" id="chk-confirmo-fechahora-de-sesin-y-que-estoy-disponible-d213ff" ><span>Confirmo fecha/hora de sesión y que estoy disponible 3 horas sin interrupciones.</span></label>
+<label class="checklist-item" for="chk-participar-desde-computador-no-mvil-374189"><input type="checkbox" id="chk-participar-desde-computador-no-mvil-374189" ><span>Participaré desde computador (no móvil).</span></label>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a2-motor-de-ia-elige-1-valida-ddb769" data-searchable aria-labelledby="head-a2-motor-de-ia-elige-1-valida-ddb769">
+            <div class="phase-header" id="head-a2-motor-de-ia-elige-1-valida-ddb769" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A2. Motor de IA (elige 1, valida)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-motor-elegido-chatgpt-gemini-claude-otro--a9e40d"><input type="checkbox" id="chk-motor-elegido-chatgpt-gemini-claude-otro--a9e40d" ><span>Motor elegido: ( ) ChatGPT  ( ) Gemini  ( ) Claude  ( ) Otro: _______</span></label>
+<label class="checklist-item" for="chk-tengo-cuenta-activa-y-puedo-iniciar-sesin-fb2d23"><input type="checkbox" id="chk-tengo-cuenta-activa-y-puedo-iniciar-sesin-fb2d23" ><span>Tengo cuenta activa y puedo iniciar sesión.</span></label>
+<label class="checklist-item" for="chk-acabo-de-escribir-una-instruccin-simple-y-funcion-598995"><input type="checkbox" id="chk-acabo-de-escribir-una-instruccin-simple-y-funcion-598995" ><span>Acabo de escribir una instrucción simple y funcionó.</span></label>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a3-conectividad-9fd40f" data-searchable aria-labelledby="head-a3-conectividad-9fd40f">
+            <div class="phase-header" id="head-a3-conectividad-9fd40f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A3. Conectividad</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-internet-estable-audiovideo-sin-cadas-da8db3"><input type="checkbox" id="chk-internet-estable-audiovideo-sin-cadas-da8db3" ><span>Internet estable (audio/video sin caídas).</span></label>
+<label class="checklist-item" for="chk-cmara-y-micrfono-ok-565371"><input type="checkbox" id="chk-cmara-y-micrfono-ok-565371" ><span>Cámara y micrófono OK.</span></label>
+<label class="checklist-item" for="chk-navegador-actualizado-9ac41e"><input type="checkbox" id="chk-navegador-actualizado-9ac41e" ><span>Navegador actualizado.</span></label>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a4-herramientas-de-trabajo-939207" data-searchable aria-labelledby="head-a4-herramientas-de-trabajo-939207">
+            <div class="phase-header" id="head-a4-herramientas-de-trabajo-939207" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A4. Herramientas de trabajo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-acceso-a-mi-calendario-googleoutlookotro-para-edit-1a9cc9"><input type="checkbox" id="chk-acceso-a-mi-calendario-googleoutlookotro-para-edit-1a9cc9" ><span>Acceso a mi calendario (Google/Outlook/otro) para editar.</span></label>
+<label class="checklist-item" for="chk-acceso-a-mi-sistema-de-tareasnotas-o-google-docs-c-8a2576"><input type="checkbox" id="chk-acceso-a-mi-sistema-de-tareasnotas-o-google-docs-c-8a2576" ><span>Acceso a mi sistema de tareas/notas (o Google Docs como plan B).</span></label>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a5-habilidades-mnimas-verifica-55c3a9" data-searchable aria-labelledby="head-a5-habilidades-mnimas-verifica-55c3a9">
+            <div class="phase-header" id="head-a5-habilidades-mnimas-verifica-55c3a9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A5. Habilidades mínimas (verifica)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-s-copiarpegar-015022"><input type="checkbox" id="chk-s-copiarpegar-015022" ><span>Sé copiar/pegar.</span></label>
+<label class="checklist-item" for="chk-s-abrir-mltiples-pestaas-d2f958"><input type="checkbox" id="chk-s-abrir-mltiples-pestaas-d2f958" ><span>Sé abrir múltiples pestañas.</span></label>
+<label class="checklist-item" for="chk-s-compartir-pantalla-c8a9ca"><input type="checkbox" id="chk-s-compartir-pantalla-c8a9ca" ><span>Sé compartir pantalla.</span></label>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a6-insumos-listos-084116" data-searchable aria-labelledby="head-a6-insumos-listos-084116">
+            <div class="phase-header" id="head-a6-insumos-listos-084116" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A6. Insumos listos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-traigo-1-reto-real-descrito-sin-confidencialidad--4fc9aa"><input type="checkbox" id="chk-traigo-1-reto-real-descrito-sin-confidencialidad--4fc9aa" ><span>Traigo 1 reto real (descrito sin confidencialidad): _____________</span></label>
+<label class="checklist-item" for="chk-mi-calendario-de-la-ltima-semana-listo-para-revisa-8c72d8"><input type="checkbox" id="chk-mi-calendario-de-la-ltima-semana-listo-para-revisa-8c72d8" ><span>Mi calendario de la última semana, listo para revisar (sin datos sensibles).</span></label>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a7-datos-aceptacin-b05706" data-searchable aria-labelledby="head-a7-datos-aceptacin-b05706">
+            <div class="phase-header" id="head-a7-datos-aceptacin-b05706" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A7. Datos: aceptación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-entiendo-que-no-debo-ingresar-datos-sensiblesconfi-6a2a10"><input type="checkbox" id="chk-entiendo-que-no-debo-ingresar-datos-sensiblesconfi-6a2a10" ><span>Entiendo que NO debo ingresar datos sensibles/confidenciales en IA.</span></label>
+<label class="checklist-item" for="chk-si-requiero-un-caso-real-lo-traer-anonimizado-o-si-5aa3f9"><input type="checkbox" id="chk-si-requiero-un-caso-real-lo-traer-anonimizado-o-si-5aa3f9" ><span>Si requiero un caso real, lo traeré anonimizado o sinético.</span></label>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="a8-miniprueba-63066a" data-searchable aria-labelledby="head-a8-miniprueba-63066a">
+            <div class="phase-header" id="head-a8-miniprueba-63066a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> A8. Mini‑prueba</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-abr-mi-motor-de-ia-7ed0f1"><input type="checkbox" id="chk-abr-mi-motor-de-ia-7ed0f1" ><span>Abrí mi motor de IA.</span></label>
+<label class="checklist-item" for="chk-escrib-crea-una-conversacin-llamada-metodologiapru-abd6aa"><input type="checkbox" id="chk-escrib-crea-una-conversacin-llamada-metodologiapru-abd6aa" ><span>Escribí: &quot;Crea una conversación llamada &#x27;MetodologIA—Prueba&#x27; y dime 3 usos seguros de IA para productividad personal.&quot;</span></label>
+<hr class="divider">
+<p># Anexo B — Brief estándar (contextualización)</p>
+<p>Levantamos esto en tu inscripción. Confirmas por email.</p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="b1-quin-eres-8adce2" data-searchable aria-labelledby="head-b1-quin-eres-8adce2">
+            <div class="phase-header" id="head-b1-quin-eres-8adce2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> B1. Quién eres</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Tu nombre:</div>
+<div class="bullet-item">Tu rol/profesión:</div>
+<div class="bullet-item">Tu industria/sector (p.ej., educación, tech, abogacía, etc.):</div>
+<div class="bullet-item">Objetivo para esta sesión (1 frase): ___________</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="b2-tu-contexto-be359b" data-searchable aria-labelledby="head-b2-tu-contexto-be359b">
+            <div class="phase-header" id="head-b2-tu-contexto-be359b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> B2. Tu contexto</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"># de horas/día dedicadas a tareas reactivas: ____</div>
+<div class="bullet-item">3 tareas recurrentes donde más se pierde tiempo:</div>
+<p>1) ______</p>
+<p>2) ______</p>
+<p>3) ______</p>
+<div class="bullet-item">Nivel auto-estimado: ( ) Principiante  ( ) Intermedio  ( ) Avanzado</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="b3-restricciones-tcnicas-a8e343" data-searchable aria-labelledby="head-b3-restricciones-tcnicas-a8e343">
+            <div class="phase-header" id="head-b3-restricciones-tcnicas-a8e343" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> B3. Restricciones técnicas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Motor de IA a usar: ___________</div>
+<div class="bullet-item">¿Hay restricción TI en tu empresa/institución?: (sí/no) Detalle: ________</div>
+<div class="bullet-item">Reglas de confidencialidad relevantes: ________</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="b4-tu-reto-real-para-el-ejercicio-principal-1f51e5" data-searchable aria-labelledby="head-b4-tu-reto-real-para-el-ejercicio-principal-1f51e5">
+            <div class="phase-header" id="head-b4-tu-reto-real-para-el-ejercicio-principal-1f51e5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> B4. Tu reto real (para el ejercicio principal)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Describe el reto (anonimizado, máximo 5 líneas): ________</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="b5-herramientas-actuales-912d36" data-searchable aria-labelledby="head-b5-herramientas-actuales-912d36">
+            <div class="phase-header" id="head-b5-herramientas-actuales-912d36" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> B5. Herramientas actuales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Calendario: Google / Outlook / Otro: _____</div>
+<div class="bullet-item">Tareas/notas: Notion / Asana / Google Tasks / Otro: _____</div>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="b6-xito-para-ti-daa80e" data-searchable aria-labelledby="head-b6-xito-para-ti-daa80e">
+            <div class="phase-header" id="head-b6-xito-para-ti-daa80e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> B6. Éxito para ti</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">¿Qué tendría que pasar en 3 semanas para decir &quot;valió la pena&quot;?: ________</div>
+<div class="bullet-item">Señal mínima de adopción (1 hábito): ________</div>
+<hr class="divider">
+<p># Anexo C — 3 prompts estrella (copiar/pegar)</p>
+<p>Usa estos en tu motor elegido. <strong>Recuerda: datos anonimizados.</strong></p>
+            </div>
+        </section>
+        
+        <section class="phase-card" id="c1-diagnstico-de-tu-agenda-valor-mant-fuga-503d2f" data-searchable aria-labelledby="head-c1-diagnstico-de-tu-agenda-valor-mant-fuga-503d2f">
+            <div class="phase-header" id="head-c1-diagnstico-de-tu-agenda-valor-mant-fuga-503d2f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> C1. Diagnóstico de tu agenda (Valor / Mant. / Fuga)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Instrucción:</strong></p>
+<p>Actúa como analista de fricción operativa. Voy a pegar mi agenda de la última semana (anonimizada). Clasifica cada actividad en: (A) Creación de Valor, (B) Mantenimiento, (C) Fuga. Luego: 1) identifica mi &quot;fuga crítica&quot;, 2) propone 3 curas mínimas viables, 3) sugiere 2 bloques de foco para la próxima semana.</p>
+<p class="key-value"><strong>Formato de salida:</strong></p>
+<div class="bullet-item">Tabla: actividad | categoría | motivo | acción</div>
+<div class="bullet-item">Fuga crítica (1)</div>
+<div class="bullet-item">Curas (3)</div>
+<div class="bullet-item">Bloques de foco (2)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="c2-plan-para-tu-reto-smart-fases-riesgos-93428a" data-searchable aria-labelledby="head-c2-plan-para-tu-reto-smart-fases-riesgos-93428a">
+            <div class="phase-header" id="head-c2-plan-para-tu-reto-smart-fases-riesgos-93428a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> C2. Plan para tu reto (SMART + fases + riesgos)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Instrucción:</strong></p>
+<p>Actúa como PM senior. Con el reto que te doy, crea un plan de 1 página:</p>
+<p>1) objetivo SMART,</p>
+<p>2) criterios de éxito (3),</p>
+<p>3) fases (3–5) con hitos,</p>
+<p>4) riesgos (5) con mitigación,</p>
+<p>5) primera acción en &lt;15 minutos.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="c3-constructor-de-metaprompt-para-delegar-a-ia-8e17b7" data-searchable aria-labelledby="head-c3-constructor-de-metaprompt-para-delegar-a-ia-8e17b7">
+            <div class="phase-header" id="head-c3-constructor-de-metaprompt-para-delegar-a-ia-8e17b7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> C3. Constructor de meta‑prompt (para delegar a IA)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Instrucción:</strong></p>
+<p>Ayúdame a construir un meta-prompt reusable. Mi tarea recurrente es: [describe].</p>
+<p>Devuélveme un meta-prompt con 4 componentes:</p>
+<p>1) Instrucción y objetivo,</p>
+<p>2) Resultado esperado (estructura exacta),</p>
+<p>3) Contexto y restricciones (tono, audiencia, límites),</p>
+<p>4) Datos de entrada (qué debo pegar).</p>
+<p>Incluye versión &quot;rápida&quot; y versión &quot;profunda&quot;.</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

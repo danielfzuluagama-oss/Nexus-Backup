@@ -763,6 +763,19 @@ describe("T091: formatForTelegram — Markdown-to-Telegram-HTML conversion", () 
     expect(result.trim().length).toBeGreaterThan(0);
   });
 
+  it("renders markdown line breaks as literal newlines instead of <br> tags", () => {
+    const result = formatForTelegram("Linea uno\nLinea dos");
+    expect(result).not.toContain("<br>");
+    expect(result).toContain("Linea uno\nLinea dos");
+  });
+
+  it("escapes raw HTML-like text and bare ampersands safely", () => {
+    const result = formatForTelegram("Riesgo <critico> & bloqueo en AT&T");
+    expect(result).toContain("&lt;critico&gt;");
+    expect(result).toContain("AT&amp;T");
+    expect(result).not.toContain("<critico>");
+  });
+
   it("does not crash on input with tables (strips with placeholder)", () => {
     const md = "| Col A | Col B |\n| ----- | ----- |\n| Val 1 | Val 2 |";
     const result = formatForTelegram(md);

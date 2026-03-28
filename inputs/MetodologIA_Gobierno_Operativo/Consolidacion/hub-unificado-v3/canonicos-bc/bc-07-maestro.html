@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Bootcamp BC-07 — Trabajo Agéntico — Proceso de Delivery MetodologIA">
+    <title>Bootcamp BC-07 — Trabajo Agéntico — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Bc</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Bootcamp BC-07 — Trabajo Agéntico</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Bootcamp BC-07 — Trabajo Agéntico</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">21</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-maestro-ssot-ab01f6')" aria-label="Ir a Documento Canónico Maestro (SSOT)">Documento Canónico Maestro (SSOT)</button>
+<button class="nav-btn" onclick="scrollToSection('0-encabezado-de-autoridad-14932a')" aria-label="Ir a 0. Encabezado de Autoridad">0. Encabezado de Autoridad</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-decisin-en-60-segundos-9016da')" aria-label="Ir a 1. Ficha Rápida — Decisión en 60 segundos">1. Ficha Rápida — Decisión en 60 se</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-sin-confusiones-c8c3d0')" aria-label="Ir a 2. Definición sin Confusiones">2. Definición sin Confusiones</button>
+<button class="nav-btn" onclick="scrollToSection('3-posicin-en-la-ruta-de-transformacin-d37112')" aria-label="Ir a 3. Posición en la Ruta de Transformación">3. Posición en la Ruta de Transform</button>
+<button class="nav-btn" onclick="scrollToSection('4-matriz-de-fit-antifit-a58b03')" aria-label="Ir a 4. Matriz de Fit / Anti-Fit">4. Matriz de Fit / Anti-Fit</button>
+<button class="nav-btn" onclick="scrollToSection('5-problema-que-resuelve-bb7647')" aria-label="Ir a 5. Problema que Resuelve">5. Problema que Resuelve</button>
+<button class="nav-btn" onclick="scrollToSection('6-arquitectura-curricular-6-mdulos-24-horas-1b2275')" aria-label="Ir a 6. Arquitectura Curricular — 6 Módulos, 24 Horas">6. Arquitectura Curricular — 6 Módu</button>
+<button class="nav-btn" onclick="scrollToSection('7-entregables-globales-del-bootcamp-a1184f')" aria-label="Ir a 7. Entregables Globales del Bootcamp">7. Entregables Globales del Bootcam</button>
+<button class="nav-btn" onclick="scrollToSection('8-modelo-de-evaluacin-y-certificacin-ecc212')" aria-label="Ir a 8. Modelo de Evaluación y Certificación">8. Modelo de Evaluación y Certifica</button>
+<button class="nav-btn" onclick="scrollToSection('9-modelo-comercial-79a451')" aria-label="Ir a 9. Modelo Comercial">9. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('10-operacin-y-logstica-26471f')" aria-label="Ir a 10. Operación y Logística">10. Operación y Logística</button>
+<button class="nav-btn" onclick="scrollToSection('11-soporte-sla-y-campus-7eef9b')" aria-label="Ir a 11. Soporte, SLA y Campus">11. Soporte, SLA y Campus</button>
+<button class="nav-btn" onclick="scrollToSection('12-segmentacin-diferencias-personas-vs-empresas-421670')" aria-label="Ir a 12. Segmentación: Diferencias PERSONAS vs EMPRESAS">12. Segmentación: Diferencias PERSO</button>
+<button class="nav-btn" onclick="scrollToSection('13-kpis-del-servicio-079b9c')" aria-label="Ir a 13. KPIs del Servicio">13. KPIs del Servicio</button>
+<button class="nav-btn" onclick="scrollToSection('14-trminos-contractuales-fa9eac')" aria-label="Ir a 14. Términos Contractuales">14. Términos Contractuales</button>
+<button class="nav-btn" onclick="scrollToSection('15-protocolo-de-contingencia-9c12cc')" aria-label="Ir a 15. Protocolo de Contingencia">15. Protocolo de Contingencia</button>
+<button class="nav-btn" onclick="scrollToSection('16-comunicacin-y-marketing-648fb3')" aria-label="Ir a 16. Comunicación y Marketing">16. Comunicación y Marketing</button>
+<button class="nav-btn" onclick="scrollToSection('apndice-a-bibliografa-de-referencia-3d386c')" aria-label="Ir a Apéndice A: Bibliografía de Referencia">Apéndice A: Bibliografía de Referen</button>
+<button class="nav-btn" onclick="scrollToSection('apndice-b-plantillas-entregables-88ddf4')" aria-label="Ir a Apéndice B: Plantillas Entregables">Apéndice B: Plantillas Entregables</button>
+<button class="nav-btn" onclick="scrollToSection('apndice-c-changelog-9cb5a7')" aria-label="Ir a Apéndice C: Changelog">Apéndice C: Changelog</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-maestro-ssot-ab01f6" data-searchable aria-labelledby="head-documento-cannico-maestro-ssot-ab01f6">
+            <div class="phase-header" id="head-documento-cannico-maestro-ssot-ab01f6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico Maestro (SSOT)</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Última actualización</strong>: 24 de marzo de 2026</p>
+<p class="key-value"><strong>Versión</strong>: 2.0</p>
+<p class="key-value"><strong>Propietario</strong>: Arquitectura Educativa MetodologIA</p>
+<p class="key-value"><strong>Clasificación</strong>: Documento maestro de autoridad única</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="0-encabezado-de-autoridad-14932a" data-searchable aria-labelledby="head-0-encabezado-de-autoridad-14932a">
+            <div class="phase-header" id="head-0-encabezado-de-autoridad-14932a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 0. Encabezado de Autoridad</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Este documento es la <strong>Fuente Única de Verdad (SSOT)</strong> para el Bootcamp BC-07 Trabajo Agéntico dentro de MetodologIA. Todos los materiales, comerciales, currículos, certificaciones y comunicaciones externas deben extraer su autoridad de este documento.</p>
+<p class="key-value"><strong>Validez</strong>: Esta versión es válida hasta el 31 de diciembre de 2026. Cambios sustanciales requieren aprobación de Directiva.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-decisin-en-60-segundos-9016da" data-searchable aria-labelledby="head-1-ficha-rpida-decisin-en-60-segundos-9016da">
+            <div class="phase-header" id="head-1-ficha-rpida-decisin-en-60-segundos-9016da" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 1. Ficha Rápida — Decisión en 60 segundos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Campo</th><th scope="col">Valor</th></tr></thead><tbody><tr><td><strong>Nombre oficial</strong></td><td>Bootcamp Trabajo Agéntico</td></tr><tr><td><strong>Código MetodologIA</strong></td><td>BC-07</td></tr><tr><td><strong>Duración total</strong></td><td>24 horas (3 días intensivos o 6 sesiones de 4h)</td></tr><tr><td><strong>Composición</strong></td><td>20h core + 4h lab integración</td></tr><tr><td><strong>Formato</strong></td><td>Intensivo empresarial (arquitectura → construcción → despliegue → medición)</td></tr><tr><td><strong>Público objetivo</strong></td><td>CTOs, Heads of Innovation, Product Leads, Equipos de Automatización</td></tr><tr><td><strong>Prerequisito</strong></td><td>WS-01 (Ecosistema IA) o demostrable competencia inicial</td></tr><tr><td><strong>Precio (persona)</strong></td><td>COP 1,200,000</td></tr><tr><td><strong>Precio (empresa, hasta 20 pax)</strong></td><td>COP 18,000,000</td></tr><tr><td><strong>Crédito por Workshops</strong></td><td>100% del pago WS aplicable durante 6 meses</td></tr><tr><td><strong>Certificación</strong></td><td>Participación + Competencia (capstone: 2 agentes operacionales)</td></tr><tr><td><strong>Próximo paso</strong></td><td>EstrategIA Empresarial (4 semanas) → Digital Champions (PE-02, 16 semanas)</td></tr><tr><td><strong>Soporte durante/post</strong></td><td>Email D+1, WhatsApp 9-17h (≤2h), Campus 2 meses (empresa)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-sin-confusiones-c8c3d0" data-searchable aria-labelledby="head-2-definicin-sin-confusiones-c8c3d0">
+            <div class="phase-header" id="head-2-definicin-sin-confusiones-c8c3d0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición sin Confusiones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="qu-es-bc07-1428b7">¿QUÉ ES BC-07?</h3>
+<p><strong>BC-07 es un bootcamp empresarial intensivo que enseña a equipos a diseñar, construir, desplegar y gobernar sistemas de agentes autónomos basados en IA para resolver problemas de negocio reales.</strong></p>
+<p>Esto significa:</p>
+<div class="bullet-item">Aprender <strong>arquitecturas de agentes</strong> (patrones probados, anti-patrones, topologías)</div>
+<div class="bullet-item"><strong>Construir agentes funcionales</strong> en Claude, GPT-4, n8n y Make</div>
+<div class="bullet-item">Implementar <strong>orquestación multi-agente</strong> para flujos complejos</div>
+<div class="bullet-item">Diseñar <strong>gobernanza y seguridad</strong> para sistemas autónomos</div>
+<div class="bullet-item">Capstone: <strong>desplegar 3+ agentes que resuelven problemas reales</strong> de la organización</div>
+<h3 class="subsection-title" id="qu-no-es-bc07-97ffc7">¿QUÉ NO ES BC-07?</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">No es...</th><th scope="col">Porque...</th></tr></thead><tbody><tr><td>Curso de prompting</td><td>No enseña técnicas de prompt design (eso es WS-02)</td></tr><tr><td>Consultoría de implementación</td><td>No construimos agentes *para* usted; construimos *con* usted</td></tr><tr><td>Certificación de ChatGPT</td><td>No es sobre usar herramientas; es sobre diseñar sistemas</td></tr><tr><td>Capacitación genérica en IA</td><td>Es específicamente agent architecture + deployment</td></tr><tr><td>Puente a Digital Champions</td><td>Es el *prerequisito recomendado* que prepara para DC (PE-02)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-posicin-en-la-ruta-de-transformacin-d37112" data-searchable aria-labelledby="head-3-posicin-en-la-ruta-de-transformacin-d37112">
+            <div class="phase-header" id="head-3-posicin-en-la-ruta-de-transformacin-d37112" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Posición en la Ruta de Transformación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>BC-07 ocupa una <strong>posición crítica</strong> en la ruta de transformación digital de MetodologIA:</p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    RUTA DE TRANSFORMACIÓN IA                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  WORKSHOPS (4-8 horas c/u)                                    │
+│  ├─ WS-01: Ecosistema IA                                     │
+│  ├─ WS-02: Prompting Avanzado                                │
+│  └─ WS-10: Ideación Agéntica                                 │
+│           │                                                   │
+│           ▼                                                   │
+│  ┌──────────────────────────────────────────────┐            │
+│  │  ★ BC-07: TRABAJO AGÉNTICO (THIS) ★         │   24h       │
+│  │  Enterprise Agent Architecture Bootcamp      │            │
+│  │  → 3 Custom Agents deployed                  │            │
+│  │  → Governance framework draft                │            │
+│  │  → Team certified (capstone: 2+ agents)      │            │
+│  └──────────────────────────────────────────────┘            │
+│           │                                                   │
+│           ▼                                                   │
+│  ESTRATEGIA EMPRESARIAL (4 semanas)                           │
+│  → Mapeo de casos de uso reales                             │
+│  → Estrategia de escalado multi-agente                      │
+│           │                                                   │
+│           ▼                                                   │
+│  DIGITAL CHAMPIONS (PE-02, 16 semanas)                       │
+│  → Transformación organizacional completa                    │
+│  → Governance en escala                                      │
+│  → Impacto mesurable en operaciones                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<p class="key-value"><strong>Por qué esta posición es crítica:</strong></p>
+<div class="bullet-item">Usuarios de workshops llegan aquí listos para <strong>construir</strong>, no solo entender</div>
+<div class="bullet-item">BC-07 proporciona <strong>credenciales y arquitectura</strong> para Digital Champions</div>
+<div class="bullet-item">Es el punto donde IA pasa de <strong>&quot;interesante&quot;</strong> a <strong>&quot;operacional&quot;</strong></div>
+<div class="bullet-item">Crea las <strong>capas de gobernanza</strong> que PE-02 requiere</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-matriz-de-fit-antifit-a58b03" data-searchable aria-labelledby="head-4-matriz-de-fit-antifit-a58b03">
+            <div class="phase-header" id="head-4-matriz-de-fit-antifit-a58b03" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Matriz de Fit / Anti-Fit</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="-fit-perfecto-515c6d"><span class="status-ok" aria-label="Completado">✅</span> FIT PERFECTO</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Perfil</th><th scope="col">Razón</th></tr></thead><tbody><tr><td><strong>CTO / Director Tecnología</strong></td><td>Necesita entender agentes para la estrategia técnica</td></tr><tr><td><strong>Head of Innovation / Digital</strong></td><td>Busca llevar IA de pilots a producción</td></tr><tr><td><strong>Product Lead / Manager</strong></td><td>Diseña productos con capacidades agentas</td></tr><tr><td><strong>Automation / RPA Lead</strong></td><td>Migra workflows legacy a arquitectura agentica</td></tr><tr><td><strong>Enterprise Architect</strong></td><td>Integra agentes en sistemas existentes</td></tr><tr><td><strong>Equipo dedicado 3-5 personas</strong></td><td>Fuerza suficiente para capstone real</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="-antifit-475bfc"><span class="status-fail" aria-label="No completado">❌</span> ANTI-FIT</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario</th><th scope="col">Recomendación</th></tr></thead><tbody><tr><td>Sin apetito técnico</td><td>Comience con WS-01, luego considere DC (consulting)</td></tr><tr><td>Sin patrocinio ejecutivo</td><td>Consiga buy-in primero; BC-07 requiere inversión</td></tr><tr><td>Busca &quot;learn once, done&quot;</td><td>BC-07 es intensivo; requiere post-trabajo</td></tr><tr><td>Empresa &lt; 50 personas</td><td>Considere BC-04; BC-07 es enterprise-grade</td></tr><tr><td>Sin problemas reales a resolver</td><td>Capstone fallará; necesita casos de uso auténticos</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-problema-que-resuelve-bb7647" data-searchable aria-labelledby="head-5-problema-que-resuelve-bb7647">
+            <div class="phase-header" id="head-5-problema-que-resuelve-bb7647" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Problema que Resuelve</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="el-vaco-f5fb12">El Vacío</h3>
+<p>Hoy, muchas organizaciones están en este estado:</p>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Personas saben usar ChatGPT / Claude</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Han hecho experimentos con prompting</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Entienden el potencial de IA</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> <strong>Pero no saben cómo construir sistemas autónomos que funcionen sin supervisión humana constante</strong></div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> <strong>No tienen arquitecturas para coordinar múltiples agentes</strong></div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> <strong>Carecen de gobernanza y seguridad para sistemas agentos en producción</strong></div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> <strong>No pueden escalar de &quot;un agente en Slack&quot; a &quot;10 agentes en operaciones&quot;</strong></div>
+<h3 class="subsection-title" id="el-salto-f502bb">El Salto</h3>
+<p>BC-07 enseña ese salto:</p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>DE:                                  A:
+└─ Usar ChatGPT/Claude              ├─ Arquitectura de agentes
+└─ Un prompt a la vez               ├─ Orquestación multi-agente
+└─ Respuestas puntuales             ├─ Ciclos de feedback automatizados
+└─ Supervisión manual constante     ├─ Gobernanza y seguridad
+                                    └─ Sistemas que mejoran con tiempo</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-arquitectura-curricular-6-mdulos-24-horas-1b2275" data-searchable aria-labelledby="head-6-arquitectura-curricular-6-mdulos-24-horas-1b2275">
+            <div class="phase-header" id="head-6-arquitectura-curricular-6-mdulos-24-horas-1b2275" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Arquitectura Curricular — 6 Módulos, 24 Horas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="m0-landscape-agntico-assessment-individual-2h-2f86d3">M0: Landscape Agéntico + Assessment Individual (2h)</h3>
+<p class="key-value"><strong>Objetivo</strong>: Establecer baseline de comprensión y contexto.</p>
+<p class="key-value"><strong>Contenidos</strong>:</p>
+<div class="bullet-item">Estado del arte en agent architecture (2025-2026)</div>
+<div class="bullet-item">Tipología de agentes: reactivos, deliberativos, sociales</div>
+<div class="bullet-item">Casos de uso empresariales reales (finanzas, operaciones, soporte)</div>
+<div class="bullet-item">Assessment: qué sabe cada participante hoy</div>
+<div class="bullet-item">Proyección: qué construirá durante capstone</div>
+<p class="key-value"><strong>Entregable</strong>: Plan individual + tema de capstone asignado</p>
+<hr class="divider">
+<h3 class="subsection-title" id="m1-arquitectura-de-agentes-patrones-y-antipatrones-213158">M1: Arquitectura de Agentes — Patrones y Anti-Patrones (4h)</h3>
+<p class="key-value"><strong>Objetivo</strong>: Entender *cómo* funcionan los agentes y qué puede salir mal.</p>
+<p class="key-value"><strong>Contenidos</strong>:</p>
+<div class="bullet-item"><strong>Anatomía de un agente</strong>: percepción → razonamiento → acción</div>
+<div class="bullet-item"><strong>Patrones arquitectónicos probados</strong>:</div>
+<div class="bullet-item">Tool-calling (Claude + GPT-4 native)</div>
+<div class="bullet-item">Orchestration (n8n, Make, LangChain)</div>
+<div class="bullet-item">Agentic loops (reasoning → action → observation → repeat)</div>
+<div class="bullet-item"><strong>Anti-patrones que matan proyectos</strong>:</div>
+<div class="bullet-item">&quot;Razonamiento infinito&quot; (agente que nunca termina)</div>
+<div class="bullet-item">&quot;Decisiones sin contexto&quot; (memory gaps)</div>
+<div class="bullet-item">&quot;Hallucination al actuar&quot; (agent inventa acciones inexistentes)</div>
+<div class="bullet-item">&quot;Falta de monitoreo&quot; (agent en producción sin observability)</div>
+<div class="bullet-item"><strong>Gobernanza en la arquitectura</strong>: cómo embeber seguridad desde el diseño</div>
+<div class="bullet-item"><strong>Topologías multi-agente</strong>: supervisor, especializado, competitivo</div>
+<p class="key-value"><strong>Ejercicio</strong>: Diseñar (en papel) arquitectura para un caso de uso asignado. Identificar anti-patrones.</p>
+<p class="key-value"><strong>Entregable</strong>: Architecture Decision Document (ADD) de 2 páginas por persona</p>
+<hr class="divider">
+<h3 class="subsection-title" id="m2-construccin-de-agentes-claude-gpt4-n8n-make-4h-310127">M2: Construcción de Agentes — Claude, GPT-4, n8n, Make (4h)</h3>
+<p class="key-value"><strong>Objetivo</strong>: Construir agentes reales.</p>
+<p class="key-value"><strong>Contenidos</strong>:</p>
+<div class="bullet-item"><strong>Claude Agents</strong>:</div>
+<div class="bullet-item">Tool use nativos</div>
+<div class="bullet-item">Claude Code (ejecución en-browser)</div>
+<div class="bullet-item">Vision + agent reasoning</div>
+<div class="bullet-item">Patterns de iteración</div>
+<div class="bullet-item"><strong>OpenAI Agents</strong> (GPT-4 + Function Calling):</div>
+<div class="bullet-item">Parallel tool calling</div>
+<div class="bullet-item">Async workflows</div>
+<div class="bullet-item">Cost optimization</div>
+<div class="bullet-item"><strong>Low-code orchestration</strong> (n8n / Make):</div>
+<div class="bullet-item">Triggers, conditions, actions</div>
+<div class="bullet-item">Conectores (50+ integraciones)</div>
+<div class="bullet-item">Error handling y retries</div>
+<div class="bullet-item">Logging y debugging</div>
+<div class="bullet-item"><strong>Hybrid approaches</strong>:</div>
+<div class="bullet-item">LLM intelligence + RPA execution</div>
+<div class="bullet-item">Custom code (Python) para lógica compleja</div>
+<p class="key-value"><strong>Hands-on</strong>: Cada participante construye 1 agente funcional (elegir stack según caso de uso).</p>
+<p class="key-value"><strong>Entregable</strong>: Agent v1.0 deployada en sandbox + code repository + test cases</p>
+<hr class="divider">
+<h3 class="subsection-title" id="m3-orquestacin-multiagente-4h-1ab674">M3: Orquestación Multi-Agente (4h)</h3>
+<p class="key-value"><strong>Objetivo</strong>: Coordinar múltiples agentes en flujos reales.</p>
+<p class="key-value"><strong>Contenidos</strong>:</p>
+<div class="bullet-item"><strong>Patrones de coordinación</strong>:</div>
+<div class="bullet-item">Supervisor (1 agente master, múltiples workers)</div>
+<div class="bullet-item">Colaborativo (agentes negocian)</div>
+<div class="bullet-item">Competitivo (best-of-N)</div>
+<div class="bullet-item">Jerárquico (agentes anidados)</div>
+<div class="bullet-item"><strong>Comunicación inter-agente</strong>:</div>
+<div class="bullet-item">Message passing (APIs, queues, webhooks)</div>
+<div class="bullet-item">Shared context (databases, vector stores)</div>
+<div class="bullet-item">Consensus mechanisms</div>
+<div class="bullet-item"><strong>Manejo de estado distribuido</strong>:</div>
+<div class="bullet-item">Consistency patterns</div>
+<div class="bullet-item">Idempotency</div>
+<div class="bullet-item">Timeout y recovery</div>
+<div class="bullet-item"><strong>Performance en flujos largos</strong>:</div>
+<div class="bullet-item">Token management</div>
+<div class="bullet-item">Costo y latencia</div>
+<div class="bullet-item">Optimización de llamadas LLM</div>
+<p class="key-value"><strong>Caso de estudio</strong>: Workflow de 3+ agentes: análisis → decisión → acción.</p>
+<p class="key-value"><strong>Entregable</strong>: Multi-Agent Orchestration Blueprint (diagrama + pseudocódigo)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="m4-gobernanza-tica-y-seguridad-para-agentes-3h-44b2e5">M4: Gobernanza, Ética y Seguridad para Agentes (3h)</h3>
+<p class="key-value"><strong>Objetivo</strong>: Asegurar que agentes sean seguros, auditable y cumplidores.</p>
+<p class="key-value"><strong>Contenidos</strong>:</p>
+<div class="bullet-item"><strong>Gobernanza operacional</strong>:</div>
+<div class="bullet-item">Quién puede crear agentes</div>
+<div class="bullet-item">Quién aprueba despliegues</div>
+<div class="bullet-item">Auditoría de acciones agentas</div>
+<div class="bullet-item">Rollback y remediation</div>
+<div class="bullet-item"><strong>Riesgos agentos</strong>:</div>
+<div class="bullet-item">Hallucinations en contextos críticos</div>
+<div class="bullet-item">Drift (comportamiento que cambia)</div>
+<div class="bullet-item">Escalation sin límite (agente actúa más allá de autoridad)</div>
+<div class="bullet-item">Data leaks (agente expone información sensible)</div>
+<div class="bullet-item"><strong>Frameworks de control</strong>:</div>
+<div class="bullet-item">Human-in-the-loop (cuándo validar manualmente)</div>
+<div class="bullet-item">Rate limiting y cost caps</div>
+<div class="bullet-item">Acción permitidas (whitelist vs. blacklist)</div>
+<div class="bullet-item">Encryption y credential management</div>
+<div class="bullet-item"><strong>Ética y compliance</strong>:</div>
+<div class="bullet-item">Transparencia (users saben que es un agente)</div>
+<div class="bullet-item">Bias en decisions agentas</div>
+<div class="bullet-item">LGPD / GDPR para agentes en EU</div>
+<div class="bullet-item">Responsabilidad: quién es accountable si agente causa daño</div>
+<p class="key-value"><strong>Debate</strong>: Escenarios éticos (agente recomienda despido, agente negocia con clientes sin supervisión)</p>
+<p class="key-value"><strong>Entregable</strong>: Enterprise AI Governance Framework v1 (draft, 5-7 páginas) aplicable a la organización</p>
+<hr class="divider">
+<h3 class="subsection-title" id="m5-lab-de-integracin-capstone-4h-3h-presentacin-47d7cf">M5: Lab de Integración + Capstone (4h + 3h presentación)</h3>
+<p class="key-value"><strong>Objetivo</strong>: Llevar agentes a producción y demostrar competencia.</p>
+<p class="key-value"><strong>Contenidos</strong>:</p>
+<div class="bullet-item"><strong>Integración real</strong>:</div>
+<div class="bullet-item">Conectar agentes a sistemas legacy (SAP, Oracle, Salesforce)</div>
+<div class="bullet-item">APIs, webhooks, scheduled execution</div>
+<div class="bullet-item">Logging, monitoring, alerting</div>
+<div class="bullet-item">Disaster recovery</div>
+<div class="bullet-item"><strong>Testing en producción</strong>:</div>
+<div class="bullet-item">Canary deployments</div>
+<div class="bullet-item">A/B testing contra baseline</div>
+<div class="bullet-item">Rollback automático</div>
+<div class="bullet-item"><strong>Capstone requirements</strong>:</div>
+<div class="bullet-item">Mínimo 2 agentes completamente funcionales</div>
+<div class="bullet-item">Cada uno resolviendo problema real de negocio</div>
+<div class="bullet-item">End-to-end: desde arquitectura a medición</div>
+<div class="bullet-item">ROI calculator completado</div>
+<div class="bullet-item">Team adoption playbook escrito</div>
+<p class="key-value"><strong>Presentación final</strong> (3h):</p>
+<div class="bullet-item">20 min por equipo (2-3 personas c/u)</div>
+<div class="bullet-item">Demo live de agentes</div>
+<div class="bullet-item">ROI y métricas</div>
+<div class="bullet-item">Q&amp;A con jurado técnico</div>
+<div class="bullet-item">Certificación condicional a aprobación</div>
+<p class="key-value"><strong>Entregable</strong>:</p>
+<div class="bullet-item">3+ Custom Agents deployed</div>
+<div class="bullet-item">Agent Architecture Blueprints (documentadas)</div>
+<div class="bullet-item">Automation Workflow live (n8n/Make)</div>
+<div class="bullet-item">ROI Calculator per agent</div>
+<div class="bullet-item">Team Adoption Playbook</div>
+<div class="bullet-item">Enterprise AI Governance Framework (final)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-entregables-globales-del-bootcamp-a1184f" data-searchable aria-labelledby="head-7-entregables-globales-del-bootcamp-a1184f">
+            <div class="phase-header" id="head-7-entregables-globales-del-bootcamp-a1184f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Entregables Globales del Bootcamp</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="entregables-por-participante-e0ec2c">Entregables por Participante</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Architecture Decision Document (M1)</strong> — Arquitectura personal para caso asignado</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Agent v1.0 (M2)</strong> — Agente funcional en tecnología elegida</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Multi-Agent Blueprint (M3)</strong> — Diseño de orquestación</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Contribution a Governance Framework (M4)</strong> — Sección asignada de política</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Capstone: 2 Agentes Operacionales (M5)</strong> — Demostración live</span></div>
+<h3 class="subsection-title" id="entregables-por-organizacin-acreditacin-044c9f">Entregables por Organización (Acreditación)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>3+ Custom GPTs/Agents Deployed</strong> — En producción o staging, no solo en Colab</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Agent Architecture Blueprints</strong> — Documentación de diseño, legible para arquitectos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Automation Workflow (n8n o Make)</strong> — Live, con monitoreo activo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>ROI Calculator per Agent</strong> — Tabla de time/cost savings esperados</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Team Adoption Playbook</strong> — Guía para escalar uso en la organización</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Enterprise AI Governance Framework</strong> — Draft de políticas aplicables</span></div>
+<h3 class="subsection-title" id="assets-generados-b56978">Assets Generados</h3>
+<div class="bullet-item"><strong>Code Repository</strong> (GitHub / GitLab): Todos los agentes + documentación</div>
+<div class="bullet-item"><strong>Monitoring Dashboard</strong> (n8n, Make, Datadog): Logs, errors, latency</div>
+<div class="bullet-item"><strong>Runbook de Operación</strong> — Cómo resolver errores sin soporte MetodologIA</div>
+<div class="bullet-item"><strong>Training Deck</strong> — Para capacitar a otros en la organización</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-modelo-de-evaluacin-y-certificacin-ecc212" data-searchable aria-labelledby="head-8-modelo-de-evaluacin-y-certificacin-ecc212">
+            <div class="phase-header" id="head-8-modelo-de-evaluacin-y-certificacin-ecc212" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Modelo de Evaluación y Certificación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="participacin-condicin-necesaria-b396f6">Participación (Condición Necesaria)</h3>
+<div class="bullet-item">Asistencia: Mínimo 90% de horas (21.6/24h)</div>
+<div class="bullet-item">Entregas en tiempo: ADD, Agent v1.0, Blueprint, Framework contribution</div>
+<div class="bullet-item">Participación en debates y ejercicios en clase</div>
+<p class="key-value"><strong>Sin estos</strong>: Certificado de &quot;Asistencia&quot; nada más.</p>
+<h3 class="subsection-title" id="competencia-condicin-suficiente-66fa66">Competencia (Condición Suficiente)</h3>
+<p>Evaluada a través del <strong>Capstone: 2 Agentes Operacionales</strong></p>
+<p class="key-value"><strong>Criterios</strong>:</p>
+<div class="bullet-item">Agente 1: Resuelve caso de uso real (no dummy data)</div>
+<div class="bullet-item">Agente 2: Demuestra patrón diferente al primero</div>
+<div class="bullet-item">Architecture: Decisiones justificadas, sin anti-patrones críticos</div>
+<div class="bullet-item">Testing: Casos de prueba documentados, &gt;80% success rate</div>
+<div class="bullet-item">Operación: Runbook, monitoreo, plan de contingencia</div>
+<div class="bullet-item">ROI: Cálculo realista de savings o value</div>
+<div class="bullet-item">Presentation: Demo clara, responde preguntas técnicas</div>
+<p class="key-value"><strong>Evaluadores</strong>:</p>
+<div class="bullet-item">Facilitador técnico (principal)</div>
+<div class="bullet-item">CTO / Head of Innovation de la organización (co-evaluador)</div>
+<h3 class="subsection-title" id="certificados-emitidos-1e442c">Certificados Emitidos</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario</th><th scope="col">Certificado</th></tr></thead><tbody><tr><td>90%+ asistencia, capstone aprobado</td><td><strong>Certified Agent Architect</strong></td></tr><tr><td>90%+ asistencia, capstone con observaciones</td><td><strong>Certified Agent Architect (with notation)</strong></td></tr><tr><td>90%+ asistencia, sin capstone</td><td><strong>Bootcamp Participation</strong></td></tr><tr><td>&lt;90% asistencia</td><td>Nada</td></tr></tbody></table></div>
+<p class="key-value"><strong>Validez del certificado</strong>: 2 años desde emisión. Refresco con 4h de actualización.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-modelo-comercial-79a451" data-searchable aria-labelledby="head-9-modelo-comercial-79a451">
+            <div class="phase-header" id="head-9-modelo-comercial-79a451" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="segmentacin-de-precios-d1bbff">Segmentación de Precios</h3>
+<h4 class="h4-title">Opción 1: Personas (Individual Track)</h4>
+<div class="bullet-item"><strong>COP 1,200,000</strong> por persona</div>
+<div class="bullet-item">Acceso a contenidos y labs</div>
+<div class="bullet-item">Capstone individual (1 agente)</div>
+<div class="bullet-item">Certificado individual</div>
+<div class="bullet-item">Campus virtual durante bootcamp + 1 mes post</div>
+<div class="bullet-item">Soporte email D+1 durante y 3 meses post</div>
+<p class="key-value"><strong>Duración</strong>: 24h presencial (o 6 sesiones de 4h virtual)</p>
+<h4 class="h4-title">Opción 2: Empresa (Corporate Track)</h4>
+<div class="bullet-item"><strong>COP 18,000,000</strong> por grupo (hasta 20 personas)</div>
+<div class="bullet-item">Todos los beneficios de track individual</div>
+<div class="bullet-item">PLUS:</div>
+<div class="bullet-item"><strong>Customización de casos de uso</strong> — Facilitadores adaptan ejercicios a industria</div>
+<div class="bullet-item"><strong>Campus dedicado 2 meses</strong> post-bootcamp para iteración</div>
+<div class="bullet-item"><strong>Soporte técnico dedicado</strong> — Slack/WhatsApp 9-17h, ≤2h response</div>
+<div class="bullet-item"><strong>Governance Framework fit-for-purpose</strong> — Asesoría para aplicar a contexto</div>
+<div class="bullet-item"><strong>Opción de extensión</strong>: 8h adicionales de &quot;Operationalization Sprint&quot;</div>
+<div class="bullet-item">Certificado corporativo + individual</div>
+<div class="bullet-item">Right of reference — puede mencionar MetodologIA en comms</div>
+<p class="key-value"><strong>Precio por persona equivalente</strong>: COP 900,000 (33% descuento bulk)</p>
+<h3 class="subsection-title" id="crditos-y-aplicables-21cbf8">Créditos y Aplicables</h3>
+<p class="key-value"><strong>Credit from Workshops</strong> (6 meses de validez):</p>
+<div class="bullet-item">WS-01 payment: 100% → crédito BC-07</div>
+<div class="bullet-item">WS-02 payment: 100% → crédito BC-07</div>
+<div class="bullet-item">WS-10 payment: 100% → crédito BC-07</div>
+<div class="bullet-item">Pueden combinarse</div>
+<div class="bullet-item">Ejemplo: Persona pagó WS-01 (COP 300k) + WS-02 (COP 300k) = COP 600k crédito → BC-07 cuesta COP 600k neto</div>
+<p class="key-value"><strong>No acumulables</strong>: Workshop credits no aplican a otros bootcamps (BC-04, etc.)</p>
+<h3 class="subsection-title" id="modelo-de-distribucin-compensacin-1ad834">Modelo de Distribución (Compensación)</h3>
+<p class="key-value"><strong>Commission Split</strong> (partner ecosystem):</p>
+<div class="bullet-item"><strong>10%</strong> a MetodologIA (overhead, plataforma, cert issuing)</div>
+<div class="bullet-item"><strong>20%</strong> a Facilitador / Instructor</div>
+<div class="bullet-item"><strong>70%</strong> a Organización proveedora del bootcamp (partner, universidad, consultora)</div>
+<p>Esto incentiva partners a vender, pero mantiene margen corporativo sano.</p>
+<h3 class="subsection-title" id="factores-de-ajuste-de-precio-9de73d">Factores de Ajuste de Precio</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario</th><th scope="col">Ajuste</th></tr></thead><tbody><tr><td>Empresa &lt;50 personas</td><td>+10% (overhead administrativo)</td></tr><tr><td>Demanda en Q1/Q2 (peak)</td><td>+15% (capacidad limitada)</td></tr><tr><td>Referencia de cliente satisfecho</td><td>-5% (loyalty)</td></tr><tr><td>Cohort de 15+ personas</td><td>-10% (economics)</td></tr><tr><td>Extensión post-bootcamp (8h)</td><td>COP 5,000,000 adicionales</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-operacin-y-logstica-26471f" data-searchable aria-labelledby="head-10-operacin-y-logstica-26471f">
+            <div class="phase-header" id="head-10-operacin-y-logstica-26471f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Operación y Logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="formato-de-ejecucin-9b5f53">Formato de Ejecución</h3>
+<p class="key-value"><strong>Opción A: Bootcamp Intensivo (3 días)</strong></p>
+<div class="bullet-item">Viernes 8-12 + 13-17 (M0-M1-M2, 12h)</div>
+<div class="bullet-item">Sábado 9-13 + 14-17 (M3-M4, 8h)</div>
+<div class="bullet-item">Domingo 9-13 + 14-17 (M5 lab, 8h) + Presentaciones lunes</div>
+<div class="bullet-item">Lugar: Oficinas cliente o centro de formación</div>
+<p class="key-value"><strong>Opción B: Bootcamp Distribuido (6 sesiones de 4h)</strong></p>
+<div class="bullet-item">Lunes-Viernes, una sesión de 4h por día (semana 1)</div>
+<div class="bullet-item">Luego sesiones 2-6 a lo largo de 3 semanas adicionales</div>
+<div class="bullet-item">Permite más tiempo de absorción, &quot;digestión&quot; de conceptos</div>
+<div class="bullet-item">Capstone se extiende a 4 semanas</div>
+<p class="key-value"><strong>Opción C: Híbrida</strong></p>
+<div class="bullet-item">M0-M1-M4 en vivo (virtual, sincrónico)</div>
+<div class="bullet-item">M2-M3 asincrónico + office hours</div>
+<div class="bullet-item">M5 intensivo presencial final</div>
+<h3 class="subsection-title" id="prerequisitos-67bca4">Prerequisitos</h3>
+<div class="bullet-item"><strong>Esencial</strong>: Haber completado WS-01 o demostrable comprensión de ecosistema IA</div>
+<div class="bullet-item"><strong>Técnica</strong>: Acceso a IDE/editor (VS Code, Jupyter, Colab)</div>
+<div class="bullet-item"><strong>Hardware</strong>: Laptop con 8GB RAM (agentes compilables localmente)</div>
+<div class="bullet-item"><strong>Soft</strong>: Disposición para trabajar 24h condensadas, mentalidad &quot;learning by doing&quot;</div>
+<h3 class="subsection-title" id="facilitadores-requeridos-1252a3">Facilitadores Requeridos</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Cantidad</th><th scope="col">Perfil</th></tr></thead><tbody><tr><td><strong>Facilitador Técnico Principal</strong></td><td>1</td><td>CTO-level, 5+ años agent arch, demostrable portfolio</td></tr><tr><td><strong>Instructor M1-M3</strong></td><td>1 (same)</td><td>Experto LLMs, n8n/Make, agent patterns</td></tr><tr><td><strong>Lab Assistant</strong></td><td>1 per 5 personas</td><td>Senior engineer, puede debugg agentes vivos</td></tr><tr><td><strong>Governance Expert (M4)</strong></td><td>0.5</td><td>Puede ser externo, compliance background</td></tr></tbody></table></div>
+<p class="key-value"><strong>Preparación facilitador</strong>: 40h (content review, lab setup, demo agents, assessments)</p>
+<h3 class="subsection-title" id="ambientes-tcnicos-a98c19">Ambientes Técnicos</h3>
+<p class="key-value"><strong>Clase</strong>:</p>
+<div class="bullet-item">Proyector / screen sharing</div>
+<div class="bullet-item">Slack channel dedicado (communication)</div>
+<div class="bullet-item">Recording de sesiones (asincrónico post)</div>
+<div class="bullet-item">Code repository (GitHub) pre-poblado con stubs</div>
+<p class="key-value"><strong>Labs</strong>:</p>
+<div class="bullet-item">Sandbox environment (n8n, Make, Claude API, GPT-4 API)</div>
+<div class="bullet-item">Acceso a LLM APIs (MetodologIA covers costs)</div>
+<div class="bullet-item">Database (PostgreSQL o similar) para agent state</div>
+<div class="bullet-item">Monitoring (Datadog free tier, o New Relic)</div>
+<p class="key-value"><strong>Post-bootcamp (Campus)</strong>:</p>
+<div class="bullet-item">Virtual office hours: 2h semanales durante 2 meses</div>
+<div class="bullet-item">Slack workspace persistente</div>
+<div class="bullet-item">Code repository maintained, CI/CD setup</div>
+<div class="bullet-item">Acceso a nuevos contenidos (actualizaciones)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-soporte-sla-y-campus-7eef9b" data-searchable aria-labelledby="head-11-soporte-sla-y-campus-7eef9b">
+            <div class="phase-header" id="head-11-soporte-sla-y-campus-7eef9b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Soporte, SLA y Campus</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="soporte-durante-bootcamp-24h-49c815">Soporte Durante Bootcamp (24h)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Canal</th><th scope="col">SLA</th><th scope="col">Disponibilidad</th></tr></thead><tbody><tr><td><strong>Email</strong></td><td>Response en 24h máximo</td><td>Lunes-viernes 9-17h</td></tr><tr><td><strong>Slack</strong></td><td>≤30 min durante clase</td><td>Sincrónico bootcamp</td></tr><tr><td><strong>WhatsApp</strong> (urgencias)</td><td>≤2h</td><td>9-16h, no fines de semana</td></tr><tr><td><strong>Lab Office Hours</strong></td><td>2h diarias</td><td>Después de sesiones</td></tr></tbody></table></div>
+<p class="key-value"><strong>Escalation</strong>: Si problema no resuelto en 24h → escala a Tech Lead → CTO</p>
+<h3 class="subsection-title" id="soporte-postbootcamp-831d4c">Soporte Post-Bootcamp</h3>
+<h4 class="h4-title">Personal Track (3 meses)</h4>
+<div class="bullet-item">Email support: ≤2 días</div>
+<div class="bullet-item">Acceso a campus virtual</div>
+<div class="bullet-item">No incluye office hours en vivo</div>
+<h4 class="h4-title">Corporate Track (2 meses dedicado)</h4>
+<div class="bullet-item">Slack/WhatsApp: ≤2h, 9-17h</div>
+<div class="bullet-item">Campus virtual + office hours 2h/semana</div>
+<div class="bullet-item">Asesoría en governance framework deployment</div>
+<div class="bullet-item">Escalation path directo a CTO</div>
+<h3 class="subsection-title" id="campus-virtual-4e566c">Campus Virtual</h3>
+<p class="key-value"><strong>Durante Bootcamp</strong>:</p>
+<div class="bullet-item">Recordings de todas las sesiones</div>
+<div class="bullet-item">Slides + notebooks + code</div>
+<div class="bullet-item">Discussion forum</div>
+<div class="bullet-item">24/7 acceso</div>
+<p class="key-value"><strong>Post-Bootcamp (Duración)</strong>:</p>
+<div class="bullet-item">Personal: 1 mes</div>
+<div class="bullet-item">Corporate: 2 meses</div>
+<div class="bullet-item">Contenidos estáticos actualizables</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-segmentacin-diferencias-personas-vs-empresas-421670" data-searchable aria-labelledby="head-12-segmentacin-diferencias-personas-vs-empresas-421670">
+            <div class="phase-header" id="head-12-segmentacin-diferencias-personas-vs-empresas-421670" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Segmentación: Diferencias PERSONAS vs EMPRESAS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Personas</th><th scope="col">Empresas</th></tr></thead><tbody><tr><td><strong>Precio</strong></td><td>COP 1.2M</td><td>COP 18M (≤20 pax)</td></tr><tr><td><strong>Capstone</strong></td><td>1 agente personal</td><td>3+ agentes corporativos</td></tr><tr><td><strong>Customización</strong></td><td>Genérica</td><td>Casos uso + industria</td></tr><tr><td><strong>Campus post</strong></td><td>1 mes</td><td>2 meses</td></tr><tr><td><strong>Soporte</strong></td><td>Email D+1</td><td>Slack 2h + office hours</td></tr><tr><td><strong>Governance</strong></td><td>Plantilla</td><td>Asesoría para aplicar</td></tr><tr><td><strong>Certificado</strong></td><td>Individual</td><td>Individual + Corporativo</td></tr><tr><td><strong>Right of reference</strong></td><td>No</td><td>Sí</td></tr><tr><td><strong>Extensión disponible</strong></td><td>No</td><td>Sí (8h)</td></tr><tr><td><strong>Quién evalúa</strong></td><td>Facilitador</td><td>Facilitador + CTO cliente</td></tr><tr><td><strong>Duración típica</strong></td><td>24h apretadas</td><td>24h + 2 meses iteración</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-kpis-del-servicio-079b9c" data-searchable aria-labelledby="head-13-kpis-del-servicio-079b9c">
+            <div class="phase-header" id="head-13-kpis-del-servicio-079b9c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. KPIs del Servicio</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="kpis-de-ejecucin-24e0fb">KPIs de Ejecución</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Target</th><th scope="col">Medida</th></tr></thead><tbody><tr><td><strong>Attendance rate</strong></td><td>≥90%</td><td>Horas asistidas / 24h total</td></tr><tr><td><strong>Capstone approval rate</strong></td><td>≥85%</td><td>Equipos que aprueban capstone</td></tr><tr><td><strong>NPS post-bootcamp</strong></td><td>≥8.0/10</td><td>Survey a 2 semanas</td></tr><tr><td><strong>Agent deployment rate</strong></td><td>≥95%</td><td>% de agentes que llegan a producción (30 días post)</td></tr><tr><td><strong>Time-to-productivity</strong></td><td>≤2 semanas</td><td>Cuando el equipo deploya primer agente solo</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="kpis-de-impacto-medido-en-m3-04a136">KPIs de Impacto (Medido en M+3)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Target</th><th scope="col">Medida</th></tr></thead><tbody><tr><td><strong>ROI per agent</strong></td><td>≥200%</td><td>Savings / cost inverso (annual)</td></tr><tr><td><strong>Agent uptime</strong></td><td>≥99.5%</td><td>Availability en operación</td></tr><tr><td><strong>Team capability</strong></td><td>≥80%</td><td>Self-sufficient para crear nuevos agentes</td></tr><tr><td><strong>Conversion to Digital Champions</strong></td><td>≥60%</td><td>Orgs que continúan a PE-02</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="kpis-de-negocio-44a4e8">KPIs de Negocio</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Target</th><th scope="col">Medida</th></tr></thead><tbody><tr><td><strong>Revenue per cohort</strong></td><td>COP 10-20M</td><td>Precio × headcount</td></tr><tr><td><strong>Cost per delivery</strong></td><td>≤30% of revenue</td><td>Facilitadores + materials</td></tr><tr><td><strong>Partner satisfaction</strong></td><td>≥4.5/5</td><td>Net Satisfaction Score</td></tr><tr><td><strong>Repeat booking rate</strong></td><td>≥40%</td><td>Orgs que vuelven a contratar</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-trminos-contractuales-fa9eac" data-searchable aria-labelledby="head-14-trminos-contractuales-fa9eac">
+            <div class="phase-header" id="head-14-trminos-contractuales-fa9eac" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 14. Términos Contractuales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="cambios-y-cancelaciones-807118">Cambios y Cancelaciones</h3>
+<p class="key-value"><strong>Antes de 14 días</strong>: 100% reembolso</p>
+<p class="key-value"><strong>7-14 días antes</strong>: 50% reembolso + COP 200k penalidad</p>
+<p class="key-value"><strong>Menos de 7 días</strong>: Sin reembolso</p>
+<p class="key-value"><strong>Post-bootcamp</strong>: Las extensiones se pagan por separado; cambios en contenido requieren 5 días de aviso.</p>
+<h3 class="subsection-title" id="confidencialidad-f49b7a">Confidencialidad</h3>
+<div class="bullet-item">Materiales bootcamp: Licencia de uso MetodologIA (no redistribuir)</div>
+<div class="bullet-item">Agentes desarrollados: Propiedad del cliente (MetodologIA retiene derecho de case study)</div>
+<div class="bullet-item">Code de facilitadores: Referencia educativa (no código propietario sin acuerdo)</div>
+<h3 class="subsection-title" id="responsabilidades-del-cliente-0bea39">Responsabilidades del Cliente</h3>
+<div class="bullet-item">Designar 2-3 personas de dedicación full-time (24h no son &quot;sidequests&quot;)</div>
+<div class="bullet-item">Problemas de infraestructura IT (acceso APIs, VPN, firewalls) son responsabilidad cliente</div>
+<div class="bullet-item">Provision de casos de uso reales (no inventados)</div>
+<h3 class="subsection-title" id="responsabilidades-de-metodologia-2c1823">Responsabilidades de MetodologIA</h3>
+<div class="bullet-item">Facilitadores con competencia acreditada</div>
+<div class="bullet-item">Contenido actualizado (Q1 y Q3 actualizaciones)</div>
+<div class="bullet-item">Soporte técnico dentro de SLAs especificados</div>
+<div class="bullet-item">Emisión de certificados dentro de 5 días post-capstone</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="15-protocolo-de-contingencia-9c12cc" data-searchable aria-labelledby="head-15-protocolo-de-contingencia-9c12cc">
+            <div class="phase-header" id="head-15-protocolo-de-contingencia-9c12cc" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 15. Protocolo de Contingencia</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="escenarios-y-respuestas-140161">Escenarios y Respuestas</h3>
+<h4 class="h4-title">Escenario A: Facilitador se enferma</h4>
+<p class="key-value"><strong>Respuesta</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Notificar cliente dentro de 24h</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Reschedule a facilitador backup (dentro de 1 semana)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si no disponible: descuento 10% en bootcamp, opción refund</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Continuidad: asistente técnico puede continuar labs mientras se busca remplazo</span></div>
+<h4 class="h4-title">Escenario B: Cliente queda sin casos de uso antes de capstone</h4>
+<p class="key-value"><strong>Respuesta</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Facilitador ayuda a idear casos reales en 2h session</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si aún imposible: capstone puede ser &quot;agente genérico&quot; (demo, no producción)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Posterior opción de &quot;Operationalization Sprint&quot; (8h) con casos reales</span></div>
+<h4 class="h4-title">Escenario C: Problemas de infraestructura (APIs down, VPN, etc.)</h4>
+<p class="key-value"><strong>Respuesta</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Bootcamp continúa con sandbox local / simulado (código disponible)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>SI problema persiste &gt;4h: cliente recibe descuento prorrateado (COP 50k per hora)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>NO es justificación para cancelación completa (a menos que &gt;50% del bootcamp afectado)</span></div>
+<h4 class="h4-title">Escenario D: Capstone rechazado (no cumple estándar)</h4>
+<p class="key-value"><strong>Respuesta</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Feedback detallado de por qué (anti-patrones, coverage insuficiente)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Opción de remediación: 4h de office hours adicionales, re-evaluación en 2 semanas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si aún falla: certificado de &quot;participación&quot;, opción de &quot;Operationalization Sprint&quot; pago</span></div>
+<h4 class="h4-title">Escenario E: Cliente quisiera cambiar de track a mitad</h4>
+<p class="key-value"><strong>Respuesta</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>De &quot;Personal&quot; a &quot;Empresa&quot;: pay diff (COP 16.8M) si estamos antes de M3</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>De &quot;Empresa&quot; a &quot;Personal&quot;: no permitido (degradación de servicio)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>A track diferente (ej. BC-04): crédito de 50% bootcamp pagado hacia nuevo</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="16-comunicacin-y-marketing-648fb3" data-searchable aria-labelledby="head-16-comunicacin-y-marketing-648fb3">
+            <div class="phase-header" id="head-16-comunicacin-y-marketing-648fb3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 16. Comunicación y Marketing</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="posicionamiento-clave-b576b4">Posicionamiento Clave</h3>
+<p class="key-value"><strong>BC-07 es para empresas que dicen: &quot;Tenemos IA, ahora necesitamos SISTEMAS.&quot;</strong></p>
+<h3 class="subsection-title" id="comparacin-interna-en-comms-150c37">Comparación Interna (en comms)</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>WS-02 Prompting        → &quot;Cómo hablarle bien a ChatGPT&quot;
+BC-04 Amplified Work   → &quot;Cómo usa IA la gente todos los días&quot;
+→ BC-07 Trabajo Agéntico ← &quot;Cómo CONSTRUIMOS sistemas que actúan solos&quot;
+→ PE-02 Digital Champions ← &quot;Cómo transformamos la ORGANIZACIÓN&quot;</code></pre>
+<h3 class="subsection-title" id="mensajes-de-venta-f109cd">Mensajes de Venta</h3>
+<div class="bullet-item"><strong>Para CTOs</strong>: &quot;Tu blueprint técnico para pasar de toys a production agents.&quot;</div>
+<div class="bullet-item"><strong>Para Heads of Innovation</strong>: &quot;Cómo llevar IA de POC a ROI medible en 30 días.&quot;</div>
+<div class="bullet-item"><strong>Para Product Leads</strong>: &quot;Agentes no son features; es una arquitectura. Aprende a diseñarla.&quot;</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="apndice-a-bibliografa-de-referencia-3d386c" data-searchable aria-labelledby="head-apndice-a-bibliografa-de-referencia-3d386c">
+            <div class="phase-header" id="head-apndice-a-bibliografa-de-referencia-3d386c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Apéndice A: Bibliografía de Referencia</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Anthropic: &quot;Building Effective Agents&quot; (2024)</div>
+<div class="bullet-item">OpenAI: &quot;Function Calling and Parallel Tool Use&quot; (docs)</div>
+<div class="bullet-item">Research: &quot;Towards a Theory of Multi-Agent Cooperation&quot; (arXiv)</div>
+<div class="bullet-item">n8n docs: Automation best practices</div>
+<div class="bullet-item">Case studies MetodologIA: 3 agentes en producción (referencias disponibles bajo NDA)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="apndice-b-plantillas-entregables-88ddf4" data-searchable aria-labelledby="head-apndice-b-plantillas-entregables-88ddf4">
+            <div class="phase-header" id="head-apndice-b-plantillas-entregables-88ddf4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Apéndice B: Plantillas Entregables</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Disponibles en repositorio privado (GitHub/MetodologIA/BC-07-templates/):</p>
+<div class="bullet-item"><code class="inline-code">architecture-decision-document.md</code></div>
+<div class="bullet-item"><code class="inline-code">agent-code-stub.py</code></div>
+<div class="bullet-item"><code class="inline-code">multi-agent-blueprint.mermaid</code></div>
+<div class="bullet-item"><code class="inline-code">governance-framework-template.docx</code></div>
+<div class="bullet-item"><code class="inline-code">roi-calculator.xlsx</code></div>
+<div class="bullet-item"><code class="inline-code">adoption-playbook.md</code></div>
+<div class="bullet-item"><code class="inline-code">runbook-template.md</code></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="apndice-c-changelog-9cb5a7" data-searchable aria-labelledby="head-apndice-c-changelog-9cb5a7">
+            <div class="phase-header" id="head-apndice-c-changelog-9cb5a7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Apéndice C: Changelog</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Fecha</th><th scope="col">Versión</th><th scope="col">Cambios</th></tr></thead><tbody><tr><td>2025-Q3</td><td>1.0</td><td>Inicial, BC-07 lanzado</td></tr><tr><td>2026-01</td><td>1.5</td><td>Agregado M4 Governance, SLAs ajustadas</td></tr><tr><td><strong>2026-03-24</strong></td><td><strong>2.0</strong></td><td><strong>Documento Canónico Maestro v2 aprobado. Campus post-bootcamp especificado, KPIs detallados, Protocolo de Contingencia</strong></td></tr></tbody></table></div>
+<hr class="divider">
+<p class="key-value"><strong>Documento Finalizado</strong>: 24 de marzo de 2026</p>
+<p class="key-value"><strong>Aprobación Requerida</strong>: Directiva Ejecutiva, Arquitectura Educativa</p>
+<p class="key-value"><strong>Próxima Revisión</strong>: 30 de septiembre de 2026</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

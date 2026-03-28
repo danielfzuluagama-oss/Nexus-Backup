@@ -1,0 +1,570 @@
+id: date-calc
+name: Date Calculation
+purpose: >
+  Calculate date differences, date additions, durations, and business day counts
+  to support planning, scheduling, and temporal reasoning.
+businessValue: >
+  Provides precise date arithmetic for planning and scheduling, enabling users to
+  answer questions like "How many days until X?" or "What date is 90 days from now?"
+triggerTypes:
+  - user_message
+owningAgent: timekeeper
+
+inputs:
+  - "userMessage: string (sanitized query about date calculations)"
+  - "startDate: string | null (ISO 8601 date or natural language date reference)"
+  - "endDate: string | null (ISO 8601 date or natural language date reference)"
+  - "duration: string | null (duration expression like '90 days' or '3 weeks')"
+
+outputs:
+  - "calculationResult: string (human-readable result of the date calculation)"
+  - "numericResult: number (raw numeric value: days, hours, etc.)"
+  - "resultUnit: string (unit of the numeric result: days, weeks, months, hours)"
+
+dependencies:
+  - "get_current_time tool (for resolving 'today' and 'now' references)"
+  - "security.ts (CP1 sanitizeInput, CP3 validateOutput)"
+  - "date arithmetic logic (built-in LLM reasoning)"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads: []
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text before processing"
+  - "CP2: buildSecurePrompt() applied to system prompt by orchestrator"
+  - "CP3: validateOutput() on all LLM responses before delivery to user"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - tool_invoked
+  - calculation_performed
+  - validation_failed
+  - fallback_triggered
+  - skill_completed
+
+failureHandling:
+  - "Invalid date format: request clarification with format examples"
+  - "Ambiguous date reference: ask user to specify (e.g., 'next Friday' when today is Thursday)"
+  - "get_current_time tool failure: use LLM knowledge of current date as fallback with warning"
+  - "Overflow in calculation: cap at reasonable limits and warn user"
+
+interoperabilityContract:
+  inputType: "DateCalcRequest { userMessage: string, startDate?: string, endDate?: string, duration?: string }"
+  outputType: "DateCalcResponse { calculationResult: string, numericResult: number, resultUnit: string }"
+
+wowCriteria:
+  - "Understands natural language dates ('next Tuesday', 'end of Q2', 'last Christmas')"
+  - "Shows calculation breakdown for complex computations"
+  - "Proactively mentions relevant context (e.g., 'that falls on a weekend')"
+  - "Handles edge cases like leap years and month-end boundaries gracefully"
+
+safeCriteria:
+  - "All date calculations are mathematically correct"
+  - "Dates are unambiguous (no DD/MM vs MM/DD confusion without clarification)"
+  - "Units are always stated in the response"
+  - "No invented or hallucinated dates"
+
+workflows:
+  - id: date-difference-calc
+    title: Date Difference Calculation
+    objective: Calculate the difference between two dates in the user's preferred unit
+    trigger: "User asks how many days/weeks/months between two dates"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "Two date references identified in the query"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "dateA: string (first date reference)"
+      - "dateB: string (second date reference)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection and malformed input from reaching the calculation pipeline.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string } with control characters stripped"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with message: 'I could not parse your date query. Could you rephrase it?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Resolve date references
+        desc: Parse the user message to extract both date references and resolve them to ISO 8601 dates, using get_current_time for relative references like "today."
+        whyThisMatters: Natural language dates must be resolved to concrete dates before arithmetic can be performed accurately.
+        inputNeeded: "Sanitized user message containing two date references"
+        actionInstruction: "First call get_current_time({ timezone: 'UTC' }) to resolve 'today'. Then use LLM to parse both date references."
+        promptToUse: |
+          Extract and resolve the two dates from this user message.
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Rules:
+          - Convert natural language to ISO 8601 (YYYY-MM-DD)
+          - "today" = {{todayDate}}, "tomorrow" = today + 1, "yesterday" = today - 1
+          - "next Monday" = the coming Monday from today
+          - "last Christmas" = most recent Dec 25 before today
+          Return as YAML:
+          dateA: YYYY-MM-DD
+          dateB: YYYY-MM-DD
+          dateA_label: "original reference text"
+          dateB_label: "original reference text"
+        expectedOutput: "Two ISO 8601 dates with original label references"
+        validationRule: "Both dates are valid ISO 8601 format (YYYY-MM-DD) and are real calendar dates"
+        failureSignal: "One or both dates cannot be parsed or result in invalid calendar dates"
+        recoveryAction: "Ask user for clarification: 'I could not understand one of the dates. Could you specify them in YYYY-MM-DD format?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Calculate date difference
+        desc: Compute the difference between the two resolved dates in days, and convert to the user's preferred unit if specified.
+        whyThisMatters: This is the core computation; errors here directly produce wrong answers for the user.
+        inputNeeded: "Two resolved ISO 8601 dates and optional preferred unit from user"
+        actionInstruction: "Use LLM to calculate the exact difference and express in appropriate units."
+        promptToUse: |
+          Calculate the difference between these two dates:
+          Date A: {{dateA}} ({{dateA_label}})
+          Date B: {{dateB}} ({{dateB_label}})
+          Provide:
+          1. Exact difference in days
+          2. Also express as weeks+days if >= 7 days
+          3. Also express as months+days if >= 30 days
+          4. Also express as years+months+days if >= 365 days
+          Show your calculation step by step.
+          If the user asked for a specific unit, emphasize that unit.
+        expectedOutput: "Calculation result with days and multi-unit breakdown"
+        validationRule: "Day count is a non-negative integer and multi-unit breakdowns are consistent"
+        failureSignal: "Negative day count when dateB > dateA or inconsistent unit conversions"
+        recoveryAction: "Recalculate with absolute difference and indicate which date is earlier"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format result response
+        desc: Format the calculation result into a clear, user-friendly response with the breakdown.
+        whyThisMatters: Raw numbers without context are confusing; formatting with labels and breakdown aids comprehension.
+        inputNeeded: "Calculation result with multi-unit breakdown"
+        actionInstruction: "Use LLM to format into a concise, readable response."
+        promptToUse: |
+          Format this date difference calculation into a concise response:
+          Date A: {{dateA}} ({{dateA_label}})
+          Date B: {{dateB}} ({{dateB_label}})
+          Difference: {{calculationResult}}
+          Format: Start with the primary answer, then show the breakdown.
+          Example: "There are 45 days between March 6 and April 20, 2026 (6 weeks and 3 days)."
+          Keep it brief but complete.
+        expectedOutput: "Formatted string with primary result and breakdown"
+        validationRule: "Output contains the numeric result, unit, both dates, and at least one alternative unit"
+        failureSignal: "Output missing numeric result or dates"
+        recoveryAction: "Return simple format: 'The difference is X days.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the result to the orchestrator.
+        whyThisMatters: Security and quality gate ensures accurate calculations reach the user.
+        inputNeeded: "Formatted calculation response string"
+        actionInstruction: "Call validateOutput(formattedResponse). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response string delivered to orchestrator"
+        validationRule: "CP3 passed and response is non-empty string with numeric result"
+        failureSignal: "CP3 flags output or response is empty"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted date difference result delivered to user"
+    secondaryOutputs:
+      - "calculation_performed event with inputs and result"
+      - "tool_invoked event for get_current_time if used"
+    DoD:
+      - "User received accurate date difference in their preferred unit"
+      - "Both dates clearly referenced in the response"
+      - "Multi-unit breakdown provided when applicable"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Calculation is mathematically correct"
+      - "Leap years handled correctly"
+      - "Month boundaries handled correctly"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <4s"
+      - "calculation_accuracy: 100% correct"
+      - "format_compliance: 100% responses include units"
+    cadence: "Per-request (when user asks for date differences)"
+    errorHandling: "If dates cannot be resolved, ask for clarification"
+    fallbackRoute: "Request user to provide dates in explicit YYYY-MM-DD format"
+    escalationRoute: "Orchestrator logs parsing failure for analysis"
+
+  - id: date-addition-calc
+    title: Date Addition Calculation
+    objective: Add or subtract a duration from a given date and return the resulting date
+    trigger: "User asks what date is N days/weeks/months from a given date (e.g., 'What is 90 days from today?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "A base date and duration are identified in the query"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "baseDate: string (starting date reference)"
+      - "duration: string (amount to add/subtract, e.g., '90 days', '3 months')"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before date parsing begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Resolve base date and duration
+        desc: Parse the user message to extract the base date (resolving relative references) and the duration to add or subtract.
+        whyThisMatters: Correct identification of the base date and direction (add vs subtract) is critical for an accurate result.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }) for relative dates, then use LLM to parse base date and duration."
+        promptToUse: |
+          Extract the base date and duration from this user message:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Return as YAML:
+          baseDate: YYYY-MM-DD
+          baseDate_label: "original text reference"
+          duration_value: integer
+          duration_unit: "days" | "weeks" | "months" | "years"
+          direction: "add" | "subtract"
+        expectedOutput: "Base date in ISO 8601, duration value, unit, and direction"
+        validationRule: "baseDate is valid ISO 8601, duration_value > 0, unit is valid, direction is add or subtract"
+        failureSignal: "Base date invalid, duration_value <= 0, or unit unrecognized"
+        recoveryAction: "Ask user for clarification with examples of expected format"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Perform date arithmetic
+        desc: Add or subtract the specified duration from the base date, handling month-end and leap year edge cases.
+        whyThisMatters: Date arithmetic has well-known edge cases (Feb 29, month-end rollover) that must be handled correctly.
+        inputNeeded: "Base date, duration value, unit, and direction"
+        actionInstruction: "Use LLM to perform the date arithmetic step by step."
+        promptToUse: |
+          Perform this date calculation:
+          Base date: {{baseDate}}
+          Operation: {{direction}} {{duration_value}} {{duration_unit}}
+          Rules:
+          - For months: if result day exceeds month length, use last day of month (e.g., Jan 31 + 1 month = Feb 28)
+          - For years: handle Feb 29 on non-leap years (use Feb 28)
+          - Show your work step by step
+          Return:
+          resultDate: YYYY-MM-DD
+          resultDayOfWeek: "Monday" through "Sunday"
+          Show the calculation steps.
+        expectedOutput: "Result date in ISO 8601 with day of week and calculation steps"
+        validationRule: "Result date is valid ISO 8601 and day of week is correct for that date"
+        failureSignal: "Result date is invalid or day of week does not match the date"
+        recoveryAction: "Recalculate using days-only method (convert all units to days first)"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format and deliver result
+        desc: Format the calculation into a clear response with the result date, day of week, and calculation context.
+        whyThisMatters: Users need the result in a readable format with enough context to verify the answer.
+        inputNeeded: "Result date, day of week, calculation context"
+        actionInstruction: "Use LLM to format, then apply CP3 validation, then return to orchestrator."
+        promptToUse: |
+          Format this date addition result:
+          Base: {{baseDate}} ({{baseDate_label}})
+          Operation: {{direction}} {{duration_value}} {{duration_unit}}
+          Result: {{resultDate}} ({{resultDayOfWeek}})
+          Format: "{{duration_value}} {{duration_unit}} from {{baseDate_label}} is {{resultDayOfWeek}}, {{resultDate_formatted}}."
+          Add relevant context (e.g., "That's a weekend" or "That's the last day of the month").
+        expectedOutput: "Formatted response string with result date and context"
+        validationRule: "Output contains result date, day of week, and operation reference"
+        failureSignal: "Output missing date or containing contradictory information"
+        recoveryAction: "Return simple format: '{{duration}} from {{baseDate}} is {{resultDate}}.'"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted date addition result delivered to user"
+    secondaryOutputs:
+      - "calculation_performed event with full computation trace"
+      - "tool_invoked event for get_current_time"
+    DoD:
+      - "User received the correct result date"
+      - "Day of week included in the response"
+      - "Edge cases (leap year, month-end) handled correctly"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Result date is mathematically correct"
+      - "Day of week matches the result date"
+      - "Month-end edge cases handled"
+      - "Leap year cases handled"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <4s"
+      - "calculation_accuracy: 100% correct"
+      - "edge_case_handling: all leap year and month-end cases correct"
+    cadence: "Per-request (when user asks for date addition/subtraction)"
+    errorHandling: "If base date or duration cannot be parsed, ask for clarification"
+    fallbackRoute: "Request explicit date and duration from user"
+    escalationRoute: "Orchestrator logs parsing failure for analysis"
+
+  - id: duration-calc
+    title: Duration Calculation
+    objective: Express a time span in multiple units (days to weeks, hours to days, etc.)
+    trigger: "User asks to convert a duration between units (e.g., 'How many weeks is 100 days?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "A duration value and source unit are identified"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "durationValue: number (the numeric duration)"
+      - "sourceUnit: string (the source unit)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before duration parsing begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Parse duration expression
+        desc: Extract the numeric duration value, source unit, and optional target unit from the user message.
+        whyThisMatters: Correct parsing of the duration expression determines the entire calculation path.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Use LLM to parse the duration expression."
+        promptToUse: |
+          Extract the duration conversion request from this message:
+          User message: {{cleanedMessage}}
+          Return as YAML:
+          value: number
+          sourceUnit: "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+          targetUnit: "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years" | "all"
+          Note: if no specific target unit is requested, use "all" to provide multi-unit breakdown.
+        expectedOutput: "Duration value, source unit, and target unit"
+        validationRule: "value > 0, sourceUnit is valid, targetUnit is valid or 'all'"
+        failureSignal: "value <= 0 or unrecognized units"
+        recoveryAction: "Ask user to specify the duration with a clear number and unit"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Perform unit conversion
+        desc: Convert the duration to the target unit(s) using precise conversion factors.
+        whyThisMatters: Incorrect conversion factors (especially for months and years) lead to meaningfully wrong answers.
+        inputNeeded: "Duration value, source unit, target unit"
+        actionInstruction: "Use LLM to perform the conversion with explicit conversion factors."
+        promptToUse: |
+          Convert this duration:
+          Value: {{value}} {{sourceUnit}}
+          Target: {{targetUnit}}
+          Conversion factors to use:
+          - 1 minute = 60 seconds
+          - 1 hour = 60 minutes = 3600 seconds
+          - 1 day = 24 hours = 86400 seconds
+          - 1 week = 7 days
+          - 1 month = 30.4375 days (average)
+          - 1 year = 365.25 days (average)
+          If targetUnit is "all", provide conversions to all larger and smaller relevant units.
+          Show your work for each conversion.
+        expectedOutput: "Converted value(s) with unit labels and conversion work shown"
+        validationRule: "Converted values are positive and mathematically consistent with conversion factors"
+        failureSignal: "Negative values or values inconsistent with standard conversion factors"
+        recoveryAction: "Recalculate using only days as intermediate unit"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format and deliver result
+        desc: Format the conversion result into a clear response and validate via CP3.
+        whyThisMatters: Multi-unit results need clear formatting to avoid confusion between units.
+        inputNeeded: "Conversion results with labels"
+        actionInstruction: "Use LLM to format, then apply CP3 validation, then return to orchestrator."
+        promptToUse: |
+          Format this duration conversion result:
+          Input: {{value}} {{sourceUnit}}
+          Results: {{conversionResults}}
+          Format: Lead with the primary answer, then list alternative representations.
+          Example: "100 days is approximately 14 weeks and 2 days (about 3 months and 10 days, or 2,400 hours)."
+          Use "approximately" when conversion involves averaged values (months, years).
+        expectedOutput: "Formatted response with primary and alternative unit representations"
+        validationRule: "Output contains the input value, source unit, and at least one converted value"
+        failureSignal: "Output missing numeric values or units"
+        recoveryAction: "Return minimal format: '{{value}} {{sourceUnit}} = {{converted}} {{targetUnit}}'"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted duration conversion result delivered to user"
+    secondaryOutputs:
+      - "calculation_performed event with conversion details"
+    DoD:
+      - "User received accurate unit conversion"
+      - "Approximate conversions clearly marked"
+      - "Multiple unit representations provided"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Conversion factors are standard and correct"
+      - "Approximate values clearly labeled"
+      - "No contradictory unit values"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <3s"
+      - "calculation_accuracy: 100% correct for exact units, within 1% for averaged units"
+    cadence: "Per-request (when user asks for duration conversion)"
+    errorHandling: "If duration cannot be parsed, ask for clarification"
+    fallbackRoute: "Request explicit number and unit from user"
+    escalationRoute: "Orchestrator logs parsing failure"
+
+  - id: business-days-calc
+    title: Business Days Calculation
+    objective: Calculate business days between dates or add business days to a date, excluding weekends
+    trigger: "User asks about business days, working days, or weekdays between dates"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "get_current_time tool is available for resolving 'today'"
+      - "Date reference(s) identified in the query"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "startDate: string (starting date reference)"
+      - "endDate: string | null (ending date for difference calc)"
+      - "businessDaysToAdd: number | null (days to add for addition calc)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before business day calculations begin.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Resolve dates and operation type
+        desc: Determine whether this is a business-day difference or addition calculation, and resolve all date references.
+        whyThisMatters: Business day calculations differ fundamentally from calendar day calculations; wrong operation type produces wrong results.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }) for relative dates, then use LLM to parse the operation."
+        promptToUse: |
+          Parse this business day calculation request:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Determine the operation type and extract parameters:
+          Return as YAML:
+          operationType: "difference" | "addition"
+          startDate: YYYY-MM-DD
+          endDate: YYYY-MM-DD (for difference) | null (for addition)
+          businessDaysToAdd: integer (for addition) | null (for difference)
+          Note: Business days exclude Saturday and Sunday but do NOT exclude holidays (mention this to user).
+        expectedOutput: "Operation type, start date, and either end date or days to add"
+        validationRule: "operationType is valid, startDate is valid ISO 8601, and appropriate second parameter is present"
+        failureSignal: "Cannot determine operation type or dates are invalid"
+        recoveryAction: "Ask user to specify: 'Are you looking for the number of business days between two dates, or a date that is N business days away?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Calculate business days
+        desc: Perform the business day calculation, counting only Monday through Friday.
+        whyThisMatters: Business day math requires day-of-week awareness for each day in the range; simple division by 5 is inaccurate.
+        inputNeeded: "Operation type, start date, end date or business days to add"
+        actionInstruction: "Use LLM to perform accurate business day calculation."
+        promptToUse: |
+          Perform this business day calculation:
+          Operation: {{operationType}}
+          Start date: {{startDate}} ({{startDayOfWeek}})
+          {{#if endDate}}End date: {{endDate}} ({{endDayOfWeek}}){{/if}}
+          {{#if businessDaysToAdd}}Business days to add: {{businessDaysToAdd}}{{/if}}
+          Rules:
+          - Business days = Monday through Friday only
+          - Saturday and Sunday are excluded
+          - Do NOT account for public holidays (note this limitation)
+          For "difference": Count weekdays between start and end (exclusive of start, inclusive of end).
+          For "addition": Starting from the day after startDate, count forward N weekdays, skipping Saturdays and Sundays.
+          Show your work: list the weeks and partial weeks.
+          Return:
+          result: integer (business day count) or YYYY-MM-DD (result date)
+          resultDayOfWeek: "Monday" through "Friday"
+          calendarDaysSpanned: integer
+        expectedOutput: "Business day count or result date with calendar days spanned"
+        validationRule: "Business days <= calendar days, result date falls on a weekday"
+        failureSignal: "Business days > calendar days or result date falls on a weekend"
+        recoveryAction: "Recalculate by enumerating each day in the range explicitly"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format and deliver result
+        desc: Format the business day calculation into a clear response, noting the weekend exclusion and holiday limitation.
+        whyThisMatters: Users need to understand that the result excludes weekends but not holidays to avoid scheduling errors.
+        inputNeeded: "Calculation result and context"
+        actionInstruction: "Use LLM to format, apply CP3, then return to orchestrator."
+        promptToUse: |
+          Format this business day calculation result:
+          Operation: {{operationType}}
+          Start: {{startDate}}
+          {{#if endDate}}End: {{endDate}}{{/if}}
+          Result: {{result}}
+          Calendar days: {{calendarDaysSpanned}}
+          Format the response concisely. Include:
+          1. The primary answer
+          2. Calendar day equivalent for comparison
+          3. Note: "This excludes weekends (Saturday-Sunday) but does not account for public holidays."
+        expectedOutput: "Formatted response with result, calendar comparison, and holiday disclaimer"
+        validationRule: "Output contains business day result, calendar comparison, and holiday disclaimer"
+        failureSignal: "Output missing result or disclaimer"
+        recoveryAction: "Return minimal result with standard disclaimer appended"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted business day calculation delivered to user"
+    secondaryOutputs:
+      - "calculation_performed event with business day details"
+      - "tool_invoked event for get_current_time"
+    DoD:
+      - "User received accurate business day calculation"
+      - "Weekend exclusion clearly communicated"
+      - "Holiday limitation disclaimer included"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Business day count excludes Saturdays and Sundays"
+      - "Result date (if addition) falls on a weekday"
+      - "Holiday disclaimer is present"
+      - "Calendar day comparison is accurate"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <4s"
+      - "calculation_accuracy: 100% correct for weekday logic"
+      - "disclaimer_compliance: 100% responses include holiday note"
+    cadence: "Per-request (when user asks about business days)"
+    errorHandling: "If operation type is ambiguous, ask user to clarify"
+    fallbackRoute: "Request explicit dates and operation from user"
+    escalationRoute: "Orchestrator logs ambiguous request for analysis"

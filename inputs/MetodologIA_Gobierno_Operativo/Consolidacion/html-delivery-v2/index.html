@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v2.0">
+    <title>MetodologIA — Delivery Hub v2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f;--bg-2:#102346;--surface:#f7f4ec;
+            --accent:#00cde8;--gold:#ffd700;--green:#2ca56f;
+            --red:#dc5f5f;--orange:#e8a000;--purple:#9b59b6;
+            --font-head:"Poppins",sans-serif;--font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0;--text-secondary:#999;--border:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.6}
+        body.light{--bg-1:#fff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;--border:#e2e8f0}
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .card{background:#fff;border-color:#e2e8f0}
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:50px 20px 35px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-40%;right:-8%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,205,232,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.8rem;font-weight:800;margin-bottom:8px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:1rem;color:var(--accent);margin-bottom:6px;font-weight:500}
+        .header .meta{font-size:.85rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:35px;margin:22px 0;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center}
+        .stat-number{font-size:1.8rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.8rem;color:var(--text-secondary);margin-top:3px}
+
+        .container{max-width:1100px;margin:0 auto;padding:24px 20px}
+        .section-title{font-family:var(--font-head);font-size:1.3rem;font-weight:700;color:var(--accent);margin:28px 0 14px;border-left:4px solid var(--gold);padding-left:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .count{background:var(--accent);color:var(--bg-1);padding:2px 9px;border-radius:10px;font-size:.75rem}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-bottom:16px}
+
+        .card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .3s;text-decoration:none;color:inherit;display:block;position:relative;overflow:hidden}
+        .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,205,232,.12)}
+        .card::after{content:'→';position:absolute;top:18px;right:18px;font-size:1.1rem;color:var(--accent);opacity:0;transition:all .3s}
+        .card:hover::after{opacity:1;transform:translateX(2px)}
+        .card h3{font-family:var(--font-head);font-size:.95rem;font-weight:700;margin-bottom:4px;color:var(--text-primary)}
+        .card .metrics{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+        .card .metric{font-size:.72rem;padding:2px 7px;border-radius:6px;background:rgba(0,205,232,.08);color:var(--accent)}
+
+        .card-type{font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:6px;display:inline-block;padding:2px 8px;border-radius:8px}
+        .card-type.proceso{background:rgba(0,205,232,.12);color:var(--accent)}
+        .card-type.catalogo{background:rgba(255,215,0,.12);color:var(--gold)}
+        .card-type.sop{background:rgba(44,165,111,.12);color:var(--green)}
+        .card-type.bridge{background:rgba(155,89,182,.12);color:var(--purple)}
+
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:24px}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        @media print{
+            .theme-toggle{display:none!important}
+            body{background:#fff!important;color:#000!important}
+            .card{border:1px solid #ccc!important}
+        }
+        @media(max-width:768px){
+            .header h1{font-size:1.8rem}
+            .grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="document.body.classList.toggle('light')" aria-label="Cambiar tema">☀️ / 🌙</button>
+
+    <header class="header" role="banner">
+        <h1>Delivery Hub</h1>
+        <div class="subtitle">MetodologIA — Proceso de Delivery de Servicios</div>
+        <div class="meta">53 documentos interactivos | 4 verticales + integración | Excellence Edition v2.0</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">53</span><span class="stat-label">Documentos</span></div>
+            <div class="stat"><span class="stat-number">4</span><span class="stat-label">Verticales</span></div>
+            <div class="stat"><span class="stat-number">289</span><span class="stat-label">Marcadores 10x</span></div>
+            <div class="stat"><span class="stat-number">712</span><span class="stat-label">Secciones</span></div>
+        </div>
+    </header>
+
+    <div class="container" role="main">
+        
+        <div class="section-title" style="border-left-color:var(--accent)">
+            Workshop
+            <span class="count">5 docs</span>
+            <span class="count" style="background:var(--accent);color:var(--bg-1)">16 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="workshop/entregar-workshop-proceso.html" class="card" aria-label="Abrir Proceso: Entregar Workshop de Transformación Digital">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso: Entregar Workshop de Transformación Digital</h3>
+                <div class="metrics">
+                    <span class="metric">10 marcadores</span>
+                    <span class="metric">20 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/catalogo-workshops.html" class="card" aria-label="Abrir Catálogo Completo de Workshops MetodologIA">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>Catálogo Completo de Workshops MetodologIA</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">5 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/preparar-workshop-sop.html" class="card" aria-label="Abrir SOP: Preparar Workshop">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Preparar Workshop</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/facilitar-workshop-sop.html" class="card" aria-label="Abrir SOP: Facilitar Workshop">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Facilitar Workshop</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="workshop/cerrar-workshop-sop.html" class="card" aria-label="Abrir SOP: Cerrar Workshop">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Cerrar Workshop</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--green)">
+            Bootcamp
+            <span class="count">6 docs</span>
+            <span class="count" style="background:var(--green);color:var(--bg-1)">13 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="bootcamp/entregar-bootcamp-proceso.html" class="card" aria-label="Abrir Proceso: Entregar Bootcamp de Transformación">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso: Entregar Bootcamp de Transformación</h3>
+                <div class="metrics">
+                    <span class="metric">6 marcadores</span>
+                    <span class="metric">21 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/catalogo-bootcamps.html" class="card" aria-label="Abrir Catálogo Completo de Bootcamps MetodologIA">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>Catálogo Completo de Bootcamps MetodologIA</h3>
+                
+            </a>
+            <a href="bootcamp/diseno-curricular-sop.html" class="card" aria-label="Abrir SOP: Diseño Curricular de Bootcamp">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Diseño Curricular de Bootcamp</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">11 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/onboarding-cohorte-sop.html" class="card" aria-label="Abrir SOP: Onboarding Cohorte">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Onboarding Cohorte</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">9 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/facilitacion-semanal-sop.html" class="card" aria-label="Abrir SOP: Facilitación Semanal de Bootcamp">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Facilitación Semanal de Bootcamp</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="bootcamp/graduacion-sop.html" class="card" aria-label="Abrir SOP: Graduación y Activación Alumni">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Graduación y Activación Alumni</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--gold)">
+            Programa Élite
+            <span class="count">17 docs</span>
+            <span class="count" style="background:var(--gold);color:var(--bg-1)">114 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="programa-elite/entregar-programa-elite-proceso.html" class="card" aria-label="Abrir Proceso de Entrega: Programa Elite MetodologIA">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>Proceso de Entrega: Programa Elite MetodologIA</h3>
+                <div class="metrics">
+                    <span class="metric">6 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/catalogo-programas.html" class="card" aria-label="Abrir CATÁLOGO: Programas Élite">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>CATÁLOGO: Programas Élite</h3>
+                
+            </a>
+            <a href="programa-elite/diseno-transformacional-sop.html" class="card" aria-label="Abrir SOP: Diseño Transformacional">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Diseño Transformacional</h3>
+                <div class="metrics">
+                    <span class="metric">24 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/inmersion-inicial-sop.html" class="card" aria-label="Abrir SOP: Inmersión Inicial (Semanas 1-2)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Inmersión Inicial (Semanas 1-2)</h3>
+                <div class="metrics">
+                    <span class="metric">20 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/acompanamiento-continuo-sop.html" class="card" aria-label="Abrir SOP: Acompañamiento Continuo (Semanas 3-14)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Acompañamiento Continuo (Semanas 3-14)</h3>
+                <div class="metrics">
+                    <span class="metric">1 marcadores</span>
+                    <span class="metric">10 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/consolidacion-sop.html" class="card" aria-label="Abrir SOP: Consolidación (Semanas 15-16)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Consolidación (Semanas 15-16)</h3>
+                <div class="metrics">
+                    <span class="metric">18 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/alumni-sop.html" class="card" aria-label="Abrir SOP: Alumni &amp; Referral (Post-Semana 16)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Alumni &amp; Referral (Post-Semana 16)</h3>
+                <div class="metrics">
+                    <span class="metric">11 marcadores</span>
+                    <span class="metric">19 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/facilitar-masterclass-sop.html" class="card" aria-label="Abrir Facilitar Masterclass — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Facilitar Masterclass — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/facilitar-clinica-ia-sop.html" class="card" aria-label="Abrir Facilitar Clínica IA — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Facilitar Clínica IA — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/operar-ciclo-semanal-sop.html" class="card" aria-label="Abrir Operar Ciclo Semanal — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Operar Ciclo Semanal — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/gestionar-cohorte-sop.html" class="card" aria-label="Abrir Gestionar Cohorte — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Gestionar Cohorte — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/convertir-modulo-cero-sop.html" class="card" aria-label="Abrir Convertir Módulo Cero — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Convertir Módulo Cero — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/evaluar-criterios-aprobacion-sop.html" class="card" aria-label="Abrir Evaluar Criterios de Aprobación — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Evaluar Criterios de Aprobación — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/certificar-embajador-sop.html" class="card" aria-label="Abrir Certificar Embajador — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Certificar Embajador — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/operar-como-embajador-sop.html" class="card" aria-label="Abrir Operar como Embajador — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Operar como Embajador — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/gestionar-red-embajadores-sop.html" class="card" aria-label="Abrir Gestionar Red de Embajadores — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Gestionar Red de Embajadores — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="programa-elite/feedback-loop-embajador-sop.html" class="card" aria-label="Abrir Feedback Loop del Embajador — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Feedback Loop del Embajador — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">9 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--accent)">
+            Operaciones-Transversales
+            <span class="count">5 docs</span>
+            <span class="count" style="background:var(--accent);color:var(--bg-1)">16 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="operaciones-transversales/ejecutar-evento-activacion-sop.html" class="card" aria-label="Abrir Ejecutar Evento de Activación — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Ejecutar Evento de Activación — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">18 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-follow-up-sop.html" class="card" aria-label="Abrir Preparar Follow-Up — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Follow-Up — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-meeting-sop.html" class="card" aria-label="Abrir Preparar Meeting — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Meeting — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-contenido-sesion-sop.html" class="card" aria-label="Abrir Preparar Contenido de Sesión — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Contenido de Sesión — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a>
+            <a href="operaciones-transversales/preparar-propuesta-comercial-sop.html" class="card" aria-label="Abrir Preparar Propuesta Comercial — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Preparar Propuesta Comercial — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">18 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--accent)">
+            Tecnologia
+            <span class="count">6 docs</span>
+            <span class="count" style="background:var(--accent);color:var(--bg-1)">20 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="tecnologia/entregar-tecnologia-proceso.html" class="card" aria-label="Abrir PROCESO: Entregar TecnologIA — Aceleradores y Amplificadores">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>PROCESO: Entregar TecnologIA — Aceleradores y Amplificadores</h3>
+                <div class="metrics">
+                    <span class="metric">4 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/catalogo-servicios-digitales.html" class="card" aria-label="Abrir CATÁLOGO DE SERVICIOS DIGITALES — TecnologIA">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>CATÁLOGO DE SERVICIOS DIGITALES — TecnologIA</h3>
+                <div class="metrics">
+                    <span class="metric">5 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/implementar-asistentes-ia-sop.html" class="card" aria-label="Abrir SOP: Implementar Asistentes IA — Amplificador Cognitivo">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Implementar Asistentes IA — Amplificador Cognitivo</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/desarrollar-agentes-ia-sop.html" class="card" aria-label="Abrir SOP: Desarrollar Agentes IA — Amplificador Operativo">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Desarrollar Agentes IA — Amplificador Operativo</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">15 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/desarrollar-mini-apps-sop.html" class="card" aria-label="Abrir Mini Apps — Acelerador Digital">
+                <span class="card-type sop">SOP</span>
+                <h3>Mini Apps — Acelerador Digital</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="tecnologia/construir-sitios-web-sop.html" class="card" aria-label="Abrir Sitios Web — Amplificador de Marca">
+                <span class="card-type sop">SOP</span>
+                <h3>Sitios Web — Amplificador de Marca</h3>
+                <div class="metrics">
+                    <span class="metric">3 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--purple)">
+            Consultoría
+            <span class="count">6 docs</span>
+            <span class="count" style="background:var(--purple);color:var(--bg-1)">33 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="consultoria/entregar-consultoria-proceso.html" class="card" aria-label="Abrir PROCESO: Entregar Consultoría">
+                <span class="card-type proceso">PROCESO</span>
+                <h3>PROCESO: Entregar Consultoría</h3>
+                <div class="metrics">
+                    <span class="metric">9 marcadores</span>
+                    <span class="metric">17 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/catalogo-intervenciones.html" class="card" aria-label="Abrir CATÁLOGO: Intervenciones de Consultoría">
+                <span class="card-type catalogo">CATÁLOGO</span>
+                <h3>CATÁLOGO: Intervenciones de Consultoría</h3>
+                <div class="metrics">
+                    <span class="metric">9 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/diagnostico-sop.html" class="card" aria-label="Abrir SOP: Diagnóstico de Madurez Digital">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Diagnóstico de Madurez Digital</h3>
+                <div class="metrics">
+                    <span class="metric">5 marcadores</span>
+                    <span class="metric">13 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/traccion-sop.html" class="card" aria-label="Abrir SOP: Tracción - Implementación Rápida (4-8 semanas)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Tracción - Implementación Rápida (4-8 semanas)</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">10 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/evolucion-sop.html" class="card" aria-label="Abrir SOP: Evolución - Transformación Profunda (12-24 semanas)">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Evolución - Transformación Profunda (12-24 semanas)</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">11 secciones</span>
+                </div>
+            </a>
+            <a href="consultoria/handoff-success-sop.html" class="card" aria-label="Abrir SOP: Handoff &amp; Success - Transición a Éxito Sostenible">
+                <span class="card-type sop">SOP</span>
+                <h3>SOP: Handoff &amp; Success - Transición a Éxito Sostenible</h3>
+                <div class="metrics">
+                    <span class="metric">6 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--accent)">
+            Aliados-Comercial
+            <span class="count">5 docs</span>
+            <span class="count" style="background:var(--accent);color:var(--bg-1)">64 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="aliados-comercial/estructura-incentivos-aliados-sop.html" class="card" aria-label="Abrir Estructura de Incentivos para Aliados — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Estructura de Incentivos para Aliados — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">7 marcadores</span>
+                    <span class="metric">18 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/operar-como-reseller-sop.html" class="card" aria-label="Abrir Operar como Reseller — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Operar como Reseller — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">7 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/habilitar-embajador-comercial-sop.html" class="card" aria-label="Abrir Habilitar Embajador Comercial — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Habilitar Embajador Comercial — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">12 marcadores</span>
+                    <span class="metric">16 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/gestionar-marca-blanca-sop.html" class="card" aria-label="Abrir Gestionar Marca Blanca — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Gestionar Marca Blanca — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">19 marcadores</span>
+                    <span class="metric">12 secciones</span>
+                </div>
+            </a>
+            <a href="aliados-comercial/liquidar-comisiones-aliados-sop.html" class="card" aria-label="Abrir Liquidar Comisiones de Aliados — SOP">
+                <span class="card-type sop">SOP</span>
+                <h3>Liquidar Comisiones de Aliados — SOP</h3>
+                <div class="metrics">
+                    <span class="metric">19 marcadores</span>
+                    <span class="metric">14 secciones</span>
+                </div>
+            </a></div>
+        <div class="section-title" style="border-left-color:var(--orange)">
+            Integración
+            <span class="count">3 docs</span>
+            <span class="count" style="background:var(--orange);color:var(--bg-1)">13 marcadores</span>
+        </div>
+        <div class="grid">
+            <a href="integracion/02-BRIDGE-COMERCIAL-DELIVERY.html" class="card" aria-label="Abrir PUENTE: Proceso Comercial → Proceso Delivery">
+                <span class="card-type bridge">BRIDGE</span>
+                <h3>PUENTE: Proceso Comercial → Proceso Delivery</h3>
+                <div class="metrics">
+                    <span class="metric">11 marcadores</span>
+                    <span class="metric">9 secciones</span>
+                </div>
+            </a>
+            <a href="integracion/03-MANIFIESTO-DELIVERY.html" class="card" aria-label="Abrir MANIFIESTO: Proceso de Delivery de Servicios">
+                <span class="card-type bridge">INTEGRACIÓN</span>
+                <h3>MANIFIESTO: Proceso de Delivery de Servicios</h3>
+                <div class="metrics">
+                    <span class="metric">2 marcadores</span>
+                    <span class="metric">9 secciones</span>
+                </div>
+            </a>
+            <a href="integracion/04-REPORTE-DELTA-VERIFICACION.html" class="card" aria-label="Abrir REPORTE DELTA: Verificación de Elevación 10x">
+                <span class="card-type bridge">INTEGRACIÓN</span>
+                <h3>REPORTE DELTA: Verificación de Elevación 10x</h3>
+                
+            </a></div>
+    </div>
+
+    <footer class="footer" role="contentinfo">
+        <div>MetodologIA © 2026 | Delivery Hub — Gobierno Operativo</div>
+        <div class="version">v2.0 Excellence Edition — 2026-03-24 13:53</div>
+    </footer>
+
+    <script>
+        if(localStorage.getItem('metodologia-theme')==='light')document.body.classList.add('light');
+    </script>
+</body>
+</html>

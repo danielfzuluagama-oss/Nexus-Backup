@@ -1,0 +1,114 @@
+id: "masterclass-architect"
+name: "Masterclass Design Architect (v1.0-GAMMA)"
+version: "1.0.0"
+description: "ENTRUSTED-certified 3-phase engine for designing, structuring, and generating production-ready masterclass content. Applies the DECONSTRUCT → ARCHITECT → GENERATE pipeline with tridimensional regulators (Cognitive Load, Engagement Curve, Time-per-Module) and Gamma.app specifications."
+owner: "agent_orchestrator"
+category: "creative-synthesis"
+
+business_value: |
+  Reduces masterclass design time from 2 weeks to 2 days by automating concept decomposition,
+  audience-calibrated module sequencing, and slide readiness. Prevents the #1 failure mode of 
+  masterclasses: information overload without actionable takeaways.
+
+triggers:
+  - keywords: ["masterclass", "curso", "taller", "workshop", "módulo", "diseñar clase", "contenido de curso"]
+  - context_patterns:
+      - pattern: "(?i)(crear|diseñar|generar).* (masterclass|curso|taller|workshop)"
+      - pattern: "(?i)(estructura|temario|curriculum).* (clase|formación|capacitación)"
+
+dependencies:
+  skills:
+    - "prompt-engineer"         # Algebraic composition for module-level prompts.
+    - "quality-excellence"       # 16D scoring on final masterclass structure.
+    - "presentation-architect"   # Handoff for slide design after content architecture is finalized.
+    - "cognitive-tutor"          # Pedagogical methods (Feynman, Bloom's Taxonomy) for exercise design.
+
+assumptions:
+  - "Subject matter expertise is provided by the user. The skill structures and sequences; it does not originate domain knowledge."
+  - "Default audience level: Intermediate. Beginner or Advanced levels require explicit specification."
+  - "Default duration: 90 minutes (6 modules × 15 min). Custom durations require recalculation of module density."
+  - "Output is structural Markdown + Gamma.app metadata. Final slide rendering is delegated to presentation-architect."
+
+limits:
+  - "Cannot produce video recordings, animations, or interactive exercises. Output is content architecture + script-ready text."
+  - "Cannot assess learner performance in real-time. Post-masterclass assessment design requires separate scope."
+  - "Maximum modules per masterclass: 12. Beyond 12, the content should be split into a multi-session program."
+  - "Does not handle logistics (venue, tech setup, registration). Scope is content design only."
+
+capabilities:
+  three_phase_pipeline:
+    phase_1_DECONSTRUCT:
+      description: "Break down the subject into atomic concepts, identify prerequisite chains, and determine the learning path."
+      actions:
+        - "Concept Inventory: List all concepts the masterclass must cover."
+        - "Prerequisite Mapping: Identify which concepts depend on which (directed acyclic graph)."
+        - "Audience Calibration: Assess current knowledge level vs. target knowledge level."
+        - "Scope Gate: If concepts exceed 12-module capacity, propose scope reduction with justification."
+    phase_2_ARCHITECT:
+      description: "Sequence modules optimally, balance cognitive load, and design the engagement curve."
+      regulators:
+        cognitive_load: "No module introduces more than 3 new concepts. Overloaded modules are split."
+        engagement_curve: "Energy flow follows the pattern: High → Valley → Peak → Cooldown → Finale. No two valleys adjacent."
+        time_per_module: "Strict 10–20 minute range per module. Modules outside this range are split or merged."
+      actions:
+        - "Module Sequencing: Order modules respecting prerequisite chains and engagement curve."
+        - "Exercise Placement: Insert active learning exercises (Feynman checks, polls, breakouts) after every 2 modules."
+        - "Transition Design: Explicit verbal transitions connecting each module to the next."
+    phase_3_GENERATE:
+      description: "Produce the final content package ready for delivery or slide rendering."
+      outputs:
+        - "Module Scripts: Speaker-ready text with [PAUSE], [POLL], [EXERCISE] markers."
+        - "Slide Metadata: Gamma.app-compatible payload (1 section per module, max 7 bullets per slide)."
+        - "Facilitator Guide: Timing cues, fallback plans for shorter/longer sessions, and audience engagement tips."
+
+  gamma_specifications:
+    slide_density: "Max 50 words per slide body. Max 7 bullets. Title ≤10 words."
+    visual_grid: "Content sections map directly to Gamma.app sections (one module = one collapsible section)."
+    export_format: "Structured JSON-like payload for Gamma.app import."
+
+workflows:
+  - id: "wflow_masterclass_creation"
+    name: "End-to-End Masterclass Design"
+    steps:
+      - "1. Brief Intake: Subject, audience level, duration, desired outcomes, existing materials."
+      - "2. DECONSTRUCT: Concept inventory + prerequisite mapping + audience calibration."
+      - "3. ARCHITECT: Module sequencing + regulator application (Cognitive Load, Engagement, Time)."
+      - "4. GENERATE: Module scripts + slide metadata + facilitator guide."
+      - "5. Excellence Loop: Score against ≥9.5/10 (Clarity, Engagement, Depth, Actionability, Timing Feasibility)."
+
+edge_cases:
+  - scenario: "User provides only a topic ('AI for business') with no further detail."
+    handling: "Trigger structured discovery: What outcomes? What audience level? What duration? What existing knowledge can be assumed?"
+  - scenario: "Subject requires >12 modules to cover adequately."
+    handling: "Split into 2-session program. Present user with recommended split points and the rationale for each."
+  - scenario: "Audience is mixed (beginners + advanced in the same session)."
+    handling: "Design with layered complexity: core concepts accessible to beginners, advanced extensions clearly marked as optional deep dives."
+  - scenario: "Duration is unusually short (<30 min) or long (>4 hours)."
+    handling: "Short: Compress to 3 modules focused on the single highest-impact takeaway. Long: Add breaks, exercises, and Q&A blocks to prevent fatigue."
+
+trade_offs:
+  - decision: "Strict 10–20 min module length over flexible module durations."
+    justification: "Attention span research shows engagement drops sharply after 20 minutes. Strict limits force concise content."
+  - decision: "Engagement curve enforcement over linear concept ordering."
+    justification: "Linear ordering is pedagogically logical but engagement-death. The Valley-Peak pattern sustains audience energy."
+  - decision: "Structural output (Markdown + metadata) over pixel-perfect slides."
+    justification: "Slide rendering is a separate concern (presentation-architect). Mixing concerns degrades both structure and visuals."
+
+constraints:
+  - "NEVER produce a module longer than 20 minutes. Split or merge if regulator is violated."
+  - "NEVER skip exercise placement. Active learning breaks every 2 modules are mandatory."
+  - "NEVER allow a slide with more than 50 words or 7 bullets."
+  - "ALWAYS include explicit transitions between modules."
+  - "ALWAYS provide a Facilitator Guide alongside the content package."
+
+evaluation:
+  acceptance_criteria:
+    - "All 3 phases (DECONSTRUCT, ARCHITECT, GENERATE) produce verifiable outputs."
+    - "Cognitive Load regulator satisfied: ≤3 new concepts per module."
+    - "Engagement Curve follows High→Valley→Peak→Cooldown→Finale pattern."
+    - "Module durations within 10–20 minute range."
+    - "Gamma.app slide density constraints respected (≤50 words, ≤7 bullets, ≤10 word titles)."
+  success_metrics:
+    - "100% of masterclasses include active learning exercises every 2 modules."
+    - "≥95% of modules comply with the 10–20 minute range."
+    - "Zero modules with >3 new concepts introduced simultaneously."

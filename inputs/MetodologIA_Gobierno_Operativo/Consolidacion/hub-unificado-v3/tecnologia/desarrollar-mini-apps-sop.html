@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Mini Apps — Acelerador Digital — Proceso de Delivery MetodologIA">
+    <title>Mini Apps — Acelerador Digital — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Tecnologia</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Mini Apps — Acelerador Digital</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Mini Apps — Acelerador Digital</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-del-servicio-5aefd6')" aria-label="Ir a Propósito del Servicio">Propósito del Servicio</button>
+<button class="nav-btn" onclick="scrollToSection('stack-tecnolgico-soportado-db119e')" aria-label="Ir a Stack Tecnológico Soportado">Stack Tecnológico Soportado</button>
+<button class="nav-btn" onclick="scrollToSection('3-niveles-de-complejidad-71c417')" aria-label="Ir a 3 Niveles de Complejidad">3 Niveles de Complejidad</button>
+<button class="nav-btn" onclick="scrollToSection('proceso-de-entrega-paso-a-paso-8cb287')" aria-label="Ir a Proceso de Entrega (Paso a Paso)">Proceso de Entrega (Paso a Paso)</button>
+<button class="nav-btn" onclick="scrollToSection('10x-elevation-protocol-7-dimensiones-4efa9e')" aria-label="Ir a 10x Elevation Protocol: 7 Dimensiones">10x Elevation Protocol: 7 Dimension</button>
+<button class="nav-btn" onclick="scrollToSection('criterios-de-aceptacin-definition-of-done-1ad1bb')" aria-label="Ir a Criterios de Aceptación (Definition of Done)">Criterios de Aceptación (Definition</button>
+<button class="nav-btn" onclick="scrollToSection('5-antipatterns-trampas-comunes-b98562')" aria-label="Ir a 5+ Anti-Patterns (Trampas Comunes)">5+ Anti-Patterns (Trampas Comunes)</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-design-decisions-d5f9f7')" aria-label="Ir a 5 Decisiones de Diseño (Design Decisions)">5 Decisiones de Diseño (Design Deci</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-operativos-eaa56d')" aria-label="Ir a Fallbacks Operativos">Fallbacks Operativos</button>
+<button class="nav-btn" onclick="scrollToSection('integraciones-verticales-y-transversales-4d78ab')" aria-label="Ir a Integraciones Verticales y Transversales">Integraciones Verticales y Transver</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-lanzamiento-da704f')" aria-label="Ir a Checklist de Lanzamiento">Checklist de Lanzamiento</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vertical</strong>: TecnologIA</div>
+<div class="bullet-item"><strong>Tipo de Servicio</strong>: Acelerador</div>
+<div class="bullet-item"><strong>Palanca Conectada</strong>: 6 (Tecnología)</div>
+<div class="bullet-item"><strong>Owner</strong>: Desarrollador de Soluciones Digitales</div>
+<div class="bullet-item"><strong>Versión</strong>: 1.0 | Última actualización: 2026-03-24</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-del-servicio-5aefd6" data-searchable aria-labelledby="head-propsito-del-servicio-5aefd6">
+            <div class="phase-header" id="head-propsito-del-servicio-5aefd6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito del Servicio</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Diseñar, construir y desplegar aplicaciones web ligeras que resuelven un problema específico del cliente. No son apps enterprise — son herramientas puntuales que generan valor inmediato con mínima complejidad.</p>
+<p class="key-value"><strong>Filosofía Core</strong>: *&quot;Solve ONE problem really well.&quot;* Una mini app es exitosa si el usuario la abre, hace lo que necesita, y cierra en &lt;5 minutos.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="stack-tecnolgico-soportado-db119e" data-searchable aria-labelledby="head-stack-tecnolgico-soportado-db119e">
+            <div class="phase-header" id="head-stack-tecnolgico-soportado-db119e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Stack Tecnológico Soportado</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="vibe-coding-prototipaje-rpido-1a9bcb">Vibe Coding (Prototipaje rápido)</h3>
+<div class="bullet-item"><strong>Bolt.new</strong>: HTML/CSS/JS generado con IA, deploy en segundos</div>
+<div class="bullet-item"><strong>Lovable</strong>: React boilerplate + IA, ideal para MVPs</div>
+<div class="bullet-item"><strong>Replit Agent</strong>: Python/JavaScript + IA asistida</div>
+<h3 class="subsection-title" id="lowcode-datos-lgica-sin-cdigo-9c54fe">Low-Code (Datos + lógica sin código)</h3>
+<div class="bullet-item"><strong>Bubble</strong>: Workflows visuales, base de datos nativa</div>
+<div class="bullet-item"><strong>Glide</strong>: Mobile-first, excelente UX, integraciones</div>
+<div class="bullet-item"><strong>Softr</strong>: Convierte sheets/airtable en app web</div>
+<h3 class="subsection-title" id="code-control-completo-365d85">Code (Control completo)</h3>
+<div class="bullet-item"><strong>Python + Streamlit</strong>: Data apps, dashboards, análisis</div>
+<div class="bullet-item"><strong>React + Vite</strong>: SPAs con componentes reutilizables</div>
+<div class="bullet-item"><strong>Next.js</strong>: Full-stack, SSR, serverless functions</div>
+<h3 class="subsection-title" id="hybrid-ia-humano-dc5f06">Hybrid (IA + Humano)</h3>
+<div class="bullet-item">IA genera 80% del código → Humano revisa, testea, refina 20%</div>
+<div class="bullet-item">Estándar MetodologIA: No aceptar IA-generated puro sin revisión</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-niveles-de-complejidad-71c417" data-searchable aria-labelledby="head-3-niveles-de-complejidad-71c417">
+            <div class="phase-header" id="head-3-niveles-de-complejidad-71c417" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3 Niveles de Complejidad</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Nivel</th><th scope="col">Duración</th><th scope="col">Flujos</th><th scope="col">Características</th><th scope="col">Inversión</th></tr></thead><tbody><tr><td><strong>MVP</strong></td><td>1 semana</td><td>1 principal</td><td>Prototipo funcional, datos simples, sin integraciones</td><td>COP ~$600K</td></tr><tr><td><strong>Funcional</strong></td><td>3 semanas</td><td>3-5 flujos</td><td>Base de datos, autenticación básica, 1-2 integraciones</td><td>COP ~$3M</td></tr><tr><td><strong>Producción</strong></td><td>6 semanas</td><td>5+ flujos</td><td>Integraciones complejas, analytics, responsive, testing completo</td><td>COP ~$8M</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="proceso-de-entrega-paso-a-paso-8cb287" data-searchable aria-labelledby="head-proceso-de-entrega-paso-a-paso-8cb287">
+            <div class="phase-header" id="head-proceso-de-entrega-paso-a-paso-8cb287" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Proceso de Entrega (Paso a Paso)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="1-discovery-da-12-84defe">1. DISCOVERY (Día 1-2)</h3>
+<p class="key-value"><strong>Gatekeepers</strong>: ¿Qué? ¿Quién? ¿Cuándo? ¿Con qué datos?</p>
+<div class="bullet-item">¿Qué problema específico resuelve la app?</div>
+<div class="bullet-item">¿Quién la usa? (perfil del usuario, edad, nivel técnico)</div>
+<div class="bullet-item">¿Con qué frecuencia? (diaria, semanal, evento puntual)</div>
+<div class="bullet-item">¿Qué datos necesita? (entrada del usuario, APIs externas, base de datos)</div>
+<div class="bullet-item">¿Dónde vive la app? (dominio propio, subdominio, embed en sitio)</div>
+<p class="key-value"><strong>Entregable</strong>: Brief de mini app (1 página A4 máximo)</p>
+<h3 class="subsection-title" id="2-wireframe-da-34-56cf20">2. WIREFRAME (Día 3-4)</h3>
+<p><strong>Validación visual antes de construir</strong></p>
+<div class="bullet-item">Sketch de 3-5 pantallas principales (flujo completo)</div>
+<div class="bullet-item">Puede ser: papel → foto, Figma, o generado con IA</div>
+<div class="bullet-item">Identifica: inputs, outputs, decisiones (sí/no), errores</div>
+<div class="bullet-item">Gate: <strong>Cliente aprueba el flujo antes de Sprint 1</strong></div>
+<p class="key-value"><strong>Herramientas</strong>: Figma, Excalidraw, Adobe XD, o incluso papel escanado</p>
+<h3 class="subsection-title" id="3-sprint-1-flujo-principal-da-510-ae37d4">3. SPRINT 1: FLUJO PRINCIPAL (Día 5-10)</h3>
+<p><strong>Construir el camino feliz (happy path)</strong></p>
+<div class="bullet-item">Implementar 1 flujo principal completo</div>
+<div class="bullet-item">Función central: enter data → process → output resultado</div>
+<div class="bullet-item">Stack: elegir Vibe Coding si MVP, Code si requerimientos específicos</div>
+<div class="bullet-item">Daily standup: 15min con cliente (async Slack ok)</div>
+<div class="bullet-item">Demo al cliente: viernes día 10, en URL temporal</div>
+<p class="key-value"><strong>Salida</strong>: App funcional con flujo principal, sin edge cases</p>
+<h3 class="subsection-title" id="4-sprint-2-flujos-secundarios-da-1116-solo-si-func-3ee43d">4. SPRINT 2: FLUJOS SECUNDARIOS (Día 11-16, solo si Funcional+)</h3>
+<p><strong>Completar la app</strong></p>
+<div class="bullet-item">Agregar 2-4 flujos secundarios (alternativas, búsquedas, filtros)</div>
+<div class="bullet-item">Integrar base de datos o API externa si aplica</div>
+<div class="bullet-item">Autenticación básica (usuario/contraseña o SSO)</div>
+<div class="bullet-item">Validación de datos, mensajes de error amigables</div>
+<p class="key-value"><strong>Salida</strong>: App 80% completada, pronta para testing</p>
+<h3 class="subsection-title" id="5-sprint-3-produccin-da-1730-solo-si-produccin-bda355">5. SPRINT 3: PRODUCCIÓN (Día 17-30, solo si Producción)</h3>
+<p><strong>Pulir y asegurar</strong></p>
+<div class="bullet-item">Testing con usuarios reales (5+ personas)</div>
+<div class="bullet-item">Responsive design: mobile, tablet, desktop</div>
+<div class="bullet-item">Analytics: GA4 o Segment integrado</div>
+<div class="bullet-item">Performance: optimización imágenes, lazy loading, caché</div>
+<div class="bullet-item">Documentación: guía de uso + guía de administración</div>
+<p class="key-value"><strong>Salida</strong>: App lista para producción</p>
+<h3 class="subsection-title" id="6-deploy-12-das-cfef73">6. DEPLOY (1-2 días)</h3>
+<p><strong>Publicar en dominio del cliente</strong></p>
+<div class="bullet-item">Comprar/transferir dominio si necesario</div>
+<div class="bullet-item">Configurar DNS, SSL (HTTPS)</div>
+<div class="bullet-item">Hosting: Vercel, Netlify, Firebase, o servidor del cliente</div>
+<div class="bullet-item">Testing final: acceso desde URL pública</div>
+<p class="key-value"><strong>Checklist pre-launch</strong>:</p>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> HTTPS activo</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Dominio apunta correctamente</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Analytics activo</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Formularios funcionan</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Performance &lt;3seg carga</div>
+<h3 class="subsection-title" id="7-training-1h-903dbf">7. TRAINING (1h)</h3>
+<p><strong>Capacitar al cliente</strong></p>
+<div class="bullet-item">Cómo acceder a la app (URL, credenciales)</div>
+<div class="bullet-item">Cómo usar el flujo principal</div>
+<div class="bullet-item">Dónde ver datos (admin panel, si aplica)</div>
+<div class="bullet-item">Cómo reportar bugs (email o Slack channel)</div>
+<div class="bullet-item">FAQ: 3-5 preguntas comunes</div>
+<h3 class="subsection-title" id="8-soporte-30-das-fad37d">8. SOPORTE (30 días)</h3>
+<p class="key-value"><strong>Post-entrega: bug fixes y ajustes menores</strong></p>
+<div class="bullet-item">Response time: crítico &lt;4h, normal &lt;24h</div>
+<div class="bullet-item">Alcance: bugs reales, ajustes UI menores</div>
+<div class="bullet-item">NO incluye: nuevas features, rediseños, cambios de scope</div>
+<div class="bullet-item">Hosting incluido: 3 meses. Después: cliente paga o MetodologIA cobra mantenimiento</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10x-elevation-protocol-7-dimensiones-4efa9e" data-searchable aria-labelledby="head-10x-elevation-protocol-7-dimensiones-4efa9e">
+            <div class="phase-header" id="head-10x-elevation-protocol-7-dimensiones-4efa9e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10x Elevation Protocol: 7 Dimensiones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="1-supuestos-explcitos-24ca9d">1. SUPUESTOS EXPLÍCITOS</h3>
+<p><strong>¿Qué damos por sentado que es verdad?</strong></p>
+<div class="bullet-item">S1: El usuario final tiene conexión a internet estable</div>
+<div class="bullet-item">S2: El usuario tiene acceso desde navegador moderno (Chrome, Safari, Edge)</div>
+<div class="bullet-item">S3: El cliente puede mantener la app después del soporte inicial (o paga mantenimiento)</div>
+<div class="bullet-item">S4: El problema que resuelve la mini app es recurrente (no es one-time)</div>
+<div class="bullet-item">S5: Los datos generados por la app no requieren compliance (GDPR, HIPAA, etc.)</div>
+<div class="bullet-item">S6: El volumen de usuarios es &lt;10K/mes inicialmente</div>
+<div class="bullet-item">S7: La mini app NO es misión crítica para el negocio</div>
+<p class="key-value"><strong>Validación</strong>: En Discovery, confirmar S4, S5, S6, S7 explícitamente. Si alguno falla → escalar a proyecto de Desarrollo Web completo.</p>
+<h3 class="subsection-title" id="2-lmites-93216c">2. LÍMITES</h3>
+<p><strong>¿Qué NO hace una mini app?</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Límite</th><th scope="col">Razón</th></tr></thead><tbody><tr><td>&gt;1 integraciones complejas</td><td>Scope explosion, testing x10</td></tr><tr><td>Pagos en tiempo real</td><td>PCI compliance, riesgo legal</td></tr><tr><td>Datos sensibles (DNI, salud, financiero)</td><td>Compliance, backups, seguridad</td></tr><tr><td>&gt;100 campos de formulario</td><td>UX collapse, nadie llena</td></tr><tr><td>IA generativa dentro (ChatGPT API)</td><td>Costos token impredecibles, latencia</td></tr><tr><td>Offline-first / sync</td><td>Complejidad arquitectura</td></tr><tr><td>&gt;1 idioma</td><td>Traducción = 2x testing</td></tr></tbody></table></div>
+<p class="key-value"><strong>Gate</strong>: Si cliente pide algo de esta lista → proponer Desarrollo Web nivel Producción o rechazar.</p>
+<h3 class="subsection-title" id="3-criterios-binarios-77b365">3. CRITERIOS BINARIOS</h3>
+<p><strong>Sí / No. No hay grises.</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Criterio</th><th scope="col">Sí <span class="status-ok" aria-label="Completado">✅</span></th><th scope="col">No <span class="status-fail" aria-label="No completado">❌</span></th></tr></thead><tbody><tr><td><strong>Carga en &lt;3seg?</strong></td><td>Acepta</td><td>Rechaza (optimizar)</td></tr><tr><td><strong>Flujo principal sin instrucciones?</strong></td><td>Acepta</td><td>Rechaza (mejorar UX)</td></tr><tr><td><strong>Funciona mobile + desktop?</strong></td><td>Acepta</td><td>Rechaza (responsive)</td></tr><tr><td><strong>Datos persisten?</strong></td><td>Acepta</td><td>Rechaza (debug storage)</td></tr><tr><td><strong>0 errores en 5 usuarios reales?</strong></td><td>Acepta</td><td>Rechaza (testing)</td></tr><tr><td><strong>Cliente explica valor en 1 frase?</strong></td><td>Acepta</td><td>Rechaza (pivota o cancela)</td></tr><tr><td><strong>Documentación básica existe?</strong></td><td>Acepta</td><td>Rechaza (documentar)</td></tr></tbody></table></div>
+<p class="key-value"><strong>Proceso</strong>: No entregar si alguno es No.</p>
+<h3 class="subsection-title" id="4-casos-borde-57-escenarios-crticos-4ea276">4. CASOS BORDE (5-7 Escenarios Críticos)</h3>
+<p class="key-value"><strong>CB-01: Scope Creep Disfrazado</strong></p>
+<div class="bullet-item">Cliente pide &quot;mini app&quot; pero lista de features = app enterprise</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;Básicamente necesitamos un CRM para nuestro equipo&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>: &quot;Esto es proyecto de Desarrollo Web 6 semanas, COP $8M. ¿Validamos con MVP de $600K primero?&quot;</div>
+<div class="bullet-item"><strong>Salida</strong>: Proponer MVP acotado o rechazar</div>
+<p class="key-value"><strong>CB-02: Stack Insuficiente</strong></p>
+<div class="bullet-item">Stack elegido (ej: Glide) no soporta feature crítico (ej: pagos recurrentes)</div>
+<div class="bullet-item"><strong>Síntoma</strong>: Descubierto en Sprint 1, cliente es adamante</div>
+<div class="bullet-item"><strong>Fallback</strong>: Evaluar alternativa (Bubble, código custom) o proponer feature workaround</div>
+<div class="bullet-item"><strong>Salida</strong>: Change request + tiempo/costo adicional</div>
+<p class="key-value"><strong>CB-03: Datos en Tiempo Real con Rate Limits</strong></p>
+<div class="bullet-item">Mini app conecta a API externa que tiene latencia o límite de requests</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;La data debe refrescar cada 5 segundos&quot; pero API permite 100 requests/día</div>
+<div class="bullet-item"><strong>Fallback</strong>: Implementar refresh manual, caché con timestamp, o polling cada 1h</div>
+<div class="bullet-item"><strong>Salida</strong>: Documentar en guía de uso: &quot;Datos 1h de retraso&quot;</div>
+<p class="key-value"><strong>CB-04: Usuario Final No Técnico + UX Compleja</strong></p>
+<div class="bullet-item">App requiere entender conceptos técnicos, pero usuario no tiene contexto</div>
+<div class="bullet-item"><strong>Síntoma</strong>: Testing con 5 usuarios: 4 dicen &quot;no entiendo&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>: Rediseñar flows, agregar tooltips, vídeo tutorial 2min</div>
+<div class="bullet-item"><strong>Salida</strong>: Testing iterativo hasta 3/5 usuarios exitosos sin ayuda</div>
+<p class="key-value"><strong>CB-05: Rediseño Completo Post-Sprint 1</strong></p>
+<div class="bullet-item">Cliente aprobó wireframe, pero post-demo dice &quot;no, otra cosa&quot;</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;Me encanta pero la estructura está mal, empecemos de nuevo&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>: Congelar proyecto, proponer change request formal:</div>
+<div class="bullet-item">Tiempo: +1-2 semanas</div>
+<div class="bullet-item">Costo: +50% del MVP</div>
+<div class="bullet-item">Opción: Cancelar y devolver 50% del presupuesto</div>
+<div class="bullet-item"><strong>Salida</strong>: Contrato modificado, aprobación ejecutiva</div>
+<p class="key-value"><strong>CB-06: Hosting / Dominio Inaccesible</strong></p>
+<div class="bullet-item">Dominio del cliente expiró, panel DNS sin acceso, o hosting desconfigured</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;Deploy listo, pero no podemos apuntar el dominio&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>: Comprar dominio temporal (.tech, .app, etc.), entregar con URL temporal</div>
+<div class="bullet-item">Cliente migra dominio después</div>
+<div class="bullet-item">O MetodologIA maneja DNS (cobro ~$50/mes)</div>
+<div class="bullet-item"><strong>Salida</strong>: App funcional en URL temporal, tarea de migración asincrónica</div>
+<p class="key-value"><strong>CB-07: App Exitosa, Cliente Quiere Escalar</strong></p>
+<div class="bullet-item">Mini app genera traction, cliente quiere versión &quot;completa&quot; o &quot;nativa&quot;</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;Esto funciona genial. ¿Podemos convertirlo en app mobile?&quot;</div>
+<div class="bullet-item"><strong>Fallback</strong>: Esta es la mejor situación. Upsell:</div>
+<div class="bullet-item">App Producción nivel 2 (refactor + features): +$5M</div>
+<div class="bullet-item">App Nativa (React Native / Flutter): +$10M</div>
+<div class="bullet-item">Agente IA que opera la app: +$3M</div>
+<div class="bullet-item"><strong>Salida</strong>: Pitch comercial, NDA firmado si new scope</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="criterios-de-aceptacin-definition-of-done-1ad1bb" data-searchable aria-labelledby="head-criterios-de-aceptacin-definition-of-done-1ad1bb">
+            <div class="phase-header" id="head-criterios-de-aceptacin-definition-of-done-1ad1bb" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> Criterios de Aceptación (Definition of Done)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Todos los siguientes deben ser <strong>SÍ</strong> antes de entregar:</p>
+<div class="bullet-item">☐ App carga en &lt;3 segundos (PageSpeed Insights ≥75/100)</div>
+<div class="bullet-item">☐ Flujo principal completable sin instrucciones (UX = obvio)</div>
+<div class="bullet-item">☐ Funciona en mobile (iOS Safari, Chrome) y desktop (Chrome, Firefox, Safari, Edge)</div>
+<div class="bullet-item">☐ Datos persisten correctamente (localStorage, DB, o API backend)</div>
+<div class="bullet-item">☐ Cliente puede explicar el valor de la app en 1 frase clara</div>
+<div class="bullet-item">☐ 0 errores bloqueantes: testing con 5 usuarios reales, sin fallos críticos</div>
+<div class="bullet-item">☐ Documentación mínima: guía de uso (en Notion/PDF) + admin guide si aplica</div>
+<div class="bullet-item">☐ 0 links rotos, 0 imágenes faltantes, 0 console errors</div>
+<div class="bullet-item">☐ HTTPS activo, dominio apunta correctamente</div>
+<div class="bullet-item">☐ Analytics básico configurado (GA4 o alternativa)</div>
+<div class="bullet-item">☐ Responsable de soporte identificado en email del cliente</div>
+<p class="key-value"><strong>Go/No-Go</strong>: Revisión final viernes. Si &lt;8/11 es SÍ → no va a producción.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-antipatterns-trampas-comunes-b98562" data-searchable aria-labelledby="head-5-antipatterns-trampas-comunes-b98562">
+            <div class="phase-header" id="head-5-antipatterns-trampas-comunes-b98562" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 5+ Anti-Patterns (Trampas Comunes)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>AP-01: La Mini App Que Creció</strong></p>
+<div class="bullet-item">Agregar features hasta que ya no es &quot;mini&quot;</div>
+<div class="bullet-item">La app pasa de 500KB a 5MB, carga en 12seg, tiene 50 flujos</div>
+<div class="bullet-item"><strong>Síntoma</strong>: &quot;Hemos estado optimizando por 2 meses&quot;</div>
+<div class="bullet-item"><strong>Regla</strong>: Después de Sprint 1 exitoso, congelar features. Si cliente quiere más → proyecto nuevo o Desarrollo Web</div>
+<p class="key-value"><strong>AP-02: Vibe Coding sin Validación Humana</strong></p>
+<div class="bullet-item">Generar código entero con IA, deployar directo sin revisión</div>
+<div class="bullet-item">Resultado: seguridad débil, código innecesariamente complejo, bugs no visibles</div>
+<div class="bullet-item"><strong>Regla</strong>: 100% del código IA-generated = revisión humana obligatoria + security scan básico (Snyk gratis)</div>
+<p class="key-value"><strong>AP-03: App sin Usuario Real</strong></p>
+<div class="bullet-item">Construir sin entender quién la usa, con qué frecuencia, en qué contexto</div>
+<div class="bullet-item">Mini app sofisticada pero nadie la abre</div>
+<div class="bullet-item"><strong>Regla</strong>: En Discovery, entrevistar 3+ usuarios potenciales (no solo cliente). En Sprint 1, testing con usuarios reales.</div>
+<p class="key-value"><strong>AP-04: Deploy and Forget</strong></p>
+<div class="bullet-item">Publicar y desconectarse. No monitorear si la app se usa, si hay errores, si es lenta</div>
+<div class="bullet-item">Datos: 30% de las apps nunca se usan después del primer mes</div>
+<div class="bullet-item"><strong>Regla</strong>: Analytics obligatorio. Check-in a mes 2, mes 3. Proponer soporte pago si crece uso.</div>
+<p class="key-value"><strong>AP-05: Over-Engineering</strong></p>
+<div class="bullet-item">Usar React + Next.js + Serverless + DB for lo que podría ser Google Sheet con formulario</div>
+<div class="bullet-item">Costo: $8M, tiempo: 6 semanas. Alternativa: $200K, 3 días</div>
+<div class="bullet-item"><strong>Regla</strong>: Vibe coding / low-code primero. Code último. Justificar por qué necesitas complejidad.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-design-decisions-d5f9f7" data-searchable aria-labelledby="head-5-decisiones-de-diseo-design-decisions-d5f9f7">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-design-decisions-d5f9f7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5 Decisiones de Diseño (Design Decisions)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>DD-01: MVP Primero, Siempre</strong></p>
+<div class="bullet-item">Aunque cliente pida &quot;Producción&quot;, empezar con MVP validado</div>
+<div class="bullet-item">Razón: 40% de los MVPs fallan en validación (el problema no era real)</div>
+<div class="bullet-item">Proceso: MVP ($600K) → validación con 50+ usuarios → decisión de escalar</div>
+<p class="key-value"><strong>DD-02: Vibe Coding es Opción #1 para MVP</strong></p>
+<div class="bullet-item">Razón: 80% de clientes valida idea con MVP, no escalas</div>
+<div class="bullet-item">Escalación: Si exitoso → refactor a código custom en sprint 2</div>
+<div class="bullet-item">No usar code desde inicio (costo x10, tiempo x5)</div>
+<p class="key-value"><strong>DD-03: Hosting Incluido 3 Meses</strong></p>
+<div class="bullet-item">Después: cliente migra a su hosting, o paga $50/mes mantenimiento</div>
+<div class="bullet-item">Razón: No generar deuda técnica de hosting &quot;huérfano&quot;</div>
+<div class="bullet-item">Clausula: Si cliente no da instrucciones en mes 3 → desactivar app, notificar via email</div>
+<p class="key-value"><strong>DD-04: Mobile-First Design, Siempre</strong></p>
+<div class="bullet-item">75% de usuarios en LATAM acceden desde teléfono</div>
+<div class="bullet-item">Wireframe y desarrollo: empezar en mobile (320px), escalar a desktop</div>
+<div class="bullet-item">Testing: mobile primero, desktop segunda</div>
+<p class="key-value"><strong>DD-05: Toda Mini App Incluye Analytics Mínimo</strong></p>
+<div class="bullet-item">Qué: % usuarios que completan flujo, tiempo promedio, abandono por pantalla</div>
+<div class="bullet-item">Tool: GA4 gratis, o Plausible ($9/mes)</div>
+<div class="bullet-item">Reporte: dashboard mensual con insights + recomendaciones</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-operativos-eaa56d" data-searchable aria-labelledby="head-fallbacks-operativos-eaa56d">
+            <div class="phase-header" id="head-fallbacks-operativos-eaa56d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario Crítico</th><th scope="col">Fallback Técnico</th><th scope="col">SLA Respuesta</th><th scope="col">Propietario</th></tr></thead><tbody><tr><td>App carga &gt;5seg post-launch</td><td>Auditoría performance + compresión imágenes + caché</td><td>&lt;24h</td><td>Dev</td></tr><tr><td>Stack no soporta feature crítico</td><td>Evaluar alternativa o feature workaround + change request</td><td>&lt;48h</td><td>Tech Lead</td></tr><tr><td>Cliente no entrega contenido/datos</td><td>Generar placeholder con IA + scheduled review call</td><td>T+3 días</td><td>PM</td></tr><tr><td>Bug crítico encontrado en testing</td><td>Hot fix + re-test con usuario</td><td>&lt;4h</td><td>Dev</td></tr><tr><td>Dominio/DNS inaccesible</td><td>Usar dominio temporal + documentar migration steps</td><td>&lt;1 día</td><td>Ops</td></tr><tr><td>Usuario final no entiende app</td><td>Sesión de training + vídeo tutorial 2min + tooltips</td><td>&lt;48h</td><td>PM</td></tr><tr><td>Cliente quiere feature nueva mid-project</td><td>Congelar scope + change request formal</td><td>En reunión</td><td>PM</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="integraciones-verticales-y-transversales-4d78ab" data-searchable aria-labelledby="head-integraciones-verticales-y-transversales-4d78ab">
+            <div class="phase-header" id="head-integraciones-verticales-y-transversales-4d78ab" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Integraciones Verticales y Transversales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Upstream</strong>:</p>
+<div class="bullet-item">entregar-tecnologia-proceso.md (delivery gate)</div>
+<p class="key-value"><strong>Cross-Vertical</strong>:</p>
+<div class="bullet-item">Empoderamiento M12: Revolución Digital (mini apps + vibe coding como pieza clave)</div>
+<div class="bullet-item">Sitios Web SOP (mini app puede vivir embebida en sitio web)</div>
+<div class="bullet-item">Asistentes IA SOP (mini app + chatbot integrado)</div>
+<p class="key-value"><strong>Downstream</strong>:</p>
+<div class="bullet-item">Si exitosa: upsell a app Producción (refactor + features)</div>
+<div class="bullet-item">Si exitosa: upsell a Agente IA que opera la app (automación)</div>
+<div class="bullet-item">Analytics → Comercial (case study → referrals)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-lanzamiento-da704f" data-searchable aria-labelledby="head-checklist-de-lanzamiento-da704f">
+            <div class="phase-header" id="head-checklist-de-lanzamiento-da704f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Lanzamiento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">☐ Discovery + Brief aprobado</div>
+<div class="bullet-item">☐ Wireframe aprobado por cliente</div>
+<div class="bullet-item">☐ Stack seleccionado y justificado</div>
+<div class="bullet-item">☐ Hosting/dominio listos (DNS apunta correctamente)</div>
+<div class="bullet-item">☐ Analytics integrado</div>
+<div class="bullet-item">☐ Testing con 5 usuarios reales: 0 bloqueantes</div>
+<div class="bullet-item">☐ Documentación: guía de uso + admin guide</div>
+<div class="bullet-item">☐ Sesión de training completada</div>
+<div class="bullet-item">☐ Responsable de soporte asignado</div>
+<div class="bullet-item">☐ Caso de éxito documentado (para referrals)</div>
+<p class="key-value"><strong>Owner</strong>: Desarrollador de Soluciones Digitales + PM de Proyecto</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

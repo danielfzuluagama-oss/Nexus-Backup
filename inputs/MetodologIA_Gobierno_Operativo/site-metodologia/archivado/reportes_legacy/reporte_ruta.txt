@@ -1,0 +1,156 @@
+========================================
+REPORTE DE AUDITORÍA UX/UI
+Archivo: ruta/index.html (Ruta de R-Evolución)
+Fecha: 2026-01-23
+Auditor: Gemini + UX Specialist Capabilities
+Metodología: Red-Team Testing [P11], Heurísticas H1-H10, Krug's Laws
+========================================
+
+## RESUMEN EJECUTIVO
+Página extremadamente compleja (1978 líneas, ~146KB) con cotizador interactivo.
+Concepto de "9 niveles" bien ejecutado visualmente pero overwhelming para usuario
+nuevo. Mezcla conceptos (niveles, fases, pricing, bootcamps) sin simplificación.
+El cotizador es poderoso pero técnicamente denso.
+
+--------------------------------------------------------------------------------
+## MÉTRICAS CLAVE
+
+- Secciones totales: 8+ (muy alto)
+- CTAs identificados: 8+ (Explorar, Agendar, checkboxes del cotizador)
+- Nivel de complejidad estructural: MUY ALTO ⚠️
+- Nivel técnico del lenguaje: ALTO ⚠️
+- Trunk Test: 5/6 (breadcrumbs OK, pero demasiada info en viewport)
+- Tiempo estimado de lectura: 20+ minutos
+
+--------------------------------------------------------------------------------
+## HALLAZGOS POR SEVERIDAD
+
+### 🔴 CRÍTICOS (Bloquean conversión)
+
+1. **9 niveles son demasiados para procesar** [Líneas 337-402]
+   - Usuario: "N0, N1, N2... ¿Cuál necesito?"
+   - Decision paralysis por exceso de opciones
+   - Violación: Krug (Satisficing), UP07 (Reduce cognitive load)
+   - Recomendación: Agrupar en 3-4 "rutas" macro antes de mostrar niveles
+
+2. **Cotizador demasiado complejo para primera visita** [Líneas 528-789]
+   - Checkboxes, toggles B2B/B2C, descuentos, modalidades de pago
+   - Usuario nuevo: "Solo quiero saber cuánto cuesta algo simple"
+   - Violación: Krug Law #1 (Makes me think A LOT)
+   - Recomendación: "Quick quote" con 3 preguntas antes de cotizador full
+
+3. **Terminología técnica abundante** [Múltiples]
+   - "Digital Champions", "Vibe Coding", "GerencIA Proyectos"
+   - "System Check & Roadmap (N0)", "CICLO DE COACHING EJECUTIVO"
+   - Violación: H2 (Correspondencia mundo real), Brand Voice v2.0
+   - Recomendación: Traducir a beneficios tangibles
+
+### 🟠 ALTOS (Impacto significativo)
+
+4. **B2B/B2C toggle confuso** [Líneas 544-551]
+   - Usuario: "¿Soy B2B o B2C? No sé"
+   - Labels "Personas" y "Empresas" son mejores que B2B/B2C
+   - Pero toggle está después de pricing, no antes
+   - Recomendación: PROMINENTE al inicio, con explicación clara
+
+5. **iframe embebido (levels_grid.html)** [Línea 431]
+   - Rompe flujo de página
+   - Posibles problemas de accesibilidad
+   - Violación: H4 (Consistencia), Mobile UX
+   - Recomendación: Integrar contenido directamente o lazy-load
+
+6. **Precios en COP sin conversión inmediata** [Múltiples]
+   - "$2.400.000" - usuario internacional no sabe si es mucho o poco
+   - USD aparece pero como texto secundario
+   - Recomendación: Toggle de moneda prominente
+
+7. **"Edición 2026" implica obsolescencia** [Línea 266]
+   - ¿Qué pasa con Edición 2027?
+   - Genera dudas innecesarias
+   - Recomendación: "Versión Actual" o remover
+
+### 🟡 MEDIOS (Fricción innecesaria)
+
+8. **Hero repite mensaje de Homepage**
+   - "Soberanía Digital" ya visto antes
+   - Redundancia en journey del usuario
+   - Recomendación: Mensaje específico de "Ruta"
+
+9. **Gantt chart visual bonito pero denso** [Líneas 309-409]
+   - Simula terminal pero usuario no es developer
+   - "(R)Evolution_Roadmap.v2026" es jerga
+   - Recomendación: Simplificar visualmente
+
+10. **6 "Vectores de Impacto" muy conceptuales** [Líneas 460-515]
+    - "Entornos de Abundancia", "Antifragilidad"
+    - Sin ejemplos concretos
+    - Recomendación: Agregar "caso de éxito" por vector
+
+11. **Modal de detalles requiere JavaScript** [Líneas 789+]
+    - Si JS falla, usuario no puede ver detalles
+    - Graceful degradation: Hacer links a página dedicada
+    
+### 🟢 BAJOS (Mejoras incrementales)
+
+12. **Demasiada JavaScript inline en página** [~200+ líneas de script]
+    - Dificulta mantenimiento
+    - Recomendación: Mover a archivo externo
+
+13. **Breadcrumb correcto pero pequeño**
+    - Funcionally OK
+
+14. **Footer idéntico a otras páginas**
+    - Consistente, OK
+
+--------------------------------------------------------------------------------
+## ANÁLISIS DE COMPLEJIDAD
+
+### Estructura de Navegación
+- Página única con muchas secciones anclables
+- Scroll excesivo requerido
+- Cotizador sticky (bueno) pero complejo (malo)
+
+### Densidad de Información (por viewport)
+- Hero: Adecuada
+- Gantt Chart: ALTA
+- Levels Grid (iframe): MUY ALTA
+- Cotizador: MUY ALTA
+
+### Coherencia con Brand Voice v2.0
+- ✅ Usa "(R)Evolución"
+- ✅ Evita "transformación"
+- ❌ Usa B2B/B2C directamente
+- ❌ "Digital Champions", "Vibe Coding" en inglés
+- ❌ Conceptos abstractos sin ejemplos
+
+--------------------------------------------------------------------------------
+## RECOMENDACIONES ACCIONABLES (Prioridad)
+
+1. **URGENTE**: Reducir 9 niveles a 3-4 "rutas" simplificadas
+2. **URGENTE**: Crear "Quick Quote" de 3 preguntas antes de cotizador full
+3. **ALTA**: Mover toggle B2B/B2C al inicio con explicación clara
+4. **ALTA**: Traducir TODOS los términos técnicos
+5. **MEDIA**: Integrar levels_grid.html directamente en página
+6. **MEDIA**: Agregar toggle prominente COP/USD
+7. **BAJA**: Remover "Edición 2026"
+
+--------------------------------------------------------------------------------
+## PUNTUACIÓN HEURÍSTICA (H1-H10)
+
+| Heurística | Puntuación | Notas |
+|------------|------------|-------|
+| H1. Visibilidad del estado | 3/4 | Breadcrumbs OK |
+| H2. Correspondencia mundo real | 1/4 | Jerga técnica abundante |
+| H3. Control y libertad | 3/4 | Cotizador interactivo |
+| H4. Consistencia | 2/4 | iframe rompe flujo |
+| H5. Prevención errores | 3/4 | Toggle claro |
+| H6. Reconocer vs recordar | 1/4 | 9 niveles a memorizar |
+| H7. Flexibilidad | 2/4 | Sin quick quote |
+| H8. Diseño estético | 4/4 | Muy premium |
+| H9. Ayuda ante errores | 3/4 | Labels claros |
+| H10. Ayuda/documentación | 1/4 | Sin FAQ, sin glosario |
+
+**PROMEDIO: 2.3/4.0** (Target: >3.5) ⚠️ NECESITA ATENCIÓN URGENTE
+
+--------------------------------------------------------------------------------
+## FIN DEL REPORTE

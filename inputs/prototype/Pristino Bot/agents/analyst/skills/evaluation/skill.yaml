@@ -1,0 +1,613 @@
+id: evaluation
+name: Evaluation
+purpose: >
+  Score and rank options with explicit criteria and transparent methodology,
+  producing structured evaluations with defensible scoring.
+businessValue: >
+  Structured evaluation with transparent scoring methodology that enables
+  confident decision-making backed by explicit criteria and reproducible results.
+triggerTypes:
+  - user_message
+owningAgent: analyst
+inputs:
+  - "subject: string — the item, proposal, or set of options to evaluate"
+  - "evaluationType: string — criteria-based | scoring-matrix | ranking | sensitivity"
+  - "criteria: string[] — optional evaluation criteria"
+  - "scale: object — optional scoring scale definition"
+outputs:
+  - "evaluationReport: object — structured evaluation with scores and rationale"
+  - "scorecard: object — formatted scorecard with per-criterion results"
+  - "ranking: string[] — ordered list of options from best to worst"
+dependencies:
+  - "llm-chat — LLM inference for evaluation logic"
+  - "security.ts — CP1/CP2/CP3 checkpoints"
+toolUsage:
+  - get_current_time
+memoryReadsWrites:
+  reads:
+    - "Delegated task context from orchestrator"
+  writes: []
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - evaluation_completed
+  - scoring_completed
+  - validation_failed
+  - fallback_triggered
+failureHandling:
+  - "No evaluation criteria provided: auto-generate contextually appropriate criteria"
+  - "Subject too vague for scoring: request clarification via orchestrator"
+  - "Scoring inconsistency detected: re-evaluate inconsistent criteria"
+  - "LLM timeout: retry once then return partial evaluation with disclaimer"
+interoperabilityContract:
+  inputType: "EvaluationRequest { subject: string, evaluationType: string, criteria?: string[], scale?: object }"
+  outputType: "EvaluationResult { report: object, scorecard: object, ranking?: string[], metadata: object }"
+wowCriteria:
+  - "Scoring methodology is so transparent that anyone can reproduce the results"
+  - "Evaluation reveals strengths and weaknesses the user hadn't considered"
+  - "Sensitivity analysis shows which criteria most influence the outcome"
+  - "Scoring calibration accounts for domain-specific norms"
+safeCriteria:
+  - "Every score is justified with specific evidence or reasoning"
+  - "Scoring scale is defined before scoring begins (no post-hoc adjustments)"
+  - "Potential biases in the evaluation are declared"
+  - "Output passes CP3 validation without flags"
+
+workflows:
+  - id: criteria-based-evaluation
+    title: Criteria-based evaluation
+    objective: Evaluate a subject against explicit criteria with structured scoring and evidence-backed assessment
+    trigger: "evaluationType === 'criteria-based' or single subject evaluation requested"
+    preconditions:
+      - "Subject to evaluate is non-empty and sanitized via CP1"
+      - "Subject contains enough information for meaningful evaluation"
+    inputs:
+      - "subject: string — the item or proposal to evaluate"
+      - "criteria: string[] — optional evaluation criteria"
+    steps:
+      - stepNumber: 1
+        title: Sanitize evaluation inputs
+        desc: Apply CP1 security checkpoint to the subject description and any criteria text.
+        whyThisMatters: Prevents prompt injection through crafted subject descriptions that could bias the evaluation.
+        inputNeeded: "Raw subject string and criteria from the delegated task"
+        actionInstruction: "Call sanitizeInput(subject) and sanitizeInput() on each criterion. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized subject and criteria[] with control characters stripped"
+        validationRule: "Subject is non-empty after sanitization, safe === true for all inputs"
+        failureSignal: "Subject is empty after sanitization or safe === false"
+        recoveryAction: "Return error to orchestrator: 'Subject could not be sanitized for evaluation.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Define evaluation framework
+        desc: Establish or validate criteria, define the scoring scale, and set calibration anchors.
+        whyThisMatters: Defining the framework before scoring prevents post-hoc rationalization and ensures consistency.
+        inputNeeded: "Sanitized subject from step 1, optional criteria"
+        actionInstruction: "Call llm.chat() with the framework definition prompt."
+        promptToUse: |
+          You are an evaluation framework specialist. Define the evaluation framework for:
+          Subject: {{subject}}
+
+          {{#if criteria}}
+          User-specified criteria: {{criteria}}
+          Validate these are appropriate and well-defined. Add critical missing criteria if needed.
+          {{else}}
+          No criteria specified. Generate 5-7 relevant evaluation criteria for this subject.
+          {{/if}}
+
+          For each criterion provide:
+          1. **Name**: Short label (2-4 words)
+          2. **Definition**: Precisely what this measures (no ambiguity)
+          3. **Scoring scale**: 1-10 with anchor descriptions for scores 1, 4, 7, and 10
+          4. **Weight**: Relative importance (0.0-1.0, all weights sum to 1.0)
+          5. **Evidence required**: What evidence supports scoring on this criterion
+
+          The scale must be defined BEFORE any scoring occurs to prevent bias.
+        expectedOutput: "EvaluationFramework { criteria: CriterionDef[], totalWeight: 1.0, scaleDefined: true }"
+        validationRule: "5-7 criteria with non-ambiguous definitions, weights sum to 1.0, all anchors defined"
+        failureSignal: "Fewer than 4 criteria, weights don't sum to ~1.0, or anchors missing"
+        recoveryAction: "Use standard evaluation criteria (quality, feasibility, impact, cost, risk) with equal weights."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Execute criteria-based scoring
+        desc: Score the subject on each criterion with detailed justification and evidence mapping.
+        whyThisMatters: This is the core evaluation step — each score must be defensible with specific evidence.
+        inputNeeded: "EvaluationFramework from step 2, sanitized subject from step 1"
+        actionInstruction: "Call llm.chat() with the evaluation prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst performing a criteria-based evaluation.
+
+          Subject to evaluate:
+          {{subject}}
+
+          Evaluation framework:
+          {{evaluationFramework}}
+
+          For each criterion:
+          1. **Score**: 1-10 (reference the predefined scale anchors)
+          2. **Justification**: 2-3 sentences explaining the score with specific evidence
+          3. **Strengths**: What the subject does well on this criterion
+          4. **Weaknesses**: Where the subject falls short on this criterion
+          5. **Weighted score**: raw_score * criterion_weight
+
+          After all criteria:
+          - **Total weighted score**: Sum of all weighted scores
+          - **Percentage of maximum**: Total / 10.0 as percentage
+          - **Strengths summary**: Top 3 strengths across all criteria
+          - **Weaknesses summary**: Top 3 weaknesses across all criteria
+          - **Overall assessment**: 3-4 sentence evaluation judgment
+          - **Grade**: A (90%+), B (80-89%), C (70-79%), D (60-69%), F (<60%)
+
+          Be rigorous. Reference the scale anchors to ensure consistent scoring.
+        expectedOutput: "CriteriaEvaluation { criterionScores[], totalWeighted, percentage, strengths, weaknesses, assessment, grade }"
+        validationRule: "All criteria scored 1-10, weighted scores correct, total matches sum, grade matches percentage"
+        failureSignal: "Missing scores, math errors in weighted computation, or grade inconsistent with percentage"
+        recoveryAction: "Recompute weighted scores mechanically. Re-prompt for missing criterion scores."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Compile scorecard and validate
+        desc: Build formatted scorecard, apply CP3 validation, and prepare final evaluation deliverable.
+        whyThisMatters: The scorecard format makes the evaluation scannable and actionable for decision-makers.
+        inputNeeded: "CriteriaEvaluation from step 3, EvaluationFramework from step 2"
+        actionInstruction: "Call validateOutput(evaluation) from security.ts. Build scorecard. Add timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "EvaluationResult { report: CriteriaEvaluation, scorecard: FormattedScorecard, metadata: object }"
+        validationRule: "CP3 passes, scorecard contains all criteria with scores and grade, timestamp is valid"
+        failureSignal: "CP3 flags output or scorecard formatting fails"
+        recoveryAction: "Log CP3 warning, strip flagged content, deliver evaluation in list format as fallback"
+        handoffIfNeeded: null
+
+    mainOutput: "Criteria-based evaluation with scored scorecard, weighted totals, grade, and strength/weakness analysis"
+    secondaryOutputs:
+      - "evaluation_framework: criteria definitions, scales, and weights"
+      - "per_criterion_detail: justifications and evidence for each score"
+      - "evaluation_event_log: timestamps and step metrics"
+    DoD:
+      - "All criteria scored with evidence-backed justification"
+      - "Weighted scores correctly computed"
+      - "Grade assigned consistent with percentage"
+      - "Strengths and weaknesses identified"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Scores reference predefined scale anchors"
+      - "No score given without justification"
+      - "Weighted math is correct and verifiable"
+      - "Assessment is consistent with individual scores"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "scoring_completeness: 100% criteria scored"
+      - "justification_rate: every score has evidence"
+      - "response_time_p95: < 18s"
+    cadence: "Per-request (when criteria-based evaluation is requested)"
+    errorHandling: "If subject information is insufficient for some criteria, score with available data and flag uncertainty"
+    fallbackRoute: "Return qualitative assessment without numerical scoring"
+    escalationRoute: "Report to orchestrator that evaluation requires additional information"
+
+  - id: scoring-matrix
+    title: Scoring matrix
+    objective: Build a comprehensive scoring matrix evaluating multiple subjects across multiple criteria
+    trigger: "evaluationType === 'scoring-matrix' or multiple subjects to evaluate"
+    preconditions:
+      - "At least 2 subjects to evaluate"
+      - "Subjects are comparable (same domain or type)"
+      - "Input sanitized via CP1"
+    inputs:
+      - "subjects: string[] — items to evaluate (min 2)"
+      - "criteria: string[] — optional evaluation criteria"
+      - "scale: object — optional scoring scale"
+    steps:
+      - stepNumber: 1
+        title: Sanitize matrix inputs
+        desc: Apply CP1 security checkpoint to all subject descriptions and criteria text.
+        whyThisMatters: Multiple subjects increase injection risk — each must be individually sanitized.
+        inputNeeded: "Raw subjects array and criteria from the delegated task"
+        actionInstruction: "Call sanitizeInput() on each subject and criterion. Validate all return { safe: true }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized subjects[] and criteria[] arrays"
+        validationRule: "All subjects non-empty after sanitization, minimum 2 subjects remain"
+        failureSignal: "Fewer than 2 subjects after sanitization"
+        recoveryAction: "If 1 subject remains, redirect to criteria-based-evaluation workflow. If 0, return error."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Design scoring matrix framework
+        desc: Establish unified criteria, scoring scale, and matrix structure for all subjects.
+        whyThisMatters: A unified framework ensures fair comparison — different scales for different subjects would be meaningless.
+        inputNeeded: "Sanitized subjects from step 1, optional criteria and scale"
+        actionInstruction: "Call llm.chat() with the matrix framework prompt."
+        promptToUse: |
+          You are a scoring matrix specialist. Design the evaluation matrix for:
+          {{#each subjects}}
+          - Subject {{@index}}: {{this}}
+          {{/each}}
+
+          {{#if criteria}}
+          User criteria: {{criteria}}
+          Validate and enrich for matrix evaluation.
+          {{else}}
+          Generate 5-8 criteria applicable to all subjects.
+          {{/if}}
+
+          Provide:
+          1. **Criteria list**: Each with definition and measurement approach
+          2. **Scoring scale**: Universal 1-10 scale with anchor descriptions
+          3. **Weight distribution**: Relative importance of each criterion (sum to 1.0)
+          4. **Matrix template**: Subjects (rows) x Criteria (columns)
+          5. **Calibration notes**: Any domain-specific scoring considerations
+        expectedOutput: "MatrixFramework { criteria[], scale, weights, template, calibrationNotes }"
+        validationRule: "5-8 criteria, weights sum to 1.0, scale has anchors, all criteria apply to all subjects"
+        failureSignal: "Criteria not universal across subjects or weights don't sum to ~1.0"
+        recoveryAction: "Remove non-universal criteria, use equal weights, and note limitations."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Populate scoring matrix
+        desc: Score every subject on every criterion, compute weighted totals, and generate the complete matrix.
+        whyThisMatters: The populated matrix with consistent scoring across all cells is the primary deliverable.
+        inputNeeded: "MatrixFramework from step 2, sanitized subjects from step 1"
+        actionInstruction: "Call llm.chat() with the matrix scoring prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst building a scoring matrix.
+
+          Subjects:
+          {{#each subjects}}
+          {{@index}}. {{this}}
+          {{/each}}
+
+          Framework: {{matrixFramework}}
+
+          For each cell (subject x criterion):
+          1. **Raw score**: 1-10 referencing scale anchors
+          2. **Brief justification**: 1 sentence explaining the score
+          3. **Weighted score**: raw * weight
+
+          Compute for each subject:
+          - Total weighted score
+          - Percentage of maximum (total / 10.0)
+
+          Present as:
+          - **Complete matrix table**: All scores visible
+          - **Subject rankings**: Ordered by total weighted score
+          - **Score distribution**: Which subjects cluster together?
+          - **Outlier scores**: Any unexpectedly high or low scores with explanation
+          - **Cross-subject insights**: Patterns across the matrix
+        expectedOutput: "ScoringMatrix { matrix[][], subjectTotals[], rankings[], distribution, outliers, insights }"
+        validationRule: "All matrix cells populated, weighted totals correct, rankings consistent with totals"
+        failureSignal: "Empty cells in matrix, math errors, or rankings inconsistent with scores"
+        recoveryAction: "Fill gaps with 'N/A' notation, recompute totals from available scores, note incompleteness."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate matrix and format output
+        desc: Verify mathematical consistency, apply CP3, and format the scoring matrix for delivery.
+        whyThisMatters: Mathematical consistency across the entire matrix is essential for credible evaluation.
+        inputNeeded: "ScoringMatrix from step 3"
+        actionInstruction: "Verify all arithmetic programmatically. Call validateOutput() from security.ts. Add timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "EvaluationResult { report: ScoringMatrix, scorecard: FormattedMatrix, ranking: string[], metadata: object }"
+        validationRule: "CP3 passes, all arithmetic verified, matrix properly formatted"
+        failureSignal: "Arithmetic inconsistencies or CP3 flags"
+        recoveryAction: "Correct arithmetic mechanically, log discrepancies, deliver corrected matrix"
+        handoffIfNeeded: null
+
+    mainOutput: "Complete scoring matrix with weighted scores, rankings, distribution analysis, and cross-subject insights"
+    secondaryOutputs:
+      - "matrix_framework: criteria, weights, and scale definitions"
+      - "score_justifications: per-cell reasoning"
+      - "outlier_analysis: unexpected scores with explanation"
+    DoD:
+      - "All matrix cells populated with scored justifications"
+      - "Weighted totals computed correctly"
+      - "Rankings derived from totals"
+      - "Cross-subject insights documented"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "All arithmetic is correct"
+      - "Scale anchors consistently applied"
+      - "No subject evaluated more leniently than others"
+      - "Outlier scores are explained"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "matrix_completeness: >= 95% cells populated"
+      - "arithmetic_accuracy: 100% correct"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when scoring matrix evaluation is requested)"
+    errorHandling: "If a subject lacks information for scoring, use available data with uncertainty flags"
+    fallbackRoute: "Return simplified ranking based on top 3 criteria only"
+    escalationRoute: "Report to orchestrator that subjects require research before evaluation"
+
+  - id: ranking-generation
+    title: Ranking generation
+    objective: Produce a defensible ranking of options with explicit methodology and tiebreaking rules
+    trigger: "evaluationType === 'ranking' or ranking explicitly requested"
+    preconditions:
+      - "At least 2 options to rank"
+      - "Options are comparable"
+      - "Input sanitized via CP1"
+    inputs:
+      - "options: string[] — items to rank"
+      - "criteria: string[] — optional ranking criteria"
+      - "rankingMethod: string — optional (total-score, pairwise, borda-count)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize ranking inputs
+        desc: Apply CP1 security checkpoint to all option descriptions and ranking parameters.
+        whyThisMatters: Prevents injection and ensures clean inputs for the ranking algorithm.
+        inputNeeded: "Raw options, criteria, and ranking method from the delegated task"
+        actionInstruction: "Call sanitizeInput() on each option and criterion. Validate ranking method is recognized."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Sanitized options[], criteria[], and validated rankingMethod"
+        validationRule: "All options non-empty, minimum 2 options, method is valid or null"
+        failureSignal: "Fewer than 2 options after sanitization"
+        recoveryAction: "Return error: 'At least 2 options required for ranking.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Select ranking methodology
+        desc: Choose and justify the ranking method based on the number of options and type of comparison.
+        whyThisMatters: Different ranking methods suit different contexts — wrong method produces misleading rankings.
+        inputNeeded: "Sanitized options from step 1, optional rankingMethod"
+        actionInstruction: "Call llm.chat() with the methodology selection prompt."
+        promptToUse: |
+          You are a ranking methodology specialist. Given {{optionCount}} options to rank:
+          {{#each options}}
+          - {{this}}
+          {{/each}}
+
+          {{#if rankingMethod}}
+          User requested method: {{rankingMethod}}. Validate this is appropriate for this context.
+          {{else}}
+          Select the most appropriate ranking method:
+          - **Total score**: Sum scores across weighted criteria (best for 2-5 options)
+          - **Pairwise**: Compare each pair head-to-head (best for 3-6 options, captures preferences)
+          - **Borda count**: Points for position in each criterion ranking (best for many options/criteria)
+          {{/if}}
+
+          Provide:
+          1. **Selected method**: With justification
+          2. **Criteria**: 4-6 criteria for ranking with weights
+          3. **Tiebreaking rules**: How to break ties at each level
+          4. **Confidence threshold**: When rankings are too close to call
+        expectedOutput: "RankingMethodology { method, criteria[], weights, tiebreakerRules, confidenceThreshold }"
+        validationRule: "Method is one of total-score, pairwise, borda-count; tiebreaking rules defined"
+        failureSignal: "Unrecognized method or missing tiebreaking rules"
+        recoveryAction: "Default to total-score method with equal weights. Note: default methodology applied."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Execute ranking computation
+        desc: Apply the selected methodology to produce the definitive ranking with confidence levels.
+        whyThisMatters: The ranking must be computed rigorously per the chosen methodology — ad hoc ordering lacks credibility.
+        inputNeeded: "RankingMethodology from step 2, sanitized options from step 1"
+        actionInstruction: "Call llm.chat() with the ranking execution prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst computing a definitive ranking.
+
+          Options:
+          {{#each options}}
+          {{@index}}. {{this}}
+          {{/each}}
+
+          Methodology: {{rankingMethodology}}
+
+          Execute the ranking:
+          {{#if method === 'total-score'}}
+          Score each option on each criterion (1-10), compute weighted totals, rank by total.
+          {{/if}}
+          {{#if method === 'pairwise'}}
+          For each pair of options, determine the winner on each criterion. Count wins. Rank by total wins.
+          {{/if}}
+          {{#if method === 'borda-count'}}
+          Rank options within each criterion. Assign points (N for 1st, N-1 for 2nd, ...). Sum across criteria.
+          {{/if}}
+
+          Present:
+          1. **Detailed computation**: Show all intermediate scores/wins/points
+          2. **Final ranking**: Numbered list with total score/wins/points
+          3. **Confidence level**: For each position, how decisive is the placement?
+          4. **Close calls**: Where adjacent options are within the confidence threshold
+          5. **Tiebreakers applied**: Document any tiebreaking decisions
+          6. **Ranking rationale**: 1-sentence explanation for each option's position
+        expectedOutput: "RankingResult { computation, ranking[], confidenceLevels[], closeCalls[], tiebreakers[], rationales[] }"
+        validationRule: "All options ranked, computation is traceable, confidence levels assigned, no ties unresolved"
+        failureSignal: "Options missing from ranking, untraceable computation, or unresolved ties"
+        recoveryAction: "Apply tiebreaking rules mechanically. If still tied, declare tie with explanation."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate ranking and format output
+        desc: Verify ranking consistency, apply CP3, and format the final ranking deliverable.
+        whyThisMatters: Ranking must be internally consistent — contradictions between methodology and result destroy trust.
+        inputNeeded: "RankingResult from step 3"
+        actionInstruction: "Verify ranking order matches computation. Call validateOutput() from security.ts. Add timestamp."
+        promptToUse: null (mechanical step)
+        expectedOutput: "EvaluationResult { report: RankingResult, ranking: string[], metadata: object }"
+        validationRule: "CP3 passes, ranking order consistent with scores, all options accounted for"
+        failureSignal: "Ranking inconsistent with computation or CP3 flags"
+        recoveryAction: "Reorder ranking to match computation, log discrepancy, deliver corrected version"
+        handoffIfNeeded: null
+
+    mainOutput: "Defensible ranking with transparent methodology, confidence levels, close calls, and per-position rationale"
+    secondaryOutputs:
+      - "ranking_methodology: selected method with justification"
+      - "detailed_computation: all intermediate scores/wins/points"
+      - "confidence_analysis: how decisive each position is"
+    DoD:
+      - "All options ranked with no ties unresolved"
+      - "Methodology transparently documented"
+      - "Confidence levels assigned to each position"
+      - "Close calls identified and explained"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Ranking matches the computational results"
+      - "Tiebreaking rules applied consistently"
+      - "No option omitted from the ranking"
+      - "Methodology is appropriate for the number of options"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "ranking_completeness: all options ranked"
+      - "computation_traceability: every position justified by numbers"
+      - "response_time_p95: < 20s"
+    cadence: "Per-request (when ranking is requested)"
+    errorHandling: "If options are too dissimilar for meaningful ranking, note limitation and rank on available common dimensions"
+    fallbackRoute: "Return tier-based grouping (Tier 1, Tier 2, Tier 3) instead of strict ranking"
+    escalationRoute: "Report to orchestrator if ranking methodology is disputed or context unclear"
+
+  - id: sensitivity-analysis
+    title: Sensitivity analysis
+    objective: Test how robust an evaluation is by varying criteria weights and scoring assumptions
+    trigger: "evaluationType === 'sensitivity' or sensitivity analysis requested on existing evaluation"
+    preconditions:
+      - "Existing evaluation or scoring data available"
+      - "At least 2 options with scored criteria"
+      - "Input sanitized via CP1"
+    inputs:
+      - "evaluationData: object — existing scores, criteria, and weights"
+      - "variationRange: number — percentage to vary weights (default 20%)"
+      - "scenarios: string[] — optional specific scenarios to test"
+    steps:
+      - stepNumber: 1
+        title: Sanitize and validate inputs
+        desc: Apply CP1 to any text inputs and validate the evaluation data structure is complete.
+        whyThisMatters: Sensitivity analysis on incomplete data produces misleading confidence assessments.
+        inputNeeded: "Raw evaluation data, variation range, and optional scenarios"
+        actionInstruction: "Sanitize text inputs. Validate evaluationData has scores, criteria, and weights. Validate variationRange is 1-50%."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated evaluation data with sanitized text components and confirmed structure"
+        validationRule: "Evaluation data has minimum 2 options, 3 criteria with scores and weights, range is 1-50%"
+        failureSignal: "Incomplete evaluation data or range outside 1-50%"
+        recoveryAction: "If data is partial, run criteria-based-evaluation first. Default range to 20% if invalid."
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Design sensitivity scenarios
+        desc: Create systematic weight variation scenarios and identify which parameters to stress-test.
+        whyThisMatters: Random variations miss critical tipping points — systematic scenarios reveal true sensitivity.
+        inputNeeded: "Validated evaluation data from step 1, variationRange, optional scenarios"
+        actionInstruction: "Call llm.chat() with the scenario design prompt."
+        promptToUse: |
+          You are a sensitivity analysis specialist. Design test scenarios for this evaluation:
+
+          Current evaluation:
+          {{evaluationData}}
+
+          Variation range: +/- {{variationRange}}%
+
+          {{#if scenarios}}
+          User-requested scenarios: {{scenarios}}
+          Incorporate these and add systematic scenarios.
+          {{/if}}
+
+          Design these scenario types:
+          1. **Single-weight variation**: Change each criterion weight by +/- {{variationRange}}% (one at a time)
+          2. **Extreme scenarios**: What if the most important criterion had half/double weight?
+          3. **Score variation**: What if borderline scores (4-6) shifted by +/- 1 point?
+          4. **Removal scenarios**: What if each criterion were removed entirely?
+
+          For each scenario:
+          - **Name**: Descriptive label
+          - **Changed parameters**: Exactly what changes
+          - **Original ranking**: Current order
+          - **Hypothesis**: Will the ranking likely change?
+        expectedOutput: "SensitivityScenarios { scenarios: ScenarioDef[], totalCount: number, categories: string[] }"
+        validationRule: "At least 8 scenarios across all 4 types, each with clear parameter changes"
+        failureSignal: "Fewer than 5 scenarios or scenarios not covering all 4 types"
+        recoveryAction: "Generate minimum set: vary each weight +/- range. Proceed with limited analysis."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Execute sensitivity computations
+        desc: Run all scenarios, recompute rankings for each, and identify tipping points where rankings change.
+        whyThisMatters: The tipping point analysis is the core deliverable — it shows how robust the original evaluation is.
+        inputNeeded: "SensitivityScenarios from step 2, evaluation data from step 1"
+        actionInstruction: "Call llm.chat() with the sensitivity execution prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst executing sensitivity analysis.
+
+          Original evaluation: {{evaluationData}}
+          Scenarios to test: {{sensitivityScenarios}}
+
+          For each scenario:
+          1. Apply the parameter changes
+          2. Recompute all weighted scores
+          3. Determine the new ranking
+          4. Compare to original ranking: did positions change?
+          5. Note which positions are affected
+
+          After all scenarios, synthesize:
+          - **Stability summary**: How many scenarios changed the ranking? (X of Y)
+          - **Robust positions**: Positions that never changed across all scenarios
+          - **Fragile positions**: Positions that changed in 2+ scenarios
+          - **Tipping points**: Exact parameter values where ranking flips
+          - **Most sensitive criterion**: Which criterion's weight has the most impact
+          - **Confidence assessment**: Overall robustness rating (robust/moderate/fragile)
+          - **Recommendation**: How much to trust the original ranking
+
+          Show the math for tipping point calculations.
+        expectedOutput: "SensitivityResult { scenarioResults[], stability, robustPositions[], fragilePositions[], tippingPoints[], confidence }"
+        validationRule: "All scenarios executed, stability count is correct, tipping points have exact values"
+        failureSignal: "Missing scenario results or stability count inconsistent with results"
+        recoveryAction: "Complete available scenarios, note which couldn't be computed, report partial sensitivity."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Compile sensitivity report and validate
+        desc: Build comprehensive sensitivity report with visualizable data, apply CP3, and deliver.
+        whyThisMatters: The sensitivity report must be clear enough to inform real decisions about evaluation confidence.
+        inputNeeded: "SensitivityResult from step 3"
+        actionInstruction: "Call validateOutput(result) from security.ts. Format sensitivity report. Add timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "EvaluationResult { report: SensitivityResult, scorecard: StabilityScorecard, metadata: object }"
+        validationRule: "CP3 passes, stability metrics computed, confidence assessment present"
+        failureSignal: "CP3 flags output or stability metrics missing"
+        recoveryAction: "Log CP3 warning, deliver available sensitivity findings with disclaimer"
+        handoffIfNeeded: null
+
+    mainOutput: "Sensitivity analysis report with scenario results, tipping points, stability assessment, and confidence rating"
+    secondaryOutputs:
+      - "scenario_details: per-scenario parameter changes and results"
+      - "tipping_point_map: exact values where rankings flip"
+      - "robustness_score: overall evaluation stability metric"
+    DoD:
+      - "All designed scenarios executed"
+      - "Tipping points identified with exact values"
+      - "Stability summary computed"
+      - "Confidence assessment provided"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "All math is correct in recomputed scenarios"
+      - "Tipping points are genuine (verified by computation)"
+      - "Confidence assessment matches the evidence"
+      - "Fragile positions are clearly flagged"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "scenario_coverage: all 4 scenario types tested"
+      - "tipping_point_accuracy: recomputation verifies each tipping point"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when sensitivity analysis is requested)"
+    errorHandling: "If evaluation data is too sparse for meaningful sensitivity, note minimum data requirements"
+    fallbackRoute: "Return simplified robustness check: does top-ranked option win under all single-weight variations?"
+    escalationRoute: "Report to orchestrator if evaluation data quality is insufficient for sensitivity analysis"

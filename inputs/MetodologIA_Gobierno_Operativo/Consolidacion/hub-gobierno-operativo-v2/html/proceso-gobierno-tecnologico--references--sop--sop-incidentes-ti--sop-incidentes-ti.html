@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOP: Gestión de Incidentes de TI — MetodologIA</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#122562;--gold:#FFD700;--blue:#137DC5;--dark:#1F2833;--lavender:#BBA0CC;--grey:#808080;--bg:#FAFBFD;--surface:#FFFFFF;--border:#E8ECF1;--text-1:#1F2833;--text-2:#4A5568;--text-3:#808080;--radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Trebuchet MS',Verdana,sans-serif;background:var(--bg);color:var(--text-1);line-height:1.7;padding:0}
+.doc-header{background:var(--navy);color:#fff;padding:32px 40px 24px;position:relative;overflow:hidden}
+.doc-header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,215,0,.08),transparent 70%);border-radius:50%}
+.doc-header h1{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:var(--gold);letter-spacing:-.3px;position:relative}
+.doc-header .meta{font-family:'Futura','Century Gothic',sans-serif;font-size:.72rem;color:rgba(255,255,255,.6);margin-top:6px;position:relative}
+.doc-header .back{position:absolute;top:16px;right:24px;padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);cursor:pointer;font-family:'Futura','Century Gothic',sans-serif;font-size:.72rem;text-decoration:none;transition:all .2s}
+.doc-header .back:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.doc-body{max-width:820px;margin:0 auto;padding:32px 40px 60px}
+h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--navy);margin:32px 0 12px;border-bottom:2px solid var(--gold);padding-bottom:8px}
+h2{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:var(--navy);margin:28px 0 10px;border-left:4px solid var(--gold);padding-left:12px}
+h3{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:var(--navy);margin:20px 0 8px}
+h4{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;color:var(--blue);margin:16px 0 6px}
+p{margin:8px 0;font-size:.88rem}
+ul,ol{margin:8px 0 8px 24px;font-size:.85rem}
+li{margin:4px 0}
+strong{color:var(--navy)}
+blockquote{border-left:3px solid var(--lavender);padding:12px 16px;margin:12px 0;background:rgba(187,160,204,.06);border-radius:0 var(--radius) var(--radius) 0;font-size:.82rem;color:var(--text-2)}
+code{background:rgba(18,37,98,.06);padding:2px 6px;border-radius:4px;font-size:.8rem;color:var(--navy)}
+pre{background:var(--dark);color:#e2e8f0;padding:16px 20px;border-radius:var(--radius);overflow-x:auto;font-size:.78rem;line-height:1.5;margin:12px 0}
+pre code{background:none;padding:0;color:inherit}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.8rem}
+th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Poppins',sans-serif;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:rgba(19,125,197,.03)}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+.chip{display:inline-block;font-size:.65rem;padding:2px 8px;border-radius:6px;font-family:'Futura','Century Gothic',sans-serif;font-weight:600}
+.chip-gold{background:rgba(255,215,0,.12);color:#B8860B}
+.chip-blue{background:rgba(19,125,197,.1);color:var(--blue)}
+.chip-red{background:rgba(239,68,68,.08);color:#DC2626}
+.footer{text-align:center;padding:20px;font-size:.68rem;color:var(--text-3);font-family:'Futura','Century Gothic',sans-serif;border-top:1px solid var(--border);margin-top:32px}
+@media print{.doc-header .back{display:none}body{padding:0}.doc-body{max-width:100%}}
+@media(max-width:768px){.doc-body{padding:20px}.doc-header{padding:24px 20px 16px}.doc-header h1{font-size:1.2rem}}
+</style>
+</head>
+<body>
+<div class="doc-header">
+  <a href="../index.html" class="back">← Hub</a>
+  <h1>SOP: Gestión de Incidentes de TI</h1>
+  <div class="meta">Versión: 2.0.0 | Fecha: 2026-03-25 | Owner: CTO / Admin TI | Cierra: FMT-05 (Backcasting CTO)</div>
+</div>
+<div class="doc-body">
+<h1>SOP: Gestión de Incidentes de TI</h1>
+
+<p><strong>Versión:</strong> 2.0.0 | <strong>Fecha:</strong> 2026-03-25 | <strong>Owner:</strong> CTO / Admin TI</p>
+<p><strong>Cierra:</strong> FMT-05 (Backcasting CTO)</p>
+
+<hr>
+
+<h2>1. Propósito</h2>
+
+<p>Definir cómo se reportan, diagnostican, escalan, resuelven y documentan los incidentes de tecnología que afectan la operación.</p>
+
+<hr>
+
+<h2>2. Clasificación</h2>
+
+<table>
+<tr><th>Severidad</th><th>Definición</th><th>Ejemplo</th><th>SLA respuesta</th><th>SLA resolución</th></tr>
+<tr><td><strong>P1 — Crítico</strong></td><td>Servicio crítico caído, afecta a clientes en vivo</td><td>LMS caído durante bootcamp, sitio web down, email no funciona</td><td>30 min</td><td>4h</td></tr>
+<tr><td><strong>P2 — Alto</strong></td><td>Servicio degradado o componente importante caído</td><td>CRM lento, facturación no genera CUFE, Drive inaccesible</td><td>2h</td><td>8h</td></tr>
+<tr><td><strong>P3 — Medio</strong></td><td>Problema individual sin afectar a otros</td><td>Laptop de un usuario con problema, acceso individual denegado</td><td>4h</td><td>24h</td></tr>
+<tr><td><strong>P4 — Bajo</strong></td><td>Solicitud o mejora, no urgente</td><td>Nueva licencia, cambio de configuración</td><td>24h</td><td>5 días</td></tr>
+</table>
+
+<hr>
+
+<h2>3. Arbol de Escalación para P1 (Phone Tree)</h2>
+
+<p>Para incidentes P1, seguir este orden de contacto. Si la persona no responde en 10 minutos, pasar al siguiente:</p>
+
+<pre><code>
+PASO 1: Admin TI — [NOMBRE] — [CELULAR] — [WHATSAPP]
+   ↓ (si no responde en 10 min)
+PASO 2: CTO — [NOMBRE] — [CELULAR] — [WHATSAPP]
+   ↓ (si no responde en 10 min)
+PASO 3: COO — [NOMBRE] — [CELULAR] — [WHATSAPP]
+   ↓ (si es proveedor externo)
+PASO 4: Soporte del proveedor — [VER TABLA DE CONTACTOS EN plan-continuidad-negocio-ti.md]
+</code></pre>
+
+<p><strong>Regla:</strong> Para P1, se llama por teléfono. No se envía solo un mensaje de texto. Si nadie responde en 30 minutos, el COO tiene autoridad para tomar decisiones de emergencia (gastar hasta $5M COP sin aprobación previa).</p>
+
+<hr>
+
+<h2>4. Procedimiento</h2>
+
+<h3>Paso 1: Reporte</h3>
+<ul>
+<li>Cualquier persona reporta al canal designado: [canal Slack #incidentes / email incidentes@metodologia.info]</li>
+<li>Incluir: qué no funciona, desde cuándo, a quiénes afecta, capturas de pantalla</li>
+</ul>
+
+<h3>Paso 2: Clasificación y asignación</h3>
+<ul>
+<li>Admin TI clasifica (P1-P4) y asigna responsable</li>
+<li>Si es P1: activar phone tree + comunicación inmediata a afectados</li>
+</ul>
+
+<h3>Paso 3: Diagnóstico y resolución</h3>
+<ul>
+<li>Investigar causa raíz</li>
+<li>Aplicar fix (reinicio, parche, contacto con proveedor, restauración de backup)</li>
+<li>Si requiere proveedor externo: escalar con número de ticket</li>
+</ul>
+
+<h3>Paso 4: Comunicación</h3>
+<table>
+<tr><th>Severidad</th><th>Comunicar a</th></tr>
+<tr><td>P1</td><td>Equipo completo + clientes afectados + CTO + COO</td></tr>
+<tr><td>P2</td><td>Equipo afectado + CTO</td></tr>
+<tr><td>P3-P4</td><td>Solo al reportante</td></tr>
+</table>
+
+<h3>Paso 5: Cierre y post-mortem</h3>
+<ul>
+<li>Registrar: causa, solución, tiempo de resolución</li>
+<li>Para P1 y P2: post-mortem blameless dentro de 48h</li>
+</ul>
+
+<hr>
+
+<h2>5. Templates de Comunicación</h2>
+
+<h3>Template P1 — Mensaje interno (Slack/Teams)</h3>
+<pre><code>
+@canal INCIDENTE P1 — [PLATAFORMA] CAIDA
+
+Estado: EN INVESTIGACION
+Desde: [HORA]
+Impacto: [DESCRIPCION — ej. &quot;Bootcamp BC-01 con 25 participantes no puede acceder al LMS&quot;]
+Responsable: [NOMBRE]
+Proveedor contactado: SI/NO — Ticket #[___]
+Próxima actualización: en [30/60] minutos
+
+Acciones inmediatas:
+- [ej. &quot;Sesión movida a Zoom como plan B&quot;]
+- [ej. &quot;Participantes notificados por email&quot;]
+</code></pre>
+
+<h3>Template P1/P2 — Email a clientes afectados</h3>
+<pre><code>
+Asunto: [MetodologIA] Incidencia temporal en [SERVICIO] — Actualización
+
+Estimado/a [NOMBRE],
+
+Le informamos que estamos experimentando una intermitencia en [SERVICIO] desde las [HORA].
+
+Impacto en su servicio: [DESCRIPCION ESPECIFICA — ej. &quot;La sesión programada para hoy a las 3pm se realizará por Zoom en lugar de la plataforma habitual&quot;]
+
+Acciones que estamos tomando: [DESCRIPCION]
+
+Próxima actualización: [HORA o &quot;dentro de 2 horas&quot;]
+
+Si tiene preguntas, contacte a [NOMBRE] al [CELULAR/EMAIL].
+
+Disculpe las molestias,
+[NOMBRE] — MetodologIA
+</code></pre>
+
+<h3>Template P2 — Status page / comunicación pública (si aplica)</h3>
+<pre><code>
+[FECHA HORA] — Estamos investigando reportes de [DESCRIPCION].
+[FECHA HORA] — Identificamos la causa. Estamos trabajando en la solución.
+[FECHA HORA] — El servicio ha sido restaurado. Monitoreando estabilidad.
+[FECHA HORA] — Incidente resuelto. Publicaremos post-mortem en 48h.
+</code></pre>
+
+<hr>
+
+<h2>6. Template de Post-Mortem Blameless</h2>
+
+<pre><code>
+## POST-MORTEM — INC-TI-[AAAA]-[###]
+
+**Fecha del incidente:** [___]
+**Severidad:** P1 / P2
+**Duración total:** [___]h [___]min
+**Servicios afectados:** [___]
+**Clientes impactados:** [# y nombres si aplica]
+**Redactado por:** [___]  **Fecha del post-mortem:** [___]
+
+### Timeline (hora por hora)
+| Hora | Evento |
+|------|--------|
+| [HH:MM] | [Primer reporte del incidente] |
+| [HH:MM] | [Clasificación y asignación] |
+| [HH:MM] | [Primera acción de diagnóstico] |
+| [HH:MM] | [Escalación a proveedor / CTO] |
+| [HH:MM] | [Causa identificada] |
+| [HH:MM] | [Fix aplicado] |
+| [HH:MM] | [Servicio restaurado] |
+| [HH:MM] | [Monitoreo confirmó estabilidad] |
+
+### Causa raíz
+[Descripción técnica sin culpar a personas. Ej: &quot;El certificado SSL del LMS expiró porque no había alerta de renovación configurada.&quot;]
+
+### Impacto
+- Usuarios afectados: [#]
+- Duración: [___]
+- Revenue impactado: [estimado si aplica]
+- Reputación: [bajo/medio/alto]
+
+### Qué funcionó bien
+- [___]
+- [___]
+
+### Qué falló
+- [___]
+- [___]
+
+### Acciones preventivas
+| # | Acción | Owner | Deadline | Estado |
+|---|--------|-------|----------|--------|
+| 1 | [ej. &quot;Configurar alerta de expiración de certificado&quot;] | Admin TI | [___] | Pendiente |
+| 2 | [ej. &quot;Documentar plan B para LMS en BCP&quot;] | CTO | [___] | Pendiente |
+| 3 | [___] | [___] | [___] | [___] |
+</code></pre>
+
+<hr>
+
+<h2>7. Registro de Incidentes</h2>
+
+<pre><code>
+## INCIDENTE TI — INC-TI-[AAAA]-[###]
+
+**Reportado por:** [___]  **Fecha/hora:** [___]
+**Severidad:** P1 | P2 | P3 | P4
+**Plataforma afectada:** [___]
+**Descripción:** [___]
+**Impacto:** [# usuarios afectados, servicio interrumpido]
+**Asignado a:** [___]
+**Causa raíz:** [___]
+**Solución aplicada:** [___]
+**Fecha/hora resolución:** [___]
+**Tiempo total:** [___]h
+**Acción preventiva:** [___]
+**Post-mortem realizado:** SI (link) / NO / N/A (P3-P4)
+**Estado:** Abierto | En progreso | Resuelto | Cerrado
+</code></pre>
+
+</div>
+<div class="footer">MetodologIA — Gobierno Operativo v2.0 | Neo-Swiss Clean</div>
+</body>
+</html>

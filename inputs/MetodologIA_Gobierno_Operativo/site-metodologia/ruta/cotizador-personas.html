@@ -1,0 +1,841 @@
+<!--
+  @license Copyleft
+  @copyright MetodologIA
+  @author Javier Montaño
+  @technology Antigravity | GoogleAI Studio | Gemini 3 Pro | Gemini 3 Flash
+  @poweredBy Pristino Agent
+-->
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora ROI Personal | Mentoria IA | MetodologIA</title>
+    <meta name="description" content="Calcula tu retorno de inversión personal. Diseña tu ruta de soberanía digital, profesional y estratégica y aumenta tu productividad con IA Generativa.">
+    <link rel="canonical" href="https://metodologia.info/ruta/cotizador-personas.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../estilos/variables.css">
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/components.css">
+    
+    <!-- Tailwind (Local Build) -->
+    <link rel="stylesheet" href="../dist/output.css">
+
+    <!-- Nav styles provided by components.css (Skill 119: No Inline Styles) -->
+    
+    <!-- Icons -->
+    <script src="../js/icons.js" defer></script>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <!-- JSON-LD (AEO: Service) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Mentoria en Soberanía Digital, Profesional y Estratégica",
+        "provider": { "@type": "Organization", "name": "MetodologIA" },
+        "description": "Programa de acompañamiento para profesionales que buscan dominar la IA generativa.",
+        "offers": { "@type": "Offer", "priceCurrency": "COP", "availability": "https://schema.org/OnlineOnly" },
+        "audience": { "@type": "Audience", "audienceType": "Freelancers y Profesionales" }
+    }
+    </script>
+    <script src="../components/SiteHeader.js" defer></script>
+    <script src="../components/SiteFooter.js" defer></script>
+
+    <style>
+        .glass-modal { background: var(--bg-elevated); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid var(--border-subtle); }
+        .glass-card { background: rgba(255, 255, 255, 0.03); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid var(--border-subtle); }
+        .cotizador-container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
+        .step-card { background: var(--bg-surface); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid var(--border-subtle); }
+        .range-slider { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 4px; background: linear-gradient(to right, var(--brand-gold), var(--bg-primary)); }
+        .range-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--brand-gold); cursor: pointer; box-shadow: 0 0 10px var(--brand-gold-glow); }
+        .range-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--brand-gold); cursor: pointer; border: none; }
+        .step-indicator { transition: all 0.3s ease; }
+        .step-indicator.active { background: var(--gradient-gold); color: #000; }
+        .step-indicator.completed { background: var(--brand-emerald); color: white; }
+        .result-card { background: linear-gradient(135deg, var(--brand-gold-glow), rgba(255, 215, 0, 0.02)); border: 1px solid var(--brand-gold-glow); }
+        .modal-overlay { position: fixed; inset: 0; background: hsla(222, 29%, 12%, 0.9); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .modal-content { transform: scale(0.95); transition: all 0.3s ease; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+    </style>
+</head>
+<body class="bg-[var(--bg-body)] text-[var(--text-primary)] font-sans antialiased">
+
+<!-- PREMIUM NAVIGATION -->
+<site-header base-path=".."></site-header>
+
+<!-- HERO -->
+<section class="pt-24 pb-8 bg-gradient-to-b from-slate-900 to-slate-900">
+    <div class="cotizador-container">
+        <!-- Golden Standard Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="container-max mx-auto px-6 mb-8 animate-fade-in-down">
+            <ol class="flex items-center space-x-2 text-xs md:text-sm text-slate-200 font-mono tracking-wide">
+                <li>
+                    <a href="../index.html" class="hover:text-brand-gold transition-colors flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 12 12 15 22"/></svg>
+                        Inicio
+                    </a>
+                </li>
+                <li><span class="text-slate-700">/</span></li>
+                <li><a href="index.html" class="hover:text-brand-gold transition-colors">Ruta</a></li>
+                <li><span class="text-slate-700">/</span></li>
+                <li class="text-slate-100 font-medium" aria-current="page">Calculadora ROI</li>
+            </ol>
+        </nav>
+        
+        <!-- Personas / Empresas Toggle -->
+        <!-- Personas / Empresas Toggle (Link-based for Seamless Feel) -->
+        <div class="flex justify-center mb-6">
+            <div class="inline-flex items-center p-1 rounded-full bg-slate-800/50 border border-white/10 shadow-lg">
+                <!-- Personas (Active) -->
+                <div class="px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-brand-gold to-yellow-600 text-slate-950 shadow-md cursor-default flex items-center gap-2">
+                    <i data-lucide="user" class="w-3 h-3"></i> Para Personas
+                </div>
+                <!-- Empresas (Inactive Link) -->
+                <a href="cotizador-empresas.html" 
+                   class="px-5 py-2 rounded-full text-xs font-bold text-slate-100 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2">
+                    <i data-lucide="briefcase" class="w-3 h-3"></i> Para Empresas
+                </a>
+            </div>
+        </div>
+        <style>
+            #toggle-personas.active, #toggle-empresas.active { background: var(--gradient-gold); color: #000; }
+            #toggle-personas:not(.active), #toggle-empresas:not(.active) { color: var(--text-secondary); }
+            #toggle-personas:not(.active):hover, #toggle-empresas:not(.active):hover { color: #fff; background: rgba(255,255,255,0.05); }
+        </style>
+        
+        <!-- Smart Stepper System (Homologated) -->
+        <div id="smart-stepper" class="w-full max-w-4xl mx-auto mb-16 px-4">
+            
+            <!-- Mobile View: Progress & Context -->
+            <div class="md:hidden">
+                <div class="flex justify-between items-end mb-2">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Progreso</span>
+                        <span class="text-sm text-white font-bold flex items-center gap-1">
+                            Paso <span id="mobile-step-num" class="text-brand-gold">1</span> <span class="text-slate-100">/</span> 5
+                        </span>
+                    </div>
+                    <span id="mobile-step-name" class="text-xs text-brand-gold font-bold text-right">Contexto</span>
+                </div>
+                <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden shadow-inner border border-white/5">
+                    <div id="mobile-progress-bar" class="h-full bg-gradient-to-r from-brand-gold to-[#F59E0B] transition-all duration-700 ease-out relative w-0" title="Barra de progreso móvil">
+                        <div class="absolute right-0 top-0 h-full w-2 bg-white/50 blur-[2px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop View: Node Connector -->
+            <div class="hidden md:flex items-center justify-between relative px-2">
+                <!-- Background Line -->
+                <div class="absolute top-1/2 left-2 right-2 h-0.5 bg-slate-800 -z-10 rounded-full"></div>
+                <!-- Active Line -->
+                <div id="desktop-progress-line" class="absolute top-1/2 left-2 h-0.5 bg-brand-gold -z-10 transition-all duration-700 ease-out w-0" title="Línea de progreso"></div>
+                
+                <!-- Nodes -->
+                <button onclick="goToStep(0)" class="step-node group relative" data-step="0" aria-label="Ir al paso 0: Contexto" title="Paso 0: Contexto">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <i data-lucide="info" class="w-4 h-4 text-slate-200 transition-colors group-hover:text-brand-gold"></i>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Contexto</span>
+                </button>
+
+                <button onclick="goToStep(1)" class="step-node group relative" data-step="1" aria-label="Ir al paso 1: Línea Base" title="Paso 1: Línea Base">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">1</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Línea Base</span>
+                </button>
+
+                <button onclick="goToStep(2)" class="step-node group relative" data-step="2" aria-label="Ir al paso 2: Diagnóstico" title="Paso 2: Diagnóstico">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">2</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Diagnóstico</span>
+                </button>
+
+                <button onclick="goToStep(3)" class="step-node group relative" data-step="3" aria-label="Ir al paso 3: Niveles" title="Paso 3: Niveles">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">3</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Niveles</span>
+                </button>
+
+                <button onclick="goToStep(4)" class="step-node group relative" data-step="4" aria-label="Ir al paso 4: ROI" title="Paso 4: ROI">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">4</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">ROI</span>
+                </button>
+
+                <button onclick="goToStep(5)" class="step-node group relative" data-step="5" aria-label="Ir al paso 5: Final" title="Paso 5: Final">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">5</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Final</span>
+                </button>
+            </div>
+        </div>
+
+        <style>
+            /* Active State Styles */
+            .step-node.active div {
+                background: var(--brand-gold);
+                border-color: var(--brand-gold);
+                box-shadow: 0 0 15px var(--brand-gold-glow);
+                transform: scale(1.1);
+            }
+            .step-node.active i, .step-node.active span {
+                color: #000;
+            }
+            .step-node.completed div {
+                background: var(--bg-primary);
+                border-color: var(--brand-gold);
+            }
+            .step-node.completed span {
+                color: var(--brand-gold);
+            }
+        </style>
+
+        <div class="text-center mb-12 relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/20 text-brand-gold text-xs font-bold uppercase tracking-widest mb-6">
+                    <span class="w-2 h-2 rounded-full bg-brand-gold animate-pulse"></span>
+                    Mentoría Personal
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight" data-ruta-content="heroTitle">
+                    Tu Ruta Personal hacia la Soberanía Digital, Profesional y Estratégica
+                </h1>
+                <p id="step-subtitle" class="text-slate-100 text-lg max-w-2xl mx-auto leading-relaxed" data-ruta-content="heroSubtitle">
+                    Descubre el <strong>High Performance Consultive Workshop</strong>. Toma el control de tu productividad con IA.
+                </p>
+            </div>
+
+            <!-- Paso 0: Contexto (Disclaimer) -->
+            <div id="step-0" class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden mb-12 animate-fade-in shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-gold to-transparent z-10 opacity-70"></div>
+                
+                <div class="relative z-10">
+                <div class="mb-10 text-center">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-slate-700 text-[10px] tracking-widest uppercase font-bold text-slate-100 mb-6 shadow-inner">
+                        <i data-lucide="info" class="w-3 h-3 text-brand-gold"></i> 
+                        <span class="text-brand-gold/80">Contexto Previo</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight font-heading">Antes de comenzar</h2>
+                    <p class="text-slate-100 font-medium">Transparencia y propósito de esta herramienta</p>
+                </div>
+                
+                    <div class="space-y-4 text-slate-100 text-sm leading-relaxed bg-slate-950/50 p-6 rounded-2xl border border-white/5">
+                        <p>
+                            Esta herramienta es un <strong class="text-white">simulador estratégico</strong> diseñado para ilustrar el potencial de la metodología.
+                        </p>
+                        <ul class="space-y-3 mt-4">
+                            <li class="flex items-start gap-3">
+                                <div class="mt-0.5 p-1 rounded-full bg-emerald-500/10">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                                </div>
+                                <span><strong>Privacidad Total:</strong> No guardamos los datos financieros que ingresas aquí. Todo el cálculo ocurre localmente en tu navegador.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="mt-0.5 p-1 rounded-full bg-brand-gold/10">
+                                    <i data-lucide="alert-circle" class="w-4 h-4 text-brand-gold"></i>
+                                </div>
+                                <span><strong>Simulación:</strong> Los resultados son proyecciones basadas en estándares de industria, no garantías contractuales de servicio.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-8 flex justify-center">
+                        <button onclick="goToStep(1)" class="group w-full md:w-auto px-8 py-4 bg-white text-slate-950 font-bold rounded-xl hover:bg-brand-gold transition-all flex items-center justify-center gap-2 shadow-lg shadow-white/5">
+                            <span>Entendido, Continuar</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 1: Tu Línea Base -->
+            <div id="step-1" class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-brand-gold opacity-70"></div>
+                
+                <div class="mb-8 flex items-center justify-between">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/20 text-[10px] font-bold text-brand-gold mb-2 tracking-wider">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse"></span>
+                            PASO 1
+                        </div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Tu Línea Base</h2>
+                    </div>
+                     <div class="w-10 h-10 rounded-xl bg-brand-gold/10 flex items-center justify-center border border-brand-gold/20">
+                        <i data-lucide="target" class="w-5 h-5 text-brand-gold"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    
+                    <!-- SME Notification -->
+                    <div id="sme-notification" class="hidden p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 mb-4 animate-fade-in">
+                        <div class="flex gap-3">
+                            <div class="p-2 rounded-lg bg-blue-500/20 h-fit">
+                                <i data-lucide="info" class="w-4 h-4 text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-blue-100">Tarifa Especial Disponible</h4>
+                                <p class="text-xs text-blue-300 mt-1">
+                                    Detectamos que eres una <strong>Startup/PyME</strong> (<10 empleados, <3 años). 
+                                    Puedes optar por la tarifa de personas (pago por usuario).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Company Inputs (Hidden by default) -->
+                    <div id="company-inputs" class="hidden">
+                        <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-slate-100 uppercase tracking-wide mb-2" data-ruta-content="headCountLabel">Head Count</label>
+                                <input type="number" id="num_emp" value="5" min="1" max="5000" 
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all shadow-inner"
+                                    placeholder="Ej: 5" title="Número de empleados" onchange="checkSMERule()">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs font-bold text-slate-100 uppercase tracking-wide mb-2">Antigüedad (Años)</label>
+                            <input type="number" id="years-business" value="5" min="0" 
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all shadow-inner"
+                                placeholder="Ej: 5" onchange="checkSMERule()">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-slate-100 uppercase tracking-wide mb-2" data-ruta-content="payrollLabel">Costo Nómina Mensual</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-3.5 text-slate-200">$</span>
+                                <input type="number" id="payroll" value="250000000" min="1000000" step="1000000"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all shadow-inner"
+                                    placeholder="Ej: 250.000.000" title="Nómina mensual">
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <!-- Ingresos -->
+                    <div>
+                        <label class="flex items-center text-xs font-bold text-slate-100 uppercase tracking-wide mb-2" data-ruta-content="ingresosLabel">
+                            Ingresos mensuales (COP)
+                            <span class="tooltip-trigger">
+                                <i data-lucide="help-circle" class="w-3 h-3"></i>
+                                <span class="tooltip-content">Usamos esto para proyectar el valor monetario de tu tiempo recuperado.</span>
+                            </span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-200">$</span>
+                             <input type="number" id="ingresos" value="5000000" min="1000000" step="500000" 
+                                class="w-full pl-8 pr-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all font-mono text-lg shadow-inner" title="Ingresos mensuales" placeholder="5000000">
+                        </div>
+                        <button class="text-xs text-slate-200 hover:text-white flex items-center gap-1 transition-colors" onclick="openMethodologyModal()" title="Ver más sobre la metodología">
+                            <i data-lucide="lock" class="w-3 h-3"></i> Private Data
+                        </button>
+                    </div>
+
+                    <!-- Horas/semana -->
+                    <div class="p-5 rounded-2xl bg-slate-900/50 border border-white/5">
+                        <label class="text-sm font-medium text-white mb-4 flex justify-between">
+                            <span data-ruta-content="horasLabel" class="flex items-center">
+                                Horas generación de ingresos
+                                <span class="tooltip-trigger">
+                                    <i data-lucide="help-circle" class="w-3 h-3"></i>
+                                    <span class="tooltip-content">Tiempo dedicado a trabajo productivo/facturable (excluye descanso).</span>
+                                </span>
+                            </span>
+                            <span id="horas-display" class="text-brand-gold font-bold bg-brand-gold/10 px-2 py-0.5 rounded text-xs">45h</span>
+                        </label>
+                        <input type="range" id="horas-semana" min="10" max="60" value="45" 
+                            class="w-full range-slider mb-2" oninput="updateHorasDisplay()" title="Horas por semana">
+                        <div class="flex justify-between text-[10px] text-slate-200 font-mono">
+                            <span>10h (Min)</span>
+                            <span>60h (Max)</span>
+                        </div>
+                    </div>
+
+                    <!-- Disposición estudio -->
+                    <div class="p-5 rounded-2xl bg-slate-900/50 border border-white/5">
+                        <label class="text-sm font-medium text-white mb-4 flex justify-between">
+                            <span data-ruta-content="estudioLabel" class="flex items-center">
+                                Horas dedicadas a estudio
+                                <span class="tooltip-trigger">
+                                    <i data-lucide="help-circle" class="w-3 h-3"></i>
+                                    <span class="tooltip-content">El factor #1 de éxito. Necesitas tiempo para "afilar el hacha". Recomendamos 8h+.</span>
+                                </span>
+                            </span>
+                            <span id="estudio-display" class="text-brand-gold font-bold bg-brand-gold/10 px-2 py-0.5 rounded text-xs">8h</span>
+                        </label>
+                        <input type="range" id="horas-estudio" min="2" max="15" value="8" 
+                            class="w-full range-slider mb-2" oninput="updateEstudioDisplay()" title="Horas para estudio">
+                        <div class="flex justify-between text-[10px] text-slate-200 font-mono">
+                            <span>2h</span>
+                            <span class="text-emerald-400 font-bold">8h ideal</span>
+                            <span>15h</span>
+                        </div>
+                        
+                        <div id="estudio-warning" class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 hidden">
+                             <p class="text-xs text-amber-400 flex gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i> 
+                                <span>Menos de 8h/semana ralentiza los resultados significativamente.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="nextStep()" class="w-full mt-8 py-4 rounded-xl bg-brand-gold text-slate-950 font-bold hover:bg-[var(--brand-gold-dark)] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-gold/20 group">
+                    <span>Siguiente Paso</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- STEP 2: Autodiagnóstico -->
+        <div id="step-2" class="step-content hidden">
+            <div class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 opacity-70"></div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                        <i data-lucide="scan" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black text-white">Autodiagnóstico</h2>
+                        <p class="text-sm text-slate-100">¿Cómo se distribuye tu trabajo?</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 mb-6">
+                    <p class="text-sm text-blue-300">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                        Distribuye el 100% de tu tiempo entre estos tres tipos de tareas
+                    </p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Tareas Operativas -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-white">Operativas (rutinarias)</label>
+                            <span id="simples-display" class="text-emerald-400 font-bold">40%</span>
+                        </div>
+                        <input type="range" id="tareas-simples" min="0" max="100" step="5" value="60" class="w-full accent-brand-gold" oninput="updateTareasDistribucion()" title="Distribución Tareas Simples">
+                        <p class="text-xs text-slate-200 mt-1">Emails, reportes, agendas, búsquedas, transcripciones</p>
+                    </div>
+
+                    <!-- Tareas Analíticas -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-white">Analíticas (coordinación)</label>
+                            <span id="medias-display" class="text-yellow-400 font-bold">35%</span>
+                        </div>
+                        <input type="range" id="tareas-medias" min="0" max="100" step="5" value="30" class="w-full accent-brand-gold" oninput="updateTareasDistribucion()" title="Distribución Tareas Medias">
+                        <p class="text-xs text-slate-200 mt-1">Análisis, propuestas, presentaciones, coordinación</p>
+                    </div>
+
+                    <!-- Tareas Estratégicas -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-white">Estratégicas (alto valor)</label>
+                            <span id="altas-display" class="text-red-400 font-bold">25%</span>
+                        </div>
+                        <input type="range" id="tareas-altas" min="0" max="100" step="5" value="10" class="w-full accent-brand-gold" oninput="updateTareasDistribucion()" title="Distribución Tareas Altas">
+                        <p class="text-xs text-slate-200 mt-1">Estrategia, negociación, creatividad, decisiones críticas</p>
+                    </div>
+
+                    <!-- Validación -->
+                    <div id="validation-msg" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                        <span class="text-sm text-emerald-400">✓ Total: 100%</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button onclick="prevStep()" class="flex-1 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all">
+                        Atrás
+                    </button>
+                    <button onclick="nextStep()" class="flex-1 py-4 rounded-xl bg-brand-gold text-black font-bold hover:bg-[var(--brand-gold-dark)] transition-all flex items-center justify-center gap-2">
+                        Continuar
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Elegir Niveles -->
+        <div id="step-3" class="step-content hidden">
+            <div class="step-card max-w-3xl mx-auto rounded-[2rem] p-10 relative overflow-hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-purple-500 opacity-70"></div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                        <i data-lucide="layers" class="w-6 h-6 text-purple-400"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black text-white">Elige tu Ruta</h2>
+                        <p class="text-sm text-slate-100">Selecciona los niveles que te interesan</p>
+                    </div>
+                </div>
+
+                <!-- Programas Élite -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-purple-400 uppercase tracking-wider mb-3">Programas Élite (30-50% mejora)</h3>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="program" data-mejora="40" data-price="2400000" data-study-cost="40" data-name="N7: Empoderamiento">
+                            <div>
+                                <div class="font-bold text-white">N7: Empoderamiento</div>
+                                <div class="text-xs text-slate-100">Soberanía personal y mentalidad</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="program" data-mejora="50" data-price="2400000" data-study-cost="40" data-name="N9: Digital Champions">
+                            <div>
+                                <div class="font-bold text-white">N9: Digital Champions</div>
+                                <div class="text-xs text-slate-100">Liderazgo de transformación</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Coaching -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">Coaching Ejecutivo (20% mejora)</h3>
+                    <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/30 cursor-pointer transition-all flex items-start gap-3">
+                        <input type="checkbox" class="mt-1 level-checkbox" data-type="coaching" data-mejora="20" data-price="3400000" data-study-cost="18" data-name="N1: Estrategia Personal">
+                        <div>
+                            <div class="font-bold text-white">N1: Estrategia Personal</div>
+                            <div class="text-xs text-slate-100">18h de coaching 1:1 para diseñar tu ruta</div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Bootcamps -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Bootcamps Tácticos (10-15% mejora c/u)</h3>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="12" data-price="800000" data-study-cost="12" data-name="N2: Ofimática IA">
+                            <div>
+                                <div class="font-bold text-white">N2: Ofimática IA</div>
+                                <div class="text-xs text-slate-100">Productividad 10x en office</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="15" data-price="800000" data-study-cost="12" data-name="N3: Ventas IA">
+                            <div>
+                                <div class="font-bold text-white">N3: Ventas IA</div>
+                                <div class="text-xs text-slate-100">Pipeline inteligente</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="10" data-price="800000" data-study-cost="10" data-name="N4: Orden Digital">
+                            <div>
+                                <div class="font-bold text-white">N4: Orden Digital</div>
+                                <div class="text-xs text-slate-100">Flujos y gestión conocimiento</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="18" data-price="800000" data-study-cost="15" data-name="N5: Trabajo Amplificado">
+                            <div>
+                                <div class="font-bold text-white">N5: Trabajo Amplificado</div>
+                                <div class="text-xs text-slate-100">IA generativa, n8n, agentes</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="12" data-price="800000" data-study-cost="12" data-name="N6: Gerencia IA">
+                            <div>
+                                <div class="font-bold text-white">N6: Gerencia IA</div>
+                                <div class="text-xs text-slate-100">Command center digital</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="20" data-price="800000" data-study-cost="20" data-name="N8: Vibe Coding">
+                            <div>
+                                <div class="font-bold text-white">N8: Vibe Coding</div>
+                                <div class="text-xs text-slate-100">Desarrollo con IA</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button onclick="prevStep()" class="flex-1 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all">
+                        Atrás
+                    </button>
+                    <button onclick="nextStep()" class="flex-1 py-4 rounded-xl bg-brand-gold text-black font-bold hover:bg-[var(--brand-gold-dark)] transition-all flex items-center justify-center gap-2">
+                        Calcular ROI
+                        <i data-lucide="calculator" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: Resultados ROI -->
+        <div id="step-4" class="step-content hidden">
+            <div class="max-w-3xl mx-auto">
+                <!-- ROI Cards -->
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <!-- Horas Liberables -->
+                    <div class="result-card rounded-2xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                                <i data-lucide="clock" class="w-6 h-6 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-slate-100">Horas/semana liberables</div>
+                                <div class="text-3xl font-black text-white" id="result-horas">0h</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-slate-100">
+                            Tiempo que puedes delegar a IA basado en tu techo de delegación actual
+                        </div>
+                    </div>
+
+                    <!-- Mejora Productividad -->
+                    <div class="result-card rounded-2xl p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-gold/20 flex items-center justify-center">
+                                <i data-lucide="trending-up" class="w-6 h-6 text-brand-gold"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-slate-100">Mejora productividad acumulada</div>
+                                <div class="text-3xl font-black text-brand-gold" id="result-mejora">0%</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-slate-100">
+                            Incremento en tu capacidad de generar resultados
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desglose -->
+                <div class="step-card rounded-[2rem] p-10 mb-8 shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                    <h3 class="text-2xl font-black text-white mb-6">Desglose de tu ROI</h3>
+                    
+                <div class="space-y-4">
+                        <!-- Methodology link -->
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-100">¿Cómo calculamos esto?</span>
+                            <button onclick="openMethodologyModal()" class="text-xs text-brand-gold hover:underline flex items-center gap-1">
+                                <i data-lucide="info" class="w-3 h-3"></i> Ver metodología
+                            </button>
+                        </div>
+
+                        <!-- Cálculos -->
+                        <div id="roi-breakdown" class="text-sm text-slate-100">
+                            <!-- Populated by JS -->
+                        </div>
+
+                        <!-- Inversión -->
+                        <div class="p-4 rounded-xl bg-brand-gold/10 border border-brand-gold/20">
+                            <div class="flex justify-between items-center">
+                                <span class="text-white font-bold">Inversión Total</span>
+                                <span class="text-2xl font-black text-brand-gold" id="result-inversion">$0</span>
+                            </div>
+                            <div class="text-xs text-slate-100 mt-2" id="result-payback">
+                                <!-- Payback calc -->
+                            </div>
+                            <div class="text-[10px] text-slate-200 mt-2 italic">
+                                * los meses, son contados a partir del cierre del ultimo entrenamiento.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="prevStep()" class="flex-1 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all">
+                        Ajustar Selección
+                    </button>
+                    <button onclick="nextStep()" class="flex-1 py-4 rounded-xl bg-brand-gold text-black font-bold hover:bg-[var(--brand-gold-dark)] transition-all flex items-center justify-center gap-2">
+                        Solicitar Propuesta
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 5: Cotizar -->
+        <div id="step-5" class="step-content hidden">
+            <div class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-brand-gold opacity-70"></div>
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-gold/10 rounded-full mb-6">
+                    <i data-lucide="sparkles" class="w-8 h-8 text-brand-gold"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2">¡Excelente Decisión!</h2>
+                <p class="text-slate-100 mb-8">Tu camino hacia la soberanía digital, profesional y estratégica está listo</p>
+
+                <div class="p-6 rounded-xl bg-slate-900/50 border border-white/5 mb-8 text-left">
+                    <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider">Tu Selección</h3>
+                    <div id="final-summary" class="space-y-2 text-sm">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-end">
+                        <span class="text-slate-100">Inversión Total:</span>
+                        <span class="text-2xl font-black text-brand-gold" id="final-price">$0</span>
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <a href="https://calendar.app.google/7bej429CR93ueSHE8" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center p-6 rounded-xl bg-brand-gold text-slate-950 font-bold hover:bg-[var(--brand-gold-dark)] group">
+                        <i data-lucide="calendar" class="w-8 h-8 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <span>Confirmar Interés en Ruta</span>
+                    </a>
+                    <a id="mailto-cta" href="#" class="flex flex-col items-center justify-center p-6 rounded-xl bg-brand-gold/10 border border-brand-gold/40 text-brand-gold font-bold hover:bg-brand-gold hover:text-slate-950 group">
+                        <i data-lucide="mail" class="w-8 h-8 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <span>Solicitar Propuesta</span>
+                    </a>
+                </div>
+
+                <button onclick="prevStep()" class="mt-6 text-sm text-slate-100 hover:text-white transition-colors">
+                    ← Volver a ajustar
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- METHODOLOGY MODAL -->
+<div id="methodology-modal" class="modal-overlay opacity-0 pointer-events-none">
+    <div class="step-card modal-content max-w-xl rounded-2xl p-8 mx-4 relative">
+        <button onclick="closeMethodologyModal()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-slate-100 hover:text-white" title="Cerrar modal de metodología">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-brand-gold/10 rounded-full mb-4">
+                <i data-lucide="calculator" class="w-6 h-6 text-brand-gold"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">Metodología de Cálculo ROI</h2>
+            <p class="text-sm text-slate-100">Transparencia en nuestra evaluación</p>
+        </div>
+        
+        <div class="space-y-4 text-sm">
+            <div class="p-4 rounded-xl bg-white/5">
+                <h3 class="font-bold text-white mb-2">Techo de Delegación a IA</h3>
+                <p class="text-slate-100 mb-3">Basado en investigación de adopción de IA, definimos límites realistas:</p>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="p-2 rounded-lg bg-emerald-500/10">
+                        <div class="text-emerald-400 font-bold text-lg">80%</div>
+                        <div class="text-xs text-slate-200">Operativas</div>
+                    </div>
+                    <div class="p-2 rounded-lg bg-yellow-500/10">
+                        <div class="text-yellow-400 font-bold text-lg">33%</div>
+                        <div class="text-xs text-slate-200">Analíticas</div>
+                    </div>
+                    <div class="p-2 rounded-lg bg-red-500/10">
+                        <div class="text-red-400 font-bold text-lg">20%</div>
+                        <div class="text-xs text-slate-200">Estratégicas</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 rounded-xl bg-white/5">
+                <h3 class="font-bold text-white mb-2">Mejora de Productividad</h3>
+                <p class="text-slate-100 mb-2">Incremento acumulable por programa:</p>
+                <ul class="space-y-1 text-slate-100 mb-3">
+                    <li>• <span class="text-amber-400">Bootcamp:</span> 10-20% mejora</li>
+                    <li>• <span class="text-blue-400">Coaching:</span> 20% mejora</li>
+                    <li>• <span class="text-purple-400">Programa Élite:</span> 30-50% mejora</li>
+                </ul>
+                <div class="mt-4 p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                    <h4 class="text-xs font-bold text-indigo-300 uppercase mb-1">Inversión de Tiempo</h4>
+                    <p class="text-[10px] text-slate-200 leading-relaxed">
+                        Adoptar estas habilidades requiere tiempo. Calculamos el ROI restando el "costo de oportunidad" de tus horas de estudio durante la fase de implementación.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="p-4 rounded-xl bg-white/5">
+                <h3 class="font-bold text-white mb-2">Human in the Loop</h3>
+                <p class="text-slate-100">Las tareas analíticas y estratégicas siempre requieren supervisión humana. La IA amplifica, no reemplaza tu criterio.</p>
+            </div>
+        </div>
+        
+        <button onclick="closeMethodologyModal()" class="w-full mt-6 py-3 bg-brand-gold text-black font-bold rounded-xl hover:bg-[var(--brand-gold-dark)]">
+            Entendido
+        </button>
+    </div>
+</div>
+
+<!-- JOURNEY MODAL (Learning Philosophy) -->
+<div id="journey-modal" class="modal-overlay opacity-0 pointer-events-none">
+    <div class="step-card modal-content max-w-xl rounded-2xl p-8 mx-4 relative max-h-[90vh] overflow-y-auto">
+        <button onclick="closeJourneyModal()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-slate-100 hover:text-white" title="Cerrar modal de viaje">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-500/10 rounded-full mb-4">
+                <i data-lucide="route" class="w-6 h-6 text-emerald-400"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">El Viaje del Aprendizaje</h2>
+            <p class="text-sm text-slate-100">De estudiante a creador de aceleradores</p>
+        </div>
+        
+        <div class="space-y-4 text-sm">
+            <!-- Phase 1 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-transparent border border-blue-500/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">1</div>
+                    <h3 class="font-bold text-white">Desarrollas Competencia</h3>
+                </div>
+                <p class="text-slate-100 ml-11">El tiempo invertido en aprender construye habilidades reales. Paulatinamente, tus entregables empiezan a ser mejores.</p>
+            </div>
+            
+            <!-- Phase 2 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-transparent border border-purple-500/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-xs font-bold">2</div>
+                    <h3 class="font-bold text-white">Resultados Destacados</h3>
+                </div>
+                <p class="text-slate-100 ml-11">Tu trabajo empieza a sobresalir. No solo haces más, sino que lo que haces tiene mayor impacto y reconocimiento.</p>
+            </div>
+            
+            <!-- Phase 3 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-brand-gold/10 to-transparent border border-brand-gold/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center text-brand-gold text-xs font-bold">3</div>
+                    <h3 class="font-bold text-white">Creas tus Aceleradores</h3>
+                </div>
+                <p class="text-slate-100 ml-11">Aprendes a construir tus propias herramientas: prompts especializados, asistentes IA, workflows automatizados.</p>
+            </div>
+            
+            <!-- Phase 4 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs font-bold">4</div>
+                    <h3 class="font-bold text-white">Nueva Relación con el Trabajo</h3>
+                </div>
+                <p class="text-slate-100 ml-11">Deja de preocupar la <em>velocidad</em>. Ahora importa la <span class="text-emerald-400 font-semibold">calidad</span>, la <span class="text-emerald-400 font-semibold">escala</span> y el <span class="text-emerald-400 font-semibold">impacto</span>.</p>
+            </div>
+            
+            <!-- Final insight -->
+            <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                <p class="text-slate-100 italic">
+                    "Operativamente apalancado en IA generativa como infraestructura para tus procesos, que van en best practices."
+                </p>
+            </div>
+        </div>
+        
+        <button onclick="closeJourneyModal()" class="w-full mt-6 py-3 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400">
+            Entendido
+        </button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<site-footer base-path=".."></site-footer>
+
+<!-- Logic Script (extracted for caching - Skill 120) -->
+<script src="../js/cotizador-personas.js" defer></script>
+
+</body>
+</html>
+
+const totalSteps = 5;
+
+// Navigation

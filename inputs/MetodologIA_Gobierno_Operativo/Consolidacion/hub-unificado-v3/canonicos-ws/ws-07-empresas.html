@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Workshop WS-07 — Team Canvas — Proceso de Delivery MetodologIA">
+    <title>Workshop WS-07 — Team Canvas — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Ws</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Workshop WS-07 — Team Canvas</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Workshop WS-07 — Team Canvas</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: WS-07-EMPRESAS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-empresas-1651e9')" aria-label="Ir a Documento Canónico | Segmento: EMPRESAS">Documento Canónico | Segmento: EMPR</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-y-alcance-e4c27b')" aria-label="Ir a 2. Definición y Alcance">2. Definición y Alcance</button>
+<button class="nav-btn" onclick="scrollToSection('3-audiencia-corporativa-8698e4')" aria-label="Ir a 3. Audiencia Corporativa">3. Audiencia Corporativa</button>
+<button class="nav-btn" onclick="scrollToSection('4-propuesta-de-valor-empresarial-cce5bd')" aria-label="Ir a 4. Propuesta de Valor Empresarial">4. Propuesta de Valor Empresarial</button>
+<button class="nav-btn" onclick="scrollToSection('5-estructura-y-contenido-con-contextualizacin-c78eaa')" aria-label="Ir a 5. Estructura y Contenido (con contextualización)">5. Estructura y Contenido (con cont</button>
+<button class="nav-btn" onclick="scrollToSection('6-entregables-organizacionales-500671')" aria-label="Ir a 6. Entregables Organizacionales">6. Entregables Organizacionales</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-comercial-b2b-2c8cc7')" aria-label="Ir a 7. Modelo Comercial B2B">7. Modelo Comercial B2B</button>
+<button class="nav-btn" onclick="scrollToSection('8-canal-de-venta-y-distribucin-03ca9c')" aria-label="Ir a 8. Canal de Venta y Distribución">8. Canal de Venta y Distribución</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-y-logstica-corporativa-5781bc')" aria-label="Ir a 9. Operación y Logística Corporativa">9. Operación y Logística Corporativ</button>
+<button class="nav-btn" onclick="scrollToSection('10-contextualizacin-30-adaptable-e7c396')" aria-label="Ir a 10. Contextualización (30% adaptable)">10. Contextualización (30% adaptabl</button>
+<button class="nav-btn" onclick="scrollToSection('11-puente-educativo-upgrade-path-b2b-e93bda')" aria-label="Ir a 11. Puente Educativo (Upgrade Path B2B)">11. Puente Educativo (Upgrade Path </button>
+<button class="nav-btn" onclick="scrollToSection('12-kpis-del-segmento-5392f8')" aria-label="Ir a 12. KPIs del Segmento">12. KPIs del Segmento</button>
+<button class="nav-btn" onclick="scrollToSection('13-trminos-comerciales-be9cc2')" aria-label="Ir a 13. Términos Comerciales">13. Términos Comerciales</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-empresas-1651e9" data-searchable aria-labelledby="head-documento-cannico-segmento-empresas-1651e9">
+            <div class="phase-header" id="head-documento-cannico-segmento-empresas-1651e9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: EMPRESAS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> WS-07-EMPRESAS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Empresas (B2B — Corporativo)</p>
+<p class="key-value"><strong>Precio canónico:</strong> COP 3,000,000 (hasta 20 participantes)</p>
+<p class="key-value"><strong>Duración:</strong> 3 horas</p>
+<p class="key-value"><strong>Modalidad:</strong> Virtual sincrónico (default) | Presencial on-site (a solicitud)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Objetivo corporativo:</strong> Alineación estratégica de equipo: propósito compartido, roles claros, OKRs transparentes</p>
+<p class="key-value"><strong>Audiencia ideal:</strong> Equipo completo (líder + directos) o área de 8-20 personas</p>
+<p class="key-value"><strong>Outcome esperado:</strong> Canvas de equipo completado + hoja de ruta trimestral alineada</p>
+<p class="key-value"><strong>Prerequisitos:</strong> Equipo disponible 3h juntos; líder preparado para escuchar</p>
+<p class="key-value"><strong>Certificación:</strong> Constancia + Canvas digital + acceso a recurso de seguimiento</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-y-alcance-e4c27b" data-searchable aria-labelledby="head-2-definicin-y-alcance-e4c27b">
+            <div class="phase-header" id="head-2-definicin-y-alcance-e4c27b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición y Alcance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>El <strong>Team Canvas</strong> es una herramienta de alineación que responde 6 preguntas fundamentales: <strong>¿Quiénes somos? ¿Qué hacemos? ¿Por qué lo hacemos? ¿Cuáles son nuestros objetivos? ¿Cuáles son nuestros roles?</strong> Resultado: equipo unificado alrededor de propósito y estrategia.</p>
+<p class="key-value"><strong>Alcance:</strong></p>
+<div class="bullet-item">Fundamentos de alineación estratégica</div>
+<div class="bullet-item">6 módulos del Team Canvas (propósito, visión, valores, objetivos, roles, relaciones)</div>
+<div class="bullet-item">Ejercicio colaborativo: completar canvas en vivo</div>
+<div class="bullet-item">Desde qué hacemos (operacional) → para qué lo hacemos (propósito)</div>
+<div class="bullet-item">OKRs: traducir canvas a objetivos medibles</div>
+<div class="bullet-item">Plan de comunicación al resto de la organización</div>
+<p class="key-value"><strong>Fuera de alcance:</strong></p>
+<div class="bullet-item">Cambios organizacionales profundos (reestructuración)</div>
+<div class="bullet-item">Redefinición de estrategia corporativa (estrategia es input)</div>
+<div class="bullet-item">Gestión de conflictos profundos</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-audiencia-corporativa-8698e4" data-searchable aria-labelledby="head-3-audiencia-corporativa-8698e4">
+            <div class="phase-header" id="head-3-audiencia-corporativa-8698e4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Audiencia Corporativa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Perfil primario:</strong> Equipos completos (8-20 personas) con líder presente</p>
+<p class="key-value"><strong>Perfil secundario:</strong> Líderes de múltiples niveles (C-suite + directors)</p>
+<p class="key-value"><strong>Composición ideal:</strong> Jerarquía completa (aumenta compromiso)</p>
+<p class="key-value"><strong>Nivel técnico:</strong> No requerido</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-propuesta-de-valor-empresarial-cce5bd" data-searchable aria-labelledby="head-4-propuesta-de-valor-empresarial-cce5bd">
+            <div class="phase-header" id="head-4-propuesta-de-valor-empresarial-cce5bd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Propuesta de Valor Empresarial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>✓ <strong>Alineación evidente:</strong> Todo el equipo sabe hacia dónde ir</p>
+<p>✓ <strong>Decisiones más rápidas:</strong> No hay debate sobre propósito; hay claridad</p>
+<p>✓ <strong>Compromiso visible:</strong> Personas que entienden el &quot;por qué&quot; se comprometen más</p>
+<p>✓ <strong>Reducción de política interna:</strong> Menos conflictos; más cooperación</p>
+<p>✓ <strong>Onboarding más rápido:</strong> Nuevas hires aprenden propósito del equipo en día 1</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-estructura-y-contenido-con-contextualizacin-c78eaa" data-searchable aria-labelledby="head-5-estructura-y-contenido-con-contextualizacin-c78eaa">
+            <div class="phase-header" id="head-5-estructura-y-contenido-con-contextualizacin-c78eaa" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Estructura y Contenido (con contextualización)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Módulo 1: Por Qué Alineación Importa (20 min)</strong></p>
+<div class="bullet-item">Costo de desalineación (errores, inercia, política)</div>
+<div class="bullet-item">Caso de negocios: equipos alineados = +30% en ejecución</div>
+<div class="bullet-item">Las 6 preguntas del Team Canvas</div>
+<div class="bullet-item">Ejemplos de equipos alineados (casos: Amazon, Netflix, etc.)</div>
+<p class="key-value"><strong>Módulo 2: Construcción del Canvas (90 min - COLLABORATIVE)</strong></p>
+<div class="bullet-item"><strong>Elemento 1: Identidad.</strong> ¿Quiénes somos? (misión del equipo)</div>
+<div class="bullet-item"><strong>Elemento 2: Propósito.</strong> ¿Para qué? (razón de ser)</div>
+<div class="bullet-item"><strong>Elemento 3: Valores.</strong> ¿Cómo trabajamos?</div>
+<div class="bullet-item"><strong>Elemento 4: Objetivos.</strong> ¿Qué queremos lograr? (OKRs draft)</div>
+<div class="bullet-item"><strong>Elemento 5: Roles.</strong> ¿Quién hace qué?</div>
+<div class="bullet-item"><strong>Elemento 6: Relaciones.</strong> ¿Cómo nos vinculamos?</div>
+<div class="bullet-item"><strong>Adaptación:</strong> Ejercicio con dolor actual del equipo como caso</div>
+<p class="key-value"><strong>Módulo 3: De Canvas a Acción (10 min)</strong></p>
+<div class="bullet-item">Traducción a OKRs: cómo medir progreso</div>
+<div class="bullet-item">Plan de comunicación al resto de la organización</div>
+<div class="bullet-item">Revisión: cómo validar canvas a 30/90 días</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-entregables-organizacionales-500671" data-searchable aria-labelledby="head-6-entregables-organizacionales-500671">
+            <div class="phase-header" id="head-6-entregables-organizacionales-500671" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Entregables Organizacionales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>✓ <strong>Team Canvas completado:</strong> Poster visual (físico + digital PDF/Figma)</p>
+<p>✓ <strong>Documento ejecutivo:</strong> Canvas en formato texto expandido (5 páginas)</p>
+<p>✓ <strong>Borrador de OKRs:</strong> Traducción de objetivos a resultados medibles</p>
+<p>✓ <strong>Guía de Team Canvas:</strong> 25 páginas (fundamentos + facilitation)</p>
+<p>✓ <strong>Template de revisión trimestral:</strong> Validar alineación cada 3 meses</p>
+<p>✓ <strong>Acceso a recurso digital:</strong> Canvas en Miro/Figma (editable, 6 meses)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-comercial-b2b-2c8cc7" data-searchable aria-labelledby="head-7-modelo-comercial-b2b-2c8cc7">
+            <div class="phase-header" id="head-7-modelo-comercial-b2b-2c8cc7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Comercial B2B</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Estructura de precios:</strong></p>
+<div class="bullet-item">Hasta 20 personas: COP 3,000,000</div>
+<div class="bullet-item">21-40 personas: COP 4,500,000</div>
+<div class="bullet-item">41+ personas: COP 6,000,000</div>
+<p class="key-value"><strong>Opciones adicionales:</strong></p>
+<div class="bullet-item">Facilitación en múltiples equipos (por 20): COP 600,000</div>
+<div class="bullet-item">Traducción a OKRs formales (consultoría 4h): COP 1,000,000</div>
+<div class="bullet-item">Seguimiento trimestral (3 sesiones): COP 900,000</div>
+<div class="bullet-item">Programa de alineación organizacional (12w): COP 6,000,000</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-canal-de-venta-y-distribucin-03ca9c" data-searchable aria-labelledby="head-8-canal-de-venta-y-distribucin-03ca9c">
+            <div class="phase-header" id="head-8-canal-de-venta-y-distribucin-03ca9c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Canal de Venta y Distribución</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Canales primarios:</strong></p>
+<div class="bullet-item">Equipo comercial directo</div>
+<div class="bullet-item">Directamente a directores operativos (LinkedIn outreach)</div>
+<div class="bullet-item">Resellers de transformación organizacional</div>
+<div class="bullet-item">Bundling con WS-04, WS-05, WS-06 (suite cultural + operativa)</div>
+<p class="key-value"><strong>Ciclo de venta:</strong> 14-21 días (requiere alineación con múltiples stakeholders)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-y-logstica-corporativa-5781bc" data-searchable aria-labelledby="head-9-operacin-y-logstica-corporativa-5781bc">
+            <div class="phase-header" id="head-9-operacin-y-logstica-corporativa-5781bc" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación y Logística Corporativa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Antes del taller (7 días):</strong></p>
+<div class="bullet-item">Pre-call con líder: diagnosis de desalineación actual</div>
+<div class="bullet-item">Pre-work: &quot;Escribe tu propósito en 1 frase&quot; (pensamiento individual)</div>
+<div class="bullet-item">Materiales: enviados con guía de preparación</div>
+<div class="bullet-item">Confirmación: todos los participantes disponibles 3h</div>
+<p class="key-value"><strong>Durante el taller (3 horas):</strong></p>
+<div class="bullet-item">Facilitador especialista + co-facilitador (documentación en vivo)</div>
+<div class="bullet-item">Ambiente colaborativo (mesas redondas si presencial; Miro si virtual)</div>
+<div class="bullet-item">Canvas completado en tiempo real (física + digital)</div>
+<div class="bullet-item">Conversaciones profundas (sin que sean árbitros)</div>
+<p class="key-value"><strong>Post-taller (hasta 14 días):</strong></p>
+<div class="bullet-item">Envío de Canvas digitalizado (PDF + Figma editable)</div>
+<div class="bullet-item">Documento expandido + borrador de OKRs</div>
+<div class="bullet-item">1 sesión de OKRs refinement (1.5h, COP 400k opcional)</div>
+<div class="bullet-item">Plantilla de comunicación para resto de organización</div>
+<div class="bullet-item">Encuesta de validación a 30/90 días</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-contextualizacin-30-adaptable-e7c396" data-searchable aria-labelledby="head-10-contextualizacin-30-adaptable-e7c396">
+            <div class="phase-header" id="head-10-contextualizacin-30-adaptable-e7c396" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Contextualización (30% adaptable)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Elementos variables:</strong></p>
+<div class="bullet-item">Equipo/industria: propósitos y valores varían (fintech ≠ educación)</div>
+<div class="bullet-item">Nivel jerárquico: C-suite ve canvas diferente a operativo</div>
+<div class="bullet-item">Contexto: startup vs corporate; startup scaleup vs established</div>
+<div class="bullet-item">Desafíos actuales: canvas aborda pain points específicos</div>
+<p class="key-value"><strong>Método:</strong></p>
+<div class="bullet-item">Pre-call detallado: conocer equipo, dinámicas, historias</div>
+<div class="bullet-item">2-3 ejemplos reales de tu industria</div>
+<div class="bullet-item">Facilitación sensible a políticas internas / relaciones</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-puente-educativo-upgrade-path-b2b-e93bda" data-searchable aria-labelledby="head-11-puente-educativo-upgrade-path-b2b-e93bda">
+            <div class="phase-header" id="head-11-puente-educativo-upgrade-path-b2b-e93bda" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Puente Educativo (Upgrade Path B2B)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Servicios post-WS-07:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Bootcamp: Liderazgo Estratégico (40h):</strong> Team Canvas + OKRs + ejecución</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Programa de Alineación Organizacional (12 semanas):</strong> Rolear canvas en toda org</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Certificación en Leadership &amp; Strategy (6 meses):</strong> Para líderes internos</span></div>
+<p class="key-value"><strong>Conversión esperada:</strong> 45-50% → servicios adicionales (más alto que otros WS)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-kpis-del-segmento-5392f8" data-searchable aria-labelledby="head-12-kpis-del-segmento-5392f8">
+            <div class="phase-header" id="head-12-kpis-del-segmento-5392f8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. KPIs del Segmento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Satisfacción:</strong></p>
+<div class="bullet-item">NPS mínimo: 58 (highest of all workshops)</div>
+<div class="bullet-item">% que completa canvas: 100%</div>
+<div class="bullet-item">% que traduce a OKRs: 85%</div>
+<div class="bullet-item">% que comunica a organización: 90%</div>
+<p class="key-value"><strong>Negocio:</strong></p>
+<div class="bullet-item">CLTV estimado: COP 11,000,000 (más servicios follow-up)</div>
+<div class="bullet-item">Ciclo de venta: 14-21 días</div>
+<div class="bullet-item">Tasa de upgrade: 48% (highest)</div>
+<p class="key-value"><strong>Operación:</strong></p>
+<div class="bullet-item">Horas facilitador: 9.5 total</div>
+<div class="bullet-item">Margen bruto: 58%</div>
+<div class="bullet-item">Retención cliente 12m: 90%</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-trminos-comerciales-be9cc2" data-searchable aria-labelledby="head-13-trminos-comerciales-be9cc2">
+            <div class="phase-header" id="head-13-trminos-comerciales-be9cc2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Términos Comerciales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Pago:</strong></p>
+<div class="bullet-item">50% anticipo (confirmar 7 días antes)</div>
+<div class="bullet-item">50% neto 30 días post-sesión</div>
+<div class="bullet-item">Métodos: transferencia, PO, factura electrónica</div>
+<p class="key-value"><strong>Cancelación:</strong></p>
+<div class="bullet-item">Hasta 14 días: reembolso 80%</div>
+<div class="bullet-item">7-13 días: reembolso 50%</div>
+<div class="bullet-item">Menos de 7 días: no reembolsable</div>
+<p class="key-value"><strong>Propiedad intelectual:</strong></p>
+<div class="bullet-item">Canvas: propiedad total de cliente</div>
+<div class="bullet-item">Uso interno: sin restricciones</div>
+<div class="bullet-item">Publicación externa: requiere consentimiento</div>
+<p class="key-value"><strong>Confidencialidad:</strong></p>
+<div class="bullet-item">Conversaciones del equipo: CONFIDENCIAL (no se comparte)</div>
+<div class="bullet-item">Canvas anonimizado: puede usarse en casos (con permiso)</div>
+<div class="bullet-item">OKRs: propiedad corporativa cliente</div>
+<p class="key-value"><strong>SLA:</strong></p>
+<div class="bullet-item">Respuesta inquietudes: 24 horas (email)</div>
+<div class="bullet-item">Entrega de Canvas: 48 horas post-sesión</div>
+<div class="bullet-item">Entrega documento + OKRs: 72 horas</div>
+<div class="bullet-item">Sesión OKRs (si se contrata): dentro de 7 días</div>
+<div class="bullet-item">Encuestas de validación: 30 y 90 días</div>
+<div class="bullet-item">Follow-up disponible: 60 días (email, sin costo)</div>
+<div class="bullet-item">Acceso a recurso digital: 6 meses</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

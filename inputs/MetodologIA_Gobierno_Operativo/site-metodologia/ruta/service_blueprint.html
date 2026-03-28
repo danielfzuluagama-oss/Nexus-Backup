@@ -1,0 +1,1071 @@
+<!--
+  @license Copyleft
+  @copyright MetodologIA
+  @author Javier Montaño
+  @technology Antigravity | GoogleAI Studio | Gemini 3 Pro | Gemini 3 Flash
+  @poweredBy Pristino Agent
+-->
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Blueprint: Tu Mapa de (R)Evolución | MetodologIA</title>
+    <meta name="description" content="Descubre las Tres Perspectivas de nuestro proceso: Tú, Nosotros y la Sinergia. Un flujo transparente de Diagnóstico, Diseño, Práctica y Autonomía para tu éxito.">
+    <link rel="canonical" href="https://metodologia.info/ruta/service_blueprint.html">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "MetodologIA: Service Blueprint",
+        "description": "Mapa detallado del viaje de transformación digital: Diagnóstico, Diseño, Intervención y Transferencia.",
+        "provider": { "@type": "Organization", "name": "MetodologIA" }
+    }
+    </script>
+
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Montserrat:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Montserrat:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap"></noscript>
+    
+    <link rel="stylesheet" href="../estilos/variables.css">
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/components.css">
+    <link rel="stylesheet" href="../estilos/vision.css">
+    <link rel="stylesheet" href="../dist/output.css">
+
+    <!-- Icons inlined for performance -->
+    <script src="../components/SiteHeader.js" defer></script>
+    <script src="../components/SiteFooter.js" defer></script>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+    <style>
+        /* BLUEPRINT SWIM LANE STYLES */
+        .blueprint-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            position: relative;
+        }
+        
+        /* Vertical lane backgrounds - continuous columns */
+        .lane {
+            position: relative;
+            border-left: 1px solid rgba(255,255,255,0.08);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            font-family: 'Montserrat', sans-serif;
+        }
+        .lane-cliente { background: linear-gradient(180deg, hsla(var(--brand-blue-hsl, 221, 83%, 53%), 0.05) 0%, hsla(var(--brand-blue-hsl, 221, 83%, 53%), 0.02) 100%); }
+        .lane-cocreacion { background: linear-gradient(180deg, hsla(var(--brand-purple-hsl, 271, 91%, 65%), 0.05) 0%, hsla(var(--brand-purple-hsl, 271, 91%, 65%), 0.02) 100%); }
+        .lane-metodologia { background: linear-gradient(180deg, hsla(var(--brand-emerald-hsl), 0.05) 0%, hsla(var(--brand-emerald-hsl), 0.02) 100%); }
+        
+        /* Lane headers - sticky with board pin style */
+        /* Sticky Headers - CLEANER & SOLID */
+        .lane-header {
+            position: sticky;
+            top: 70px;
+            z-index: 40;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            background: var(--bg-body); /* Solid Grounded Depth for clean look and no ghosting */
+            border-bottom: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-md);
+        }
+        .lane-header.cliente { border-bottom-color: rgba(59,130,246,0.3); }
+        .lane-header.cocreacion { border-bottom-color: rgba(147,51,234,0.3); }
+        .lane-header.metodologia { border-bottom-color: rgba(16,185,129,0.3); }
+        
+        /* Phase divider - spans all columns - PROMINENT & VISIBLE */
+        .phase-divider {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 2rem 2.5rem;
+            min-height: 120px; /* Force height so it cannot be hidden easily */
+            background: linear-gradient(135deg, hsla(var(--brand-gold-hsl), 0.15) 0%, hsla(var(--brand-gold-hsl), 0.08) 50%, hsla(var(--brand-gold-hsl), 0.15) 100%);
+            border-top: 2px solid hsla(var(--brand-gold-hsl), 0.5);
+            border-bottom: 2px solid hsla(var(--brand-gold-hsl), 0.3);
+            position: relative;
+            z-index: 10;
+            color: white; /* Force text visibility */
+        }
+        .phase-divider::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: linear-gradient(180deg, var(--brand-gold-dark), #F59E0B);
+            z-index: 11;
+        }
+        .phase-divider h2 {
+            font-size: 1.5rem !important;
+            letter-spacing: 0.05em;
+            color: white;
+        }
+        
+        /* Activity cell - CLEAN MATRIX STYLE */
+        .cell {
+            padding: 1.5rem;
+            min-height: 180px;
+            border-bottom: 1px dashed var(--border-subtle);
+            transition: background 0.2s ease;
+            position: relative;
+        }
+        .cell:hover { background: rgba(255,255,255,0.03); }
+        
+        /* Cell role badge */
+        .cell-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .cell-role.cliente { background: hsla(221, 83%, 53%, 0.15); color: #93c5fd; border: 1px solid hsla(221, 83%, 53%, 0.3); }
+        .cell-role.cocreacion { background: hsla(271, 91%, 65%, 0.15); color: #c4b5fd; border: 1px solid hsla(271, 91%, 65%, 0.3); }
+        .cell-role.metodologia { background: hsla(var(--brand-emerald-hsl), 0.15); color: #6ee7b7; border: 1px solid hsla(var(--brand-emerald-hsl), 0.3); }
+        
+        .cell ul { list-style: none; padding: 0; margin: 0; }
+        .cell li {
+            padding: 0.5rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+            font-size: 0.875rem;
+            color: #f1f5f9;
+            border-bottom: 1px dotted rgba(255,255,255,0.05);
+        }
+        .cell li:last-child { border-bottom: none; }
+        .cell li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            opacity: 0.5;
+        }
+        
+        /* Deliverable row */
+        .deliverable-row {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.5rem 2rem;
+            background: hsla(var(--brand-gold-hsl), 0.03);
+            border-top: 1px solid hsla(var(--brand-gold-hsl), 0.15);
+        }
+        .deliverable-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: hsla(var(--brand-gold-hsl), 0.1);
+            border: 1px solid hsla(var(--brand-gold-hsl), 0.3);
+            border-radius: 999px;
+            animation: pulse-glow 2s infinite;
+        }
+        
+        /* Milestone/Impact row */
+        .milestone-row {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(90deg, hsla(var(--brand-emerald-hsl), 0.03), hsla(var(--brand-emerald-hsl), 0.08), hsla(var(--brand-emerald-hsl), 0.03));
+            border-top: 1px dashed hsla(var(--brand-emerald-hsl), 0.2);
+        }
+        .milestone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 0.5rem;
+        }
+        
+        /* Phase transition quote */
+        .phase-quote {
+            grid-column: 1 / -1;
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(30,41,59,0.5) 50%, rgba(15,23,42,0.8) 100%);
+            border-top: 1px dashed rgba(255,255,255,0.05);
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+        }
+        .phase-quote p {
+            font-style: italic;
+            color: #f1f5f9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 0.95rem;
+        }
+        .phase-quote cite {
+            display: block;
+            font-size: 0.7rem;
+            color: rgba(251,191,36,0.6);
+            margin-top: 0.5rem;
+            font-style: normal;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .deliverable-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(251,191,36,0.1);
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 999px;
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(251, 191, 36, 0); }
+        }
+        
+        /* Toggle */
+        .toggle-btn { transition: all 0.2s ease; }
+        .toggle-btn.active { background: linear-gradient(135deg, var(--brand-gold-dark), #F59E0B); color: #020617; }
+        .blueprint-section { display: none; }
+        .blueprint-section.active { display: block; }
+        
+        /* Mobile: stack vertically */
+        @media (max-width: 768px) {
+            .blueprint-grid { grid-template-columns: 1fr; }
+            .lane-header { position: relative; top: 0; }
+            .phase-divider { padding: 1rem; }
+            .cell { min-height: 0; }
+        }
+    </style>
+</head>
+<body class="bg-[var(--bg-body)] text-[var(--text-primary)] font-sans antialiased">
+
+<site-header base-path=".." theme="dark"></site-header>
+
+<main>
+    <div class="layout-space"></div>
+
+    <!-- Quote & Breadcrumb -->
+    <section class="hook-quote-section">
+        <div class="hook-quote-divider"></div>
+        <div class="hook-quote-content">
+            <p class="hook-quote-text">"La excelencia se diseña, se cocrea y se transfiere"</p>
+        </div>
+    </section>
+
+    <div class="layout-space"></div>
+
+    <nav class="breadcrumb-nav text-sm font-medium">
+        <ol class="breadcrumb-list flex items-center justify-center space-x-2">
+            <li class="breadcrumb-item"><a href="../index.html" class="text-slate-200 hover:text-white transition-colors">Inicio</a></li>
+            <li class="breadcrumb-separator text-slate-200">/</li>
+            <li class="breadcrumb-item"><a href="index.html" class="text-slate-200 hover:text-white transition-colors">Ruta de (R)Evolución</a></li>
+            <li class="breadcrumb-separator text-slate-200">/</li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Service Blueprint</li>
+        </ol>
+    </nav>
+
+<!-- HERO: Disruptive Two-Column Layout -->
+<section class="relative min-h-[70vh] flex items-center bg-slate-950 overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-b from-[var(--bg-body)] via-[var(--bg-body)] to-[var(--bg-body)]"></div>
+        <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[var(--brand-gold-glow)] rounded-full blur-[100px]"></div>
+        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-soft-light"></div>
+    </div>
+    
+    <div class="container-max relative z-10 w-full">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- LEFT: COPY -->
+            <div class="text-left animate-fade-in-up">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 mb-8 backdrop-blur-md">
+                    <span class="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                    <span class="text-xs font-bold text-indigo-300 tracking-widest uppercase font-['Montserrat']">Tu Mapa Hacia el Éxito</span>
+                </div>
+                
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[1.1] tracking-tight font-['Poppins']">
+                    Construyamos tu <span class="text-brand-gold">Caso de Éxito</span>
+                </h1>
+                
+                <p class="text-xl text-slate-100 leading-relaxed mb-8 max-w-xl border-l-2 border-indigo-500/30 pl-6">
+                    <strong class="text-white">Tu éxito es nuestro éxito.</strong> Este mapa muestra exactamente cómo trabajamos <strong class="text-brand-gold">juntos</strong>—tú pones el contexto, nosotros el método, y en sinergia creamos resultados que trascienden.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#preamble" class="group relative px-8 py-4 bg-brand-gold text-slate-950 font-bold rounded-xl shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:bg-[#F59E0B] hover:shadow-[0_0_40px_rgba(255,215,0,0.6)] hover:-translate-y-1 transition-all w-fit">
+                        <span class="flex items-center gap-2">
+                            Entender el Proceso
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 group-hover:translate-y-1 transition-transform"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- RIGHT: COLLABORATIVE BOARD VISUAL -->
+            <div class="relative h-[450px] flex items-center justify-center">
+                <div class="relative w-full max-w-lg">
+                    <!-- Cork Board Background -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-950/30 via-stone-900/40 to-slate-900/50 rounded-2xl border border-amber-700/20"></div>
+                    
+                    <!-- Ambient Glow -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-gold/15 rounded-full blur-[50px]"></div>
+                    <div class="absolute bottom-4 left-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-[40px]"></div>
+                    
+                    <!-- Post-It Notes Container -->
+                    <div class="relative p-6 grid grid-cols-3 gap-4">
+                        
+                        <!-- Post-It: TÚ (Blue) -->
+                        <div class="transform -rotate-2 hover:rotate-0 hover:-translate-y-2 transition-all duration-300 cursor-pointer">
+                            <div class="relative bg-gradient-to-br from-blue-400/90 to-blue-500/80 p-4 rounded shadow-lg min-h-[120px]">
+                                <!-- Tape -->
+                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-3 bg-white/20 rounded-sm"></div>
+                                <p class="text-slate-900 font-bold text-sm mb-2">TÚ</p>
+                                <ul class="text-[10px] text-slate-900/80 space-y-1">
+                                    <li>□ Contexto</li>
+                                    <li>□ Visión</li>
+                                    <li>□ Compromiso</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Post-It: JUNTOS (Purple) -->
+                        <div class="transform rotate-1 hover:rotate-0 hover:-translate-y-2 transition-all duration-300 cursor-pointer">
+                            <div class="relative bg-gradient-to-br from-purple-400/90 to-purple-500/80 p-4 rounded shadow-lg min-h-[120px]">
+                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-3 bg-white/20 rounded-sm"></div>
+                                <p class="text-slate-900 font-bold text-sm mb-2">JUNTOS</p>
+                                <ul class="text-[10px] text-slate-900/80 space-y-1">
+                                    <li>□ Discovery</li>
+                                    <li>□ Co-diseño</li>
+                                    <li>□ Iteración</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Post-It: NOSOTROS (Green) -->
+                        <div class="transform -rotate-1 hover:rotate-0 hover:-translate-y-2 transition-all duration-300 cursor-pointer">
+                            <div class="relative bg-gradient-to-br from-emerald-400/90 to-emerald-500/80 p-4 rounded shadow-lg min-h-[120px]">
+                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-3 bg-white/20 rounded-sm"></div>
+                                <p class="text-slate-900 font-bold text-sm mb-2">NOSOTROS</p>
+                                <ul class="text-[10px] text-slate-900/80 space-y-1">
+                                    <li>□ Entregables</li>
+                                    <li>□ Herramientas</li>
+                                    <li>□ Soporte</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Gold sticky: ÉXITO -->
+                        <div class="col-span-3 transform rotate-0.5 hover:-translate-y-2 transition-all duration-300 cursor-pointer mt-2">
+                            <div class="relative bg-gradient-to-br from-amber-300/95 to-brand-gold/90 p-4 rounded shadow-xl text-center mx-auto max-w-[200px]">
+                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-12 h-3 bg-white/30 rounded-sm"></div>
+                                <p class="text-slate-900 font-black text-sm flex items-center justify-center gap-2">
+                                    <span>🎯</span> CASO DE ÉXITO
+                                </p>
+                                <p class="text-[10px] text-slate-900/70 mt-1">= Sinergia en acción</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Decorative pins -->
+                        <div class="absolute top-3 right-8 w-3 h-3 bg-red-500 rounded-full shadow-lg border border-red-700/50"></div>
+                        <div class="absolute top-3 left-8 w-3 h-3 bg-blue-500 rounded-full shadow-lg border border-blue-700/50"></div>
+                        
+                    </div>
+                    
+                    <!-- Floating Label -->
+                    <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-slate-900/95 border border-brand-gold/40 rounded-full shadow-xl backdrop-blur-sm">
+                        <p class="text-xs text-brand-gold font-bold uppercase tracking-wider font-['Montserrat'] flex items-center gap-2">
+                            <span>📋</span> Tablero de Co-Creación
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PREAMBLE: How to Read This Blueprint -->
+<section id="preamble" class="py-16 bg-slate-900/30 border-t border-white/5">
+    <div class="container-max">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-gold/10 border border-brand-gold/30 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-brand-gold"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/></svg>
+                    <span class="text-brand-gold text-xs font-bold tracking-widest uppercase font-['Montserrat']">Cómo Hacemos Sinergia</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 font-['Poppins']">Tres Roles, Un Objetivo</h2>
+                <p class="text-lg text-slate-200 max-w-2xl mx-auto">
+                    El éxito no ocurre por magia—ocurre cuando cada quien aporta lo suyo. Aquí ves cómo nos complementamos para lograr <strong class="text-brand-gold">resultados extraordinarios</strong>.
+                </p>
+            </div>
+            
+            <!-- Legend Cards -->
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <div class="p-6 rounded-xl bg-blue-950/30 border border-blue-500/20 text-center">
+                    <div class="w-14 h-14 mx-auto rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 text-blue-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 font-['Poppins']">Tú Aportas</h3>
+                    <p class="text-sm text-slate-100">Tu contexto, tu visión, tu compromiso. Nadie conoce tu realidad mejor que tú—ese es tu superpoder.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-purple-950/30 border border-purple-500/20 text-center">
+                    <div class="w-14 h-14 mx-auto rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 text-purple-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 font-['Poppins']">Creamos Juntos</h3>
+                    <p class="text-sm text-slate-100">Sinergia pura: tu expertise + nuestro método = soluciones que no existirían por separado.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-emerald-950/30 border border-emerald-500/20 text-center">
+                    <div class="w-14 h-14 mx-auto rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 text-emerald-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 font-['Poppins']">Nosotros Potenciamos</h3>
+                    <p class="text-sm text-slate-100">Preparamos el terreno, creamos los activos, y aseguramos que cada paso te acerque a la autonomía.</p>
+                </div>
+            </div>
+            
+            <!-- Quote Block -->
+            <div class="pl-6 border-l-2 border-brand-gold/30 italic text-slate-200 max-w-2xl mx-auto">
+                "Los mejores resultados nacen cuando sumamos capacidades, no cuando las delegamos. Tú conoces tu territorio, nosotros el camino. Juntos, llegamos más lejos."
+                <div class="text-xs text-brand-gold/60 mt-2 not-italic font-bold uppercase tracking-wider font-['Montserrat']">— Filosofía de Co-Creación</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TOGGLE: Personas / Empresas -->
+<section class="py-8 bg-slate-950 border-t border-white/5">
+    <div class="container-max text-center">
+        <p class="text-sm text-slate-100 mb-4 font-['Montserrat']">Selecciona tu perfil para ver el blueprint adaptado:</p>
+        <div class="inline-flex rounded-xl bg-slate-900/80 border border-white/10 p-1 backdrop-blur-md">
+            <button class="toggle-btn active px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-wider" data-mode="personas" onclick="switchBlueprint('personas')" aria-pressed="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 inline mr-2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Personas
+            </button>
+            <button class="toggle-btn px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-white" data-mode="empresas" onclick="switchBlueprint('empresas')" aria-pressed="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 inline mr-2"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>Empresas
+            </button>
+        </div>
+    </div>
+</section>
+
+<section id="blueprint-personas" class="blueprint-section active py-8 bg-slate-950">
+    <div class="container-max">
+        
+        <!-- SEPARATOR: Inter-Section Quote -->
+        <div class="relative py-12 flex items-center justify-center overflow-hidden animate-fade-in mb-8">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-white/5"></div>
+            </div>
+            <div class="relative px-8 bg-slate-950 group cursor-default">
+                <p class="text-[10px] md:text-xs font-mono text-brand-gold uppercase tracking-[0.3em] text-center opacity-70 group-hover:opacity-100 group-hover:text-white transition-all duration-500">
+                    "Tres Perspectivas. Un Mismo Flujo. Un Solo Objetivo: Tu Éxito."
+                </p>
+            </div>
+        </div>
+
+        <div class="blueprint-grid rounded-2xl border border-white/10">
+            
+            <!-- LANE HEADERS (sticky) -->
+            <div class="lane-header cliente">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white font-['Poppins']">Tú Haces</h3>
+                <p class="text-xs text-slate-200 uppercase tracking-wider font-['Montserrat']">Tu responsabilidad</p>
+            </div>
+            <div class="lane-header cocreacion">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-purple-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white font-['Poppins']">Hacemos Juntos</h3>
+                <p class="text-xs text-slate-200 uppercase tracking-wider font-['Montserrat']">Co-Creación</p>
+            </div>
+            <div class="lane-header metodologia">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-emerald-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white font-['Poppins']">Trabaja para Ti</h3>
+                <p class="text-xs text-slate-200 uppercase tracking-wider font-['Montserrat']">MetodologIA</p>
+            </div>
+
+            <!-- PHASE 1: DIAGNÓSTICO -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-lg font-black text-white font-['Montserrat']">1</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">DIAGNÓSTICO</h2>
+                    <p class="text-xs text-amber-400/80 font-['Montserrat']">Tu Línea Base</p>
+                </div>
+            </div>
+            
+            <div class="cell lane lane-cliente">
+                <div class="cell-role cliente">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>Tú Haces</span>
+                </div>
+                <ul>
+                    <li>Responder cuestionario inicial</li>
+                    <li>Conversación de contexto (1h)</li>
+                    <li>Validar hallazgos presentados</li>
+                    <li>Compartir documentos relevantes</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-cocreacion">
+                <div class="cell-role cocreacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Creamos Juntos</span>
+                </div>
+                <ul>
+                    <li>Sesión de Discovery</li>
+                    <li>Mapeo de fricciones</li>
+                    <li>Identificar fugas de energía</li>
+                    <li>Definir qué medir</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-metodologia">
+                <div class="cell-role metodologia">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                    <span>Trabaja para Ti</span>
+                </div>
+                <ul>
+                    <li>Revisar cuestionario</li>
+                    <li>Investigar contexto y sector</li>
+                    <li>Preparar diagnóstico</li>
+                    <li>Crear informe personalizado</li>
+                </ul>
+            </div>
+
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Informe de Línea Base + Mapa de Oportunidades</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Claridad sobre dónde estás hoy</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Decisiones basadas en datos, no intuición</span>
+                </div>
+            </div>
+
+            <!-- Quote: Transition 1→2 -->
+            <div class="phase-quote">
+                <p>"Medir es el primer acto de diseño. Si no sabes dónde estás, no puedes trazar el camino."</p>
+                <cite>— Del diagnóstico al diseño</cite>
+            </div>
+
+            <!-- PHASE 2: DISEÑO -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-blue-900/60 flex items-center justify-center text-lg font-black text-blue-400 font-['Montserrat']">2</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">DISEÑO</h2>
+                    <p class="text-xs text-blue-400/80 font-['Montserrat']">Tu Ruta Personal</p>
+                </div>
+            </div>
+            
+            <div class="cell lane lane-cliente">
+                <div class="cell-role cliente">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>Tú Haces</span>
+                </div>
+                <ul>
+                    <li>Revisar opciones presentadas</li>
+                    <li>Elegir tu nivel de compromiso</li>
+                    <li>Confirmar calendario de sesiones</li>
+                    <li>Definir tu métrica de éxito</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-cocreacion">
+                <div class="cell-role cocreacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Creamos Juntos</span>
+                </div>
+                <ul>
+                    <li>Diseño de semana ideal</li>
+                    <li>Priorizar cambios</li>
+                    <li>Crear rutinas efectivas</li>
+                    <li>Establecer métricas personales</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-metodologia">
+                <div class="cell-role metodologia">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                    <span>Trabaja para Ti</span>
+                </div>
+                <ul>
+                    <li>Adaptar playbooks a tu contexto</li>
+                    <li>Seleccionar herramientas</li>
+                    <li>Configurar prompts específicos</li>
+                    <li>Preparar materiales de sesión</li>
+                </ul>
+            </div>
+
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Tu Ruta de (R)Evolución + KPIs Personales</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Tu sistema diseñado a medida</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Rumbo claro hacia tus objetivos</span>
+                </div>
+            </div>
+
+            <!-- Quote: Transition 2→3 -->
+            <div class="phase-quote">
+                <p>"Un plan sin práctica es solo una intención. La implementación es donde ocurre la transformación."</p>
+                <cite>— Del diseño a la práctica</cite>
+            </div>
+
+            <!-- PHASE 3: PRÁCTICA -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-purple-900/60 flex items-center justify-center text-lg font-black text-purple-400 font-['Montserrat']">3</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">PRÁCTICA</h2>
+                    <p class="text-xs text-purple-400/80 font-['Montserrat']">Coaching + Acción</p>
+                </div>
+            </div>
+            
+            <div class="cell lane lane-cliente">
+                <div class="cell-role cliente">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>Tú Haces</span>
+                </div>
+                <ul>
+                    <li>Asistir a sesiones 1:1</li>
+                    <li>Implementar cambios acordados</li>
+                    <li>Reportar avances y bloqueos</li>
+                    <li>Practicar con casos reales</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-cocreacion">
+                <div class="cell-role cocreacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Creamos Juntos</span>
+                </div>
+                <ul>
+                    <li>Sesiones de trabajo guiado</li>
+                    <li>Resolución de bloqueos</li>
+                    <li>Revisión de avances semanales</li>
+                    <li>Feedback en tiempo real</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-metodologia">
+                <div class="cell-role metodologia">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                    <span>Trabaja para Ti</span>
+                </div>
+                <ul>
+                    <li>Quality check de avances</li>
+                    <li>Documentar aprendizajes clave</li>
+                    <li>Refinar prompts y playbooks</li>
+                    <li>Ajustes en tiempo real</li>
+                </ul>
+            </div>
+
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><rect width="18" height="10" x="3" y="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" x2="8" y1="16" y2="16"/><line x1="16" x2="16" y1="16" y2="16"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Asistentes GPT + Prompts + Templates según tu Contexto</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Dominio de la herramienta</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Eficiencia operativa real</span>
+                </div>
+            </div>
+
+            <!-- Quote: Transition 3→4 -->
+            <div class="phase-quote">
+                <p>"La verdadera medida del éxito no es lo que logras conmigo, sino lo que sigues logrando sin mí."</p>
+                <cite>— De la práctica a la autonomía</cite>
+            </div>
+
+            <!-- PHASE 4: AUTONOMÍA -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-emerald-900/60 flex items-center justify-center text-lg font-black text-emerald-400 font-['Montserrat']">4</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">AUTONOMÍA</h2>
+                    <p class="text-xs text-emerald-400/80 font-['Montserrat']">Tu Soberanía</p>
+                </div>
+            </div>
+            
+            <div class="cell lane lane-cliente">
+                <div class="cell-role cliente">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>Tú Haces</span>
+                </div>
+                <ul>
+                    <li>Mantener nuevos hábitos</li>
+                    <li>Medir tu progreso mensual</li>
+                    <li>Ajustar según resultados</li>
+                    <li>Escalar a otras áreas de tu vida</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-cocreacion">
+                <div class="cell-role cocreacion">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Creamos Juntos</span>
+                </div>
+                <ul>
+                    <li>Sesión de Cierre</li>
+                    <li>Revisión de logros</li>
+                    <li>Plan de mantenimiento</li>
+                    <li>Acceso a recursos continuos</li>
+                </ul>
+            </div>
+            <div class="cell lane lane-metodologia">
+                <div class="cell-role metodologia">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                    <span>Trabaja para Ti</span>
+                </div>
+                <ul>
+                    <li>Canal de consultas async</li>
+                    <li>Check-ins mensuales opcionales</li>
+                    <li>Actualización de recursos</li>
+                    <li>Alertas de nuevas herramientas</li>
+                </ul>
+            </div>
+
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3v2.25l-8.992 8.992a1 1 0 0 1-1.415 0l-2.656-2.656a1 1 0 0 1 0-1.415L14.75 8.25z"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Kit de Autonomía + Acceso a Recursos Exclusivos</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Independencia total</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Ecosistema propio y sostenible</span>
+                </div>
+            </div>
+
+            <!-- Quote: Phase 4 Conclusion -->
+            <div class="phase-quote">
+                <p>"El 'toque de Midas' es la capacidad de convertir tiempo en resultados que valen oro."</p>
+                <cite>— El Resultado Final</cite>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- BLUEPRINT: EMPRESAS -->
+<section id="blueprint-empresas" class="blueprint-section py-8 bg-slate-950">
+    <div class="container-max">
+        <div class="blueprint-grid rounded-2xl overflow-hidden border border-white/10">
+            
+            <!-- LANE HEADERS -->
+            <div class="lane-header cliente">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-400"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white font-['Poppins']">Ustedes Hacen</h3>
+                <p class="text-xs text-slate-200 uppercase tracking-wider font-['Montserrat']">La Empresa</p>
+            </div>
+            <div class="lane-header cocreacion">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-purple-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white font-['Poppins']">Hacemos Juntos</h3>
+                <p class="text-xs text-slate-200 uppercase tracking-wider font-['Montserrat']">Co-Creación</p>
+            </div>
+            <div class="lane-header metodologia">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-emerald-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white font-['Poppins']">Trabaja para Ti</h3>
+                <p class="text-xs text-slate-200 uppercase tracking-wider font-['Montserrat']">MetodologIA</p>
+            </div>
+
+            <!-- PHASE 1 -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-lg font-black text-white font-['Montserrat']">1</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">DIAGNÓSTICO</h2>
+                    <p class="text-xs text-amber-400/80 font-['Montserrat']">Línea Base Operativa</p>
+                </div>
+            </div>
+            <div class="cell lane lane-cliente"><ul>
+                <li>Cuestionario organizacional</li>
+                <li>Sesión de discovery ejecutivo</li>
+                <li>Acceso a datos y procesos</li>
+                <li>Definir stakeholders clave</li>
+            </ul></div>
+            <div class="cell lane lane-cocreacion"><ul>
+                <li>Workshop Ejecutivo</li>
+                <li>Alineación de visión</li>
+                <li>Mapeo de dolor</li>
+                <li>Definición de qué/por qué/cómo medir</li>
+            </ul></div>
+            <div class="cell lane lane-metodologia"><ul>
+                <li>Auditoría de procesos (Lean Audit)</li>
+                <li>Benchmarking sectorial</li>
+                <li>Análisis de herramientas actuales</li>
+                <li>Informe de brechas</li>
+            </ul></div>
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Informe de Línea Base + Roadmap Estratégico</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Foto real del estado actual</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Identificación precisa de cuellos de botella</span>
+                </div>
+            </div>
+
+            <!-- Quote: Transition 1→2 -->
+            <div class="phase-quote">
+                <p>"Medir es el primer acto de diseño. Si no sabes dónde estás, no puedes trazar el camino."</p>
+                <cite>— Del diagnóstico al diseño</cite>
+            </div>
+
+            <!-- PHASE 2 -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-blue-900/60 flex items-center justify-center text-lg font-black text-blue-400 font-['Montserrat']">2</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">DISEÑO</h2>
+                    <p class="text-xs text-blue-400/80 font-['Montserrat']">Roadmap Estratégico</p>
+                </div>
+            </div>
+            <div class="cell lane lane-cliente"><ul>
+                <li>Revisar opciones propuestas</li>
+                <li>Asignar recursos y presupuesto</li>
+                <li>Aprobar roadmap por fases</li>
+                <li>Confirmar sponsors internos</li>
+            </ul></div>
+            <div class="cell lane lane-cocreacion"><ul>
+                <li>Workshop de Diseño</li>
+                <li>Selección de intervenciones</li>
+                <li>Definición de KPIs</li>
+                <li>Calendario</li>
+            </ul></div>
+            <div class="cell lane lane-metodologia"><ul>
+                <li>Adaptación de playbooks corp</li>
+                <li>Configuración de herramientas</li>
+                <li>Desarrollo de prompts específicos</li>
+                <li>Preparación de materiales</li>
+            </ul></div>
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Roadmap Priorizado + KPIs de Impacto</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Plan de acción aprobado</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Alineación ejecutiva total</span>
+                </div>
+            </div>
+
+            <!-- Quote: Transition 2→3 -->
+            <div class="phase-quote">
+                <p>"Un plan sin práctica es solo una intención. La implementación es donde ocurre la transformación."</p>
+                <cite>— Del diseño a la práctica</cite>
+            </div>
+
+            <!-- PHASE 3 -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-purple-900/60 flex items-center justify-center text-lg font-black text-purple-400 font-['Montserrat']">3</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">INTERVENCIÓN</h2>
+                    <p class="text-xs text-purple-400/80 font-['Montserrat']">Formación + Implementación</p>
+                </div>
+            </div>
+            <div class="cell lane lane-cliente"><ul>
+                <li>Enviar equipos a formación</li>
+                <li>Implementar workflows acordados</li>
+                <li>Reportar KPIs semanalmente</li>
+                <li>Facilitar recursos internos</li>
+            </ul></div>
+            <div class="cell lane lane-cocreacion"><ul>
+                <li>Bootcamps + Coaching</li>
+                <li>Formación con casos reales</li>
+                <li>Acompañamiento</li>
+                <li>Feedback loops</li>
+            </ul></div>
+            <div class="cell lane lane-metodologia"><ul>
+                <li>Quality Check continuo</li>
+                <li>Documentación de procesos</li>
+                <li>Iteración basada en data</li>
+                <li>Ajustes en tiempo real</li>
+            </ul></div>
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><rect width="18" height="10" x="3" y="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" x2="8" y1="16" y2="16"/><line x1="16" x2="16" y1="16" y2="16"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Workflows IA + Playbooks Corporativos + Asistentes GPT</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Operatividad con IA implementada</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Reducción de carga operativa >30%</span>
+                </div>
+            </div>
+
+            <!-- Quote: Transition 3→4 -->
+            <div class="phase-quote">
+                <p>"La verdadera medida del éxito no es lo que logras conmigo, sino lo que sigues logrando sin mí."</p>
+                <cite>— De la práctica a la autonomía</cite>
+            </div>
+
+            <!-- PHASE 4 -->
+            <div class="phase-divider">
+                <span class="w-10 h-10 rounded-lg bg-emerald-900/60 flex items-center justify-center text-lg font-black text-emerald-400 font-['Montserrat']">4</span>
+                <div>
+                    <h2 class="text-xl font-bold text-white font-['Poppins']">TRANSFERENCIA</h2>
+                    <p class="text-xs text-emerald-400/80 font-['Montserrat']">Autonomía Organizacional</p>
+                </div>
+            </div>
+            <div class="cell lane lane-cliente"><ul>
+                <li>Impulsar cambio cultural</li>
+                <li>Medir y optimizar KPIs</li>
+                <li>Escalar a otras áreas</li>
+                <li>Capacitar champions internos</li>
+            </ul></div>
+            <div class="cell lane lane-cocreacion"><ul>
+                <li>Sesión de Cierre</li>
+                <li>Revisión de logros</li>
+                <li>Entrega de assets</li>
+                <li>Plan de continuidad</li>
+            </ul></div>
+            <div class="cell lane lane-metodologia"><ul>
+                <li>Canal async para consultas</li>
+                <li>Check-ins trimestrales</li>
+                <li>Actualización de recursos</li>
+                <li>Soporte para nuevos proyectos</li>
+            </ul></div>
+            <div class="deliverable-row">
+                <div class="deliverable-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3v2.25l-8.992 8.992a1 1 0 0 1-1.415 0l-2.656-2.656a1 1 0 0 1 0-1.415L14.75 8.25z"/></svg>
+                    <span class="text-amber-400 font-bold text-sm font-['Poppins']">Entregable: Kit de Autonomía Organizacional + Acceso VIP</span>
+                </div>
+            </div>
+            
+            <div class="milestone-row">
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Hito: Cultura AI-native instalada</span>
+                </div>
+                <div class="milestone-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span class="text-emerald-400 font-semibold text-xs font-['Montserrat']">Impacto: Ventaja competitiva sostenida</span>
+                </div>
+            </div>
+            
+            <!-- Quote: Phase 4 Conclusion -->
+            <div class="phase-quote">
+                <p>"La Clave del Éxito: Una MetodologIA Efectiva y Consistente."</p>
+                <cite>— El Resultado Final</cite>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER QUOTE -->
+<section class="py-16 bg-slate-950 border-t border-white/5">
+    <div class="container-max text-center">
+        <div class="pl-6 border-l-2 border-brand-gold/30 italic text-slate-100 max-w-2xl mx-auto text-left">
+            "La claridad que obtienes es tuya para usar como decidas — con o sin nosotros."
+            <div class="text-xs text-brand-gold/60 mt-2 not-italic font-bold uppercase tracking-wider font-['Montserrat']">— Principio MetodologIA</div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 bg-gradient-to-b from-slate-900/50 to-slate-900 border-t border-white/5">
+    <div class="container-max text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-gold/10 border border-brand-gold/30 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-brand-gold"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            <span class="text-brand-gold text-xs font-bold tracking-widest uppercase font-['Montserrat']">Primer Paso</span>
+        </div>
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 font-['Poppins']">¿Listo para tu <span class="text-gradient-gold">Línea Base</span>?</h2>
+        <p class="text-slate-100 max-w-2xl mx-auto mb-8">El diagnóstico te dará claridad sobre qué medir, por qué y cómo. Es el primer paso — sin compromiso de continuar.</p>
+        <div class="inline-flex flex-col sm:flex-row gap-4">
+            <a href="https://calendar.app.google/c8g8uWnxZT7SeM1T9" target="_blank" rel="noopener" class="inline-flex items-center gap-3 px-8 py-4 bg-brand-gold text-black font-bold rounded-xl hover:bg-[var(--brand-gold-dark)] transition-all shadow-lg shadow-brand-gold/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                Agendar Mi Diagnóstico
+            </a>
+            <a href="index.html" class="inline-flex items-center gap-3 px-8 py-4 bg-white/10 border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+                Explorar la Ruta Completa
+            </a>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<site-footer base-path=".." class="relative z-10"></site-footer>
+
+<script>
+function switchBlueprint(mode) {
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        const isActive = btn.dataset.mode === mode;
+        btn.classList.toggle('active', isActive);
+        btn.classList.toggle('text-slate-200', !isActive);
+        btn.setAttribute('aria-pressed', isActive); // A11y update
+    });
+    document.querySelectorAll('.blueprint-section').forEach(section => {
+        section.classList.toggle('active', section.id === `blueprint-${mode}`);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (typeof icons !== 'undefined') icons.createIcons(); });
+</script>
+
+</body>
+</html>

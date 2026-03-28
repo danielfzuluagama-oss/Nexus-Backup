@@ -1,0 +1,944 @@
+<!--
+  @license Copyleft
+  @copyright MetodologIA
+  @author Javier Montaño
+  @technology Antigravity | GoogleAI Studio | Gemini 3 Pro | Gemini 3 Flash
+  @poweredBy Pristino Agent
+-->
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA | Icebreaker: El Comité de Compra</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración de Marca -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            primary: '#0B2545',
+                            secondary: '#1E3A5F',
+                            gold: 'var(--brand-gold-dark)',
+                            dark: '#0F172A',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --accent-gold: var(--brand-gold-dark);
+            --surface-ground: #0F172A;
+            --surface-glass: rgba(30, 41, 59, 0.7);
+            --surface-glass-hover: rgba(51, 65, 85, 0.8);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-gold: var(--brand-gold-glow);
+            --text-primary: #FFFFFF;
+            --text-secondary: #CBD5E1;
+        }
+
+        body {
+            background-color: var(--surface-ground);
+            color: var(--text-primary);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 70%);
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Cards */
+        .card-glass {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-glass:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-gold);
+            box-shadow: 0 12px 40px -10px rgba(255, 215, 0, 0.15);
+        }
+
+        /* Role Card Specifics */
+        .role-card {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-gold);
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .role-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Gold Button */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--brand-gold-dark) 0%, #FFA000 100%);
+            color: #0F172A;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-gold:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: var(--brand-gold-glow);
+        }
+
+        /* Typography Highlights */
+        .highlight-gold {
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        /* Modal Transitions */
+        .modal-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            transform: scale(0.95) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Inputs */
+        .input-dark {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .input-dark:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        textarea.input-dark {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Roulette Styles */
+        #roulette-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        #wheel-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--brand-gold-glow);
+            transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        #wheel-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid var(--brand-gold-dark);
+            z-index: 10;
+            filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.5));
+        }
+
+        /* Blur Reveal */
+        .secret-blur {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+            transition: filter 0.5s ease;
+        }
+
+        .secret-reveal {
+            filter: blur(0);
+            pointer-events: auto;
+            user-select: auto;
+        }
+    </style>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+    <link rel="apple-touch-icon" href="../../../favicon.svg">
+</head>
+
+<body class="font-sans antialiased selection:bg-yellow-500/30">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-slate-900/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center border border-slate-700 shadow-lg shadow-yellow-500/10">
+                    <svg width="24" height="24" viewBox="0 0 36 36" fill="none">
+                        <rect width="36" height="36" rx="8" fill="#0A122A" />
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z"
+                            fill="white" />
+                        <circle cx="18" cy="8" r="2" fill="var(--brand-gold-dark)" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-heading font-bold text-xl leading-none text-white">Metodolog<span
+                            class="text-[var(--brand-gold-dark)]">IA</span></h1>
+                    <span class="text-[10px] uppercase tracking-[0.2em] text-slate-100">Icebreaker: Comité de
+                        Compra</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="global-timer-display"
+                    class="hidden md:flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800 border border-white/10 text-[var(--brand-gold-dark)] font-mono font-bold">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                    <span id="nav-time">00:00</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-28 pb-12 px-6 max-w-7xl mx-auto">
+
+        <!-- Header Section -->
+        <header class="text-center mb-8 animate-fade-in-up">
+            <span
+                class="inline-block px-3 py-1 mb-4 rounded-full bg-[var(--brand-gold-dark)]/10 border border-[var(--brand-gold-dark)]/20 text-[var(--brand-gold-dark)] text-xs font-bold uppercase tracking-wider">
+                Simulación 15-18 Minutos
+            </span>
+            <h1 class="font-heading text-4xl md:text-5xl font-bold mb-4 text-white">
+                El Comité de <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand-gold-dark)] to-[#FFA000]">Compra</span>
+            </h1>
+            <p class="text-slate-100 text-lg max-w-2xl mx-auto mb-6">
+                Objetivo: Vivir la fricción real de implementar IA y aterrizar 3 condiciones del "Sí" + dato mínimo +
+                quick win.
+            </p>
+        </header>
+
+        <!-- El Caso Section -->
+        <section
+            class="mb-10 bg-slate-800/50 border border-white/10 rounded-2xl p-6 md:p-8 max-w-4xl mx-auto relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-[var(--brand-gold-dark)]"></div>
+            <h3 class="text-[var(--brand-gold-dark)] font-bold text-lg mb-4 flex items-center gap-2">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+                PROPUESTA DE IA (EL CASO)
+            </h3>
+            <p class="text-white text-xl font-medium leading-relaxed mb-4">
+                “La empresa quiere implementar IA para apoyar el proceso comercial en <span class="text-[var(--brand-gold-dark)]">30
+                    días</span>.”
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-slate-100 text-sm">
+                <div>
+                    <strong class="text-white block mb-2 uppercase text-xs tracking-wider">Alcance:</strong>
+                    <ul class="space-y-1 list-disc pl-4">
+                        <li>Prospección y redacción de mensajes.</li>
+                        <li>Resúmenes de reuniones y próximos pasos.</li>
+                        <li>Apoyo a propuestas y manejo de objeciones.</li>
+                        <li>Higiene automática del CRM.</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong class="text-white block mb-2 uppercase text-xs tracking-wider">Restricciones:</strong>
+                    <ul class="space-y-1 list-disc pl-4">
+                        <li>No exponer información sensible.</li>
+                        <li>Control humano obligatorio (Human-in-the-loop).</li>
+                        <li>Impacto medible en pipeline.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roulette Section -->
+        <section class="mb-16 border-t border-white/10 pt-10">
+            <div class="max-w-xl mx-auto text-center">
+                <h3 class="text-2xl font-heading font-bold text-white mb-2 flex items-center justify-center gap-2">
+                    <i data-lucide="crosshair" class="text-[var(--brand-gold-dark)]"></i> Ruleta de Roles
+                </h3>
+                <p class="text-slate-100 text-sm mb-6">Gira para asignar roles. La información sensible se mantendrá
+                    oculta.</p>
+
+                <div id="roulette-wrapper"
+                    class="relative bg-slate-800/30 p-8 rounded-full border border-white/5 shadow-2xl mb-6 inline-block">
+                    <div id="roulette-container">
+                        <div id="wheel-pointer"></div>
+                        <canvas id="wheel-canvas" width="300" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="flex justify-center gap-4">
+                    <button onclick="spinRoulette()" id="btn-spin"
+                        class="btn-gold px-8 py-3 rounded-xl flex items-center gap-2 font-bold shadow-lg shadow-yellow-500/20">
+                        <i data-lucide="rotate-cw"></i> Girar Ruleta
+                    </button>
+                    <button onclick="resetRoulette()" id="btn-reset-wheel"
+                        class="btn-outline px-6 py-3 rounded-xl flex items-center gap-2" title="Reiniciar Roles">
+                        <i data-lucide="refresh-cw"></i>
+                    </button>
+                </div>
+                <div id="roulette-result" class="mt-4 h-8 text-[var(--brand-gold-dark)] font-bold text-lg animate-pulse hidden">
+                    <!-- Result text injected here -->
+                </div>
+                <p id="roles-left-counter" class="text-xs text-slate-200 mt-2">6 roles restantes</p>
+            </div>
+        </section>
+
+        <!-- Timer Controls -->
+        <div class="flex flex-wrap justify-center gap-4 mb-10 pt-10 border-t border-white/10">
+            <button onclick="startGame(300, 'Fase de Discusión')" id="btn-start-5"
+                class="btn-gold px-6 py-3 rounded-xl flex items-center gap-2">
+                <i data-lucide="users"></i> Discusión (5 min)
+            </button>
+            <button onclick="startGame(120, 'Fase de Cierre')" id="btn-start-2"
+                class="btn-outline px-6 py-3 rounded-xl flex items-center gap-2 font-semibold">
+                <i data-lucide="edit-3"></i> Redacción (2 min)
+            </button>
+            <button onclick="resetGame()" class="text-slate-200 hover:text-white px-4 py-3 transition-colors"
+                title="Reiniciar">
+                <i data-lucide="rotate-ccw"></i>
+            </button>
+        </div>
+
+        <!-- Dynamic Timer Overlay -->
+        <div id="timer-container" class="hidden mb-12 max-w-md mx-auto">
+            <div class="relative w-full bg-slate-800/50 rounded-full h-4 overflow-hidden border border-white/5">
+                <div id="progress-bar"
+                    class="absolute top-0 left-0 h-full bg-gradient-to-r from-[var(--brand-gold-dark)] to-[#FFA000] transition-all duration-1000 ease-linear"
+                    style="width: 100%"></div>
+            </div>
+            <p class="text-center mt-2 font-mono text-[var(--brand-gold-dark)] text-xl font-bold" id="big-timer">00:00</p>
+            <p class="text-center text-xs text-slate-200 uppercase tracking-widest mt-1" id="timer-label">Tiempo
+                Restante</p>
+        </div>
+
+        <!-- Teams Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
+            <!-- Equipo A -->
+            <section class="space-y-6">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm border border-blue-500/30">A</span>
+                        Equipo Alpha
+                    </h2>
+                    <span class="text-xs text-slate-200 uppercase">6 Roles</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="team-a-grid"></div>
+
+                <!-- Deliverables A -->
+                <div class="bg-slate-800/30 rounded-xl p-5 border border-blue-500/20 mt-4">
+                    <h4 class="text-blue-400 font-bold text-sm uppercase mb-4 flex items-center gap-2"><i
+                            data-lucide="pen-tool" class="w-4 h-4"></i> Pizarra Entregables A</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-slate-100 block mb-1">Decisión (Sí, pero...)</label>
+                            <textarea class="input-dark"
+                                placeholder="Ej: Sí, pero con guardrails de datos..."></textarea>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-100 block mb-1">3 Condiciones No Negociables</label>
+                            <input type="text" class="input-dark mb-1" placeholder="1.">
+                            <input type="text" class="input-dark mb-1" placeholder="2.">
+                            <input type="text" class="input-dark" placeholder="3.">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-xs text-slate-100 block mb-1">Dato Mínimo</label>
+                                <input type="text" class="input-dark" placeholder="Ej: Motivo pérdida">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-100 block mb-1">Quick Win (30d)</label>
+                                <input type="text" class="input-dark" placeholder="Ej: Resumen calls">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Equipo B -->
+            <section class="space-y-6">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm border border-purple-500/30">B</span>
+                        Equipo Beta
+                    </h2>
+                    <span class="text-xs text-slate-200 uppercase">6 Roles</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="team-b-grid"></div>
+
+                <!-- Deliverables B -->
+                <div class="bg-slate-800/30 rounded-xl p-5 border border-purple-500/20 mt-4">
+                    <h4 class="text-purple-400 font-bold text-sm uppercase mb-4 flex items-center gap-2"><i
+                            data-lucide="pen-tool" class="w-4 h-4"></i> Pizarra Entregables B</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-slate-100 block mb-1">Decisión (Sí, pero...)</label>
+                            <textarea class="input-dark" placeholder="Ej: Sí, pero con auditoría mensual..."></textarea>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-100 block mb-1">3 Condiciones No Negociables</label>
+                            <input type="text" class="input-dark mb-1" placeholder="1.">
+                            <input type="text" class="input-dark mb-1" placeholder="2.">
+                            <input type="text" class="input-dark" placeholder="3.">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-xs text-slate-100 block mb-1">Dato Mínimo</label>
+                                <input type="text" class="input-dark" placeholder="Ej: Próximo paso">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-100 block mb-1">Quick Win (30d)</label>
+                                <input type="text" class="input-dark" placeholder="Ej: Higiene CRM">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Debrief Section -->
+        <section id="debrief-section"
+            class="pt-10 border-t border-white/10 hidden opacity-0 transition-opacity duration-700">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-white mb-2">Debrief & Análisis</h2>
+                    <p class="text-slate-100">Reflexión estratégica post-negociación</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card-glass p-6 rounded-xl border-l-4 border-l-blue-500">
+                        <div class="mb-4 text-blue-400"><i data-lucide="message-circle" class="w-8 h-8"></i></div>
+                        <h3 class="text-lg font-bold text-white mb-2">Realidad vs. Narrativa</h3>
+                        <p class="text-sm text-slate-100">¿Qué objeción fue un problema real de negocio y cuál fue solo
+                            una postura de negociación?</p>
+                    </div>
+                    <div class="card-glass p-6 rounded-xl border-l-4 border-l-[var(--brand-gold-dark)]">
+                        <div class="mb-4 text-[var(--brand-gold-dark)]"><i data-lucide="key" class="w-8 h-8"></i></div>
+                        <h3 class="text-lg font-bold text-white mb-2">El Dato Desbloqueador</h3>
+                        <p class="text-sm text-slate-100">¿Qué dato específico habría desbloqueado la discusión
+                            inmediatamente?</p>
+                    </div>
+                    <div class="card-glass p-6 rounded-xl border-l-4 border-l-red-500">
+                        <div class="mb-4 text-red-400"><i data-lucide="shield-alert" class="w-8 h-8"></i></div>
+                        <h3 class="text-lg font-bold text-white mb-2">Límites de la IA</h3>
+                        <p class="text-sm text-slate-100">¿Qué parte del proceso acordaron que NO debe automatizarse y
+                            por qué?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Role Card Modal -->
+    <div id="role-modal"
+        class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
+        <div
+            class="modal-content w-full max-w-lg bg-[#0f172a] border border-slate-700 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div id="modal-header-bg"
+                class="h-24 bg-gradient-to-r from-slate-800 to-slate-900 p-6 flex items-end relative shrink-0">
+                <div class="absolute top-4 right-4">
+                    <button onclick="closeModal()"
+                        class="text-slate-100 hover:text-white transition-colors bg-black/20 rounded-full p-1">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-[var(--brand-gold-dark)] uppercase tracking-wider mb-1 block">Rol Asignado
+                        (Público)</span>
+                    <h2 id="modal-role-title" class="text-2xl font-heading font-bold text-white leading-tight">Role Name
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Modal Body (Scrollable if needed) -->
+            <div class="p-8 space-y-8 overflow-y-auto">
+
+                <!-- PUBLIC SECTION -->
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="shrink-0 w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+                            <i data-lucide="target" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-1">Tu Objetivo
+                                (PÚBLICO)</h4>
+                            <p class="text-xs text-slate-100 mb-2">Lee esto en voz alta al grupo:</p>
+                            <p id="modal-objective"
+                                class="text-white text-lg leading-snug font-medium border-l-2 border-emerald-500 pl-3">
+                                Objective text goes here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-white/10 border-dashed">
+
+                <!-- PRIVATE SECTION -->
+                <div class="relative rounded-xl overflow-hidden group">
+                    <!-- Cover Overlay -->
+                    <div id="secret-cover"
+                        class="absolute inset-0 bg-slate-800 z-10 flex flex-col items-center justify-center text-center p-6 transition-transform duration-500 ease-in-out">
+                        <div
+                            class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 mb-3 animate-pulse">
+                            <i data-lucide="lock" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-white font-bold text-lg mb-1">Información Confidencial</h4>
+                        <p class="text-slate-100 text-sm mb-4">Solo para la persona con este rol.</p>
+                        <button onclick="revealSecret()"
+                            class="btn-outline px-6 py-2 rounded-lg text-sm font-bold bg-slate-900/50 hover:bg-slate-900">
+                            Revelar Miedo y Pregunta
+                        </button>
+                    </div>
+
+                    <!-- Secret Content (Blurred initially via CSS class, revealed by removing cover) -->
+                    <div id="secret-content"
+                        class="bg-red-500/5 border border-red-500/20 rounded-xl p-6 space-y-6 secret-blur">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="shrink-0 w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400">
+                                <i data-lucide="ghost" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-red-400 uppercase mb-1">Tu Miedo (PRIVADO)</h4>
+                                <p class="text-xs text-slate-100 mb-1">No lo digas, actúalo:</p>
+                                <p id="modal-fear" class="text-white text-base leading-snug font-medium">Fear text goes
+                                    here.</p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-900/50 border border-[var(--brand-gold-dark)]/30 rounded-xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i data-lucide="alert-circle" class="w-4 h-4 text-[var(--brand-gold-dark)]"></i>
+                                <span class="text-xs font-bold text-[var(--brand-gold-dark)] uppercase">Pregunta Obligatoria</span>
+                            </div>
+                            <p class="text-xs text-slate-100 mb-1">Debes hacer esta pregunta durante los 5 min:</p>
+                            <p id="modal-question" class="text-white italic text-base">"Question text goes here?"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button onclick="closeModal()" class="text-slate-100 hover:text-white text-sm transition-colors">
+                        Cerrar Ventana
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        // Data: Roles Configuration (Updated)
+        const rolesData = [
+            {
+                id: 'cfo',
+                title: 'CFO / Comprador Económico',
+                short: 'CFO',
+                icon: 'dollar-sign',
+                color: 'text-emerald-400',
+                bg: 'bg-emerald-500/10',
+                border: 'border-emerald-500/30',
+                wheelColor: '#10B981', // Emerald
+                objective: 'ROI claro y rápido.',
+                fear: 'Costo sin retorno (“Phantomware”).',
+                question: "¿En cuánto tiempo recuperamos inversión y cómo lo medimos?"
+            },
+            {
+                id: 'sales',
+                title: 'Director Comercial',
+                short: 'Ventas',
+                icon: 'trending-up',
+                color: 'text-blue-400',
+                bg: 'bg-blue-500/10',
+                border: 'border-blue-500/30',
+                wheelColor: '#3B82F6', // Blue
+                objective: 'Más pipeline y cierres.',
+                fear: 'Que el equipo no lo use.',
+                question: "¿Qué cambia mañana en el día a día del vendedor?"
+            },
+            {
+                id: 'user',
+                title: 'Usuario Final (AE/SDR)',
+                short: 'Usuario',
+                icon: 'user',
+                color: 'text-orange-400',
+                bg: 'bg-orange-500/10',
+                border: 'border-orange-500/30',
+                wheelColor: '#F97316', // Orange
+                objective: 'Ahorrar tiempo, vender más.',
+                fear: 'Más carga operativa.',
+                question: "¿Esto me quita trabajo o me agrega pasos?"
+            },
+            {
+                id: 'revops',
+                title: 'RevOps / CRM',
+                short: 'RevOps',
+                icon: 'database',
+                color: 'text-purple-400',
+                bg: 'bg-purple-500/10',
+                border: 'border-purple-500/30',
+                wheelColor: '#A855F7', // Purple
+                objective: 'Trazabilidad y proceso.',
+                fear: 'Basura entra, basura sale.',
+                question: "¿Qué campos del CRM serán obligatorios y quién responde por calidad?"
+            },
+            {
+                id: 'it',
+                title: 'IT / Seguridad',
+                short: 'IT',
+                icon: 'lock',
+                color: 'text-cyan-400',
+                bg: 'bg-cyan-500/10',
+                border: 'border-cyan-500/30',
+                wheelColor: '#06B6D4', // Cyan
+                objective: 'Control, compliance, auditoría.',
+                fear: 'Fuga de datos / shadow AI.',
+                question: "¿Dónde se procesan los datos y cómo se audita el acceso?"
+            },
+            {
+                id: 'legal',
+                title: 'Legal / Compliance',
+                short: 'Legal',
+                icon: 'scale',
+                color: 'text-rose-400',
+                bg: 'bg-rose-500/10',
+                border: 'border-rose-500/30',
+                wheelColor: '#F43F5E', // Rose
+                objective: 'Uso correcto de datos.',
+                fear: 'Riesgo legal / Propiedad Intelectual.',
+                question: "¿Qué datos NO pueden usarse y qué políticas quedan por escrito?"
+            }
+        ];
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTeams();
+            lucide.createIcons();
+            drawRouletteWheel(); // Draw initial wheel
+        });
+
+        // --- ROULETTE LOGIC ---
+        let availableRoles = [...rolesData];
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawRouletteWheel() {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = width / 2;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (availableRoles.length === 0) {
+                // Draw Completed State
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius - 5, 0, 2 * Math.PI);
+                ctx.fillStyle = '#1e293b';
+                ctx.fill();
+                ctx.strokeStyle = 'var(--brand-gold-dark)';
+                ctx.lineWidth = 5;
+                ctx.stroke();
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 20px Montserrat';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText("¡LISTO!", centerX, centerY);
+                return;
+            }
+
+            const arcSize = (2 * Math.PI) / availableRoles.length;
+
+            availableRoles.forEach((role, i) => {
+                const angle = i * arcSize;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
+                ctx.closePath();
+
+                ctx.fillStyle = role.wheelColor;
+                ctx.fill();
+                ctx.strokeStyle = '#0F172A';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + arcSize / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "white";
+                ctx.font = "bold 14px Montserrat";
+                ctx.shadowColor = "rgba(0,0,0,0.8)";
+                ctx.shadowBlur = 4;
+                ctx.fillText(role.short, radius - 20, 5);
+                ctx.restore();
+            });
+        }
+
+        function spinRoulette() {
+            if (isSpinning || availableRoles.length === 0) return;
+
+            isSpinning = true;
+            document.getElementById('btn-spin').disabled = true;
+            document.getElementById('roulette-result').classList.add('hidden');
+
+            const canvas = document.getElementById('wheel-canvas');
+            const sectorSize = 360 / availableRoles.length;
+
+            // Random spin
+            const randomOffset = Math.floor(Math.random() * 360);
+            const totalRotation = 1800 + randomOffset;
+
+            const newRotation = currentRotation + totalRotation;
+            currentRotation = newRotation;
+
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                isSpinning = false;
+                document.getElementById('btn-spin').disabled = false;
+
+                const effectiveAngle = (270 - (currentRotation % 360) + 360) % 360;
+                const index = Math.floor(effectiveAngle / sectorSize);
+                const winner = availableRoles[index];
+
+                const resultDiv = document.getElementById('roulette-result');
+                resultDiv.textContent = `¡Rol Asignado: ${winner.title}!`;
+                resultDiv.classList.remove('hidden');
+
+                openRoleModal(winner.id);
+                availableRoles.splice(index, 1);
+                document.getElementById('roles-left-counter').textContent = `${availableRoles.length} roles restantes`;
+
+                setTimeout(() => {
+                    canvas.style.transition = 'none';
+                    canvas.style.transform = `rotate(0deg)`;
+                    currentRotation = 0;
+                    drawRouletteWheel();
+                    setTimeout(() => canvas.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)', 50);
+                }, 1000);
+
+            }, 4000);
+        }
+
+        function resetRoulette() {
+            if (isSpinning) return;
+            availableRoles = [...rolesData];
+            document.getElementById('roles-left-counter').textContent = "6 roles restantes";
+            document.getElementById('roulette-result').classList.add('hidden');
+            drawRouletteWheel();
+        }
+
+        // Render Cards
+        function renderTeams() {
+            const teamA = document.getElementById('team-a-grid');
+            const teamB = document.getElementById('team-b-grid');
+
+            const createCard = (role, teamId) => `
+                <div class="card-glass role-card p-4 rounded-xl group" onclick="openRoleModal('${role.id}')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 shrink-0 rounded-lg ${role.bg} flex items-center justify-center ${role.color} border ${role.border}">
+                            <i data-lucide="${role.icon}" class="w-4 h-4"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-white text-sm truncate group-hover:text-[var(--brand-gold-dark)] transition-colors">${role.title}</h3>
+                            <p class="text-[10px] text-slate-200 uppercase tracking-wider">Ver Carta</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            teamA.innerHTML = rolesData.map(r => createCard(r, 'A')).join('');
+            teamB.innerHTML = rolesData.map(r => createCard(r, 'B')).join('');
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('role-modal');
+        const secretCover = document.getElementById('secret-cover');
+        const secretContent = document.getElementById('secret-content');
+
+        function openRoleModal(roleId) {
+            const role = rolesData.find(r => r.id === roleId);
+            if (!role) return;
+
+            document.getElementById('modal-role-title').textContent = role.title;
+            document.getElementById('modal-objective').textContent = role.objective;
+            document.getElementById('modal-fear').textContent = role.fear;
+            document.getElementById('modal-question').textContent = role.question;
+
+            // Reset Secret State
+            secretCover.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+            secretContent.classList.add('secret-blur');
+            secretContent.classList.remove('secret-reveal');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function revealSecret() {
+            secretCover.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+            secretContent.classList.remove('secret-blur');
+            secretContent.classList.add('secret-reveal');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Timer Logic
+        let timeLeft = 0;
+        let timerInterval;
+        let totalTime = 0;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            document.getElementById('big-timer').textContent = display;
+            document.getElementById('nav-time').textContent = display;
+
+            const progress = (timeLeft / totalTime) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        function startGame(seconds, label) {
+            clearInterval(timerInterval);
+
+            timeLeft = seconds;
+            totalTime = seconds;
+            document.getElementById('timer-label').textContent = label;
+            document.getElementById('timer-container').classList.remove('hidden');
+
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            timeLeft = 0;
+            updateTimerDisplay();
+
+            const debrief = document.getElementById('debrief-section');
+            debrief.classList.remove('hidden');
+            setTimeout(() => {
+                debrief.classList.remove('opacity-0');
+            }, 100);
+        }
+
+        function resetGame() {
+            clearInterval(timerInterval);
+            document.getElementById('timer-container').classList.add('hidden');
+            document.getElementById('debrief-section').classList.add('hidden', 'opacity-0');
+            document.getElementById('nav-time').textContent = "00:00";
+
+            document.querySelectorAll('input, textarea').forEach(input => input.value = '');
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,925 @@
+<!--
+  @license Copyleft
+  @copyright MetodologIA
+  @author Javier Montaño
+  @author Germán Eliécer Sepúlveda
+  @technology Antigravity | GoogleAI Studio | Gemini 3 Pro | Gemini 3 Flash
+  @poweredBy Pristino Agent
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliotecas de Prompts | MetodologIA</title>
+    <meta name="description" content="Domina el arte del prompting con nuestra colección curada de herramientas cognitivas para cualquier profesional que busca lograr más con menos en la era de la IA generativa.">
+    <meta name="keywords" content="prompts, IA, bibliotecas, MetodologIA, ChatGPT, Gemini, Claude, productividad">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;900&family=Montserrat:wght@400;600&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- MetodologIA Design System -->
+    <link rel="stylesheet" href="../../estilos/variables.css">
+    <link rel="stylesheet" href="../../estilos/base.css">
+    <link rel="stylesheet" href="../../estilos/components.css">
+    
+    <!-- Tailwind (CDN for dev, local for production) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Components -->
+    <script src="../../js/icons.js" defer></script>
+    <script src="../../components/SiteHeader.js" defer></script>
+    <script src="../../components/SiteFooter.js" defer></script>
+    
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           HUB DE BIBLIOTECAS - BRANDED STYLES (v5.2)
+           ═══════════════════════════════════════════════════════════════ */
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        /* Hero Section - Vision Standard */
+        .hub-hero {
+            position: relative;
+            background: linear-gradient(180deg, 
+                rgba(15, 23, 42, 0.95) 0%, 
+                var(--bg-body) 100%);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        /* Vision-style Mesh Gradient Background */
+        .hub-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 60% at 20% 40%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 80% at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 50% at 50% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+            animation: meshMove 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes meshMove {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            25% { opacity: 0.8; transform: scale(1.05) rotate(1deg); }
+            50% { opacity: 1; transform: scale(1) rotate(0deg); }
+            75% { opacity: 0.9; transform: scale(0.98) rotate(-1deg); }
+        }
+        
+        .hub-hero h1 {
+            position: relative;
+            background: linear-gradient(135deg, #EAB308 0%, #FCD34D 50%, #CA8A04 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Montserrat', var(--font-primary);
+            font-size: clamp(2.25rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.03em;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
+        }
+        
+        .hub-hero .subtitle {
+            position: relative;
+            color: var(--text-secondary);
+            font-family: 'Jost', var(--font-primary);
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+        
+        /* Stats */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .stat-badge.gold {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: var(--brand-gold);
+        }
+        
+        .stat-badge.emerald {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--brand-emerald);
+        }
+        
+        /* Libraries Section */
+        .libraries-section {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-family: 'Montserrat', var(--font-primary);
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* Featured Library Card */
+        .featured-library {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(30, 41, 59, 0.6) 100%);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            overflow: hidden;
+        }
+        
+        .featured-library::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .featured-library:hover {
+            border-color: rgba(255, 215, 0, 0.7);
+            transform: translateY(-4px);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(255, 215, 0, 0.15);
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--gradient-gold);
+            color: #1a1a2e;
+            padding: 0.375rem 0.875rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .featured-content h2 {
+            font-family: 'Montserrat', var(--font-primary);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--brand-gold);
+            margin-bottom: 0.75rem;
+        }
+        
+        .featured-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+        
+        .featured-stats {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .featured-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .featured-stat strong {
+            color: var(--brand-gold);
+            font-weight: 700;
+        }
+        
+        .featured-cta {
+            background: var(--gradient-gold);
+            color: #1a1a2e;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .featured-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Other Libraries Grid */
+        .libraries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* Library Card */
+        .library-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .library-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 40%,
+                rgba(255, 255, 255, 0.02) 50%,
+                transparent 60%
+            );
+            transform: translateX(-100%);
+        }
+        
+        .library-card:hover::after {
+            animation: shimmer 0.8s ease forwards;
+        }
+        
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        
+        .library-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .library-card.disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+        
+        .library-card.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .library-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .library-card h3 {
+            font-family: 'Montserrat', var(--font-primary);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .library-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+        }
+        
+        .library-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .library-count {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .library-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+        }
+        
+        .library-status.available {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--brand-emerald);
+        }
+        
+        .library-status.coming-soon {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--text-muted);
+        }
+        
+        .library-status.in-development {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        /* Elite Programs Section */
+        .elite-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .elite-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.05));
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .elite-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #a855f7, #3b82f6);
+        }
+        
+        .elite-card.champion { border-color: rgba(234, 179, 8, 0.4); }
+        .elite-card.champion::before { background: linear-gradient(90deg, #eab308, #f59e0b); }
+        
+        .elite-card.empoderamiento { border-color: rgba(236, 72, 153, 0.4); }
+        .elite-card.empoderamiento::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+        
+        .elite-card.productivo { border-color: rgba(34, 197, 94, 0.4); }
+        .elite-card.productivo::before { background: linear-gradient(90deg, #22c55e, #10b981); }
+        
+        .elite-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            background: rgba(168, 85, 247, 0.2);
+            color: #c084fc;
+            margin-bottom: 1rem;
+        }
+        
+        .elite-card.champion .elite-badge { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+        .elite-card.empoderamiento .elite-badge { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+        .elite-card.productivo .elite-badge { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        
+        .elite-card h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .elite-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .elite-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Ruta Section */
+        .ruta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        
+        .ruta-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .ruta-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .ruta-level {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .ruta-level.n0 { background: rgba(100, 116, 139, 0.3); color: #94a3b8; }
+        .ruta-level.n1 { background: rgba(59, 130, 246, 0.3); color: #60a5fa; }
+        .ruta-level.n2 { background: rgba(6, 182, 212, 0.3); color: #22d3ee; }
+        .ruta-level.n3 { background: rgba(234, 179, 8, 0.3); color: #facc15; }
+        .ruta-level.n4 { background: rgba(250, 204, 21, 0.3); color: #fde047; }
+        .ruta-level.n5 { background: rgba(168, 85, 247, 0.3); color: #c084fc; }
+        .ruta-level.n6 { background: rgba(16, 185, 129, 0.3); color: #34d399; }
+        .ruta-level.n7 { background: rgba(245, 158, 11, 0.3); color: #fbbf24; }
+        .ruta-level.n8 { background: rgba(234, 179, 8, 0.3); color: #facc15; }
+        
+        .ruta-card h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .ruta-card .ruta-target {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Section subtitle */
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            text-align: center;
+        }
+        
+        /* Info Section */
+        .info-section {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .info-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .info-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        /* Clickable info cards */
+        a.info-card {
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        a.info-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Download section */
+        .download-section {
+            padding: 0 2rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Library icon colors */
+        .library-icon.ventas { border-color: rgba(34, 197, 94, 0.3); }
+        .library-icon.desarrollo { border-color: rgba(59, 130, 246, 0.3); }
+        .library-icon.marketing { border-color: rgba(168, 85, 247, 0.3); }
+        .library-icon.vibe-coding { border-color: rgba(6, 182, 212, 0.3); }
+        .library-icon.estrategia { border-color: rgba(168, 85, 247, 0.3); }
+        .library-icon.productos { border-color: rgba(245, 158, 11, 0.3); }
+        .library-icon.proyectos { border-color: rgba(16, 185, 129, 0.3); }
+        .library-icon.consulting { border-color: rgba(99, 102, 241, 0.3); }
+        
+        /* Stat badge colors */
+        .stat-badge.purple {
+            background: rgba(168, 85, 247, 0.2);
+            color: #c084fc;
+        }
+        
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 1.5rem 2rem;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+        
+        .back-link:hover {
+            color: var(--brand-gold);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hub-hero {
+                padding: 3rem 1.5rem 2rem;
+            }
+            
+            .featured-library {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+            
+            .featured-cta {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .libraries-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-badge {
+                position: static;
+                display: inline-block;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[var(--bg-body)] text-slate-100 font-sans antialiased">
+    <div class="mesh-bg"></div>
+    <div class="grid-bg"></div>
+
+    <site-header base-path="../.." theme="dark"></site-header>
+
+    <main>
+        <!-- Golden Layout: Quote & Breadcrumb -->
+        <section class="hook-quote-section">
+            <div class="hook-quote-divider"></div>
+            <div class="hook-quote-content">
+                <p class="hook-quote-text">"La IA no sustituye al genio, lo libera de la fricción cognitiva"</p>
+            </div>
+        </section>
+
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item"><a href="../../index.html">Inicio</a></li>
+                <li class="breadcrumb-separator">/</li>
+                <li class="breadcrumb-item"><a href="../../recursos/index.html">Recursos</a></li>
+                <li class="breadcrumb-separator">/</li>
+                <li class="breadcrumb-item active">Bibliotecas de Prompts</li>
+            </ol>
+        </nav>
+    
+    <!-- Featured Library -->
+    <section class="libraries-section">
+        <h2 class="section-title"><i data-lucide="star" class="w-6 h-6 text-brand-gold"></i> Biblioteca Destacada</h2>
+        
+        <a href="../biblioteca-universal/index.html" class="featured-library">
+            <span class="featured-badge"><i data-lucide="check-circle" class="w-3 h-3 inline-block mr-1"></i> Disponible</span>
+            <div class="featured-content">
+                <h2><i data-lucide="book" class="w-8 h-8 inline-block mr-2 text-brand-gold"></i> Biblioteca Universal</h2>
+                <p>La colección más completa y versátil. 180 prompts para análisis, comunicación, estrategia, productividad y mucho más. Compatible con ChatGPT, Gemini, Claude y cualquier IA.</p>
+                <div class="featured-stats">
+                    <span class="featured-stat"><i data-lucide="file-text" class="w-4 h-4 text-brand-gold"></i> <strong>180</strong> prompts</span>
+                    <span class="featured-stat"><i data-lucide="tag" class="w-4 h-4 text-brand-gold"></i> <strong>16</strong> categorías</span>
+                    <span class="featured-stat"><i data-lucide="clipboard-list" class="w-4 h-4 text-brand-gold"></i> Incluye <strong>parámetros</strong></span>
+                    <span class="featured-stat"><i data-lucide="target" class="w-4 h-4 text-brand-gold"></i> <strong>Arquetipos expertos</strong></span>
+                </div>
+            </div>
+            <span class="featured-cta">
+                Explorar Biblioteca <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </span>
+        </a>
+    </section>
+
+    <!-- Ruta de Evolución Section -->
+    <section class="libraries-section">
+        <h2 class="section-title"><i data-lucide="map-pin" class="w-6 h-6 text-brand-gold"></i> Ruta de Evolución Digital</h2>
+        <p class="section-subtitle">Una biblioteca para cada nivel de tu evolución. Avanza paso a paso.</p>
+        
+        <div class="ruta-grid">
+            <div class="ruta-card">
+                <span class="ruta-level n0">N0</span>
+                <h4>Diagnóstico</h4>
+                <span class="ruta-target">Coming Soon</span>
+            </div>
+            <div class="ruta-card">
+                <span class="ruta-level n1">N1</span>
+                <h4>EstrategIA</h4>
+                <span class="ruta-target">Coming Soon</span>
+            </div>
+            <div class="ruta-card">
+                <span class="ruta-level n2">N2</span>
+                <h4>Ofimática</h4>
+                <span class="ruta-target">Coming Soon</span>
+            </div>
+            <div class="ruta-card">
+                <span class="ruta-level n3">N3</span>
+                <h4>Comercial</h4>
+                <span class="ruta-target">Coming Soon</span>
+            </div>
+            <div class="ruta-card">
+                <span class="ruta-level n4">N4</span>
+                <h4>Formas de Trabajo</h4>
+                <span class="ruta-target">En proceso</span>
+            </div>
+            <div class="ruta-card">
+                <span class="ruta-level n5">N5</span>
+                <h4>Amplificado</h4>
+                <span class="ruta-target">En proceso</span>
+            </div>
+            <div class="ruta-card">
+                <span class="ruta-level n6">N6</span>
+                <h4>GerencIA</h4>
+                <span class="ruta-target">En proceso</span>
+            </div>
+            <div class="ruta-card">
+                <span class="ruta-level n7">N7</span>
+                <h4>Vibe Coding</h4>
+                <span class="ruta-target">En proceso</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Verticals -->
+    <section class="libraries-section">
+        <h2 class="section-title"><i data-lucide="briefcase" class="w-6 h-6 text-brand-gold"></i> Verticales Profesionales</h2>
+        <p class="section-subtitle">Bibliotecas especializadas por área funcional. Optimizadas para el día a día.</p>
+        
+        <div class="libraries-grid">
+            <div class="library-card disabled">
+                <div class="library-icon ventas"><i data-lucide="banknote" class="w-7 h-7"></i></div>
+                <h3>Ventas</h3>
+                <p>Prospección, negociación, seguimiento y cierre con IA.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+            
+            <div class="library-card disabled">
+                <div class="library-icon marketing"><i data-lucide="megaphone" class="w-7 h-7"></i></div>
+                <h3>Marketing</h3>
+                <p>Copywriting, contenidos, SEO y campañas.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+
+            <div class="library-card disabled">
+                <div class="library-icon desarrollo"><i data-lucide="laptop" class="w-7 h-7"></i></div>
+                <h3>Desarrollo</h3>
+                <p>Coding, debugging, arquitectura y documentación técnica.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+            
+            <div class="library-card disabled">
+                <div class="library-icon productos"><i data-lucide="package" class="w-7 h-7"></i></div>
+                <h3>Productos</h3>
+                <p>Product Management, UX y prototipado rápido.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+            
+            <div class="library-card disabled">
+                <div class="library-icon estrategia"><i data-lucide="gem" class="w-7 h-7"></i></div>
+                <h3>EstrategIA</h3>
+                <p>Pensamiento sistémico y diseño de futuros.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+
+            <div class="library-card disabled">
+                <div class="library-icon proyectos"><i data-lucide="layout" class="w-7 h-7"></i></div>
+                <h3>Proyectos</h3>
+                <p>Metodologías ágiles y gestión de equipos.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+
+            <div class="library-card disabled">
+                <div class="library-icon consulting"><i data-lucide="search" class="w-7 h-7"></i></div>
+                <h3>Consulting</h3>
+                <p>Diagnóstico, frameworks y presentaciones ejecutivas.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+
+            <div class="library-card disabled">
+                <div class="library-icon vibe-coding"><i data-lucide="palette" class="w-7 h-7"></i></div>
+                <h3>Vibe Coding</h3>
+                <p>Arquitectura de soluciones y desarrollo creativo con IA.</p>
+                <div class="library-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Commitment Section -->
+    <section class="libraries-section">
+        <div class="glass-panel p-8 rounded-3xl border border-white/10 text-center">
+            <h2 class="text-2xl font-bold text-white mb-4"><i data-lucide="calendar" class="w-6 h-6 inline-block mr-2 text-brand-gold"></i> Nuestro Compromiso para 2026</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto mb-8">
+                <strong>Nuestro Compromiso para 2026:</strong> Nos comprometemos a liberar una biblioteca nueva cada mes a partir de febrero de este mismo año.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="roadmap.html" class="stat-badge gold px-6 py-3 text-base">Ver Roadmap Completo <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Elite Programs Section -->
+    <section class="libraries-section">
+        <h2 class="section-title"><i data-lucide="graduation-cap" class="w-6 h-6 text-brand-gold"></i> Programas de Transformación</h2>
+        <p class="section-subtitle">Bibliotecas premium vinculadas a nuestros programas élite de formación.</p>
+        
+        <div class="elite-grid">
+            <!-- Digital Champion -->
+            <div class="elite-card champion">
+                <span class="elite-badge"><i data-lucide="award" class="w-3 h-3 inline-block mr-1"></i> Programa Élite</span>
+                <h3>Digital Champion</h3>
+                <p>El programa definitivo para convertirte en líder de transformación digital. Prompts para coaching, mentoría y evangelización de IA.</p>
+                <div class="elite-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+            
+            <!-- Empoderamiento -->
+            <div class="elite-card empoderamiento">
+                <span class="elite-badge"><i data-lucide="heart" class="w-3 h-3 inline-block mr-1"></i> Programa Élite</span>
+                <h3>Empoderamiento</h3>
+                <p>Programa de inmersión total en IA. Prompts para dominar los 9 ejes de competencia con profundidad.</p>
+                <div class="elite-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+            
+            <!-- De Ocupado a Productivo -->
+            <div class="elite-card productivo">
+                <span class="elite-badge"><i data-lucide="zap" class="w-3 h-3 inline-block mr-1"></i> Intensivo</span>
+                <h3>De Ocupado a Productivo</h3>
+                <p>Transforma tu gestión del tiempo con IA. Prompts para automatización, delegación y enfoque.</p>
+                <div class="elite-meta">
+                    <span class="library-count">100+ prompts</span>
+                    <span class="library-status coming-soon">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div class="info-grid">
+            <div class="info-card">
+                <h4><i data-lucide="lightbulb" class="w-5 h-5"></i> Cómo usar</h4>
+                <p>Cada prompt incluye parámetros personalizables, un arquetipo experto y un checklist de calidad. Simplemente copia, ajusta los parámetros y pega en tu IA favorita.</p>
+            </div>
+            <div class="info-card">
+                <h4><i data-lucide="rocket" class="w-5 h-5"></i> Sugerir prompts</h4>
+                <p>¿Tienes un prompt que te funciona genial? Contáctanos para incluirlo en nuestras bibliotecas y ayudar a la comunidad.</p>
+            </div>
+            <div class="info-card">
+                <h4><i data-lucide="target" class="w-5 h-5"></i> Entrega Mensual</h4>
+                <p>Añadimos profundidad a tu evolución con una biblioteca nueva cada mes. Consulta el roadmap para ver los próximos lanzamientos.</p>
+            </div>
+        </div>
+    </section>
+                <!-- Sección de Acceso Directo movida a Biblioteca Universal -->
+
+    <!-- GPT Assistants Section -->
+    <section class="gpt-assistants-section py-12 px-6 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h3 class="text-lg font-bold text-white mb-2">¿Necesitas ayuda con tus prompts?</h3>
+            <p class="text-slate-400 text-sm mb-6">Prueba nuestros asistentes GPT especializados</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="https://chatgpt.com/g/g-68f516f38abc81919db234a0d486dc64-planning" target="_blank" rel="noopener noreferrer" class="gpt-btn-large">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                    <span>Planning</span>
+                </a>
+                <a href="https://chatgpt.com/g/g-68f4434cf0348191a569cf526fa53654-prompting" target="_blank" rel="noopener noreferrer" class="gpt-btn-large">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
+                    <span>Prompting</span>
+                </a>
+                <a href="https://chatgpt.com/g/g-69396067bbd88191aaa7b2479be71ff8-estudio" target="_blank" rel="noopener noreferrer" class="gpt-btn-large">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    <span>Estudio</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back Navigation -->
+    <a href="../index.html" class="back-link">
+        <i data-lucide="chevron-left" class="w-4 h-4"></i> Volver a Recursos
+    </a>
+
+
+    <site-footer base-path="../.."></site-footer>
+
+    <!-- Components -->
+    <script src="../../components/SiteHeader.js"></script>
+    <script src="../../components/SiteFooter.js"></script>
+</body>
+</html>

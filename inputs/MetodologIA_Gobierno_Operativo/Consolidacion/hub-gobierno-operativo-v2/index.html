@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MetodologIA — Gobierno Operativo v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#122562;--gold:#FFD700;--blue:#137DC5;--dark:#1F2833;--lavender:#BBA0CC;--grey:#808080;
+  --bg:#FAFBFD;--surface:#FFFFFF;--border:#E8ECF1;--border-hover:#137DC5;
+  --text-1:#1F2833;--text-2:#4A5568;--text-3:#808080;
+  --font-head:'Poppins',sans-serif;--font-body:'Trebuchet MS',Verdana,sans-serif;--font-note:'Futura','Century Gothic',sans-serif;
+  --radius:10px;--shadow:0 2px 8px rgba(18,37,98,.06);--shadow-hover:0 6px 24px rgba(18,37,98,.1);
+  --sidebar-w:320px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text-1);line-height:1.6;display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--navy);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .3s}
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-header h1{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--gold);letter-spacing:-.3px}
+.sidebar-header p{font-size:.72rem;color:rgba(255,255,255,.6);margin-top:4px;font-family:var(--font-note)}
+.sidebar-search{padding:12px 16px}
+.sidebar-search input{width:100%;padding:8px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:.8rem;font-family:var(--font-body);outline:none;transition:border .2s}
+.sidebar-search input:focus{border-color:var(--gold)}
+.sidebar-search input::placeholder{color:rgba(255,255,255,.4)}
+
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
+.sidebar-nav::-webkit-scrollbar{width:4px}
+.sidebar-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+
+.nav-section{margin-bottom:4px}
+.nav-section-title{padding:10px 20px 6px;font-family:var(--font-head);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.nav-section-title .count{background:rgba(255,215,0,.15);padding:1px 7px;border-radius:8px;font-size:.62rem}
+.nav-section-title:hover{color:#fff}
+.nav-item{display:flex;align-items:center;gap:8px;padding:6px 20px 6px 28px;font-size:.78rem;color:rgba(255,255,255,.7);cursor:pointer;transition:all .15s;text-decoration:none;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--gold)}
+.nav-item.active{background:rgba(255,215,0,.08);color:var(--gold);border-left-color:var(--gold);font-weight:600}
+.nav-item .icon{width:16px;text-align:center;font-size:.7rem;flex-shrink:0}
+.nav-item .badge{margin-left:auto;font-size:.6rem;padding:1px 6px;border-radius:6px;font-family:var(--font-note);font-weight:600}
+.badge-v2{background:rgba(52,211,153,.15);color:#34d399}
+.badge-legal{background:rgba(19,125,197,.15);color:var(--blue)}
+.badge-fm{background:rgba(239,68,68,.12);color:#ef4444}
+
+.nav-folder{padding:6px 20px;font-size:.72rem;color:rgba(255,255,255,.4);font-family:var(--font-note);cursor:pointer;display:flex;align-items:center;gap:6px}
+.nav-folder:hover{color:rgba(255,255,255,.7)}
+.nav-folder .arrow{transition:transform .2s;font-size:.6rem}
+.nav-folder.open .arrow{transform:rotate(90deg)}
+.nav-folder-children{display:none;padding-left:12px}
+.nav-folder.open+.nav-folder-children{display:block}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.breadcrumb{font-size:.78rem;color:var(--text-3);font-family:var(--font-note)}
+.breadcrumb span{color:var(--navy);font-weight:600}
+.topbar-actions{display:flex;gap:8px}
+.topbar-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;font-family:var(--font-note);font-size:.72rem;font-weight:600;transition:all .2s}
+.topbar-btn:hover{border-color:var(--blue);color:var(--blue)}
+.topbar-btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.topbar-btn.primary:hover{background:var(--blue)}
+
+.content{flex:1;padding:32px;max-width:1000px}
+
+/* DASHBOARD VIEW */
+.dashboard-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;transition:all .2s}
+.stat-card:hover{box-shadow:var(--shadow-hover);border-color:var(--blue)}
+.stat-card .num{font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--navy);line-height:1}
+.stat-card .label{font-size:.72rem;color:var(--text-3);margin-top:4px;font-family:var(--font-note)}
+
+.section-heading{font-family:var(--font-head);font-size:1rem;font-weight:700;color:var(--navy);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+.section-heading .chip{font-size:.62rem;padding:2px 8px;border-radius:6px;font-weight:700;font-family:var(--font-note)}
+.chip-estrategico{background:rgba(187,160,204,.15);color:var(--lavender)}
+.chip-misional{background:rgba(255,215,0,.1);color:#B8860B}
+.chip-soporte{background:rgba(19,125,197,.1);color:var(--blue)}
+.chip-legal{background:rgba(18,37,98,.08);color:var(--navy)}
+
+.process-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:24px}
+
+.process-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .2s;position:relative}
+.process-card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-hover);transform:translateY(-1px)}
+.process-card h3{font-family:var(--font-head);font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.process-card .desc{font-size:.76rem;color:var(--text-2);line-height:1.4;margin-bottom:10px}
+.process-card .meta-row{display:flex;gap:6px;flex-wrap:wrap}
+.process-card .tag{font-size:.62rem;padding:2px 7px;border-radius:5px;font-weight:600;font-family:var(--font-note)}
+.tag-gold{background:rgba(255,215,0,.1);color:#B8860B}
+.tag-green{background:rgba(52,211,153,.1);color:#059669}
+.tag-red{background:rgba(239,68,68,.08);color:#DC2626}
+.tag-blue{background:rgba(19,125,197,.1);color:var(--blue)}
+.tag-grey{background:rgba(128,128,128,.1);color:var(--grey)}
+
+.maturity-bar{display:flex;gap:3px;margin-top:8px;align-items:center}
+.maturity-dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
+.maturity-dot.filled{background:var(--blue)}
+.maturity-dot.current{background:var(--gold);box-shadow:0 0 6px rgba(255,215,0,.4)}
+.maturity-label{font-size:.6rem;color:var(--text-3);margin-left:4px;font-family:var(--font-note)}
+
+/* PREVIEW PANEL */
+.preview-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(18,37,98,.4);z-index:200;backdrop-filter:blur(4px)}
+.preview-overlay.open{display:flex;justify-content:center;align-items:center}
+.preview-panel{background:var(--surface);border-radius:12px;width:90vw;max-width:900px;height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(18,37,98,.2);overflow:hidden}
+.preview-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.preview-header h2{font-family:var(--font-head);font-size:.9rem;font-weight:700;color:var(--navy)}
+.preview-header .actions{display:flex;gap:8px}
+.preview-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:all .2s}
+.preview-close:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.preview-body{flex:1;overflow-y:auto;padding:32px}
+.preview-body iframe{width:100%;height:100%;border:none}
+
+/* BACKCASTING BAR */
+.bc-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.bc-bar-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;border-left:4px solid var(--gold)}
+.bc-bar-card h4{font-family:var(--font-head);font-size:.76rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.bc-bar-card .bc-info{font-size:.68rem;color:var(--text-3);font-family:var(--font-note)}
+.bc-progress{height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
+.bc-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:2px;width:100%}
+
+/* MOBILE */
+.sidebar-toggle{display:none;position:fixed;top:12px;left:12px;z-index:200;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:1rem;align-items:center;justify-content:center}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-toggle{display:flex}
+  .main{margin-left:0}
+  .dashboard-stats{grid-template-columns:repeat(2,1fr)}
+  .bc-summary{grid-template-columns:repeat(2,1fr)}
+  .process-grid{grid-template-columns:1fr}
+}
+@media print{
+  .sidebar,.topbar,.sidebar-toggle{display:none!important}
+  .main{margin-left:0}
+  .process-card{break-inside:avoid;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+
+<button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>Metodolog<span style="color:#FFD700">IA</span></h1>
+    <p>Gobierno Operativo v2.0 — Intranet</p>
+  </div>
+  <div class="sidebar-search">
+    <input type="text" placeholder="Buscar archivo..." id="sidebarSearch" oninput="filterSidebar(this.value)">
+  </div>
+  <nav class="sidebar-nav" id="sidebarNav">
+
+    <div class="nav-section">
+      <div class="nav-section-title">Dashboard <span class="count">Home</span></div>
+      <a class="nav-item active" onclick="showDashboard()"><span class="icon">◉</span> Vista General</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Estrategicos <span class="count">1</span></div>
+      <a class="nav-item" data-file="proceso-vigilancia-tecnologica/gestionar-vigilancia-tecnologica-proceso"><span class="icon">◈</span> Vigilancia Tecnologica <span class="badge badge-v2">v2</span></a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Misionales — Comercial <span class="count">4</span></div>
+      <div class="nav-folder" onclick="this.classList.toggle('open')"><span class="arrow">▸</span> Pre-Sales (11)</div>
+      <div class="nav-folder-children">
+        <a class="nav-item" data-file="proceso-presales/gestionar-presales-proceso"><span class="icon">▪</span> Proceso Maestro <span class="badge badge-v2">v2</span></a>
+        <a class="nav-item" data-file="proceso-presales/assets/rubrica-scoring-leads"><span class="icon">▪</span> Rubrica Scoring</a>
+        <a class="nav-item" data-file="proceso-presales/assets/matriz-autoridad-descuentos"><span class="icon">▪</span> Matriz Descuentos</a>
+        <a class="nav-item" data-file="proceso-presales/assets/matriz-compensacion-ventas"><span class="icon">▪</span> Compensacion Ventas</a>
+        <a class="nav-item" data-file="proceso-presales/assets/plantilla-propuesta-comercial"><span class="icon">▪</span> Plantilla Propuesta</a>
+        <a class="nav-item" data-file="proceso-presales/assets/battle-cards/battle-card-template"><span class="icon">▪</span> Battle Card</a>
+        <a class="nav-item" data-file="proceso-presales/references/sop/sop-calificacion-presales/calificar-oportunidad-presales-sop"><span class="icon">▪</span> SOP Calificacion</a>
+        <a class="nav-item" data-file="proceso-presales/references/sop/sop-deal-review/deal-review-sop"><span class="icon">▪</span> SOP Deal Review</a>
+        <a class="nav-item" data-file="proceso-presales/references/sop/sop-propuesta-aprobacion/aprobar-propuesta-sop"><span class="icon">▪</span> SOP Aprobacion</a>
+        <a class="nav-item" data-file="proceso-presales/references/sop/sop-negociacion-contrato/negociar-contrato-sop"><span class="icon">▪</span> SOP Negociacion</a>
+        <a class="nav-item" data-file="proceso-presales/references/sop/sop-enablement/gestionar-enablement-sop"><span class="icon">▪</span> SOP Enablement</a>
+      </div>
+
+      <div class="nav-folder" onclick="this.classList.toggle('open')"><span class="arrow">▸</span> Onboarding Cliente (13)</div>
+      <div class="nav-folder-children">
+        <a class="nav-item" data-file="proceso-onboarding-cliente/gestionar-onboarding-cliente-proceso"><span class="icon">▪</span> Proceso Maestro <span class="badge badge-v2">v2</span></a>
+        <a class="nav-item" data-file="proceso-onboarding-cliente/assets/formulario-f0-contacto-inicial"><span class="icon">▪</span> F0 Contacto</a>
+        <a class="nav-item" data-file="proceso-onboarding-cliente/assets/formulario-f1-diagnostico"><span class="icon">▪</span> F1 Diagnostico</a>
+        <a class="nav-item" data-file="proceso-onboarding-cliente/assets/formulario-f2-contratacion"><span class="icon">▪</span> F2 Contratacion</a>
+        <a class="nav-item" data-file="proceso-onboarding-cliente/assets/formulario-f3-kickoff"><span class="icon">▪</span> F3 Kickoff</a>
+        <a class="nav-item" data-file="proceso-onboarding-cliente/assets/formulario-f4-operacion"><span class="icon">▪</span> F4 Operacion</a>
+        <a class="nav-item" data-file="proceso-onboarding-cliente/assets/ceremonia-kickoff-template"><span class="icon">▪</span> Ceremonia Kickoff</a>
+        <a class="nav-item" data-file="proceso-onboarding-cliente/assets/sla-baseline-template"><span class="icon">▪</span> SLA Baseline</a>
+      </div>
+
+      <a class="nav-item" data-file="proceso-customer-success/gestionar-customer-success-proceso"><span class="icon">◈</span> Customer Success <span class="badge badge-v2">v2</span></a>
+      <a class="nav-item" data-file="proceso-comunidad-contenido/gestionar-comunidad-contenido-proceso"><span class="icon">◈</span> Comunidad y Contenido <span class="badge badge-v2">v2</span></a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Misionales — I+D <span class="count">2</span></div>
+      <a class="nav-item" data-file="proceso-diseno-metodologico/gestionar-diseno-metodologico-proceso"><span class="icon">◈</span> Diseno Metodologico <span class="badge badge-v2">v2</span></a>
+      <a class="nav-item" data-file="proceso-certificacion-calidad/gestionar-certificacion-calidad-proceso"><span class="icon">◈</span> Certificacion y Calidad <span class="badge badge-v2">v2</span></a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Soporte — Financiero <span class="count">2</span></div>
+      <div class="nav-folder" onclick="this.classList.toggle('open')"><span class="arrow">▸</span> Ops Comerciales (8)</div>
+      <div class="nav-folder-children">
+        <a class="nav-item" data-file="proceso-operaciones-comerciales/gestionar-operaciones-comerciales-proceso"><span class="icon">▪</span> Proceso Maestro</a>
+        <a class="nav-item" data-file="proceso-operaciones-comerciales/assets/playbook-precios-unificado"><span class="icon">▪</span> Playbook Precios</a>
+        <a class="nav-item" data-file="proceso-operaciones-comerciales/references/sop/sop-facturacion/facturar-servicio-sop"><span class="icon">▪</span> SOP Facturacion</a>
+        <a class="nav-item" data-file="proceso-operaciones-comerciales/references/sop/sop-reconocimiento-ingresos/reconocer-ingresos-sop"><span class="icon">▪</span> SOP Revenue NIIF</a>
+        <a class="nav-item" data-file="proceso-operaciones-comerciales/references/sop/sop-disputas-pagos/resolver-disputa-pago-sop"><span class="icon">▪</span> SOP Disputas</a>
+        <a class="nav-item" data-file="proceso-operaciones-comerciales/references/sop/sop-forecast/forecast-arr-mrr-sop"><span class="icon">▪</span> SOP Forecast</a>
+        <a class="nav-item" data-file="proceso-operaciones-comerciales/references/sop/sop-aprobacion-gastos/aprobar-gasto-sop"><span class="icon">▪</span> SOP Gastos</a>
+      </div>
+
+      <div class="nav-folder" onclick="this.classList.toggle('open')"><span class="arrow">▸</span> Gobierno Financiero (17)</div>
+      <div class="nav-folder-children">
+        <a class="nav-item" data-file="proceso-gobierno-financiero/gestionar-gobierno-financiero-proceso"><span class="icon">▪</span> Proceso Maestro <span class="badge badge-v2">v2</span></a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/backcasting-cfo-contador-revisorfiscal"><span class="icon">▪</span> Backcasting CFO <span class="badge badge-fm">22FM</span></a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/assets/calendario-tributario-2026"><span class="icon">▪</span> Calendario Tributario</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/assets/tabla-retencion-fuente-2026"><span class="icon">▪</span> Tabla Retencion</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/references/sop/sop-obligaciones-dian/sop-obligaciones-dian"><span class="icon">▪</span> SOP DIAN</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/references/sop/sop-pila-independientes/sop-pila-independientes"><span class="icon">▪</span> SOP PILA</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/references/sop/sop-retencion-fuente/sop-retencion-fuente"><span class="icon">▪</span> SOP Retencion</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/references/sop/sop-cierre-contable/sop-cierre-contable"><span class="icon">▪</span> SOP Cierre Contable</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/references/sop/sop-defensa-auditoria/sop-defensa-auditoria-dian"><span class="icon">▪</span> SOP Defensa DIAN</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/references/sop/sop-nomina-parafiscales/sop-nomina-parafiscales"><span class="icon">▪</span> SOP Nomina</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/meta/politica-roles-financieros"><span class="icon">▪</span> Roles Financieros</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/meta/politica-sagrilaft"><span class="icon">▪</span> SAGRILAFT</a>
+        <a class="nav-item" data-file="proceso-gobierno-financiero/meta/analisis-exenciones-iva-educacion"><span class="icon">▪</span> IVA Educacion</a>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Soporte — TI <span class="count">1</span></div>
+      <div class="nav-folder" onclick="this.classList.toggle('open')"><span class="arrow">▸</span> Gobierno Tecnologico (10)</div>
+      <div class="nav-folder-children">
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/gestionar-gobierno-tecnologico-proceso"><span class="icon">▪</span> Proceso Maestro <span class="badge badge-v2">v2</span></a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/backcasting-cto-ciso"><span class="icon">▪</span> Backcasting CTO <span class="badge badge-fm">12FM</span></a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/meta/politica-seguridad-informacion"><span class="icon">▪</span> Seguridad Info</a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/meta/politica-uso-aceptable-ia"><span class="icon">▪</span> Uso de IA</a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/meta/analisis-workflows-ai-native-ai-supported"><span class="icon">▪</span> AI Analysis</a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/references/sop/sop-gestion-accesos/sop-gestion-accesos"><span class="icon">▪</span> SOP Accesos</a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/references/sop/sop-backup-recuperacion/sop-backup-recuperacion"><span class="icon">▪</span> SOP Backup</a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/references/sop/sop-incidentes-ti/sop-incidentes-ti"><span class="icon">▪</span> SOP Incidentes</a>
+        <a class="nav-item" data-file="proceso-gobierno-tecnologico/assets/plan-continuidad-negocio-ti"><span class="icon">▪</span> BCP</a>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Soporte — RRHH <span class="count">1</span></div>
+      <div class="nav-folder" onclick="this.classList.toggle('open')"><span class="arrow">▸</span> Talento Humano (7)</div>
+      <div class="nav-folder-children">
+        <a class="nav-item" data-file="proceso-gobierno-talento-humano/gestionar-gobierno-talento-humano-proceso"><span class="icon">▪</span> Proceso Maestro <span class="badge badge-v2">v2</span></a>
+        <a class="nav-item" data-file="proceso-gobierno-talento-humano/backcasting-rrhh"><span class="icon">▪</span> Backcasting RRHH <span class="badge badge-fm">10FM</span></a>
+        <a class="nav-item" data-file="proceso-gobierno-talento-humano/assets/checklist-clasificacion-laboral"><span class="icon">▪</span> Clasificacion Laboral</a>
+        <a class="nav-item" data-file="proceso-gobierno-talento-humano/references/sop/sop-contratacion/sop-contratacion"><span class="icon">▪</span> SOP Contratacion</a>
+        <a class="nav-item" data-file="proceso-gobierno-talento-humano/references/sop/sop-desvinculacion/sop-desvinculacion"><span class="icon">▪</span> SOP Desvinculacion</a>
+        <a class="nav-item" data-file="proceso-gobierno-talento-humano/meta/politica-desconexion-laboral"><span class="icon">▪</span> Desconexion Laboral</a>
+        <a class="nav-item" data-file="proceso-gobierno-talento-humano/meta/politica-sgsst"><span class="icon">▪</span> SG-SST</a>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Legal & Compliance <span class="count">15</span></div>
+      <div class="nav-folder" onclick="this.classList.toggle('open')"><span class="arrow">▸</span> Documentos Legales</div>
+      <div class="nav-folder-children">
+        <a class="nav-item" data-file="../proceso-comercial/meta/contrato-marco-servicios-msa"><span class="icon">▪</span> MSA <span class="badge badge-legal">18 cl</span></a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/terminos-de-servicio-tos"><span class="icon">▪</span> ToS</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/politica-de-privacidad"><span class="icon">▪</span> Privacidad</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/cesion-derechos-ip"><span class="icon">▪</span> Cesion IP</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/plan-respuesta-brechas-datos"><span class="icon">▪</span> Brechas Datos</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/proceso-ciclo-vida-contratos-clm"><span class="icon">▪</span> CLM</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/checklist-due-diligence-proveedores"><span class="icon">▪</span> Due Diligence</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/politica-conflicto-intereses"><span class="icon">▪</span> Conflicto Intereses</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/checklist-pre-firma"><span class="icon">▪</span> Pre-Firma Gate</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/registro-formatos-documentales"><span class="icon">▪</span> Registro Formatos</a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/backcasting-coo-failure-modes"><span class="icon">▪</span> Backcasting COO <span class="badge badge-fm">20FM</span></a>
+        <a class="nav-item" data-file="../proceso-comercial/meta/matriz-trazabilidad-gap-closure"><span class="icon">▪</span> Trazabilidad COO</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="breadcrumb">MetodologIA / <span id="currentPath">Gobierno Operativo</span></div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="window.print()">Imprimir</button>
+    </div>
+  </div>
+
+  <div class="content" id="contentArea">
+    <!-- DASHBOARD -->
+    <div id="dashboardView">
+      <div class="dashboard-stats">
+        <div class="stat-card"><div class="num">64</div><div class="label">Failure Modes</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--green)">100%</div><div class="label">Cerrados</div></div>
+        <div class="stat-card"><div class="num">19</div><div class="label">Procesos</div></div>
+        <div class="stat-card"><div class="num">59</div><div class="label">v2.0</div></div>
+        <div class="stat-card"><div class="num">85</div><div class="label">Archivos</div></div>
+      </div>
+
+      <div class="section-heading">Backcastings <span class="chip chip-legal">4 perspectivas</span></div>
+      <div class="bc-summary">
+        <div class="bc-bar-card"><h4>COO</h4><div class="bc-info">20 FMs | Comercial, Legal, Onboarding</div><div class="bc-progress"><div class="bc-progress-fill"></div></div></div>
+        <div class="bc-bar-card"><h4>CFO / Contador</h4><div class="bc-info">22 FMFs | DIAN, PILA, Contable</div><div class="bc-progress"><div class="bc-progress-fill"></div></div></div>
+        <div class="bc-bar-card"><h4>CTO / CISO</h4><div class="bc-info">12 FMTs | Seguridad, TI, IA</div><div class="bc-progress"><div class="bc-progress-fill"></div></div></div>
+        <div class="bc-bar-card"><h4>RRHH</h4><div class="bc-info">10 FMRHs | Laboral, SST</div><div class="bc-progress"><div class="bc-progress-fill"></div></div></div>
+      </div>
+
+      <div class="section-heading">Procesos Estrategicos <span class="chip chip-estrategico">1</span></div>
+      <div class="process-grid">
+        <div class="process-card" onclick="openFile('proceso-vigilancia-tecnologica/gestionar-vigilancia-tecnologica-proceso')">
+          <h3>Vigilancia Tecnologica y Metodologica</h3>
+          <p class="desc">Radar semanal, inteligencia competitiva, technology radar, sesion anual</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-grey">1 archivo</span></div>
+          <div class="maturity-bar"><span class="maturity-dot current"></span><span class="maturity-dot"></span><span class="maturity-dot"></span><span class="maturity-dot"></span><span class="maturity-label">Nivel 1 → Q2: N2</span></div>
+        </div>
+      </div>
+
+      <div class="section-heading">Procesos Misionales <span class="chip chip-misional">6</span></div>
+      <div class="process-grid">
+        <div class="process-card" onclick="openFile('proceso-presales/gestionar-presales-proceso')">
+          <h3>Pre-Sales</h3>
+          <p class="desc">Scoring BANT+Fit, deal review, descuentos, compensacion, propuestas</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">11 archivos</span><span class="tag tag-red">6 FMs</span></div>
+          <div class="maturity-bar"><span class="maturity-dot current"></span><span class="maturity-dot"></span><span class="maturity-dot"></span><span class="maturity-dot"></span><span class="maturity-label">Nivel 1</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-onboarding-cliente/gestionar-onboarding-cliente-proceso')">
+          <h3>Onboarding Progresivo</h3>
+          <p class="desc">5 formularios F0→F4, kickoff, SLA baseline, fast lane, sector publico</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">13 archivos</span><span class="tag tag-red">3 FMs</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-customer-success/gestionar-customer-success-proceso')">
+          <h3>Customer Success</h3>
+          <p class="desc">Health score, playbooks Green/Yellow/Red, churn signals, NRR >110%</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">1 archivo</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-comunidad-contenido/gestionar-comunidad-contenido-proceso')">
+          <h3>Comunidad y Contenido</h3>
+          <p class="desc">Flywheel de abundancia, repurposing, alumni, moderacion</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">1 archivo</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-diseno-metodologico/gestionar-diseno-metodologico-proceso')">
+          <h3>Diseno Metodologico / I+D</h3>
+          <p class="desc">7 fases, kill criteria, versionado, proteccion IP</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">1 archivo</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-certificacion-calidad/gestionar-certificacion-calidad-proceso')">
+          <h3>Certificacion y Calidad</h3>
+          <p class="desc">Path L1→L4 facilitadores, lifecycle contenido, QA continuo</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">1 archivo</span></div>
+        </div>
+      </div>
+
+      <div class="section-heading">Procesos de Soporte <span class="chip chip-soporte">4</span></div>
+      <div class="process-grid">
+        <div class="process-card" onclick="openFile('proceso-operaciones-comerciales/gestionar-operaciones-comerciales-proceso')">
+          <h3>Operaciones Comerciales</h3>
+          <p class="desc">Facturacion DIAN, NIIF 15, disputas, gastos, forecast</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">8 archivos</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-gobierno-financiero/gestionar-gobierno-financiero-proceso')">
+          <h3>Gobierno Financiero</h3>
+          <p class="desc">DIAN, PILA, retencion, cierre contable, nomina, SAGRILAFT</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">17 archivos</span><span class="tag tag-red">22 FMFs</span></div>
+          <div class="maturity-bar"><span class="maturity-dot current"></span><span class="maturity-dot"></span><span class="maturity-dot"></span><span class="maturity-dot"></span><span class="maturity-label">Nivel 1 → EOY: N2</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-gobierno-tecnologico/gestionar-gobierno-tecnologico-proceso')">
+          <h3>Gobierno Tecnologico</h3>
+          <p class="desc">Seguridad info, accesos, backup, BCP, uso de IA</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">10 archivos</span><span class="tag tag-red">12 FMTs</span></div>
+        </div>
+        <div class="process-card" onclick="openFile('proceso-gobierno-talento-humano/gestionar-gobierno-talento-humano-proceso')">
+          <h3>Talento Humano</h3>
+          <p class="desc">Clasificacion laboral, contratacion, desvinculacion, SST</p>
+          <div class="meta-row"><span class="tag tag-gold">v2.0</span><span class="tag tag-green">7 archivos</span><span class="tag tag-red">10 FMRHs</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE PREVIEW -->
+    <div id="fileView" style="display:none">
+      <div style="margin-bottom:16px">
+        <button class="topbar-btn" onclick="showDashboard()" style="margin-right:8px">← Volver</button>
+        <button class="topbar-btn primary" id="openMdBtn">Abrir .md</button>
+        <button class="topbar-btn" id="openHtmlBtn">Abrir .html</button>
+      </div>
+      <div id="fileContent" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;min-height:60vh">
+        <p style="color:var(--text-3);font-family:var(--font-note)">Selecciona un archivo del sidebar para previsualizar.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const BASE = '../../procesos/';
+
+function showDashboard(){
+  document.getElementById('dashboardView').style.display='';
+  document.getElementById('fileView').style.display='none';
+  document.getElementById('currentPath').textContent='Gobierno Operativo';
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  document.querySelector('.nav-item[onclick="showDashboard()"]').classList.add('active');
+}
+
+function openFile(path){
+  const mdPath = BASE + path + '.md';
+  const htmlPath = 'html/' + path.replace(/\//g,'--') + '.html';
+
+  document.getElementById('dashboardView').style.display='none';
+  document.getElementById('fileView').style.display='';
+  document.getElementById('currentPath').textContent = path.split('/').pop().replace(/-/g,' ');
+
+  document.getElementById('openMdBtn').onclick = ()=> window.open(mdPath,'_blank');
+  document.getElementById('openHtmlBtn').onclick = ()=> window.open(htmlPath,'_blank');
+
+  // Try to load HTML preview
+  document.getElementById('fileContent').innerHTML =
+    '<iframe src="'+htmlPath+'" style="width:100%;height:70vh;border:none;border-radius:8px" ' +
+    'onerror="this.parentNode.innerHTML=\'<p style=color:var(--text-3)>HTML no generado aun. Haz clic en Abrir .md para ver el archivo fuente.</p>\'"></iframe>';
+
+  document.querySelectorAll('.nav-item').forEach(i=>{
+    i.classList.remove('active');
+    if(i.dataset.file === path) i.classList.add('active');
+  });
+}
+
+// Wire up sidebar nav items
+document.querySelectorAll('.nav-item[data-file]').forEach(item=>{
+  item.addEventListener('click', ()=> openFile(item.dataset.file));
+});
+
+function filterSidebar(q){
+  q = q.toLowerCase();
+  document.querySelectorAll('.nav-item[data-file]').forEach(item=>{
+    item.style.display = !q || item.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

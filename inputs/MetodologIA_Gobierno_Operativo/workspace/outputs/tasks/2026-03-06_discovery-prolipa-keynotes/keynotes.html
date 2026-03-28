@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keynotes: Discovery Prolipa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* SCSS-like Variables for Brand Protocol */
+        :root {
+            --brand-main: #122562;
+            --brand-gold: #D97706;
+            --brand-blue: #0369A1;
+            --brand-dark: #0F172A;
+            --brand-purple: #7C3AED;
+            --brand-gray: #475569;
+            --bg-light: #F8FAFC;
+            
+            --font-head: 'Poppins', sans-serif;
+            --font-body: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            --font-note: 'Futura', 'Trebuchet MS', Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--brand-dark);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: var(--font-head);
+            color: var(--brand-main);
+            margin-top: 0;
+        }
+
+        h1 { font-size: 3.5rem; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 1rem; }
+        h2 { font-size: 2.5rem; font-weight: 600; margin-bottom: 2rem; }
+        h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
+        p { font-size: 1.125rem; margin-bottom: 1.5rem; color: var(--brand-dark); }
+        .small-note { font-family: var(--font-note); font-size: 0.85rem; color: var(--brand-gray); }
+
+        /* Layout - Swiss Grid */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        /* Aesthetic Classes */
+        .soft-card {
+            background: #FFFFFF;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(18, 37, 98, 0.05); /* Softest shadow */
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .soft-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Micro-gradients */
+        .grad-blue { background: linear-gradient(135deg, rgba(19,125,197,0.05) 0%, rgba(19,125,197,0.15) 100%); }
+        .grad-purple { background: linear-gradient(135deg, rgba(187,160,204,0.1) 0%, rgba(187,160,204,0.2) 100%); }
+        .grad-gold { background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0.2) 100%); }
+
+        /* UI Elements */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-family: var(--font-note);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 0.5rem;
+            margin-bottom: 1rem;
+            gap: 6px;
+        }
+        .chip-main { background-color: var(--brand-main); color: white; }
+        .chip-blue { background-color: rgba(19,125,197,0.1); color: var(--brand-blue); }
+        .chip-gold { background-color: rgba(255,215,0,0.2); color: var(--brand-main); }
+        .chip-purple { background-color: rgba(187,160,204,0.2); color: var(--brand-main); }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .checklist li {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+        }
+        .checklist li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: var(--brand-blue);
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat center / contain;
+            mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat center / contain;
+        }
+
+        .callout {
+            border-left: 4px solid var(--brand-blue);
+            padding: 1.5rem 2rem;
+            background: rgba(19,125,197,0.05);
+            border-radius: 0 12px 12px 0;
+            margin: 2rem 0;
+            font-family: var(--font-note);
+            font-size: 1.05rem;
+            color: var(--brand-main);
+        }
+
+        /* Utility Classes for Lint Fixes */
+        .uppercase { text-transform: uppercase; }
+        .text-none { text-transform: none; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .fs-055 { font-size: 0.55rem; }
+        .fs-07 { font-size: 0.7rem; }
+        .fs-075 { font-size: 0.75rem !important; }
+        .fs-085 { font-size: 0.85rem; }
+        .fs-095 { font-size: 0.95rem; }
+        .fs-1 { font-size: 1rem; }
+        .fs-115 { font-size: 1.15rem; }
+        .fs-13 { font-size: 1.3rem; }
+        .fw-bold { font-weight: bold; }
+        .fw-600 { font-weight: 600; }
+        .fw-700 { font-weight: 700; }
+        .fw-800 { font-weight: 800; }
+        .lh-1 { line-height: 1; }
+        .ls-tight { letter-spacing: -0.5px; }
+        .ls-wide { letter-spacing: 0.2em; }
+        .font-head { font-family: var(--font-head); }
+        .font-note { font-family: var(--font-note); }
+        .color-main { color: var(--brand-main); }
+        .color-gold { color: var(--brand-gold) !important; }
+        .color-blue { color: var(--brand-blue) !important; }
+        .color-purple { color: var(--brand-purple) !important; }
+        .color-gray { color: var(--brand-gray); }
+        .color-dark { color: var(--brand-dark); }
+        .bg-white { background: white !important; }
+        .bg-gold-soft { background: rgba(255,215,0,0.05); }
+        .bg-blue-soft { background: rgba(19,125,197,0.05); }
+        .bg-purple-soft { background: rgba(187,160,204,0.05); }
+        .bg-light-soft { background: var(--bg-light); border-radius: 12px; }
+        .border-gold { border-left-color: var(--brand-gold) !important; }
+        .border-purple { border-left-color: var(--brand-purple) !important; }
+        .border-blue { border-left-color: var(--brand-blue) !important; }
+        .border-gray { border-top-color: var(--brand-gray) !important; }
+        .border-b-1 { border-bottom: 1px solid; }
+        .flex { display: flex; }
+        .flex-col { display: flex; flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .justify-between { justify-content: space-between; }
+        .align-center { align-items: center; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .block { display: block; }
+        .rtl { direction: rtl; }
+        .ltr { direction: ltr; }
+        .pos-rel { position: relative; }
+        .z-10 { z-index: 10; }
+        .cursor-pointer { cursor: pointer; }
+        .float-right { float: right; }
+        .w-full { width: 100%; }
+        .max-80 { max-width: 800px; margin: 0 auto; }
+        .max-700 { max-width: 700px; }
+        .max-650 { max-width: 650px; }
+        .max-600 { max-width: 600px; }
+        .opacity-7 { opacity: 0.7; }
+        .shadow-soft { box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .m-0 { margin: 0 !important; }
+        .mt-05 { margin-top: 0.5rem; }
+        .mt-2px { margin-top: 2px; }
+        .mt-1 { margin-top: 1rem; }
+        .mt-15 { margin-top: 1.5rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mt-4 { margin-top: 4rem; }
+        .mt-5 { margin-top: 5rem; }
+        .mt-6 { margin-top: 6rem; }
+        .mb-05 { margin-bottom: 0.5rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-15 { margin-bottom: 1.5rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .gap-1 { gap: 1rem; }
+        .gap-2 { gap: 2rem; }
+        .gap-10 { gap: 10px; }
+        .gap-12 { gap: 12px; }
+        .p-15 { padding: 1.5rem; }
+        .p-2 { padding: 2rem; }
+        .pt-2 { padding-top: 2rem; }
+        .logo-shadow { filter: drop-shadow(0 0 12px rgba(255,215,0,0.3)); }
+        .border-t-4 { border-top-width: 4px; border-top-style: solid; }
+
+        /* Abstract Vectors */
+        .vector-shape {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .circle-soft {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: var(--brand-gold);
+            opacity: 0.15;
+            position: absolute;
+            top: -30px;
+            right: -30px;
+        }
+
+        .rect-soft {
+            width: 180px;
+            height: 180px;
+            border-radius: 20px;
+            background: var(--brand-blue);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            transform: rotate(15deg);
+        }
+
+        /* Brand Header */
+        header {
+            border-bottom: 1px solid rgba(128,128,128,0.2);
+            padding-bottom: 2rem;
+            margin-bottom: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .brand-logo {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--brand-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-logo span {
+            color: var(--brand-blue);
+        }
+        
+        /* Timers / Metrics */
+        .metric {
+            display: inline-flex;
+            flex-direction: column;
+            border-left: 2px solid var(--brand-gold);
+            padding-left: 1rem;
+            margin-right: 2rem;
+            margin-top: 1rem;
+        }
+        .metric .number {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--brand-main);
+            line-height: 1;
+        }
+        .metric .label {
+            font-family: var(--font-note);
+            font-size: 0.85rem;
+            color: var(--brand-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <div class="brand-logo">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--brand-blue)"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1" fill="var(--brand-gold)"/></svg>
+                    Metodolog<span>IA</span>
+                </div>
+                <div class="small-note mt-05">Corporate Intelligence & Frameworks</div>
+            </div>
+            <div class="small-note text-right">
+                <span class="chip chip-purple m-0">CONFIDENTIAL</span><br>
+                Date: March 2026<br>
+                Client: Editorial Prolipa
+            </div>
+        </header>
+
+        <!-- INTRO HERO -->
+        <section class="grid-2">
+            <div>
+                <span class="chip chip-main">Discovery B2B</span>
+                <span class="chip chip-gold">Executive Summary</span>
+                <h1>Meeting Keynotes & Synthesis</h1>
+                <p>Análisis estratégico de la sesión de Discovery. Identificación de dolores operativos agudos, evaluación de madurez tecnológica y ruta de acción hacia la IA Agéntica.</p>
+                
+                <div class="flex">
+                    <div class="metric">
+                        <span class="number">6</span>
+                        <span class="label">Meses Time-to-market</span>
+                    </div>
+                    <div class="metric">
+                        <span class="number">100%</span>
+                        <span class="label">Viabilidad Agéntica</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="vector-shape grad-blue">
+                <div class="circle-soft"></div>
+                <div class="rect-soft"></div>
+                <!-- Neo-Swiss Faceless Human Abstract -->
+                <svg width="240" height="240" viewBox="0 0 200 200" class="pos-rel z-10">
+                    <!-- Human 1 -->
+                    <circle cx="70" cy="70" r="25" fill="var(--brand-main)"/>
+                    <path d="M70 110 C 30 110, 20 180, 20 180" stroke="var(--brand-blue)" stroke-width="35" stroke-linecap="round" fill="none"/>
+                    
+                    <!-- Human 2 -->
+                    <circle cx="140" cy="50" r="20" fill="var(--brand-gold)"/>
+                    <path d="M140 85 C 180 85, 180 150, 180 150" stroke="var(--brand-purple)" stroke-width="25" stroke-linecap="round" fill="none"/>
+
+                    <!-- Abstract UI / Chat / Connection -->
+                    <rect x="90" y="90" width="80" height="15" rx="7.5" fill="white"/>
+                    <rect x="90" y="115" width="50" height="15" rx="7.5" fill="white"/>
+                    <circle cx="100" cy="100" r="5" fill="var(--brand-main)"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- CORE PAIN -->
+        <section class="grid-2 rtl">
+            <div class="ltr">
+                <span class="chip chip-blue">Core Pain Point</span>
+                <h2>Ciclo Editorial vs. Presión Ministerial</h2>
+                <p>El ciclo estándar para áreas básicas es de <strong>3 años</strong>. No obstante, las actualizaciones dictadas por el Ministerio comprimen forzosamente la ventana operativa a tan solo <strong>6 meses</strong>.</p>
+                <p>Dado que 2 meses se dedican a promoción, el equipo cuenta con <strong>apenas 4 meses</strong> para rediseñar un material formativo altísimamente complejo basado en metodologías como Marzano, Bloom y neuroeducación.</p>
+                
+                <div class="callout">
+                    "Si alimento a la IA con toda esta información estructurada, ¿qué tan viable es que la IA optimice este tiempo masivamente construyendo el material?"
+                </div>
+            </div>
+            <div class="soft-card grad-gold ltr">
+                <h3>Puntos Críticos Detectados</h3>
+                <br>
+                <ul class="checklist">
+                    <li><strong>Dependencia Curricular:</strong> Ajuste inmediato a nuevas directrices gubernamentales.</li>
+                    <li><strong>Estándar Pedagógico:</strong> Exigencia alta en taxonomías (Bloom) obligatorias para Primary/Secondary.</li>
+                    <li><strong>Miedo al Reemplazo:</strong> La tecnología no debe amenazar al editor senior, sino dotarlo de "súperpoderes" de cálculo lingüístico.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TECHNOLOGY READINESS -->
+        <section class="grid-2">
+            <div class="soft-card grad-purple">
+                <h3>Maturity Nivel: N-1</h3>
+                <p>El equipo ya superó la fase de 'escepticismo base'. Emplean herramientas de IA transversales y han roto la barrera de adopción temprana.</p>
+                <div class="flex gap-10 flex-wrap mt-1">
+                    <span class="chip chip-blue bg-white">ChatGPT</span>
+                    <span class="chip chip-blue bg-white">Gemini</span>
+                    <span class="chip chip-blue bg-white">Claude</span>
+                    <span class="chip chip-gold bg-white">Midjourney</span>
+                </div>
+            </div>
+            <div>
+                <span class="chip chip-main">El Target Técnico</span>
+                <h2>IA Agéntica Invisible (Low-Friction)</h2>
+                <p>El equipo incluye perfiles <em>senior</em> para quienes redactar *prompts* extensos de 1500 palabras representa una barrera de UX inaceptable. El sistema tradicional de chatbot <strong>no escala</strong> en su operación.</p>
+                <p><strong>La Ruta:</strong> Arquitectura Agéntica "Under the hood". Interfaces corporativas limpias (1-click workflows) donde el proceso cognitivo complejo de la IA quede abstraído para el usuario final.</p>
+            </div>
+        </section>
+
+        <!-- EXECUTIVE MANDATE -->
+        <section class="mt-6">
+            <div class="soft-card">
+                <div class="text-center max-80">
+                    <span class="chip chip-gold">Executive Buy-In Logrado</span>
+                    <h2>"El que no se adopte, hoy desaparece"</h2>
+                    <p>La dirección (C-Level/Directivos) tiene clara la urgencia existencial. La presión de competidores <em>(Santillana matriz, Devis)</em> y referentes cross-industry <em>(KIA Agents)</em> asegura un patrocinio top-down. El mandato está dado para implementar, entrenar agresivamente y escalar si la prueba de concepto es exitosa.</p>
+                </div>
+                
+                <!-- Timeline / Next Steps UI -->
+                <div class="grid-3-col gap-2 mt-4">
+                    
+                    <div class="p-2 border-gray bg-white border-t-4 shadow-soft">
+                        <div class="color-purple mb-1">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"/></svg>
+                        </div>
+                        <h4 class="fs-115 color-dark">1. Insumos Base</h4>
+                        <span class="small-note block mt-05">Solicitud de capítulo actual "As Is", Manual de Estilo (Tone of Voice) y rúbricas del Ministerio.</span>
+                    </div>
+
+                    <div class="p-2 border-gold bg-white border-t-4 shadow-soft">
+                        <div class="color-gold mb-1">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <h4 class="fs-115 color-dark">2. Configuración PoC</h4>
+                        <span class="small-note block mt-05">Orquestación del Agente para consumir el contexto pedagógico (Bloom) y generar la re-adaptación curricular.</span>
+                    </div>
+
+                    <div class="p-2 border-blue bg-white border-t-4 shadow-soft">
+                        <div class="color-blue mb-1">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                        <h4 class="fs-115 color-dark">3. Show & Prove</h4>
+                        <span class="small-note block mt-05">Showcase en vivo (15 días). Evidenciar el salto de 4 meses manuales a minutos agénticos. Generar Cierre.</span>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

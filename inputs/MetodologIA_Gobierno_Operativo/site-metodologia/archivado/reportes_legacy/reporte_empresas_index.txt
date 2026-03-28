@@ -1,0 +1,143 @@
+========================================
+REPORTE DE AUDITORÍA UX/UI + TÉCNICA
+Archivo: empresas/index.html (Hub B2B)
+Fecha Original: 2026-01-23
+Fecha Actualización: 2026-01-27
+Auditor: Gemini + Performance Engineering
+Metodología: Heurísticas H1-H10, Core Web Vitals, SOLID
+========================================
+
+## RESUMEN EJECUTIVO
+
+¡MEJORA SIGNIFICATIVA! Página reducida y simplificada. Hero más enfocado,
+3-Step Path claro, sección cotizador agregada. Sin embargo, persisten
+issues de jerga B2B y hay un error de sintaxis CSS crítico.
+
+--------------------------------------------------------------------------------
+## MÉTRICAS CLAVE (Actualizado)
+
+| Métrica | Anterior | Actual | Status |
+|---------|----------|--------|--------|
+| Líneas de código | ~800 | 261 | ✓ -67% reducción |
+| Secciones | 7 | 4 | ✓ Simplificado |
+| CTAs | 6 | 4 | ✓ Más enfocado |
+| Dashboard simulado | ✓ | ✗ | ✓ Eliminado |
+
+--------------------------------------------------------------------------------
+## HALLAZGOS POR SEVERIDAD
+
+### 🔴 CRÍTICOS (Bloquean conversión)
+
+1. **Error de sintaxis CSS** [Línea 59]
+   - `.container-max` está fuera de `<style>` tag
+   - Falta `<style>` de apertura
+   - **ROMPE EL CSS - DEBE CORREGIRSE**
+   - Línea actual: `    .container-max { max-width...` (sin `<style>`)
+   - Recomendación: Agregar `<style>` antes de línea 59
+
+### 🟠 ALTOS (Impacto significativo)
+
+2. **Tailwind CDN en producción** [Línea 43]
+   - Impacto LCP: +500-800ms
+   - Común a todas las páginas
+   - Recomendación: Build production CSS
+
+3. **icons.js sin defer** [Línea 56]
+   - Bloquea render
+   - Recomendación: Agregar `defer`
+
+4. **Jerga B2B visible** [Líneas 94, 149, 220]
+   - "Formación B2B", "Ruta B2B", "Cotizador B2B"
+   - Violación Brand Voice v2.0
+   - Recomendación: "Para Organizaciones" o eliminar label
+
+5. **Precios en COP sin toggle USD** [Líneas 182, 197]
+   - "$3M COP", "$12M COP"
+   - Sin contexto para usuarios internacionales
+   - Recomendación: Agregar toggle o equivalente USD
+
+### 🟡 MEDIOS (Fricción innecesaria)
+
+6. **Pipeline Velocity en inglés** [Línea 124]
+   - Debería ser "Velocidad de Conversión" o similar
+   - Violación Brand Voice
+
+7. **Deep Research en inglés** [Línea 180]
+   - Debería ser "Investigación Profunda"
+
+8. **Comentarios duplicados** [Líneas 67-68, 249-250]
+   - `<!-- NAV (Homologated) -->` aparece 2 veces
+   - `<!-- FOOTER -->` aparece 2 veces
+   - Limpieza menor
+
+9. **Link incorrecto cotizador** [Línea 228]
+   - `href="../ruta/cotizador.html"` no existe
+   - Debería ser `../ruta/cotizador-empresas.html`
+
+### 🟢 BAJOS (Mejoras incrementales)
+
+10. **Falta og:image**
+    - Mejora SEO social
+
+11. **preconnect correcto** ✓ [Líneas 33-34]
+    - Bien implementado, a diferencia de otras páginas
+
+--------------------------------------------------------------------------------
+## COMPARATIVA VS AUDITORÍA ANTERIOR
+
+| Hallazgo Original | Status |
+|-------------------|--------|
+| Dashboard simulado "+127%" sin fuente | ✅ RESUELTO (ahora solo KPI) |
+| Hero muy denso (3 mensajes) | ✅ RESUELTO (simplificado) |
+| "Try/Buy" como labels | ✅ RESUELTO (eliminado) |
+| Terminología técnica | ⚠️ PARCIAL (B2B persiste) |
+| JSON-LD duplicado | ✅ RESUELTO (consolidado) |
+| mobile-menu-btn sin title | ✅ RESUELTO (web component) |
+| Footer quote redundante | ✅ RESUELTO (web component) |
+
+--------------------------------------------------------------------------------
+## ANÁLISIS DE BUENAS PRÁCTICAS
+
+### ✅ Aspectos Positivos
+- Estructura clara de 3 pasos
+- Breadcrumbs correctos con aria-label
+- Schema.org Service presente
+- Web Components para header/footer (DRY)
+- PyME policy bien documentada
+
+### ❌ Issues Técnicos
+- Error sintaxis CSS crítico
+- Enlaces rotos (cotizador)
+- Tailwind CDN (sistémico)
+
+--------------------------------------------------------------------------------
+## ACCIONES RECOMENDADAS (Prioridad)
+
+| # | Acción | Impacto | Esfuerzo | Prioridad |
+|---|--------|---------|----------|-----------|
+| 1 | Corregir <style> faltante L59 | Bug | Bajo | P0 |
+| 2 | Corregir link cotizador L228 | Bug | Bajo | P0 |
+| 3 | Traducir jerga B2B | UX | Bajo | P1 |
+| 4 | Defer icons.js | Perf | Bajo | P1 |
+| 5 | Agregar toggle USD | UX | Medio | P2 |
+
+--------------------------------------------------------------------------------
+## PUNTUACIÓN HEURÍSTICA (H1-H10) - Actualizada
+
+| Heurística | Anterior | Actual | Mejora |
+|------------|----------|--------|--------|
+| H1. Visibilidad del estado | 4/4 | 4/4 | = |
+| H2. Correspondencia mundo real | 2/4 | 3/4 | +1 |
+| H3. Control y libertad | 4/4 | 4/4 | = |
+| H4. Consistencia | 3/4 | 3/4 | = |
+| H5. Prevención errores | 4/4 | 3/4 | -1 (bug CSS) |
+| H6. Reconocer vs recordar | 3/4 | 4/4 | +1 |
+| H7. Flexibilidad | 3/4 | 4/4 | +1 |
+| H8. Diseño estético | 4/4 | 4/4 | = |
+| H9. Ayuda ante errores | 4/4 | 4/4 | = |
+| H10. Ayuda/documentación | 2/4 | 3/4 | +1 |
+
+**PROMEDIO: 3.6/4.0** (Anterior: 3.3/4.0) ✅ OBJETIVO CUMPLIDO (pero bug crítico)
+
+--------------------------------------------------------------------------------
+## FIN DEL REPORTE

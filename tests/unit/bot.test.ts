@@ -27,7 +27,9 @@ const {
   mockSendMessage,
   mockGetFile,
   mockEditMessageText,
-  mockDeleteMessage
+  mockDeleteMessage,
+  mockOperationalListProcesses,
+  mockOperationalCreateOnboardingPack,
 } = vi.hoisted(() => {
   const capturedMiddleware: Array<(ctx: unknown, next?: () => Promise<void>) => Promise<void>> = [];
   const capturedMessageHandlerRef = { fn: null as ((ctx: unknown) => Promise<void>) | null };
@@ -36,6 +38,8 @@ const {
   const mockGetFile = vi.fn().mockResolvedValue({ file_id: "abc", file_path: "path/to/file.ogg" });
   const mockEditMessageText = vi.fn().mockResolvedValue({});
   const mockDeleteMessage = vi.fn().mockResolvedValue({});
+  const mockOperationalListProcesses = vi.fn().mockResolvedValue([]);
+  const mockOperationalCreateOnboardingPack = vi.fn().mockResolvedValue(null);
   return {
     capturedMiddleware,
     capturedMessageHandlerRef,
@@ -44,6 +48,8 @@ const {
     mockGetFile,
     mockEditMessageText,
     mockDeleteMessage,
+    mockOperationalListProcesses,
+    mockOperationalCreateOnboardingPack,
   };
 });
 
@@ -91,6 +97,13 @@ vi.mock("../../src/format.js", () => ({
 
 vi.mock("../../src/agent.js", () => ({
   runAgent: vi.fn().mockResolvedValue("agent response"),
+}));
+
+vi.mock("../../src/knowledge/accessor.js", () => ({
+  getOperationalKnowledgeAccessor: vi.fn(async () => ({
+    listProcesses: mockOperationalListProcesses,
+    createOnboardingPack: mockOperationalCreateOnboardingPack,
+  })),
 }));
 
 // Grammy mock — uses hoisted state so it's available at hoist time
@@ -210,6 +223,10 @@ beforeEach(() => {
   mockEditMessageText.mockResolvedValue({});
   mockDeleteMessage.mockReset();
   mockDeleteMessage.mockResolvedValue({});
+  mockOperationalListProcesses.mockReset();
+  mockOperationalListProcesses.mockResolvedValue([]);
+  mockOperationalCreateOnboardingPack.mockReset();
+  mockOperationalCreateOnboardingPack.mockResolvedValue(null);
   vi.mocked(transcribeAudio).mockReset();
   vi.mocked(transcribeAudio).mockResolvedValue("transcribed text");
   vi.mocked(stripHtml).mockReset();
@@ -339,6 +356,62 @@ describe("Message handler — text messages", () => {
 
     // Should still proceed and call the agent (no service message triggers)
     expect(vi.mocked(runAgent)).toHaveBeenCalled();
+  });
+
+  it("uses the operational fast path for onboarding queries and bypasses the agent loop", async () => {
+    const runtime = makeRuntime();
+    createBot(runtime);
+
+    mockOperationalListProcesses.mockResolvedValueOnce([
+      {
+        processId: "proceso-presales",
+        processName: "Proceso Presales",
+        variants: ["presales"],
+        relatedProcesses: [],
+        status: "ready",
+        summary: "Califica oportunidades y prepara handoff comercial.",
+        owners: ["AE", "PM"],
+        docCount: 12,
+        chunkCount: 48,
+        sources: [],
+        phases: ["Discovery", "Scoping", "Proposal"],
+        gates: ["Discovery validado"],
+        assets: ["Brief", "Propuesta"],
+        sops: ["SOP Discovery"],
+        metrics: [],
+        capabilities: {
+          onboarding: [],
+          assistance: [],
+          execution: [],
+        },
+      },
+    ]);
+    mockOperationalCreateOnboardingPack.mockResolvedValueOnce({
+      processId: "proceso-presales",
+      processName: "Proceso Presales",
+      audienceRole: "nuevo integrante",
+      summary: "Califica oportunidades y prepara handoff comercial.",
+      checklist: ["Revisar brief"],
+      walkthrough: ["Paso 1: Discovery", "Paso 2: Proposal"],
+      essentialAssets: ["Brief", "Propuesta"],
+      essentialSops: ["SOP Discovery"],
+      firstQuestions: ["¿Cual es el trigger?", "¿Que gate desbloquea el siguiente paso?"],
+      evidence: [],
+    });
+
+    const ctx = makeCtx({
+      message: {
+        text: "Necesito onboarding del proceso presales con fases, roles, entradas, salidas y riesgos.",
+        message_id: 2,
+      },
+    });
+    await capturedMessageHandlerRef.fn!(ctx);
+
+    expect(vi.mocked(runAgent)).not.toHaveBeenCalled();
+    expect(ctx.reply).toHaveBeenCalledWith(
+      expect.stringContaining("Respuesta directa del KB operativo para Proceso Presales."),
+      { parse_mode: "HTML" },
+    );
   });
 });
 
@@ -677,8 +750,9 @@ describe("Message handler — animation messages", () => {
 // ---------------------------------------------------------------------------
 
 describe("Message handler — agent timeout", () => {
-  it("returns timeout message when agent exceeds 60s", async () => {
+  it("returns timeout message when agent exceeds configured timeout", async () => {
     vi.useFakeTimers();
+    process.env.AGENT_TIMEOUT_MS = "15000";
     const runtime = makeRuntime();
     createBot(runtime);
 
@@ -690,13 +764,13 @@ describe("Message handler — agent timeout", () => {
     const ctx = makeCtx({ message: { text: "slow query", message_id: 50 } });
     const messagePromise = capturedMessageHandlerRef.fn!(ctx);
 
-    // Advance past the 60s timeout
-    vi.advanceTimersByTime(61_000);
+    vi.advanceTimersByTime(15_100);
     await messagePromise;
 
     const sentText = (ctx.reply as ReturnType<typeof vi.fn>).mock.calls[0][0] as string;
-    expect(sentText).toContain("Timeout");
+    expect(sentText).toContain("Timeout 15s");
 
+    delete process.env.AGENT_TIMEOUT_MS;
     vi.useRealTimers();
   });
 });

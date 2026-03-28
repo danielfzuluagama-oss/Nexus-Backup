@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Evaluar Fit Aliado — Proceso de Delivery MetodologIA">
+    <title>SOP: Evaluar Fit Aliado — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Aliados Comercial</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Evaluar Fit Aliado</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Evaluar Fit Aliado</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">11</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-propsito-dec948')" aria-label="Ir a 1. Propósito">1. Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-637d08')" aria-label="Ir a 2. Supuestos Explícitos">2. Supuestos Explícitos</button>
+<button class="nav-btn" onclick="scrollToSection('3-mbito-a3bb02')" aria-label="Ir a 3. Ámbito">3. Ámbito</button>
+<button class="nav-btn" onclick="scrollToSection('4-flujo-y-responsabilidades-977331')" aria-label="Ir a 4. Flujo y Responsabilidades">4. Flujo y Responsabilidades</button>
+<button class="nav-btn" onclick="scrollToSection('5-rbrica-consolidada-e569ba')" aria-label="Ir a 5. Rúbrica Consolidada">5. Rúbrica Consolidada</button>
+<button class="nav-btn" onclick="scrollToSection('6-casos-borde-6ef54f')" aria-label="Ir a 6. Casos Borde">6. Casos Borde</button>
+<button class="nav-btn" onclick="scrollToSection('7-criterios-de-aceptacin-binarios-8ffd16')" aria-label="Ir a 7. Criterios de Aceptación Binarios">7. Criterios de Aceptación Binarios</button>
+<button class="nav-btn" onclick="scrollToSection('8-antipatterns-d25ecd')" aria-label="Ir a 8. Anti-Patterns">8. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('9-fallbacks-0a9456')" aria-label="Ir a 9. Fallbacks">9. Fallbacks</button>
+<button class="nav-btn" onclick="scrollToSection('10-output-deliverables-822110')" aria-label="Ir a 10. Output Deliverables">10. Output Deliverables</button>
+<button class="nav-btn" onclick="scrollToSection('11-referencias-3d0650')" aria-label="Ir a 11. Referencias">11. Referencias</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-propsito-dec948" data-searchable aria-labelledby="head-1-propsito-dec948">
+            <div class="phase-header" id="head-1-propsito-dec948" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Propósito</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Evaluar sistemáticamente si un potencial aliado tiene alineación estratégica, comercial, operacional y financiera con MetodologIA antes de invertir en onboarding (40-60 horas). Output es una rúbrica binaria: Go (score ≥70%) o No-Go (&lt;70%).</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-637d08" data-searchable aria-labelledby="head-2-supuestos-explcitos-637d08">
+            <div class="phase-header" id="head-2-supuestos-explcitos-637d08" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. Supuestos Explícitos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Evaluación 4D es suficiente predictor de viabilidad</strong>: La metodología de scoring 4D (Comercial, Operacional, Relacional, Financiera) captura &gt;80% de varianza en likelihood de éxito a 24 meses.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Due diligence requiere múltiples perspectivas</strong>: Fit evaluation NO es solo &quot;VP Aliados opina&quot;; requiere triangulación con VP Ventas (market knowledge) y VP Finanzas (viabilidad de modelo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Soft signals importan tanto como hard data</strong>: Referencias de mercado, reputación, cultura de partner son predictores tan fuertes como financials o track record.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>El threshold de 70% es defensible, no arbitrario</strong>: Históricamente, aliados con score &lt;70% tienen probabilidad &gt;60% de exit en 12 meses; score &gt;70% tiene &gt;65% de reaching &gt;$500K ARR.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Evaluación toma 10-15 horas de investigación</strong>: No es &quot;30-min chat&quot;; requiere research de background, calls con referencias, financialsreview, market analysis.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Documentación es auditable, no opinion</strong>: Rúbrica debe permitir que otra persona re-score con ±5% variabilidad; si variabilidad &gt;10%, criteria están mal definidos.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-mbito-a3bb02" data-searchable aria-labelledby="head-3-mbito-a3bb02">
+            <div class="phase-header" id="head-3-mbito-a3bb02" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Ámbito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="incluido-debba4">Incluido</h3>
+<div class="bullet-item">Recolección de información de candidato (surveys, calls, documentación)</div>
+<div class="bullet-item">Scoring en 4D dimensiones</div>
+<div class="bullet-item">Due diligence de referencias (3+ contacts minimum)</div>
+<div class="bullet-item">Evaluación de viabilidad de modelo comisión/margen</div>
+<div class="bullet-item">Documentación de hallazgos</div>
+<div class="bullet-item">Recomendación Go/No-Go</div>
+<h3 class="subsection-title" id="excluido-fdce89">Excluido</h3>
+<div class="bullet-item">Negociación de términos (viene después si Go)</div>
+<div class="bullet-item">Diseño del contrato (Legal)</div>
+<div class="bullet-item">Onboarding (Delivery)</div>
+<div class="bullet-item">Marketing/outreach (Marketing)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-flujo-y-responsabilidades-977331" data-searchable aria-labelledby="head-4-flujo-y-responsabilidades-977331">
+            <div class="phase-header" id="head-4-flujo-y-responsabilidades-977331" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Flujo y Responsabilidades</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="paso-1-intake-vp-aliados-1h-2bf6fe">Paso 1: INTAKE (VP Aliados, &lt;1h)</h3>
+<p class="key-value"><strong>Input</strong>: Candidato identificado en scouting</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Crear file en Airtable/Salesforce con nombre, contact, vertical, geography</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Enviar intake form al candidato (5 min completar):</span></div>
+<div class="bullet-item">Equipo size, años en mercado, clientes actuales</div>
+<div class="bullet-item">Propuesta de valor diferenciante</div>
+<div class="bullet-item">Financials basic (ARR, growth rate si público)</div>
+<div class="bullet-item">Motivación para alianza MetodologIA</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Schedule call introductorio (30 min) con Aliado CEO/Managing Partner</span></div>
+<p class="key-value"><strong>Criterio Avance</strong>: Intake form completado + intro call scheduled</p>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-2-intro-call-assessment-vp-aliados-30-min-4b76df">Paso 2: INTRO CALL &amp; ASSESSMENT (VP Aliados, 30 min)</h3>
+<p class="key-value"><strong>Propósito</strong>: Validar que candidate es serio, entiende MetodologIA, vibe check</p>
+<p class="key-value"><strong>Agenda</strong>:</p>
+<div class="bullet-item">Intro de MetodologIA (services, metodología, tipos de partners)</div>
+<div class="bullet-item">Background del aliado (historia, team, customers)</div>
+<div class="bullet-item">Motivación para partnership (¿por qué ahora? ¿por qué nosotros?)</div>
+<div class="bullet-item">Expectativas (ARR target, timeline, modelo preferido)</div>
+<p class="key-value"><strong>Red Flags</strong> (causa immediate No-Go):</p>
+<div class="bullet-item">Candidato no ha hecho research en MetodologIA (vague sobre offerings)</div>
+<div class="bullet-item">Expectativa de immediate sales (no entiende que requiere ramp-up)</div>
+<div class="bullet-item">Competitor directo sin disclosure upfront</div>
+<div class="bullet-item">Financial distress signals (&quot;need cash urgently&quot;)</div>
+<p class="key-value"><strong>Criterio Avance</strong>: No red flags + mutual interest confirmed</p>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-3-commercial-assessment-vp-aliados-vp-ventas--b00f51">Paso 3: COMMERCIAL ASSESSMENT (VP Aliados + VP Ventas, 2-3h investigation)</h3>
+<p class="key-value"><strong>Dimensión</strong>: TAM, go-to-market strategy, sales cycles, competitive landscape</p>
+<p class="key-value"><strong>Investigation checklist</strong>:</p>
+<label class="checklist-item" for="chk-tam-sizing-google-crunchbase-research-qu-del-loro--35dc45"><input type="checkbox" id="chk-tam-sizing-google-crunchbase-research-qu-del-loro--35dc45" ><span>TAM sizing: Google, Crunchbase research (¿qué % del loro market pueden atacar?)</span></label>
+<label class="checklist-item" for="chk-gfy-potential-based-on-aliados-current-customers-c-26848c"><input type="checkbox" id="chk-gfy-potential-based-on-aliados-current-customers-c-26848c" ><span>GFY potential: Based on aliado&#x27;s current customers, ¿cuántos encajan en MetodologIA TAM?</span></label>
+<label class="checklist-item" for="chk-sales-cycle-typical-deal-size-length-of-sales-cycl-a38261"><input type="checkbox" id="chk-sales-cycle-typical-deal-size-length-of-sales-cycl-a38261" ><span>Sales cycle: Typical deal size, length of sales cycle, buying process (vs MetodologIA standard)</span></label>
+<label class="checklist-item" for="chk-competition-who-else-is-aliados-customer-buying-fr-aca714"><input type="checkbox" id="chk-competition-who-else-is-aliados-customer-buying-fr-aca714" ><span>Competition: Who else is aliado&#x27;s customer buying from? Direct competition to MetodologIA?</span></label>
+<label class="checklist-item" for="chk-reference-calls-2x-call-existing-customers-of-alia-ee5695"><input type="checkbox" id="chk-reference-calls-2x-call-existing-customers-of-alia-ee5695" ><span>Reference calls (2x): Call existing customers of aliado; ask about delivery quality, reliability, growth trajectory</span></label>
+<p class="key-value"><strong>Scoring rubric (0-10 scale)</strong>:</p>
+<div class="bullet-item"><strong>9-10</strong>: TAM &gt;$500M, GFY potential &gt;100+ customers, &lt;6mo sales cycle, no direct competition</div>
+<div class="bullet-item"><strong>7-8</strong>: TAM &gt;$100M, GFY potential 30-100, &lt;9mo cycle, 1-2 competitors</div>
+<div class="bullet-item"><strong>5-6</strong>: TAM $10-100M, GFY potential 10-30, 9-18mo cycle, multiple competitors</div>
+<div class="bullet-item"><strong>3-4</strong>: TAM &lt;$10M or GFY &lt;10, &gt;18mo cycle, highly commoditized</div>
+<div class="bullet-item"><strong>0-2</strong>: TAM unclear, GFY not viable, or aliado&#x27;s selling into non-MetodologIA verticals</div>
+<p class="key-value"><strong>Output</strong>: Commercial score (0-10) + written summary of TAM/GFY analysis</p>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-4-operational-assessment-vp-aliados-152h-8b8a34">Paso 4: OPERATIONAL ASSESSMENT (VP Aliados, 1.5-2h)</h3>
+<p class="key-value"><strong>Dimensión</strong>: Infraestructura, capacidad de ejecución, madurez operacional</p>
+<p class="key-value"><strong>Investigation checklist</strong>:</p>
+<label class="checklist-item" for="chk-team-size-roles-breakdown-of-salesdeliveryops-capa-cc311e"><input type="checkbox" id="chk-team-size-roles-breakdown-of-salesdeliveryops-capa-cc311e" ><span>Team size &amp; roles: Breakdown of sales/delivery/ops; ¿capacity para co-selling?</span></label>
+<label class="checklist-item" for="chk-processes-documented-sales-playbook-delivery-proce-55610b"><input type="checkbox" id="chk-processes-documented-sales-playbook-delivery-proce-55610b" ><span>Processes: ¿Documented sales playbook? ¿Delivery process? ¿CRM/tools?</span></label>
+<label class="checklist-item" for="chk-certifications-iso-sil-seguridad-data-compliance-r-0aaa04"><input type="checkbox" id="chk-certifications-iso-sil-seguridad-data-compliance-r-0aaa04" ><span>Certifications: ISO, SIL, seguridad data, compliance relevant?</span></label>
+<label class="checklist-item" for="chk-customer-base-health-nps-churn-expansion-rates-if--2f3f33"><input type="checkbox" id="chk-customer-base-health-nps-churn-expansion-rates-if--2f3f33" ><span>Customer base health: NPS, churn, expansion rates (if available)</span></label>
+<label class="checklist-item" for="chk-technology-stack-of-tools-integrations-apis-9a33ac"><input type="checkbox" id="chk-technology-stack-of-tools-integrations-apis-9a33ac" ><span>Technology: Stack of tools, integrations, APIs</span></label>
+<label class="checklist-item" for="chk-hiringchurn-recent-hiresdepartures-stability-of-co-dd103b"><input type="checkbox" id="chk-hiringchurn-recent-hiresdepartures-stability-of-co-dd103b" ><span>Hiring/Churn: Recent hires/departures? Stability of core team?</span></label>
+<p class="key-value"><strong>Scoring rubric (0-10)</strong>:</p>
+<div class="bullet-item"><strong>9-10</strong>: &gt;20 team, structured processes, ISO/SIL certified, NPS &gt;50, &lt;15% churn</div>
+<div class="bullet-item"><strong>7-8</strong>: 10-20 team, documented processes, security practices, NPS 30-50, 15-25% churn</div>
+<div class="bullet-item"><strong>5-6</strong>: 5-10 team, ad-hoc processes, basic compliance, NPS 15-30, 25-35% churn</div>
+<div class="bullet-item"><strong>3-4</strong>: &lt;5 team, no documented processes, compliance gaps, NPS &lt;15, &gt;35% churn</div>
+<div class="bullet-item"><strong>0-2</strong>: Team misalignment, red flags in delivery, reputational issues</div>
+<p class="key-value"><strong>Output</strong>: Operational score (0-10) + assessment of readiness for MetodologIA handoff</p>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-5-relational-cultural-assessment-vp-aliados-1-b58d4e">Paso 5: RELATIONAL &amp; CULTURAL ASSESSMENT (VP Aliados, 1-1.5h)</h3>
+<p class="key-value"><strong>Dimensión</strong>: Leadership, culture, commitment, alignment</p>
+<p class="key-value"><strong>Investigation checklist</strong>:</p>
+<label class="checklist-item" for="chk-leadership-quality-founderceo-background-previous--3e33bf"><input type="checkbox" id="chk-leadership-quality-founderceo-background-previous--3e33bf" ><span>Leadership quality: Founder/CEO background, previous ventures, track record</span></label>
+<label class="checklist-item" for="chk-culture-fit-values-risk-tolerance-growth-mindset-v-0e7ac6"><input type="checkbox" id="chk-culture-fit-values-risk-tolerance-growth-mindset-v-0e7ac6" ><span>Culture fit: Values, risk tolerance, growth mindset vs short-term gains</span></label>
+<label class="checklist-item" for="chk-commitment-is-this-partnership-strategic-or-tactic-0af325"><input type="checkbox" id="chk-commitment-is-this-partnership-strategic-or-tactic-0af325" ><span>Commitment: Is this partnership strategic or tactical? Multiple executives engaged or just sales person?</span></label>
+<label class="checklist-item" for="chk-reference-calls-2x-minimum-call-customers-and-exem-3d3e09"><input type="checkbox" id="chk-reference-calls-2x-minimum-call-customers-and-exem-3d3e09" ><span>Reference calls (2x minimum): Call customers AND ex-employees of aliado; ask about leadership, culture, reliability</span></label>
+<label class="checklist-item" for="chk-advisory-fit-can-aliado-accept-guidance-from-metod-a041dd"><input type="checkbox" id="chk-advisory-fit-can-aliado-accept-guidance-from-metod-a041dd" ><span>Advisory fit: ¿Can aliado accept guidance from MetodologIA on go-to-market?</span></label>
+<label class="checklist-item" for="chk-integrity-any-litigation-ip-disputes-negative-publ-781554"><input type="checkbox" id="chk-integrity-any-litigation-ip-disputes-negative-publ-781554" ><span>Integrity: Any litigation, IP disputes, negative publicity?</span></label>
+<p class="key-value"><strong>Scoring rubric (0-10)</strong>:</p>
+<div class="bullet-item"><strong>9-10</strong>: Founder/CEO &gt;15yr track record, clear culture match, CEO engaged, &gt;3 positive references, no legal/reputational issues</div>
+<div class="bullet-item"><strong>7-8</strong>: Leadership &gt;10yr, culture compatible, executive sponsor identified, 2-3 positive references, minor issues resolved</div>
+<div class="bullet-item"><strong>5-6</strong>: Leadership mixed, culture questions, single champion, 1-2 references positive but mixed, some history of disputes</div>
+<div class="bullet-item"><strong>3-4</strong>: Leadership concerns, culture misalignment, limited commitment, weak references, history of litigation</div>
+<div class="bullet-item"><strong>0-2</strong>: Founder/CEO with failed ventures, culture red flags, disengaged, negative references, significant legal/reputational baggage</div>
+<p class="key-value"><strong>Output</strong>: Relational score (0-10) + cultural fit assessment</p>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-6-financial-viability-assessment-vp-finanzas--93793c">Paso 6: FINANCIAL VIABILITY ASSESSMENT (VP Finanzas + VP Aliados, 1-1.5h)</h3>
+<p class="key-value"><strong>Dimensión</strong>: Model viability, margin/commission, cash flow sustainability</p>
+<p class="key-value"><strong>Investigation checklist</strong>:</p>
+<label class="checklist-item" for="chk-current-financials-arr-growth-rate-net-margin-if-p-0978c7"><input type="checkbox" id="chk-current-financials-arr-growth-rate-net-margin-if-p-0978c7" ><span>Current financials: ARR, growth rate, net margin (if provided by aliado)</span></label>
+<label class="checklist-item" for="chk-comisinmargin-model-calculate-what-of-deal-value-i-306093"><input type="checkbox" id="chk-comisinmargin-model-calculate-what-of-deal-value-i-306093" ><span>Comisión/margin model: Calculate what % of deal value is available for MetodologIA comisión</span></label>
+<div class="bullet-item">Typical: Partner buys at 50% discount, sells at 80% of list → 30% margin available</div>
+<div class="bullet-item">Scenario: Partner takes 25%, MetodologIA takes 5% as comisión</div>
+<label class="checklist-item" for="chk-breakeven-timeline-how-many-deals-at-assumed-conve-3f977f"><input type="checkbox" id="chk-breakeven-timeline-how-many-deals-at-assumed-conve-3f977f" ><span>Break-even timeline: How many deals at assumed conversion rate until partner is NPS positive?</span></label>
+<label class="checklist-item" for="chk-cash-flow-does-partner-have-612mo-runway-to-fund-r-28199b"><input type="checkbox" id="chk-cash-flow-does-partner-have-612mo-runway-to-fund-r-28199b" ><span>Cash flow: Does partner have 6-12mo runway to fund ramp-up before revenue kicks in?</span></label>
+<label class="checklist-item" for="chk-arr-target-viability-based-on-tamgfy-realistic-to--a038e2"><input type="checkbox" id="chk-arr-target-viability-based-on-tamgfy-realistic-to--a038e2" ><span>ARR target viability: Based on TAM/GFY, ¿realistic to hit &gt;$500K ARR in 24 months?</span></label>
+<label class="checklist-item" for="chk-pricing-alignment-is-partners-customer-pricing-ali-9721bf"><input type="checkbox" id="chk-pricing-alignment-is-partners-customer-pricing-ali-9721bf" ><span>Pricing alignment: Is partner&#x27;s customer pricing aligned with MetodologIA positioning (premium vs discount)?</span></label>
+<p class="key-value"><strong>Scoring rubric (0-10)</strong>:</p>
+<div class="bullet-item"><strong>9-10</strong>: Clear path to $1M+ ARR in 24mo, 15%+ margin available, strong financials, well-funded</div>
+<div class="bullet-item"><strong>7-8</strong>: Path to $500K+ ARR, 12-15% margin, healthy financials, adequate funding</div>
+<div class="bullet-item"><strong>5-6</strong>: Path to $300-500K ARR, 10-12% margin, stable but tight financials</div>
+<div class="bullet-item"><strong>3-4</strong>: $100-300K ARR potential, 7-10% margin, cash flow concerns</div>
+<div class="bullet-item"><strong>0-2</strong>: &lt;$100K ARR potential, &lt;7% margin, funding risk or model not viable</div>
+<p class="key-value"><strong>Output</strong>: Financial score (0-10) + specific ARR projection + comisión model recommendation</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-rbrica-consolidada-e569ba" data-searchable aria-labelledby="head-5-rbrica-consolidada-e569ba">
+            <div class="phase-header" id="head-5-rbrica-consolidada-e569ba" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Rúbrica Consolidada</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>4D Scoring Template</strong>:</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Dimensión</th><th scope="col">Sub-score</th><th scope="col">Weight</th><th scope="col">Weighted Score</th></tr></thead><tbody><tr><td>Comercial (TAM/GFY/Cycle)</td><td>___ /10</td><td>25%</td><td>___</td></tr><tr><td>Operacional (Team/Process/Ops)</td><td>___ /10</td><td>25%</td><td>___</td></tr><tr><td>Relacional (Leadership/Culture)</td><td>___ /10</td><td>25%</td><td>___</td></tr><tr><td>Financiera (Model/ARR/Margin)</td><td>___ /10</td><td>25%</td><td>___</td></tr><tr><td><strong>TOTAL SCORE</strong></td><td></td><td></td><td><strong>___ /10</strong></td></tr></tbody></table></div>
+<p class="key-value"><strong>Decision Logic</strong>:</p>
+<div class="bullet-item"><strong>≥7.0</strong>: Go → Proceed to onboarding</div>
+<div class="bullet-item"><strong>6.0-6.9</strong>: Conditional Go → Escalate to VP Ventas + VP Finanzas for joint decision; may require specific conditions met (e.g., &quot;only if aliado hires 2 more sales reps in 90 days&quot;)</div>
+<div class="bullet-item"><strong>&lt;6.0</strong>: No-Go → Polite decline; offer to re-evaluate in 12 months</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-casos-borde-6ef54f" data-searchable aria-labelledby="head-6-casos-borde-6ef54f">
+            <div class="phase-header" id="head-6-casos-borde-6ef54f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 6. Casos Borde</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-1-aliado-tiene-excelente-track-record-pero-en-432135">Caso 1: Aliado tiene excelente track record pero en diferente vertical que MetodologIA</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner with 10yr history, $5M ARR, great culture pero sells only to SMBs (MetodologIA targets mid-market)</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Commercial score 3-4 (TAM/GFY mismatch)</div>
+<div class="bullet-item">Relational/Operational scores high (7-9)</div>
+<div class="bullet-item">Total ~5.5 = No-Go</div>
+<div class="bullet-item">PERO: Offer to explore &quot;separate line of business&quot; (SMB offering) with different economics</div>
+<h3 class="subsection-title" id="caso-2-aliado-tiene-pequeo-current-arr-pero-80-gro-9d6e84">Caso 2: Aliado tiene pequeño current ARR pero &gt;80% growth year-over-year</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner with $150K ARR, 100% YoY growth, ¿es viable?</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Financial score 5-6 (low base, but trajectory strong)</div>
+<div class="bullet-item">Scale operational assessment on TEAM trajectory, not just current size</div>
+<div class="bullet-item">If team growing 50%+ YoY AND hiring sales/delivery staff → 7/10</div>
+<div class="bullet-item">Decision: Conditional Go with milestone: &quot;Must have $500K ARR within 18mo OR partnership pauses&quot;</div>
+<h3 class="subsection-title" id="caso-3-candidato-es-competitors-employee-wants-to--7197a9">Caso 3: Candidato es competitor&#x27;s employee, wants to start new practice</h3>
+<p class="key-value"><strong>Escenario</strong>: 20yr sales leader from Competitor, wants to build practice with MetodologIA</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Relational/Commercial high (knows market, has customer relationships)</div>
+<div class="bullet-item">Operational low (no team, no processes)</div>
+<div class="bullet-item">Financial risk (unproven as business owner)</div>
+<div class="bullet-item">Decision: No-Go for &quot;Comisión/Marca Blanca&quot;; but consider Empleado interno if budget exists</div>
+<h3 class="subsection-title" id="caso-4-aliado-has-strong-financials-but-history-of-e4b0bd">Caso 4: Aliado has strong financials but history of litigation or IP disputes</h3>
+<p class="key-value"><strong>Escenario</strong>: $2M ARR, clean team, but has 1-2 lawsuits in background</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Financial/Commercial/Operational scores 7-8</div>
+<div class="bullet-item">Relational score 4-5 (integrity flag)</div>
+<div class="bullet-item">Total ~6-6.5 = Conditional Go</div>
+<div class="bullet-item">Condition: Legal review + escrow on future comisión pending litigation resolution</div>
+<h3 class="subsection-title" id="caso-5-fit-evaluation-suggests-go-but-vp-ventas-ha-494953">Caso 5: Fit evaluation suggests Go, but VP Ventas has market intelligence that contradicts</h3>
+<p class="key-value"><strong>Escenario</strong>: Rúbrica says 7.2/10, but VP Ventas says &quot;this partner will struggle in this vertical&quot;</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Pause final decision; schedule joint meeting (VP Aliados + VP Ventas + VP Finanzas)</div>
+<div class="bullet-item">Challenge VP Ventas feedback: specific? Based on which customers? Recent?</div>
+<div class="bullet-item">If VP Ventas has credible intel, downgrade Commercial score or escalate to CEO</div>
+<div class="bullet-item">Document dissent in the file</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-criterios-de-aceptacin-binarios-8ffd16" data-searchable aria-labelledby="head-7-criterios-de-aceptacin-binarios-8ffd16">
+            <div class="phase-header" id="head-7-criterios-de-aceptacin-binarios-8ffd16" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 7. Criterios de Aceptación Binarios</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Criterio</th><th scope="col">Evidencia</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>All 4D assessments completed</td><td>Scores documented in rúbrica</td><td>VP Aliados</td></tr><tr><td>Reference calls completed (min 2 per dimension)</td><td>Call notes summarized</td><td>VP Aliados</td></tr><tr><td>Financial model documented</td><td>Spreadsheet with ARR/margin projections</td><td>VP Finanzas</td></tr><tr><td>Rúbrica signed (VP Aliados, VP Ventas, VP Finanzas)</td><td>All 3 sign-offs in system</td><td>VP Aliados</td></tr><tr><td>Decision communicated to candidate</td><td>Email with rationale (Go/No-Go/Conditional)</td><td>VP Aliados</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-antipatterns-d25ecd" data-searchable aria-labelledby="head-8-antipatterns-d25ecd">
+            <div class="phase-header" id="head-8-antipatterns-d25ecd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 8. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap1-strong-personal-relationship-good-fit-4a7590">AP1: &quot;Strong personal relationship = good fit&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Scoring aliado high because CEO knows VP Aliados personally</p>
+<p class="key-value"><strong>Prevention</strong>: Enforce independent reference calls; override personal relationship in rubric</p>
+<h3 class="subsection-title" id="ap2-one-persons-assessment-is-sufficient-dc7746">AP2: &quot;One person&#x27;s assessment is sufficient&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Only VP Aliados scores; VP Ventas/Finanzas not consulted</p>
+<p class="key-value"><strong>Prevention</strong>: Require 3 signatures minimum; missing = Conditional decision escalated to CEO</p>
+<h3 class="subsection-title" id="ap3-fit-changes-after-onboarding-starts-418bc5">AP3: &quot;Fit changes after onboarding starts&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Starting onboarding, then discovering during training that fit is poor</p>
+<p class="key-value"><strong>Prevention</strong>: Stick to evaluation criteria; don&#x27;t onboard &quot;below-threshold&quot; partners</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-fallbacks-0a9456" data-searchable aria-labelledby="head-9-fallbacks-0a9456">
+            <div class="phase-header" id="head-9-fallbacks-0a9456" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 9. Fallbacks</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fb1-candidate-doesnt-provide-financial-info-202ce7">FB1: Candidate doesn&#x27;t provide financial info</h3>
+<p class="key-value"><strong>Fallback</strong>: Score Financial dimension as 3/10 and note &quot;unverifiable&quot;; proceed with other dimensions</p>
+<h3 class="subsection-title" id="fb2-cant-reach-references-after-3-attempts-b026d7">FB2: Can&#x27;t reach references after 3 attempts</h3>
+<p class="key-value"><strong>Fallback</strong>: Note as &quot;unable to verify&quot; in rubric; escalate to candidate to provide alternative references</p>
+<h3 class="subsection-title" id="fb3-vp-ventasfinanzas-not-available-for-final-sign-3ddf01">FB3: VP Ventas/Finanzas not available for final sign-off</h3>
+<p class="key-value"><strong>Fallback</strong>: Set 48h deadline for review; if no response = implicit approval; document in file</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-output-deliverables-822110" data-searchable aria-labelledby="head-10-output-deliverables-822110">
+            <div class="phase-header" id="head-10-output-deliverables-822110" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Output Deliverables</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Evaluation Rúbrica</strong> (signed by 3 parties)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Due Diligence Summary</strong> (1-2 pages: TAM analysis, GFY potential, team assessment, financial projection)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Decision Email</strong> to candidate (Go/No-Go with specific rationale)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>File Storage</strong> in Airtable/CRM tagged &quot;evaluated-[date]&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Rejection Template</strong> if No-Go (polite, reeval invite at 12mo mark)</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-referencias-3d0650" data-searchable aria-labelledby="head-11-referencias-3d0650">
+            <div class="phase-header" id="head-11-referencias-3d0650" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Referencias</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Process: <code class="inline-code">gestionar-aliados-gtm-proceso.md</code></div>
+<div class="bullet-item">SOP: <code class="inline-code">certificar-aliado-sop.md</code> (next step if Go)</div>
+<div class="bullet-item">Template: Due Diligence Rúbrica (shared drive)</div>
+<div class="bullet-item">Tool: Airtable &quot;Aliados Pipeline&quot;</div>
+<hr class="divider">
+<p class="key-value"><strong>Aprobado por</strong>: VP Aliados | <strong>Próxima revisión</strong>: Q2 2026</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

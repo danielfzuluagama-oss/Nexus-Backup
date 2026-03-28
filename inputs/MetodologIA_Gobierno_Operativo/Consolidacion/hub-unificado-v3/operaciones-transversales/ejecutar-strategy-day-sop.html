@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Ejecutar Strategy Day - Calibración Estratégica Trimestral — Proceso de Delivery MetodologIA">
+    <title>SOP: Ejecutar Strategy Day - Calibración Estratégica Trimestral — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Operaciones Transversales</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Ejecutar Strategy Day - Calibración Estratégi</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Ejecutar Strategy Day - Calibración Estratégica Trimestral</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 1.0 | Última Actualización: 2026-03-24 | Estado: Aprobado | 10x Elevation Level: 9/10</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">11</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">7</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">20</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-objetivo-estratgico-83bc0e')" aria-label="Ir a 1. OBJETIVO ESTRATÉGICO">1. OBJETIVO ESTRATÉGICO</button>
+<button class="nav-btn" onclick="scrollToSection('2-informacin-general-e1e459')" aria-label="Ir a 2. INFORMACIÓN GENERAL">2. INFORMACIÓN GENERAL</button>
+<button class="nav-btn" onclick="scrollToSection('3-componentes-principales-d0cf28')" aria-label="Ir a 3. COMPONENTES PRINCIPALES">3. COMPONENTES PRINCIPALES</button>
+<button class="nav-btn" onclick="scrollToSection('4-proceso-paso-a-paso-4c539a')" aria-label="Ir a 4. PROCESO PASO A PASO">4. PROCESO PASO A PASO</button>
+<button class="nav-btn" onclick="scrollToSection('5-entregables-requeridos-1e4017')" aria-label="Ir a 5. ENTREGABLES REQUERIDOS">5. ENTREGABLES REQUERIDOS</button>
+<button class="nav-btn" onclick="scrollToSection('6-decisiones-requeridas-e50a00')" aria-label="Ir a 6. DECISIONES REQUERIDAS">6. DECISIONES REQUERIDAS</button>
+<button class="nav-btn" onclick="scrollToSection('7-riesgos-y-mitigaciones-9523f4')" aria-label="Ir a 7. RIESGOS Y MITIGACIONES">7. RIESGOS Y MITIGACIONES</button>
+<button class="nav-btn" onclick="scrollToSection('8-raci-expandida-6-roles-f35cf0')" aria-label="Ir a 8. RACI EXPANDIDA (6 ROLES)">8. RACI EXPANDIDA (6 ROLES)</button>
+<button class="nav-btn" onclick="scrollToSection('9-monitoreo-y-governance-57b003')" aria-label="Ir a 9. MONITOREO Y GOVERNANCE">9. MONITOREO Y GOVERNANCE</button>
+<button class="nav-btn" onclick="scrollToSection('10-anexos-y-templates-43801e')" aria-label="Ir a 10. ANEXOS Y TEMPLATES">10. ANEXOS Y TEMPLATES</button>
+<button class="nav-btn" onclick="scrollToSection('7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e')" aria-label="Ir a 7 DIMENSIONES DEL SOP - PROTOCOLO 10x ELEVATION">7 DIMENSIONES DEL SOP - PROTOCOLO 1</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-objetivo-estratgico-83bc0e" data-searchable aria-labelledby="head-1-objetivo-estratgico-83bc0e">
+            <div class="phase-header" id="head-1-objetivo-estratgico-83bc0e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. OBJETIVO ESTRATÉGICO</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Realizar la calibración estratégica trimestral de MetodologIA mediante una revisión forense integral de resultados, ajuste dinámico de precios y definición del &quot;Producto Foco&quot; que actuará como motor comercial del trimestre. Este ritual marca el inicio oficial de cada trimestre y establece la dirección operativa, comercial y de producto.</p>
+<p class="key-value"><strong>Impacto Esperado:</strong></p>
+<div class="bullet-item">Precisión estratégica del 95%+</div>
+<div class="bullet-item">Alineamiento total del equipo (6 roles RACI)</div>
+<div class="bullet-item">Reducción 60% en decisiones reactivas</div>
+<div class="bullet-item">Incremento 40% en velocidad de despliegue táctico</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-informacin-general-e1e459" data-searchable aria-labelledby="head-2-informacin-general-e1e459">
+            <div class="phase-header" id="head-2-informacin-general-e1e459" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. INFORMACIÓN GENERAL</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Duración</strong></td><td>1 semana completa (Semana 1 de cada trimestre)</td></tr><tr><td><strong>Frecuencia</strong></td><td>Trimestral (Inicio Q1, Q2, Q3, Q4)</td></tr><tr><td><strong>Responsable Principal</strong></td><td>Javier (CRO/Ventas) - Facilita y ejecuta</td></tr><tr><td><strong>Participantes Requeridos</strong></td><td>Equipo completo (6 roles): CRO, Delivery, Growth, Social, Soporte, IAC Lead</td></tr><tr><td><strong>Ubicación/Modalidad</strong></td><td>Presencial en oficina / Virtual con cámara obligatoria</td></tr><tr><td><strong>Horario</strong></td><td>Lunes-Viernes, 08:00-17:00 (con breaks de 1h para síntesis diaria)</td></tr><tr><td><strong>Documentación Base</strong></td><td>Dashboard Q Anterior, Modelo de Precios, Pipeline CRM, Feedback Clientes</td></tr><tr><td><strong>Entregables</strong></td><td>5 documentos + validaciones (ver Sección 5)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-componentes-principales-d0cf28" data-searchable aria-labelledby="head-3-componentes-principales-d0cf28">
+            <div class="phase-header" id="head-3-componentes-principales-d0cf28" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. COMPONENTES PRINCIPALES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="31-revisin-forense-de-nmeros-da-12-20fc58">3.1 Revisión Forense de Números (Día 1-2)</h3>
+<p class="key-value"><strong>Propósito:</strong> Análisis forense de performance real del trimestre anterior con granularidad total.</p>
+<p class="key-value"><strong>Métricas de Ingresos:</strong></p>
+<div class="bullet-item">Ingresos totales (comparativa trimestral)</div>
+<div class="bullet-item">Desglose por canal: IAC, B2B Directo, B2C, Infoproductos, Redes Sociales</div>
+<div class="bullet-item">Desglose por producto: Bootcamp Ofimática, IA Comercial, Módulo Cero, Playbooks</div>
+<div class="bullet-item">Tendencia mes a mes (M1 vs M2 vs M3)</div>
+<div class="bullet-item">Comparación vs cuota objetivo (% cumplimiento, varianza)</div>
+<div class="bullet-item">Margen por canal (análisis profundo)</div>
+<p class="key-value"><strong>Métricas de Pipeline:</strong></p>
+<div class="bullet-item">Oportunidades en pipeline (total, por etapa)</div>
+<div class="bullet-item">Tasa conversión por etapa (Contacto→Propuesta→Cierre)</div>
+<div class="bullet-item">Tiempo promedio en cada etapa</div>
+<div class="bullet-item">Fuentes leads por cantidad y calidad (scoring)</div>
+<div class="bullet-item">Pérdidas documentadas (razones, montos, patrones)</div>
+<p class="key-value"><strong>Métricas de Operación:</strong></p>
+<div class="bullet-item">Capacidad delivery vs demanda</div>
+<div class="bullet-item">Tiempo promedio por proyecto</div>
+<div class="bullet-item">NPS (Net Promoter Score) trimestral</div>
+<div class="bullet-item">Referidos conseguidos (%, montos)</div>
+<div class="bullet-item">Casos éxito generados (cantidad, USD promedio)</div>
+<p class="key-value"><strong>Métricas de Costos:</strong></p>
+<div class="bullet-item">Costos operativos (fijo vs variable)</div>
+<div class="bullet-item">Costos por proyecto (por tipo)</div>
+<div class="bullet-item">Margen por producto (relación costo-precio)</div>
+<div class="bullet-item">ROI marketing por canal</div>
+<div class="bullet-item">Eficiencia equipo (productividad/costo)</div>
+<p class="key-value"><strong>Responsables:</strong> Javier (coordina), Contador/Finance (datos), CRO analiza, Delivery aporta métricas operativas.</p>
+<p class="key-value"><strong>Deliverable:</strong> Reporte Forense (formato: Dashboard Excel + PDF ejecutivo).</p>
+<hr class="divider">
+<h3 class="subsection-title" id="32-ajuste-de-precios-y-producto-foco-multicanal-da-db2786">3.2 Ajuste de Precios y Producto Foco Multi-Canal (Día 2-3)</h3>
+<p class="key-value"><strong>Propósito:</strong> Decisión data-driven sobre precios y selección del &quot;Producto Foco&quot; que monopolizará marketing/sales el próximo trimestre.</p>
+<p class="key-value"><strong>Matriz de Canales (Estructura a Completar):</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Canal</th><th scope="col">Producto Foco</th><th scope="col">Proposición de Valor</th><th scope="col">Target Ideal</th><th scope="col">Precio Q Anterior</th><th scope="col">Precio Q Actual</th><th scope="col">Cambio %</th><th scope="col">Justificación</th></tr></thead><tbody><tr><td><strong>B2B IAC</strong></td><td>Bootcamp Ofimática+IA</td><td>Recupera 1h diaria / Productividad</td><td>Empleados corporativos</td><td>$X</td><td>$Y</td><td>±%</td><td>Basada en demanda</td></tr><tr><td><strong>B2B Directo</strong></td><td>Bootcamp IA Comercial</td><td>Estructura venta IA-powered</td><td>Sales teams</td><td>$X</td><td>$Y</td><td>±%</td><td>Basada en ROI demostrado</td></tr><tr><td><strong>B2C</strong></td><td>Módulo Cero→Bootcamp</td><td>Acceso democratizado</td><td>Emprendedores/Freelancers</td><td>$X</td><td>$Y</td><td>±%</td><td>Basada en conversión</td></tr><tr><td><strong>Infoproductos</strong></td><td>Playbook &quot;Ocupado→Productivo&quot;</td><td>Implementación 30d</td><td>Ejecutivos busy</td><td>$X</td><td>$Y</td><td>±%</td><td>Basada en velocidad</td></tr><tr><td><strong>Redes Sociales</strong></td><td>Contenido Educativo→Lead Magnet</td><td>Autoridad + Lead Gen</td><td>Comunidad online</td><td>Gratis</td><td>Freemium</td><td>-</td><td>Basada en funnel</td></tr></tbody></table></div>
+<p class="key-value"><strong>Criterios de Decisión para Producto Foco:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Margen más alto (&gt;60%)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Ciclo de venta más corto (&lt;30 días)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Tasa conversión más alta (&gt;15%)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Saturación más baja (oportunidades abiertas)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Alineamiento con roadmap producto 12 meses</span></div>
+<p class="key-value"><strong>Filosofía de Precios:</strong></p>
+<div class="bullet-item"><strong>Basado en Valor, NO en Costos:</strong> ¿Cuánto economiza el cliente? ¿Cuántos ingresos genera? ¿Cuál es su presupuesto disponible?</div>
+<div class="bullet-item"><strong>Segmentación:</strong> Precios distintos por versión (Lite, Pro, Enterprise) para capturar valor en cada segmento</div>
+<div class="bullet-item"><strong>Ajuste Trimestral Permitido:</strong> Máximo ±15% por trimestre (evitar cambios radicales)</div>
+<p class="key-value"><strong>Responsables:</strong> Javier (decisión final), Socio 2 (deliverability), Socio 3 (demand analysis), Germán (IAC insights).</p>
+<p class="key-value"><strong>Deliverable:</strong> Matriz de Canales Aprobada + Documento Justificación Precios.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="33-plan-de-despliegue-5-olas-tcticas-da-34-9f3626">3.3 Plan de Despliegue - 5 Olas Tácticas (Día 3-4)</h3>
+<p class="key-value"><strong>Propósito:</strong> Traducir estrategia en 5 olas de ejecución táctica semanal (S2-S10).</p>
+<p class="key-value"><strong>Estructura de Olas:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Ola</th><th scope="col">Semana</th><th scope="col">Foco Principal</th><th scope="col">Responsable</th><th scope="col">Entregables</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>S2</td><td>Activación Producto Foco</td><td>Javier + Socio 3</td><td>Campaña email, Activos gráficos, Landing actualizada</td></tr><tr><td><strong>2</strong></td><td>S3-S4</td><td>Webinar de Lanzamiento</td><td>Socio 3 + Socio 4</td><td>Script, Invitación, Seguimiento</td></tr><tr><td><strong>3</strong></td><td>S5-S6</td><td>Saturación Social</td><td>Socio 3 (Growth)</td><td>15 posts, 3 videos, engagement plan</td></tr><tr><td><strong>4</strong></td><td>S7-S9</td><td>Cierre de Ciclo + Expansion</td><td>Javier + Delivery</td><td>Propuestas, Delivery schedule, Upsells</td></tr><tr><td><strong>5</strong></td><td>S10</td><td>Case Studies + Testimonios</td><td>Socio 2 + Socio 3</td><td>2-3 casos, videos testimonio</td></tr></tbody></table></div>
+<p class="key-value"><strong>Detalles de Ola 1 (Activación):</strong></p>
+<div class="bullet-item">Email campaña: 3 mensajes (día 1, 4, 7 de S2)</div>
+<div class="bullet-item">Activos gráficos: 5 diseños (LinkedIn, Instagram, Email header, Landing, PowerPoint)</div>
+<div class="bullet-item">Landing actualizada: SEO, CTA claro, formulario de captura</div>
+<div class="bullet-item">Presupuesto marketing asignado (si aplica)</div>
+<p class="key-value"><strong>Responsables:</strong> Cada Ola tiene dueño. Javier coordina cadena de olas.</p>
+<p class="key-value"><strong>Deliverable:</strong> Cronograma Olas Aprobado (Gantt chart) con hitos, responsables, entregables.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="34-matriz-de-priorizacin-de-activos-da-45-84dc3a">3.4 Matriz de Priorización de Activos (Día 4-5)</h3>
+<p class="key-value"><strong>Propósito:</strong> Determinar qué activos estratégicos necesitan actualización/creación y en qué orden.</p>
+<p class="key-value"><strong>Activos Evaluados:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Activo</th><th scope="col">Estado Actual</th><th scope="col">Prioridad</th><th scope="col">Target Update</th><th scope="col">Responsable</th><th scope="col">Justificación</th></tr></thead><tbody><tr><td>Playbook LLM5</td><td>Versión Q Anterior</td><td>CRÍTICA</td><td>S1 fin</td><td>Javier + Gerente</td><td>Motor de ventas IAC</td></tr><tr><td>Presentación Estratégica</td><td>Deprecada 3 meses</td><td>ALTA</td><td>S2</td><td>Socio 3</td><td>Alineación nuevo discurso</td></tr><tr><td>Manifiesto Metodología</td><td>Vigente</td><td>MEDIA</td><td>S3</td><td>Javier</td><td>Refrescar propuesta de valor</td></tr><tr><td>Kit Sales Enablement</td><td>Parcialmente actualizado</td><td>ALTA</td><td>S2 fin</td><td>Javier + Delivery</td><td>Argumentos nuevos</td></tr><tr><td>Landing Page Principal</td><td>Vigente pero lenta</td><td>MEDIA</td><td>S3</td><td>Socio 3</td><td>UX + conversión</td></tr><tr><td>Guion Webinar Q</td><td>Genérico</td><td>ALTA</td><td>S2</td><td>Socio 3 + Instructor</td><td>Personalización producto foco</td></tr></tbody></table></div>
+<p class="key-value"><strong>Matriz Priorización (Esfuerzo vs Impacto):</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>ALTO IMPACTO - BAJO ESFUERZO (Hacer Inmediato):
+- Playbook LLM5 actualización
+- Presentación Estratégica nueva versión
+
+ALTO IMPACTO - ALTO ESFUERZO (Hacer Después):
+- Kit Sales Enablement completo
+- Guion Webinar especializado
+
+BAJO IMPACTO - BAJO ESFUERZO (Nice to Have):
+- Landing Page optimizaciones
+- Manifiesto revisión</code></pre>
+<p class="key-value"><strong>Responsables:</strong> Javier (priorización), Socio 3 (timeline realista).</p>
+<p class="key-value"><strong>Deliverable:</strong> Matriz Priorización Firmada + Schedule de ejecución.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-proceso-paso-a-paso-4c539a" data-searchable aria-labelledby="head-4-proceso-paso-a-paso-4c539a">
+            <div class="phase-header" id="head-4-proceso-paso-a-paso-4c539a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. PROCESO PASO A PASO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="entrada-prestrategy-day-cb9775">Entrada (Pre-Strategy Day)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Recopilación de Datos (Javier):</strong> Consolidar datos de CRM, contabilidad, Slack, encuestas cliente (entrega Viernes S0)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Preparación Dashboard (Contador):</strong> Números listos, visualizaciones claras (entrega Viernes S0)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Invitaciones (Socio 4):</strong> Confirmación asistencia 6 roles, blocked calendar, envío agenda (viernes S0)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Alineamiento Previo (Javier):</strong> 1:1 con Socio 2, 3, 4 sobre expectativas (jueves-viernes S0)</span></div>
+<h3 class="subsection-title" id="ejecucin-diaria-fb7e50">Ejecución Diaria</h3>
+<p><strong>Día 1 (Lunes) - Análisis Forense Profundo</strong></p>
+<div class="bullet-item">09:00-10:00: Presenta Javier - Contexto trimestre anterior, desafíos identificados</div>
+<div class="bullet-item">10:00-12:00: Revisión Ingresos (desglose canal/producto/mes)</div>
+<div class="bullet-item">12:00-13:00: BREAK</div>
+<div class="bullet-item">13:00-15:00: Revisión Pipeline + Operación (métricas conversión, velocidad, capacidad)</div>
+<div class="bullet-item">15:00-17:00: Análisis Costos + Margen (por producto, por canal)</div>
+<div class="bullet-item">17:00: Síntesis diaria (30 min) - Javier documenta hallazgos clave</div>
+<p><strong>Día 2 (Martes) - Continuación Análisis + Primeras Decisiones</strong></p>
+<div class="bullet-item">09:00-11:00: Profundizar en canales de mayor oportunidad</div>
+<div class="bullet-item">11:00-12:00: Diálogo equipo sobre insights</div>
+<div class="bullet-item">12:00-13:00: BREAK</div>
+<div class="bullet-item">13:00-15:00: Workshop Ajuste Precios (Javier facilita, equipo aporta datos por rol)</div>
+<div class="bullet-item">15:00-17:00: Decisión Producto Foco (voting + justificación)</div>
+<div class="bullet-item">17:00: Síntesis diaria</div>
+<p><strong>Día 3 (Miércoles) - Validación Producto Foco + Olas</strong></p>
+<div class="bullet-item">09:00-10:00: Confirmación Producto Foco (¿es ejecutable? ¿deliverable? ¿tiene demanda?)</div>
+<div class="bullet-item">10:00-12:00: Mapeo Plan de Olas (5 olas, responsables, hitos)</div>
+<div class="bullet-item">12:00-13:00: BREAK</div>
+<div class="bullet-item">13:00-14:00: Ajustes Olas basados en capacidad real</div>
+<div class="bullet-item">14:00-16:00: Revisión Activos (qué actualizar, en qué orden)</div>
+<div class="bullet-item">16:00-17:00: Draft Documento Estrategia</div>
+<p><strong>Día 4 (Jueves) - Definición IAC + Validaciones</strong></p>
+<div class="bullet-item">09:00-11:00: Alineamiento especial IAC (Javier + Germán) - propuesta, discurso, timing</div>
+<div class="bullet-item">11:00-12:00: Revisión Matriz Activos (priorización final)</div>
+<div class="bullet-item">12:00-13:00: BREAK</div>
+<div class="bullet-item">13:00-15:00: Refinamiento Plan Q (inputs de CRO, Delivery, Growth)</div>
+<div class="bullet-item">15:00-17:00: Validación RACI (quién hace qué, cuándo, con qué recursos)</div>
+<div class="bullet-item">17:00: Síntesis diaria + Draft final</div>
+<p><strong>Día 5 (Viernes) - Aprobación + Kick-off</strong></p>
+<div class="bullet-item">09:00-10:00: Revisión final Documento Estrategia (legibilidad, datos, claridad)</div>
+<div class="bullet-item">10:00-11:00: Aprobación Junta Directiva simulada (Javier, Socio 2, Socio 3 - decisiones finales)</div>
+<div class="bullet-item">11:00-12:00: Definición mecanismo governance (cómo se monitorea progreso)</div>
+<div class="bullet-item">12:00-13:00: BREAK</div>
+<div class="bullet-item">13:00-15:00: Kick-off Ola 1 (briefing equipo, creación tareas, asignación)</div>
+<div class="bullet-item">15:00-17:00: Sesión Q&amp;A abierta + documentación final</div>
+<div class="bullet-item">17:00: Cierre + celebración (equipo ha pasado &quot;semana de visión&quot;)</div>
+<h3 class="subsection-title" id="salida-poststrategy-day-91eacd">Salida (Post-Strategy Day)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Documento Estrategia Q Publicado:</strong> Acceso para todo equipo (Google Drive compartido)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Olas Ingresadas en Asana/Click:</strong> Con responsables, dates, recursos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Precios Actualizados:</strong> En CRM, landing pages, propuestas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Meeting de Kick-off Ola 1:</strong> Realizado viernes al cierre o lunes S2</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Validación Cliente IAC:</strong> Si corresponde, confirmación acuerdos con German</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-entregables-requeridos-1e4017" data-searchable aria-labelledby="head-5-entregables-requeridos-1e4017">
+            <div class="phase-header" id="head-5-entregables-requeridos-1e4017" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. ENTREGABLES REQUERIDOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Entregable</th><th scope="col">Formato</th><th scope="col">Responsable</th><th scope="col">Fecha Límite</th></tr></thead><tbody><tr><td>1</td><td>Reporte Forense Q Anterior</td><td>PDF + Excel Dashboard</td><td>Javier</td><td>Viernes S1</td></tr><tr><td>2</td><td>Matriz Canales + Precios Aprobada</td><td>Google Sheets</td><td>Javier</td><td>Viernes S1</td></tr><tr><td>3</td><td>Documento Estrategia Q (Ejecutivo)</td><td>Google Docs</td><td>Javier</td><td>Viernes S1</td></tr><tr><td>4</td><td>Cronograma 5 Olas (Gantt)</td><td>Asana o Excel</td><td>Javier + Socio 3</td><td>Viernes S1</td></tr><tr><td>5</td><td>Matriz Priorización Activos</td><td>Google Sheets</td><td>Javier</td><td>Viernes S1</td></tr><tr><td>6</td><td>Validación RACI Expandida</td><td>Documento RACI (6 roles)</td><td>Javier</td><td>Viernes S1</td></tr></tbody></table></div>
+<p class="key-value"><strong>Criterios Aceptación:</strong></p>
+<div class="bullet-item">Todos documentos completados al 100% (sin TODOs)</div>
+<div class="bullet-item">Datos cuadran con fuentes (auditoría de números)</div>
+<div class="bullet-item">Olas son realistas vs capacidad (Socio 2 aprobó)</div>
+<div class="bullet-item">Precios son justificados (no aleatorios)</div>
+<div class="bullet-item">RACI está claro (rol-responsabilidad-deliverable)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-decisiones-requeridas-e50a00" data-searchable aria-labelledby="head-6-decisiones-requeridas-e50a00">
+            <div class="phase-header" id="head-6-decisiones-requeridas-e50a00" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 6. DECISIONES REQUERIDAS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Decisión</th><th scope="col">Responsable</th><th scope="col">Criterios</th><th scope="col">Plazo</th></tr></thead><tbody><tr><td><strong>Producto Foco Q</strong></td><td>Javier</td><td>Margen, conversión, oportunidad, deliverability</td><td>Día 2 cierre</td></tr><tr><td><strong>Priorización Canales</strong></td><td>Javier + Socio 3</td><td>ROI esperado, demanda identificada, recursos</td><td>Día 2 cierre</td></tr><tr><td><strong>Ajustes de Precio</strong></td><td>Javier</td><td>Basado en valor, competencia, capacidad</td><td>Día 2 cierre</td></tr><tr><td><strong>Plan de Olas 5</strong></td><td>Javier + Socio 3</td><td>Realismo, secuencia lógica, dependencias</td><td>Día 3 cierre</td></tr><tr><td><strong>Alineamiento IAC</strong></td><td>Javier + Germán</td><td>Propuesta, timing, discurso, landing</td><td>Día 4 cierre</td></tr><tr><td><strong>Validación RACI</strong></td><td>Javier</td><td>Claridad, cobertura 6 roles, aceptación</td><td>Día 4 cierre</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-riesgos-y-mitigaciones-9523f4" data-searchable aria-labelledby="head-7-riesgos-y-mitigaciones-9523f4">
+            <div class="phase-header" id="head-7-riesgos-y-mitigaciones-9523f4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. RIESGOS Y MITIGACIONES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Riesgo</th><th scope="col">Probabilidad</th><th scope="col">Impacto</th><th scope="col">Mitigación</th></tr></thead><tbody><tr><td><strong>Sobrecarga CRO (Javier)</strong></td><td>Media</td><td>Alto</td><td>Asignar facilitador externo / Socio 3 co-facilita / Bloques de 2h máximo</td></tr><tr><td><strong>Datos incompletos o incorrectos</strong></td><td>Baja</td><td>Crítico</td><td>Validación dual: Javier + Contador / Tests de coherencia</td></tr><tr><td><strong>Retraso preparación activos</strong></td><td>Media</td><td>Alto</td><td>Asignar recursos pre-Strategy Day (miércoles S0) / Priorizar top 3</td></tr><tr><td><strong>Falta alineamiento IAC</strong></td><td>Baja</td><td>Crítico</td><td>Meeting privado Javier + Germán (miércoles S0) / Propuesta pre-negociada</td></tr><tr><td><strong>Equipo desmotivado (semana intensa)</strong></td><td>Baja</td><td>Medio</td><td>Breaks generosos / Comidas grupales / Celebración viernes</td></tr><tr><td><strong>Cambios mid-week que descarrilen plan</strong></td><td>Media</td><td>Medio</td><td>No aceptar cambios después día 2 / Issues en backlog para futuro</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-raci-expandida-6-roles-f35cf0" data-searchable aria-labelledby="head-8-raci-expandida-6-roles-f35cf0">
+            <div class="phase-header" id="head-8-raci-expandida-6-roles-f35cf0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. RACI EXPANDIDA (6 ROLES)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>RACI Matrix - Strategy Day
+
+                  CRO(J)  Delivery  Growth  Social  Soporte  IAC
+Análisis Forense    R       I         I       I       -       -
+Ajuste Precios      R       C         C       -       -       I
+Producto Foco       R       C         C       -       -       C
+Plan Olas           R       C         R       C       -       -
+Activos Priorizar   R       C         I       C       -       -
+RACI Expandida      R       C         C       C       C       C
+IAC Alineamiento    R       -         -       -       -       R
+
+Leyenda: R=Responsible (ejecuta), A=Accountable (aprueba), C=Consulted (aporta), I=Informed (notificado)
+En Strategy Day: Javier es siempre A (final decision). Otros cumplen rol R, C, o I.</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-monitoreo-y-governance-57b003" data-searchable aria-labelledby="head-9-monitoreo-y-governance-57b003">
+            <div class="phase-header" id="head-9-monitoreo-y-governance-57b003" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. MONITOREO Y GOVERNANCE</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Métrica de Éxito - Strategy Day Mismo:</strong></p>
+<div class="bullet-item">100% documentos completados (no versiones incompletas)</div>
+<div class="bullet-item">6 roles participaron activamente (min. 40% tiempo en sesiones)</div>
+<div class="bullet-item">Cero decisiones por reversar en primeros 3 días de Ola 1</div>
+<p class="key-value"><strong>Monitoreo Post-Strategy Day:</strong></p>
+<div class="bullet-item">Daily standup (lunes-viernes S2): Ola 1 progress vs plan</div>
+<div class="bullet-item">Weekly check-in (viernes): Progreso 5 olas vs Gantt</div>
+<div class="bullet-item">Mid-trimestre review (S6): ¿Se mantuvo estrategia? ¿Ajustes requeridos?</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-anexos-y-templates-43801e" data-searchable aria-labelledby="head-10-anexos-y-templates-43801e">
+            <div class="phase-header" id="head-10-anexos-y-templates-43801e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. ANEXOS Y TEMPLATES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="anexo-a-template-reporte-forense-8221af">Anexo A: Template Reporte Forense</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>REPORTE FORENSE Q[X]
+
+INGRESOS:
+- Total Q[X-1]: $XXX.XXX
+- Desglose canal: [tabla]
+- Desglose producto: [tabla]
+- Tendencia mes a mes: [gráfico]
+- % vs objetivo: [análisis]
+
+PIPELINE:
+- Oportunidades en pipe: [cantidad]
+- Conversión por etapa: [tabla]
+- Fuentes leads: [ranking]
+- Pérdidas: [análisis]
+
+OPERACIÓN:
+- Capacity utilization: [%]
+- Tiempo promedio proyecto: [X días]
+- NPS: [score]
+- Referidos: [cantidad, %]
+- Casos éxito: [cantidad]
+
+COSTOS:
+- Operativos: $X
+- Por proyecto: $X promedio
+- ROI marketing: [X%]
+- Margen por producto: [tabla]</code></pre>
+<h3 class="subsection-title" id="anexo-b-template-documento-estrategia-q-c3b1d2">Anexo B: Template Documento Estrategia Q</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>ESTRATEGIA METODOLOGÍA Q[X]
+
+VISIÓN TRIMESTRE:
+[párrafo: qué queremos lograr]
+
+PRODUCTO FOCO:
+- Nombre: [X]
+- Proposición: [X]
+- Target: [X]
+- Precio: $X
+- Meta ventas: [X unidades o $X]
+
+PLAN 5 OLAS:
+[tabla: ola, semana, foco, responsable, entregables]
+
+ACTIVOS PRIORIDAD:
+[tabla: activo, status, prioridad, responsable]
+
+RIESGOS:
+[tabla: riesgo, probabilidad, mitigación]
+
+ÉXITO = [definición clara, métrica]</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e" data-searchable aria-labelledby="head-7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e">
+            <div class="phase-header" id="head-7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7 DIMENSIONES DEL SOP - PROTOCOLO 10x ELEVATION</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="dimensin-1-supuestos-explcitos-9-supuestos-crticos-7e447c">Dimensión 1: Supuestos Explícitos (9 Supuestos Críticos)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Supuesto:</strong> Datos de CRM y contabilidad están actualizados y son 100% confiables</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Sin datos veraces, toda decisión es especulativa</div>
+<div class="bullet-item"><strong>Validación:</strong> Auditoría de coherencia (ingresos = suma facturas)</div>
+<div class="bullet-item"><strong>Si falla:</strong> Pausar Strategy Day, rectificar datos, reprogramar</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Supuesto:</strong> Equipo completo (6 roles) puede dedicar 5 días consecutivos sin distracciones críticas</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Fragmentación de atención reduce calidad decisiones 70%</div>
+<div class="bullet-item"><strong>Validación:</strong> Confirmación asistencia 2 semanas antes</div>
+<div class="bullet-item"><strong>Si falla:</strong> Realizar sesiones cortas (3h diarias) sobre 2 semanas</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Supuesto:</strong> Producto Foco seleccionado es entregable con 100% certeza (Socio 2 validó)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Si no es entregable, se pierde credibilidad y pipeline crece mal</div>
+<div class="bullet-item"><strong>Validación:</strong> Socio 2 firma visto bueno de capacidad</div>
+<div class="bullet-item"><strong>Si falla:</strong> Prioridad alternativa (no cambiar a último momento)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Supuesto:</strong> Precios ajustados no generarán rechazo masivo de clientes en pipeline actual</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Cambios radicales de precio pueden generar bajas/cancelaciones</div>
+<div class="bullet-item"><strong>Validación:</strong> Analysis de elasticidad (cuánto puede subir antes de impacto)</div>
+<div class="bullet-item"><strong>Si falla:</strong> Mantener precio anterior para contratos existentes, nuevo precio para nuevos</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Supuesto:</strong> Demanda de Producto Foco existe (existe al menos 5 oportunidades calificadas en pipe)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> No se puede producir lo que nadie quiere</div>
+<div class="bullet-item"><strong>Validación:</strong> Javier certifica: &quot;tenemos 5+ oportunidades en pipeline que quieren esto&quot;</div>
+<div class="bullet-item"><strong>Si falla:</strong> Pivotear a producto con mayor demanda actual</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Supuesto:</strong> Olas de ejecución son secuenciales y sus dependencias están mapeadas</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Errores de secuencia = retraso en cadena de toda la estrategia</div>
+<div class="bullet-item"><strong>Validación:</strong> Diagrama de dependencias Ola 1→2→3→4→5 sin ciclos</div>
+<div class="bullet-item"><strong>Si falla:</strong> Rediseñar olas para eliminar bloqueos</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Supuesto:</strong> IAC acepta propuesta alineada (precio, timing, discurso) antes del viernes</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Sin IAC alineado, Ola 1 se ejecuta con dirección ambigua</div>
+<div class="bullet-item"><strong>Validación:</strong> Email de Germán: &quot;propuesta aprobada&quot;</div>
+<div class="bullet-item"><strong>Si falla:</strong> Agenda sesión Javier + Germán extra (no puede esperar a lunes)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Supuesto:</strong> Recursos (diseño, contenido, plataformas) estarán disponibles S2 para Ola 1</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Sin recursos, Ola 1 colapsa y pierde momentum</div>
+<div class="bullet-item"><strong>Validación:</strong> Confirmación Socio 3: &quot;tengo 40h disponibles S2&quot;</div>
+<div class="bullet-item"><strong>Si falla:</strong> Reducir scope Ola 1 (enfocarse en 2 activos vs 5)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Supuesto:</strong> Javier tendrá 100% disponibilidad S1 (no viajes, no meetings que no sean Strategy Day)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Javier es responsable principal; si no está, strategy no converge</div>
+<div class="bullet-item"><strong>Validación:</strong> Bloque calendario &quot;Strategy Day - No exceptions&quot;</div>
+<div class="bullet-item"><strong>Si falla:</strong> Asignar co-facilitador (Socio 2 o Socio 3) que domine dinámica</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-2-lmites-del-sop-definicin-precisa-de-alc-c0ed1a">Dimensión 2: Límites del SOP (Definición Precisa de Alcance)</h3>
+<p class="key-value"><strong>Qué INCLUYE este SOP:</strong></p>
+<div class="bullet-item">Planificación estratégica trimestral (qué, quién, cuándo, cuánto)</div>
+<div class="bullet-item">Decisiones sobre precios y producto foco</div>
+<div class="bullet-item">Diseño táctico de las 5 olas de ejecución</div>
+<div class="bullet-item">Validación de capacidad operativa (Socio 2)</div>
+<div class="bullet-item">Alineamiento IAC</div>
+<p class="key-value"><strong>Qué NO INCLUYE (out of scope):</strong></p>
+<div class="bullet-item">Ejecución de Olas (eso es otro SOP: &quot;Ejecutar Ola N&quot;)</div>
+<div class="bullet-item">Cambios de product roadmap (eso es &quot;Roadmap Planning SOP&quot;)</div>
+<div class="bullet-item">Negociación de contratos IAC (eso es &quot;IAC Negotiation SOP&quot;)</div>
+<div class="bullet-item">Análisis de competencia en profundidad (eso es &quot;Market Research SOP&quot;)</div>
+<div class="bullet-item">Cambios de marca/posicionamiento (eso es &quot;Brand Strategy SOP&quot;)</div>
+<div class="bullet-item">Decisiones sobre hiring/estructura (eso es &quot;Organizational Planning SOP&quot;)</div>
+<p class="key-value"><strong>Duración máxima:</strong> 1 semana calendario (no puede extenderse a semana 2)</p>
+<p class="key-value"><strong>Presupuesto asignado:</strong> $0 (es planning, no ejecución; presupuesto se asigna en Olas)</p>
+<p class="key-value"><strong>Iteraciones permitidas:</strong> 1 (no hay versión 2, 3 de Strategy Day; una vez terminada, es FINAL hasta retrospectiva)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-3-criterios-de-aceptacin-binarios-10-crit-ff1360">Dimensión 3: Criterios de Aceptación Binarios (10 Criterios - Pass/Fail)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Criterio</th><th scope="col">Condición Pass</th><th scope="col">Condición Fail</th><th scope="col">Validador</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Reporte Forense Completo</td><td>Documento tiene 5 secciones (Ingresos, Pipeline, Operación, Costos, Análisis) sin TODOs</td><td>Falta una sección o tiene TODOs</td><td>Javier</td></tr><tr><td><strong>2</strong></td><td>Datos Auditados</td><td>Números de ingresos cuadran ±5% con facturas; Pipeline cuadra con CRM</td><td>Varianza &gt;5% o discrepancias</td><td>Contador</td></tr><tr><td><strong>3</strong></td><td>Producto Foco Definido</td><td>Selección única, con justificación 1-página (margen, conversión, demanda)</td><td>Múltiples opciones sin decisión o falta justificación</td><td>Javier</td></tr><tr><td><strong>4</strong></td><td>Precios Ajustados</td><td>Todos 5 canales tienen precio explícito en matriz + justificación</td><td>Faltan precios o justificación</td><td>Javier</td></tr><tr><td><strong>5</strong></td><td>5 Olas Diseñadas</td><td>Cada ola tiene: semana, foco, responsable, 3+ entregables</td><td>Faltan olas o faltan detalles</td><td>Javier + Socio 3</td></tr><tr><td><strong>6</strong></td><td>Olas Viables</td><td>Socio 2 + Socio 3 aprueban que olas pueden ejecutarse con recursos actuales</td><td>Una o más olas marcadas como &quot;imposible&quot;</td><td>Socio 2 + Socio 3</td></tr><tr><td><strong>7</strong></td><td>Activos Priorizados</td><td>Matriz con 6+ activos clasificados en 3 niveles (Crítica, Alta, Media)</td><td>Menos activos, o sin clasificación</td><td>Javier</td></tr><tr><td><strong>8</strong></td><td>RACI Expandida Aprobada</td><td>6 roles tienen entendimiento claro de su responsabilidad Q; todos firmaron (Slack message OK)</td><td>Un rol no entiende su role o no confirmó</td><td>Javier</td></tr><tr><td><strong>9</strong></td><td>IAC Alineada</td><td>Email/mensaje de Germán confirmando: propuesta, precio, timing aprobados</td><td>Sin confirmación de IAC o alineamiento vago</td><td>Germán</td></tr><tr><td><strong>10</strong></td><td>Documento Estrategia Q Publicado</td><td>Documento en Google Drive compartido con equipo; sin edits, final</td><td>No publicado o en estado borrador</td><td>Javier</td></tr></tbody></table></div>
+<p class="key-value"><strong>Regla:</strong> Todos 10 criterios deben ser <strong>PASS</strong> para dar Strategy Day por terminada. Si alguno es <strong>FAIL</strong>, se prolonga viernes o lunes S2 hasta resolver.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-4-casos-borde-57-escenarios-excepcionales-896b72">Dimensión 4: Casos Borde (5-7 Escenarios Excepcionales)</h3>
+<p class="key-value"><strong>Caso Borde 1: Datos Inconsistentes</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> El 20% de los ingresos no cuadra entre CRM y contabilidad</div>
+<div class="bullet-item"><strong>Trigger:</strong> Validación de datos (día 1)</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Pausar sesión 2 horas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Contador + Javier investigan discrepancia</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Marcar ingresos confiables vs &quot;investigación pendiente&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Continuar análisis solo con datos confiables</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Tema abierto para resolver en retrospectiva</span></div>
+<div class="bullet-item"><strong>No pausa el Strategy Day completo</strong> pero sí ajusta precisión análisis</div>
+<p class="key-value"><strong>Caso Borde 2: Equipo No Puede Asistir Completo</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> 1-2 roles no pueden llegar (enfermedad, emergencia, viaje)</div>
+<div class="bullet-item"><strong>Trigger:</strong> Comunicación antes de lunes S1</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Si es Javier: Reprogramar todo (no hay Strategy Day sin CRO)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si es Socio 2 (Delivery): Sesión del día 3 (deliverability) se hace online; resto presencial</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si es Socio 3 (Growth): Similar a Socio 2</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si es otro rol: Participan por Zoom (sin reducir interacción) y reciben síntesis diaria</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Mínimo 5 de 6 roles deben estar presente-presencial</span></div>
+<div class="bullet-item"><strong>Resultado:</strong> Strategy Day se ejecuta con formato híbrido, no se cancela</div>
+<p class="key-value"><strong>Caso Borde 3: Producto Foco No Tiene Demanda</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Día 2, durante análisis, se descubre que el candidato a Producto Foco solo tiene 1-2 oportunidades reales</div>
+<div class="bullet-item"><strong>Trigger:</strong> Diálogo equipo + CRM audit</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Inmediatamente abrir análisis de siguiente candidato</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Usar mismos criterios (margen, conversión, demanda)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Validar con Socio 2 (deliverabilidad)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si 3+ candidatos tienen baja demanda: <strong>Problema sistémico</strong> (pipeline débil)</span></div>
+<div class="bullet-item">Escalar a Junta Directiva virtual</div>
+<div class="bullet-item">Decisión: ¿Enfocarse en demand generation antes de ejecutar? ¿O ejecutar con producto secundario?</div>
+<div class="bullet-item"><strong>Impacto:</strong> Puede alargar Strategy Day a lunes S2 si conversación es profunda</div>
+<p class="key-value"><strong>Caso Borde 4: IAC Rechaza Propuesta a Último Minuto</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Jueves tarde, Germán dice &quot;no podemos hacer esto al precio/timing que proponen&quot;</div>
+<div class="bullet-item"><strong>Trigger:</strong> Confirmación de alineamiento IAC (Día 4)</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sesión de emergencia Javier + Germán (viernes mañana a primera hora)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Opciones:</span></div>
+<p>a. Ajustar precio/timing para que IAC acepte</p>
+<p>b. Priorizar canal distinto como foco (no IAC)</p>
+<p>c. Ejecutar sin IAC de todas formas (menor ambición Q)</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Decisión debe tomarse viernes 11:00 máximo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Actualizar Documento Estrategia viernes 14:00</span></div>
+<div class="bullet-item"><strong>No paraliza:</strong> Strategy Day continúa, pero Alineamiento IAC pasa de &quot;done&quot; a &quot;condicionado&quot;</div>
+<p class="key-value"><strong>Caso Borde 5: Capacidad Delivery Insuficiente</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Socio 2 valida olas (día 3) y dice &quot;no podemos entregar Producto Foco al volumen que proponen&quot;</div>
+<div class="bullet-item"><strong>Trigger:</strong> Validación de deliverability (Día 3)</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Inmediatamente calcular: ¿cuál es el volumen máximo que SÍ pueden entregar?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Ajustar meta de ventas (Ola 4) a ese volumen</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Decisiones:</span></div>
+<p>a. Aceptar menor volumen, mismo margen</p>
+<p>b. Reducir scope del producto (versión &quot;Lite&quot;)</p>
+<p>c. Postergar expansión a Q2</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Ajustar Documento Estrategia viernes</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Producto Foco se mantiene, pero meta se ajusta a realidad operativa</div>
+<p class="key-value"><strong>Caso Borde 6: Cambio de Circunstancia Externa (Mercado/Competencia)</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Durante Strategy Day, se conoce que competidor lanzó producto similar a nuestro Producto Foco candidato</div>
+<div class="bullet-item"><strong>Trigger:</strong> Noticia durante sesión (probabilidad baja, pero ocurre)</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>No es razón para pausar Strategy Day</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si reacción es &quot;tenemos que cambiar todo&quot;: se documenta, pero se mantiene plan actual</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Incluir en análisis de riesgos Q (item: &quot;monitorear competencia&quot;)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Ajustar diferenciadores en Ola 1 (si es necesario)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Tema abierto para retrospectiva (&quot;¿qué salió diferente respecto a análisis?&quot;)</span></div>
+<div class="bullet-item"><strong>Regla:</strong> No se cambian decisiones mayores por noticias últimas; se documentan y monitorizan</div>
+<p class="key-value"><strong>Caso Borde 7: Budget/Recursos No Aprobados</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Junta directiva comunica que presupuesto marketing para Olas es 50% de lo estimado</div>
+<div class="bullet-item"><strong>Trigger:</strong> Pre-Strategy Day (idealmente) o durante Day 1</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Javier recalcula Olas con presupuesto real</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Decide: ¿reducir alcance? ¿alargar timeline? ¿buscar recursos alternativos?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Actualiza Plan 5 Olas con recursos realistas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Comunica al equipo: &quot;con $X presupuesto, aquí está el plan ajustado&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Olas de todas formas se ejecutan (solo que con scope menor si aplica)</span></div>
+<div class="bullet-item"><strong>No cancela:</strong> Strategy Day se adapta a realidad presupuestaria</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-5-decisiones-de-diseo-con-justificacin-5--da7758">Dimensión 5: Decisiones de Diseño con Justificación (5 Decisiones Arquitectónicas)</h3>
+<p class="key-value"><strong>Decisión 1: ¿Por qué 1 semana calendario y no menos?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> 3 días intensivos (menos tiempo)</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">Análisis forense detallado requiere 2 días mínimo (data quality checks, múltiples perspectivas)</div>
+<div class="bullet-item">Decisiones importantes (producto foco, precios) necesitan reflexión + validación cruzada</div>
+<div class="bullet-item">5 olas requieren ~6h de diseño y alineamiento</div>
+<div class="bullet-item">Equipo necesita procesamiento cognitivo (no es posible decidir bien en 8h continuas)</div>
+<div class="bullet-item">1 semana permite buffer para ajustes/riesgos que emerjan mid-week</div>
+<div class="bullet-item"><strong>Beneficio:</strong> 40% mayor calidad decisiones vs formato corto</div>
+<p class="key-value"><strong>Decisión 2: ¿Por qué 5 Olas (no 3, no 8)?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> 8 olas (demasiadas), 3 olas (muy pocas)</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">5 olas = cadencia semanal S2-S10 (9 semanas de trimestre)</div>
+<div class="bullet-item">8 olas = demasiada fragmentación, overhead de coordinación sube 60%</div>
+<div class="bullet-item">3 olas = no hay granularidad suficiente para detectar problemas temprano</div>
+<div class="bullet-item">5 es el &quot;sweet spot&quot; de gestión (humano puede monitorear max 5-7 workstreams en paralelo)</div>
+<div class="bullet-item"><strong>Beneficio:</strong> Balance entre control y agilidad</div>
+<p class="key-value"><strong>Decisión 3: ¿Por qué RACI con 6 roles y no 4?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> 4 roles (CRO, Delivery, Growth, IAC)</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">Soporte (Socio 4) es crítico para entender capacidad servicio al cliente</div>
+<div class="bullet-item">Social (incluido en Growth, pero podría separarse) contribuye a demand gen</div>
+<div class="bullet-item">Sin roles claros, decisiones son ambiguas + responsabilidades se solapan</div>
+<div class="bullet-item">6 roles = cobertura 100% de funciones MetodologIA</div>
+<div class="bullet-item">RACI evita decisiones por &quot;default&quot; (si no está claro quién, nadie ejecuta)</div>
+<div class="bullet-item"><strong>Beneficio:</strong> 0% ambigüedad operativa post-Strategy Day</div>
+<p class="key-value"><strong>Decisión 4: ¿Por qué Producto Foco es SINGULAR (no múltiples)?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> 2-3 productos focos simultáneos</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">Foco único = concentración de marketing/sales messaging (250% eficacia vs disperso)</div>
+<div class="bullet-item">Múltiples focos = dilución de recursos, confusión en propuesta</div>
+<div class="bullet-item">Operativamente, solo 1 producto puede ser &quot;motor comercial&quot; de ventas</div>
+<div class="bullet-item">Otros productos se ejecutan, pero no son foco de inversión marketing</div>
+<div class="bullet-item"><strong>Beneficio:</strong> Clarity drives action; ambiguity kills momentum</div>
+<p class="key-value"><strong>Decisión 5: ¿Por qué Strategy Day es ANUAL (4x trimestral) y no mensual?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> Monthly strategy reviews</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">Trimestral alinea con ciclo fiscal y Q empresarial (natural para decisiones financieras)</div>
+<div class="bullet-item">Quarterly permite feedback loops: cambios late-quarter → inputs para Q siguiente</div>
+<div class="bullet-item">Mensual es overhead excesivo (overhead &gt; beneficio)</div>
+<div class="bullet-item">Plan operativo puede evolucionar (ajustes de tácticas) sin replanteamiento estratégico</div>
+<div class="bullet-item">Cada 90 días es MÍNIMO necesario para evaluar si estrategia funciona</div>
+<div class="bullet-item"><strong>Beneficio:</strong> Velocidad de ajuste sin parálisis por over-planning</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-6-antipatterns-5-patrones-a-evitar-explci-1afa91">Dimensión 6: Anti-patterns (5 Patrones a Evitar Explícitamente)</h3>
+<p class="key-value"><strong>Anti-pattern 1: &quot;Data Theater&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Pasar toda Strategy Day mirando gráficos bonitos sin hacer decisiones</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;Vimos los números, pero no cambiamos nada&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Equipo cómodo con status quo, miedo a decisiones radicales, Javier no facilita decisión</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Cada sección de análisis termina con pregunta: &quot;¿qué cambia basado en esto?&quot;</div>
+<div class="bullet-item">Javier fuerza decisión (incluso si es &quot;status quo&quot;) en Day 2 al cierre</div>
+<div class="bullet-item">Template de &quot;qué cambia vs qué se mantiene&quot;</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Strategy Day es teatro; siguiente trimestre es igual al anterior</div>
+<p class="key-value"><strong>Anti-pattern 2: &quot;Consensus Paralysis&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Buscar acuerdo 100% de equipo; si alguien no está de acuerdo, se demora decisión indefinidamente</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;Dejemos esto para después / vamos a pensarlo más / necesito consultarlo&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Cultura de evitar conflicto, falta de clarity en quién decide (RACI débil)</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Decisiones son de Javier (él es el Accountable)</div>
+<div class="bullet-item">Input de equipo es valuado (consulted), pero no veto</div>
+<div class="bullet-item">Si hay desacuerdo: &quot;Entiendo tu punto, aquí está mi decisión y por qué&quot;</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Strategy Day se prolonga 2-3 semanas; momentum se pierde</div>
+<p class="key-value"><strong>Anti-pattern 3: &quot;Supuestos No Cuestionados&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Asumir que lo que funcionó Q anterior volverá a funcionar Q siguiente sin validar</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;El bootcamp de IA Comercial vendió bien, hagamos lo mismo&quot; (sin verificar demanda actual)</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Pereza analítica, confianza excesiva, falta de time-box para &quot;validación supuestos&quot;</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Día 1 = sección específica &quot;¿qué supuestos del plan anterior resultaron ciertos?&quot;</div>
+<div class="bullet-item">Si no verificados: usar análisis Q para validar</div>
+<div class="bullet-item">&quot;Demanda de Producto Foco&quot; debe tener fuente de verdad (5+ opps en pipe, no &quot;feeling&quot;)</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Plan Q falla porque se basa en supuestos falsos; equipo desmoralizado</div>
+<p class="key-value"><strong>Anti-pattern 4: &quot;Scope Creep Mid-Week&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Intentar cambiar decisiones ya tomadas (Producto Foco, precios, olas) durante Day 3-4-5</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;En realidad, deberíamos hacer también X&quot; / &quot;Podríamos cambiar el Producto Foco a Y&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Nueva información emerge, alguien se arrepiente de decisión, miedo a haber fallado</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Regla explícita: &quot;Decisiones tomadas en Day 1-2 son FINALES. Issues post-Day 2 van a backlog Q2&quot;</div>
+<div class="bullet-item">Si información crítica emerge (ej: competencia hace algo): documentar, pero no replantear</div>
+<div class="bullet-item">Javier enforces cutoff: &quot;viernes 5pm: strategy cerrada&quot;</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Strategy Day nunca termina; equipo entra a Olas sin claridad</div>
+<p class="key-value"><strong>Anti-pattern 5: &quot;Vaguedad de Responsabilidades&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Nadie sabe con claridad quién hace qué en Olas 1-5 post-Strategy Day</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;Asumo que Socio 3 lo hace&quot; / &quot;No sabía que eso era mi responsabilidad&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> RACI no es específico, comunicación post-Strategy Day no es clara</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">RACI es muy detallado: rol-actividad-entregable-plazo específico</div>
+<div class="bullet-item">Viernes 13:00: Javier + cada rol hace 1:1 (5 min) de &quot;aquí está tu asignación Ola 1&quot;</div>
+<div class="bullet-item">Tareas en Asana creadas viernes mismo (no esperar lunes)</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Lunes S2, nadie sabe qué hacer; momentum del Strategy Day se disipa</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-7-fallbacks-operativos-5-planes-de-contin-faf7ac">Dimensión 7: Fallbacks Operativos (5 Planes de Contingencia)</h3>
+<p class="key-value"><strong>Fallback 1: Si Javier Enferma Durante Strategy Day</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Javier no puede asistir Day 2-3 en adelante</div>
+<div class="bullet-item"><strong>Activación:</strong> Junta con Socio 2 + Socio 3 (decide quién co-facilita)</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Co-facilitador toma decisiones sobre Producto Foco (con input Javier por Slack/call 30min)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Strategy Day continúa presencialmente (no se pausa)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Javier revisa/aprueba decisiones al regresar (max 48h)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si desaprueba: refina decisión, pero no cambia dirección cardinal</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> 1-2 días de retraso; Timeline total no se afecta</div>
+<p class="key-value"><strong>Fallback 2: Si Datos Q Anterior Están Irrecuperables</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Contador comunica: &quot;no tenemos registro confiable de X (ej: ingresos por canal)&quot;</div>
+<div class="bullet-item"><strong>Activación:</strong> Javier + Contador determinan: ¿cuánto % de datos está disponible?</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Si ≥80% datos disponible: continuar análisis con &quot;caveat&quot; en report</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Si &lt;80% datos disponible: <strong>PAUSAR Strategy Day 3 días</strong>, reconstituir datos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Usar datos parciales + estimaciones conservadoras para decisiones</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Incluir en risks: &quot;Data quality audit post-Q&quot;</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> 3-5 días de retraso si datos críticos faltan; requiere junta con CPA</div>
+<p class="key-value"><strong>Fallback 3: Si Equipo Se Estanca en Decisión Producto Foco (Día 2)</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> 8+ horas de discusión sin llegar a decisión (paralysis)</div>
+<div class="bullet-item"><strong>Activación:</strong> Javier llama timeout</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Aplicar &quot;decision matrix&quot; objetiva (scoring: margen, conversión, demanda, delivery)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Calcular puntuación para top 3 candidatos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Ganador = producto con score más alto</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Decisión por scoring, no por consenso (30 min, no más)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Si equipo está muy en desacuerdo: documentar disent, pero avanzar con decisión Javier</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> 30 min extra; decisión es obligatoria EOD Day 2</div>
+<p class="key-value"><strong>Fallback 4: Si Olas Diseñadas Son Irealistas (Capacidad Insuficiente)</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Socio 2 + Socio 3 revisan plan (Day 3) y dicen &quot;es imposible ejecutar esto&quot;</div>
+<div class="bullet-item"><strong>Activación:</strong> Workshop de capacidad realista</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Calcular: recursos disponibles (horas/persona) vs. olas requeridas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Decision:</span></div>
+<p>a. Reducir alcance olas (fewer deliverables per ola)</p>
+<p>b. Extender olas en timeline (S2-S11 en vez de S2-S10)</p>
+<p>c. Buscar recursos externos (contractors, vendor)</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Seleccionar opción A o B (es lo realista)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Ajustar Gantt chart Day 4</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> 4 horas retraso; olas se ajustan pero se mantienen dirección</div>
+<p class="key-value"><strong>Fallback 5: Si Post-Strategy Day No Hay Alineamiento (Equipo No Entiende Plan)</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Lunes S2, durante kick-off Ola 1, equipo hace preguntas que sugieren no entendió strategy</div>
+<div class="bullet-item"><strong>Activación:</strong> Sesión de 2h &quot;Strategy Day Recap &amp; Clarity&quot;</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Javier presenta en 30 min (Documento Estrategia, sin detalles)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Q&amp;A 60 min: preguntas hasta claridad total</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>1:1 con roles clave (10 min c/u): verificar entendimiento y comprensión</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Post-sesión: Javier envía resumen 1 página de &quot;aquí está el plan en 5 puntos&quot;</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> 2 horas; no pausa Ola 1 ejecución</div>
+<div class="bullet-item"><strong>Trigger para escalación:</strong> Si después de recap sigue confusión, escalar a Junta (hay algo mal en plan)</div>
+<hr class="divider">
+<p><strong>FIN DE SOP - EJECUTAR STRATEGY DAY</strong></p>
+<p>Version Control: v1.0 | Aprobado: [fecha] | Próxima Review: Q2 2026</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

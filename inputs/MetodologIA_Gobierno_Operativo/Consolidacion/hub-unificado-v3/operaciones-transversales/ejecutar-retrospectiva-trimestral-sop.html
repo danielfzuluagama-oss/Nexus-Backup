@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Ejecutar Retrospectiva Trimestral - Cosecha y Evolución — Proceso de Delivery MetodologIA">
+    <title>SOP: Ejecutar Retrospectiva Trimestral - Cosecha y Evolución — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Operaciones Transversales</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Ejecutar Retrospectiva Trimestral - Cosecha y</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Ejecutar Retrospectiva Trimestral - Cosecha y Evolución</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 1.0 | Última Actualización: 2026-03-24 | Estado: Aprobado | 10x Elevation Level: 9/10</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">10</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">7</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">20</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-objetivo-estratgico-83bc0e')" aria-label="Ir a 1. OBJETIVO ESTRATÉGICO">1. OBJETIVO ESTRATÉGICO</button>
+<button class="nav-btn" onclick="scrollToSection('2-informacin-general-e1e459')" aria-label="Ir a 2. INFORMACIÓN GENERAL">2. INFORMACIÓN GENERAL</button>
+<button class="nav-btn" onclick="scrollToSection('3-componentes-principales-d0cf28')" aria-label="Ir a 3. COMPONENTES PRINCIPALES">3. COMPONENTES PRINCIPALES</button>
+<button class="nav-btn" onclick="scrollToSection('4-proceso-paso-a-paso-4c539a')" aria-label="Ir a 4. PROCESO PASO A PASO">4. PROCESO PASO A PASO</button>
+<button class="nav-btn" onclick="scrollToSection('5-entregables-requeridos-1e4017')" aria-label="Ir a 5. ENTREGABLES REQUERIDOS">5. ENTREGABLES REQUERIDOS</button>
+<button class="nav-btn" onclick="scrollToSection('6-decisiones-requeridas-e50a00')" aria-label="Ir a 6. DECISIONES REQUERIDAS">6. DECISIONES REQUERIDAS</button>
+<button class="nav-btn" onclick="scrollToSection('7-riesgos-y-mitigaciones-9523f4')" aria-label="Ir a 7. RIESGOS Y MITIGACIONES">7. RIESGOS Y MITIGACIONES</button>
+<button class="nav-btn" onclick="scrollToSection('8-raci-expandida-6f22cf')" aria-label="Ir a 8. RACI EXPANDIDA">8. RACI EXPANDIDA</button>
+<button class="nav-btn" onclick="scrollToSection('9-monitoreo-y-governance-57b003')" aria-label="Ir a 9. MONITOREO Y GOVERNANCE">9. MONITOREO Y GOVERNANCE</button>
+<button class="nav-btn" onclick="scrollToSection('7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e')" aria-label="Ir a 7 DIMENSIONES DEL SOP - PROTOCOLO 10x ELEVATION">7 DIMENSIONES DEL SOP - PROTOCOLO 1</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-objetivo-estratgico-83bc0e" data-searchable aria-labelledby="head-1-objetivo-estratgico-83bc0e">
+            <div class="phase-header" id="head-1-objetivo-estratgico-83bc0e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. OBJETIVO ESTRATÉGICO</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Transformar proyectos completados en casos de éxito documentados, actualizar playbooks con aprendizajes reales de campo, refinar el discurso de ventas basándose en qué argumentos y canales funcionaron, y proyectar la estrategia Q siguiente con datos reales. La Retrospectiva es el ritual de &quot;cosecha&quot; trimestral que cierra el ciclo learning-execution-refinement.</p>
+<p class="key-value"><strong>Impacto Esperado:</strong></p>
+<div class="bullet-item">5-7 casos de éxito publicados por trimestre</div>
+<div class="bullet-item">Playbooks actualizados con datos de campo (conversión, objections, timing)</div>
+<div class="bullet-item">Discurso de ventas refinado (argumentos que sí convencen)</div>
+<div class="bullet-item">Plan Q+1 basado 100% en realidades Q actual (no especulación)</div>
+<div class="bullet-item">Capacidad delivery aumenta 15-20% (cuellos botellas identificados y eliminados)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-informacin-general-e1e459" data-searchable aria-labelledby="head-2-informacin-general-e1e459">
+            <div class="phase-header" id="head-2-informacin-general-e1e459" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. INFORMACIÓN GENERAL</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Duración</strong></td><td>2 semanas completas (Semanas 11-12 del trimestre)</td></tr><tr><td><strong>Frecuencia</strong></td><td>Trimestral (al cierre de Q1, Q2, Q3, Q4)</td></tr><tr><td><strong>Responsable Principal</strong></td><td>Javier (CRO) - Facilita y articula Plan Q+1</td></tr><tr><td><strong>Participantes Requeridos</strong></td><td>Equipo completo (6 roles): CRO, Delivery, Growth, Social, Soporte, IAC Lead</td></tr><tr><td><strong>Ubicación/Modalidad</strong></td><td>Presencial en oficina / Híbrido (se requiere participación sincrónica)</td></tr><tr><td><strong>Horario</strong></td><td>Sesiones 3x por semana (L, M, J) 10:00-13:00 (deja tardes para ejecución)</td></tr><tr><td><strong>Documentación Base</strong></td><td>Reporte Forense Q, 11-Star Checks, Feedback Clientes, CRM data, Analytics</td></tr><tr><td><strong>Entregables</strong></td><td>4 documentos + validaciones (ver Sección 5)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-componentes-principales-d0cf28" data-searchable aria-labelledby="head-3-componentes-principales-d0cf28">
+            <div class="phase-header" id="head-3-componentes-principales-d0cf28" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. COMPONENTES PRINCIPALES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="31-transformacin-proyectos-casos-de-xito-semana-11-9fe151">3.1 Transformación Proyectos → Casos de Éxito (Semana 11)</h3>
+<p class="key-value"><strong>Propósito:</strong> Identificar 5-7 proyectos completados que merecen ser documentados como &quot;case studies&quot;, extraer datos/métricas/testimonios, estructurar narrativa de éxito.</p>
+<p class="key-value"><strong>Criterios de Selección de Caso Éxito:</strong></p>
+<p>Un proyecto es candidato a &quot;Caso Éxito&quot; si cumple 2+ de:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Impacto Cuantificable:</strong> ROI claro, tiempo ahorrado mensurable, resultado numérico</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Cliente Evangelista:</strong> NPS ≥70, cliente ya refirió o ha testimonial, menciona recomendaría</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Aplicabilidad Multi-Canal:</strong> Aprendizaje es transferible a otros clientes (no one-off)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Solución a Problema Común:</strong> Problema del cliente es compartido por 5%+ mercado potencial</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Documentación Completa:</strong> 11-Star Check completado, feedback T0/T30 disponible, testimonios capturados</span></div>
+<p class="key-value"><strong>Proceso de Extracción de Caso Éxito:</strong></p>
+<p class="key-value"><strong>Fase 1: Identificación (Día 1 Semana 11)</strong></p>
+<div class="bullet-item">Socio 2 + PM reviisan todos proyectos Q (list en Asana con completitud info)</div>
+<div class="bullet-item">Marcar candidatos &quot;Top 5-7&quot; basado en criterios arriba</div>
+<div class="bullet-item">Validación conjunta: ¿es realmente caso éxito o proyecto &quot;ok&quot;?</div>
+<p class="key-value"><strong>Fase 2: Recopilación de Datos (Día 2-3 Semana 11)</strong></p>
+<div class="bullet-item">PM extrae para cada caso:</div>
+<div class="bullet-item"><strong>Contexto Antes:</strong> Cliente situation, desafío, objetivo</div>
+<div class="bullet-item"><strong>Solución Aplicada:</strong> Qué hicimos (en lenguaje cliente, no jargón)</div>
+<div class="bullet-item"><strong>Resultados Medidos:</strong> Números (ROI, tiempo, conversión, etc.)</div>
+<div class="bullet-item"><strong>Testimonial Cliente:</strong> Quote 1-2 frases de cliente sobre impacto</div>
+<div class="bullet-item"><strong>Lección Extraída:</strong> Qué aprendimos que podemos replicar</div>
+<p class="key-value"><strong>Formato Extracción:</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>CASO ÉXITO: [Nombre Proyecto / Cliente]
+
+CONTEXTO:
+[2-3 párrafos: quién es cliente, qué desafío tenía]
+
+SOLUCIÓN:
+[2-3 párrafos: qué hicimos, cómo funcionó]
+
+RESULTADOS:
+- Métrica #1: [X cambió de Y a Z = % mejora]
+- Métrica #2: [X cambió de Y a Z = % mejora]
+- Métrica #3: [X cambió de Y a Z = % mejora]
+
+TESTIMONIAL CLIENTE:
+&quot;[quote de cliente de 1-2 frases sobre impacto]&quot; - [Nombre Cliente, Rol, Empresa]
+
+LECCIÓN:
+¿Qué aprendimos que podemos usar en próximos clientes? ¿Qué fue clave de éxito?</code></pre>
+<p class="key-value"><strong>Fase 3: Validación con Cliente (Día 4-5 Semana 11)</strong></p>
+<div class="bullet-item">PM envía draft caso a cliente: &quot;Aquí está nuestra versión de tu caso éxito; ¿podemos publicarlo así?&quot;</div>
+<div class="bullet-item">Cliente aprueba, sugiere cambios, o rechaza publicación</div>
+<div class="bullet-item">Si cliente rechaza: registrar como &quot;Casos Éxito Internal Only&quot; (para sales deck, no público)</div>
+<p class="key-value"><strong>Fase 4: Publicación (Semana 11-12)</strong></p>
+<div class="bullet-item">Casos aprobados se publican en:</div>
+<div class="bullet-item">Landing page (sección &quot;Casos de Éxito&quot;)</div>
+<div class="bullet-item">LinkedIn (post narrative + link)</div>
+<div class="bullet-item">Sales Deck IAC (casos por canal relevante)</div>
+<div class="bullet-item">Email marketing (newslwetter)</div>
+<p class="key-value"><strong>Responsables:</strong> Socio 2 (identifica), PM (extrae), Socio 3 (publica), Javier (revisa/aprueba)</p>
+<p class="key-value"><strong>Deliverable:</strong> 5-7 Casos Éxito documentados, cliente-aprobados, publicados</p>
+<p class="key-value"><strong>Target:</strong> 5-7 casos por trimestre × 4 trimestres = 20-28 casos/año (banco de social proof)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="32-actualizacin-de-playbooks-semana-1112-b88eb9">3.2 Actualización de Playbooks (Semana 11-12)</h3>
+<p class="key-value"><strong>Propósito:</strong> Cada playbook que guía ventas, delivery, bootcamps es actualizado con datos reales Q (argumentos que funcionan, objeciones comunes, mejoras conversión, timing óptimo).</p>
+<p class="key-value"><strong>Playbooks a Actualizar (Prioridad):</strong></p>
+<h4 class="h4-title">Playbook #1: Sales Enablement Kit IAC (CRÍTICO)</h4>
+<p class="key-value"><strong>Duración:</strong> 4-6 horas de actualización</p>
+<p class="key-value"><strong>Secciones a Revisar:</strong></p>
+<label class="checklist-item" for="chk-argumentos-de-venta-cules-funcionaron-q-cules-no-952c3c"><input type="checkbox" id="chk-argumentos-de-venta-cules-funcionaron-q-cules-no-952c3c" ><span>Argumentos de Venta - ¿Cuáles funcionaron Q? ¿Cuáles no?</span></label>
+<div class="bullet-item">Extraer de: CRM, notas llamadas (si grabadas), feedback clientes</div>
+<div class="bullet-item">Ejemplo: &quot;Argumento de &#x27;tiempo ahorrado&#x27; generó 70% conversión vs &#x27;IA innovation&#x27; (20%)&quot;</div>
+<div class="bullet-item">Actualizar: Priorizar argumentos top-3 en propuesta, deck, email</div>
+<label class="checklist-item" for="chk-objeciones-comunes-cules-aparecieron-frecuentement-e4e085"><input type="checkbox" id="chk-objeciones-comunes-cules-aparecieron-frecuentement-e4e085" ><span>Objeciones Comunes - ¿Cuáles aparecieron frecuentemente?</span></label>
+<div class="bullet-item">Extraer de: CRM &quot;Lost Reasons&quot;, Slack conversation, notas Javier</div>
+<div class="bullet-item">Ejemplo: Objeción común &quot;Somos muy ocupados para capacitación&quot; → Crear argumento &quot;2h/semana es suficiente&quot;</div>
+<div class="bullet-item">Actualizar: Agregar 3-5 objeciones nuevas + respuestas testeadas</div>
+<label class="checklist-item" for="chk-material-adicional-needed-f1cbdd"><input type="checkbox" id="chk-material-adicional-needed-f1cbdd" ><span>Material Adicional Needed</span></label>
+<div class="bullet-item">Extraer de: Sales feedback (&quot;necesito X para cerrar&quot;)</div>
+<div class="bullet-item">Ejemplo: &quot;Cliente preguntó cómo escalamos esto al equipo; necesitamos 1-pager&quot;</div>
+<div class="bullet-item">Crear: Documento faltante, template, guía</div>
+<label class="checklist-item" for="chk-mejoras-conversin-ea21b4"><input type="checkbox" id="chk-mejoras-conversin-ea21b4" ><span>Mejoras Conversión</span></label>
+<div class="bullet-item">Extraer de: Análisis &quot;Ganadas vs Perdidas&quot; (qué diferencia había)</div>
+<div class="bullet-item">Ejemplo: &quot;Meetings en lunes 10am cierre 40% mejor que jueves 15pm&quot;</div>
+<div class="bullet-item">Actualizar: Timing recomendado, estructura call, pitch order</div>
+<p class="key-value"><strong>Responsable:</strong> Javier (lidera), Socio 3 (aporta datos Growth), PM (aporta feedback cliente)</p>
+<p class="key-value"><strong>Formato:</strong> Google Doc, editable, con versión control (v1.3 → v1.4)</p>
+<h4 class="h4-title">Playbook #2: Guion Webinar (ALTO)</h4>
+<p class="key-value"><strong>Duración:</strong> 3-4 horas de actualización</p>
+<p class="key-value"><strong>Secciones a Revisar:</strong></p>
+<label class="checklist-item" for="chk-secciones-de-engagement-qu-preguntasejemplos-gener-0a4adc"><input type="checkbox" id="chk-secciones-de-engagement-qu-preguntasejemplos-gener-0a4adc" ><span>Secciones de Engagement - ¿Qué preguntas/ejemplos generaron mayor interés?</span></label>
+<div class="bullet-item">Extraer de: Encuestas post-webinar, feedback viewers, chat engagement</div>
+<div class="bullet-item">Actualizar: Reorganizar contenido (mover secciones high-engagement al start)</div>
+<label class="checklist-item" for="chk-preguntas-objections-qu-fue-preguntado-qu-dudas-em-778291"><input type="checkbox" id="chk-preguntas-objections-qu-fue-preguntado-qu-dudas-em-778291" ><span>Preguntas &amp; Objections - ¿Qué fue preguntado? ¿Qué dudas emergen?</span></label>
+<div class="bullet-item">Extraer de: Q&amp;A log webinar, follow-up emails</div>
+<div class="bullet-item">Actualizar: Respuestas pre-prepared a top 5 preguntas</div>
+<label class="checklist-item" for="chk-timing-cunto-tiempo-pas-en-cada-seccin-38eaf0"><input type="checkbox" id="chk-timing-cunto-tiempo-pas-en-cada-seccin-38eaf0" ><span>Timing - ¿Cuánto tiempo pasó en cada sección?</span></label>
+<div class="bullet-item">Extraer de: Recording, timing notes facilitador</div>
+<div class="bullet-item">Calcular: Ideal timing (ej: 30min intro, 45min demo, 20min Q&amp;A)</div>
+<div class="bullet-item">Actualizar: Cronograma detallado por sección</div>
+<label class="checklist-item" for="chk-mejoras-postwebinar-7cb567"><input type="checkbox" id="chk-mejoras-postwebinar-7cb567" ><span>Mejoras Post-Webinar</span></label>
+<div class="bullet-item">Extraer de: Feedback attendees (&quot;muy rápido&quot;, &quot;necesitaba más de X&quot;)</div>
+<div class="bullet-item">Actualizar: Ajustes a ritmo, profundidad, ejemplos</div>
+<p class="key-value"><strong>Responsable:</strong> Socio 3 (Growth) + Instructor, Javier (revisa)</p>
+<p class="key-value"><strong>Formato:</strong> Google Docs + spreadsheet de timing</p>
+<h4 class="h4-title">Playbook #3: Proceso Venta Simplificado (ALTO)</h4>
+<p class="key-value"><strong>Duración:</strong> 3-4 horas de actualización</p>
+<p class="key-value"><strong>Secciones a Revisar:</strong></p>
+<label class="checklist-item" for="chk-pasos-efectivos-cul-es-secuencia-de-pasos-que-s-fu-989f9d"><input type="checkbox" id="chk-pasos-efectivos-cul-es-secuencia-de-pasos-que-s-fu-989f9d" ><span>Pasos Efectivos - ¿Cuál es secuencia de pasos que SÍ funciona?</span></label>
+<div class="bullet-item">Extraer de: Análisis &quot;ciclo ventas promedio&quot;, CRM stages</div>
+<div class="bullet-item">Descubrir: Paso que se salta en ganadas vs paso que no se salta en perdidas</div>
+<div class="bullet-item">Ejemplo: &quot;Descubrimiento de budget&quot; en paso 3 = 85% conversión posterior</div>
+<label class="checklist-item" for="chk-friccin-identificada-f2ea48"><input type="checkbox" id="chk-friccin-identificada-f2ea48" ><span>Fricción Identificada</span></label>
+<div class="bullet-item">Extraer de: Puntos donde clientes abandonan, razones pérdida</div>
+<div class="bullet-item">Ejemplo: &quot;Propuesta demora 1 semana; cliente pierde interés&quot; → Fricción</div>
+<div class="bullet-item">Actualizar: Solución (ej: propuesta mismo día)</div>
+<label class="checklist-item" for="chk-facilitadores-cierre-42b0c3"><input type="checkbox" id="chk-facilitadores-cierre-42b0c3" ><span>Facilitadores Cierre</span></label>
+<div class="bullet-item">Extraer de: Qué sucedió 24h antes de cierre (llamada, email, reunión?)</div>
+<div class="bullet-item">Patrón: &quot;CRO call final&quot; → 90% cierre vs sin call → 60%</div>
+<div class="bullet-item">Actualizar: Protocolizar facilitador</div>
+<label class="checklist-item" for="chk-velocidad-cul-es-tiempo-promedio-ciclo-5fe14a"><input type="checkbox" id="chk-velocidad-cul-es-tiempo-promedio-ciclo-5fe14a" ><span>Velocidad - ¿Cuál es tiempo promedio ciclo?</span></label>
+<div class="bullet-item">Extraer de: CRM data (dias entre first touch y close)</div>
+<div class="bullet-item">Meta: Acelerar un 20% si posible</div>
+<div class="bullet-item">Actualizar: Target tempo</div>
+<p class="key-value"><strong>Responsable:</strong> Javier (vendedor), Socio 3 (analytics)</p>
+<p class="key-value"><strong>Formato:</strong> Diagrama + descripción</p>
+<h4 class="h4-title">Playbook #4: Estructura Módulo Cero (MEDIO)</h4>
+<p class="key-value"><strong>Duración:</strong> 2-3 horas de actualización</p>
+<p class="key-value"><strong>Secciones a Revisar:</strong></p>
+<label class="checklist-item" for="chk-contenido-valor-qu-secciones-del-mdulo-cero-genera-2b0f94"><input type="checkbox" id="chk-contenido-valor-qu-secciones-del-mdulo-cero-genera-2b0f94" ><span>Contenido Valor - ¿Qué secciones del Módulo Cero generaron mayor interés?</span></label>
+<div class="bullet-item">Extraer de: Analytics (completion %, video watch %)</div>
+<div class="bullet-item">Descubrir: Secciones donde 30%+ clientes dropeaban</div>
+<div class="bullet-item">Actualizar: Mejorar o eliminar secciones low-engagement</div>
+<label class="checklist-item" for="chk-faltantes-identificados-79f819"><input type="checkbox" id="chk-faltantes-identificados-79f819" ><span>Faltantes Identificados</span></label>
+<div class="bullet-item">Extraer de: Feedback clientes (&quot;necesitaba explicación de X&quot;)</div>
+<div class="bullet-item">Actualizar: Agregar sección, video, documento</div>
+<label class="checklist-item" for="chk-mejoras-conversin-al-bootcamp-4358ef"><input type="checkbox" id="chk-mejoras-conversin-al-bootcamp-4358ef" ><span>Mejoras Conversión al Bootcamp</span></label>
+<div class="bullet-item">Extraer de: % de Módulo Cero que convertían a Bootcamp</div>
+<div class="bullet-item">Descubrir: Momento óptimo pedir bootcamp (día 3? día 7?)</div>
+<div class="bullet-item">Actualizar: CTA timing</div>
+<label class="checklist-item" for="chk-duracin-ptima-32bb7a"><input type="checkbox" id="chk-duracin-ptima-32bb7a" ><span>Duración Óptima</span></label>
+<div class="bullet-item">Extraer de: Tiempo promedio completitud Módulo Cero</div>
+<div class="bullet-item">Meta: 70%+ completitud (actual es X%)</div>
+<div class="bullet-item">Actualizar: Si demasiado largo, trimizar; si demasiado corto, agregar</div>
+<p class="key-value"><strong>Responsable:</strong> PM (instructor), Socio 3 (datos)</p>
+<p class="key-value"><strong>Formato:</strong> Documento + spreadsheet</p>
+<h3 class="subsection-title" id="entrega-playbooks-actualizados-e74aeb">Entrega Playbooks Actualizados:</h3>
+<div class="bullet-item">Sales Enablement Kit IAC (v1.4)</div>
+<div class="bullet-item">Guion Webinar (v1.3)</div>
+<div class="bullet-item">Proceso Venta Simplificado (v1.2)</div>
+<div class="bullet-item">Estructura Módulo Cero (v1.4)</div>
+<p class="key-value"><strong>Criterio Aceptación:</strong> Cada playbook tiene 3+ cambios documentados (no es &quot;copy-paste de Q anterior&quot;)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="33-refinamiento-discurso-de-ventas-semana-1112-de23dc">3.3 Refinamiento Discurso de Ventas (Semana 11-12)</h3>
+<p class="key-value"><strong>Propósito:</strong> La propuesta de valor, beneficios clave, diferenciales, y objeción handling evolucionan basados en qué argumentos REALMENTE funcionaron en campo.</p>
+<p class="key-value"><strong>Fuentes de Truth para Refinamiento:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Feedback Clientes Ganados</strong></span></div>
+<div class="bullet-item">Extraer de: Encuestas T0 (&quot;¿qué te convención?&quot;), testimoniales, entrevistas</div>
+<div class="bullet-item">Patrón: &quot;Lo que me convención fue X, no Y&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Análisis Ganadas vs Perdidas</strong></span></div>
+<div class="bullet-item">Extraer de: CRM &quot;Lost Reason&quot; coding</div>
+<div class="bullet-item">Patrón: Clientes ganados priorizaban benefit A; perdidas priorizaban B</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Grabaciones/Notas Ventas</strong></span></div>
+<div class="bullet-item">Extraer de: Llamadas con Javier (si grabadas), notas Socio 3</div>
+<div class="bullet-item">Patrón: Momento donde cliente dijo &quot;Sí&quot; (qué argumento fue catalizador?)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>NPS &amp; Drivers</strong></span></div>
+<div class="bullet-item">Extraer de: Pregunta &quot;¿qué fue lo mejor del proyecto?&quot; (T0/T30 encuestas)</div>
+<div class="bullet-item">Patrón: NPS 9-10 clientes mencionaban beneficio X; NPS 6-7 no lo mencionaban</div>
+<p class="key-value"><strong>Elementos del Discurso a Refinar:</strong></p>
+<h4 class="h4-title">Elemento #1: Propuesta de Valor Core</h4>
+<p class="key-value"><strong>Actual (Ej.):</strong> &quot;Bootcamp de IA para Sales Teams&quot;</p>
+<p class="key-value"><strong>Refinado (basado datos):</strong> &quot;Triplicar conversión en 30 días con IA (sin cambiar proceso actual)&quot;</p>
+<p class="key-value"><strong>Cambio:</strong> Más específico, outcome-focused, timebound</p>
+<h4 class="h4-title">Elemento #2: Beneficios Clave (Priorización)</h4>
+<p class="key-value"><strong>Actual:</strong> Listado (10 beneficios)</p>
+<p class="key-value"><strong>Refinado:</strong> Top 3 beneficios que SÍ resonaron + 1-2 beneficios secundarios</p>
+<p class="key-value"><strong>Ejemplo Refinado:</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>BENEFICIO #1 (40% menciones): &quot;Ahorras 2h/día en preparation&quot;
+BENEFICIO #2 (30% menciones): &quot;Cierras deals 20% más rápido&quot;
+BENEFICIO #3 (20% menciones): &quot;Tu equipo se siente más confident&quot;</code></pre>
+<h4 class="h4-title">Elemento #3: Diferenciales vs Competencia</h4>
+<p class="key-value"><strong>Actual:</strong> &quot;Somos expertos en IA, tenemos experiencia&quot;</p>
+<p class="key-value"><strong>Refinado (basado en feedback):</strong> &quot;A diferencia de cursos genéricos, enseñamos IA aplicada específicamente a [industry]. Ya lo hemos hecho 30+ veces, con ROI promedio de $X.&quot;</p>
+<h4 class="h4-title">Elemento #4: Prueba Social</h4>
+<p class="key-value"><strong>Actual:</strong> &quot;Testimonios de 5 clientes&quot;</p>
+<p class="key-value"><strong>Refinado:</strong> &quot;5 casos de éxito documentados con métricas; NPS promedio 72; 80% refieren&quot;</p>
+<h4 class="h4-title">Elemento #5: Objeción Handling (Top 5)</h4>
+<p class="key-value"><strong>Proceso:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Extraer top 5 objeciones de CRM + llamadas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Documentar cómo se respondió (qué argumentó cerró la objeción?)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Crear script de respuesta estandarizado</span></div>
+<p class="key-value"><strong>Ejemplo:</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>OBJECIÓN: &quot;Somos muy ocupados para capacitación&quot;
+DATO Q: 100% de clientes que completaron bootcamp dijeron &quot;fue más rápido de lo esperado&quot;
+RESPUESTA: &quot;Entiendo. La mayoría de sales teams tienen la misma preocupación.
+Lo que encontramos es que 3h/semana por 4 semanas rinde 5x eso en tiempo ahorrado
+en calls futuras. Aquí está el cronograma exacto [mostrar].&quot;</code></pre>
+<p class="key-value"><strong>Entrega Refinamiento:</strong></p>
+<div class="bullet-item">Documento &quot;Discurso Q[X] Versión Final&quot; (1 página)</div>
+<div class="bullet-item">Template &quot;Objeción Handling Q[X]&quot; (tabla de objeciones + respuestas)</div>
+<div class="bullet-item">Presentación &quot;Argumentos Que Funcionaron Q&quot; (para training equipo)</div>
+<p class="key-value"><strong>Responsable:</strong> Javier (lidera), Socio 3 (aporta datos), Socio 4 (aporta feedback cliente)</p>
+<hr class="divider">
+<h3 class="subsection-title" id="34-plan-estratgico-q1-semana-12-2c0445">3.4 Plan Estratégico Q+1 (Semana 12)</h3>
+<p class="key-value"><strong>Propósito:</strong> Siguiente trimestre (Q+1) se planifica usando DATOS REALES de Q actual, no especulación.</p>
+<p class="key-value"><strong>Inputs de Datos Reales Q:</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Dato</th><th scope="col">Fuente</th><th scope="col">Uso en Plan Q+1</th></tr></thead><tbody><tr><td><strong>Conversión por Canal</strong></td><td>CRM analytics</td><td>¿Cuál canal escalar? ¿Cuál reducir?</td></tr><tr><td><strong>ROI Marketing</strong></td><td>Accounting data</td><td>Presupuesto asignado a cada canal</td></tr><tr><td><strong>Productos Vendidos</strong></td><td>CRM + Invoicing</td><td>Demanda real vs proyectado</td></tr><tr><td><strong>Fuentes Leads</strong></td><td>CRM scoring</td><td>Dónde invertir en lead gen</td></tr><tr><td><strong>Ciclo Venta Promedio</strong></td><td>CRM timestamps</td><td>Tempo de presupuesto, planning</td></tr><tr><td><strong>Feedback Clientes</strong></td><td>Encuestas + Casos Éxito</td><td>Qué mejorar en oferta</td></tr><tr><td><strong>Capacidad Delivery</strong></td><td>Project tracking</td><td>Cuánto volumen podemos ejecutar</td></tr><tr><td><strong>Cuellos Botellas</strong></td><td>Retro equipo</td><td>Qué acelerar internamente</td></tr></tbody></table></div>
+<p class="key-value"><strong>Estructura Plan Q+1:</strong></p>
+<p class="key-value"><strong>Sección A: Análisis Comparativo Q vs Objetivo</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Meta Q: $X ingresos
+Actual Q: $Y ingresos
+Varianza: ±%
+
+Análisis:
+- Canal A: meta $X, actual $Y, variance [razones]
+- Canal B: meta $X, actual $Y, variance [razones]
+- Canal C: meta $X, actual $Y, variance [razones]</code></pre>
+<p class="key-value"><strong>Sección B: Decisiones Q+1 (5-7 Decisiones Clave)</strong></p>
+<p class="key-value"><strong>Decisión #1: Canal a Priorizar</strong></p>
+<div class="bullet-item"><strong>Data:</strong> Conversión X%, ROI Y, pipeline Z disponible</div>
+<div class="bullet-item"><strong>Decisión:</strong> Aumentar inversión marketing 30% en canal A</div>
+<div class="bullet-item"><strong>Justificación:</strong> Mejor ROI y oportunidad untapped</div>
+<p class="key-value"><strong>Decisión #2: Producto a Enfocar</strong></p>
+<div class="bullet-item"><strong>Data:</strong> Producto X tuvo 80% más demanda que esperado</div>
+<div class="bullet-item"><strong>Decisión:</strong> Hacer Producto X foco Q+1 (vs cambiar)</div>
+<div class="bullet-item"><strong>Justificación:</strong> Demanda existe; capacidad delivery validada</div>
+<p class="key-value"><strong>Decisión #3: Actividades a Escalar</strong></p>
+<div class="bullet-item"><strong>Data:</strong> Webinar generó 40% de pipeline; costo/lead bajo</div>
+<div class="bullet-item"><strong>Decisión:</strong> Aumentar frecuencia webinars 2x (mensual vs bimensual)</div>
+<div class="bullet-item"><strong>Justificación:</strong> Probado, ROI positivo</div>
+<p class="key-value"><strong>Decisión #4: Optimizaciones Operativas</strong></p>
+<div class="bullet-item"><strong>Data:</strong> Tiempo promedio cierre Q fue 45 días; meta es 30</div>
+<div class="bullet-item"><strong>Decisión:</strong> Implementar &quot;propuesta misma día&quot; + &quot;follow-up call 24h&quot;</div>
+<div class="bullet-item"><strong>Justificación:</strong> Acelerar ciclo reduce fricción</div>
+<p class="key-value"><strong>Decisión #5: Nuevas Oportunidades Explorar</strong></p>
+<div class="bullet-item"><strong>Data:</strong> Feedback clientes mencionó 3x &quot;necesitábamos también X&quot;</div>
+<div class="bullet-item"><strong>Decisión:</strong> Diseñar oferta X para Q+2 (tiempo limitado para Q+1)</div>
+<div class="bullet-item"><strong>Justificación:</strong> Oportunidad identificada, demanda existe</div>
+<p class="key-value"><strong>Decisión #6: Plataformas Expandir</strong></p>
+<div class="bullet-item"><strong>Data:</strong> LinkedIn generó 20% más leads que Twitter; engagement 3x mayor</div>
+<div class="bullet-item"><strong>Decisión:</strong> Reducir Twitter, expandir LinkedIn + iniciar TikTok</div>
+<div class="bullet-item"><strong>Justificación:</strong> ROI data-backed</div>
+<p class="key-value"><strong>Decisión #7: Presupuesto Asignación</strong></p>
+<div class="bullet-item"><strong>Data:</strong> Marketing spend Q: total $X, ROI por canal: A=Y%, B=Z%, C=W%</div>
+<div class="bullet-item"><strong>Decisión:</strong> Reasignar 30% presupuesto de C (menor ROI) a A y B</div>
+<div class="bullet-item"><strong>Justificación:</strong> Optimize spend basado en performance</div>
+<p class="key-value"><strong>Sección C: Roadmap Q+1 (High Level)</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Semana 1: Review &amp; alignment (Strategy Day 2.0 simplificado)
+Semana 2-4: Ola 1 (product focus activation)
+Semana 5-6: Ola 2 (webinar)
+Semana 7-9: Ola 3 (saturación marketing)
+Semana 10: Optimization &amp; close
+Semana 11-12: Retrospectiva</code></pre>
+<p class="key-value"><strong>Entrega Plan Q+1:</strong></p>
+<div class="bullet-item">Documento &quot;Estrategia Q+1&quot; (5-7 páginas, basado 100% en datos Q)</div>
+<div class="bullet-item">Aprobado por Javier + Socio 2 + Socio 3</div>
+<p class="key-value"><strong>Responsable:</strong> Javier (lidera), Todo equipo (aporta datos)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-proceso-paso-a-paso-4c539a" data-searchable aria-labelledby="head-4-proceso-paso-a-paso-4c539a">
+            <div class="phase-header" id="head-4-proceso-paso-a-paso-4c539a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. PROCESO PASO A PASO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="preretrospectiva-final-semana-10-d5b074">Pre-Retrospectiva (Final Semana 10)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Recopilación de Datos (PM):</strong> Compilar todos 11-Star Checks, feedback forms, CRM data</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Preparación Dashboard (Contador):</strong> Números Q listos, análisis por canal/producto</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Confirmación Asistencia (Socio 4):</strong> Blocar calendarios semanas 11-12 (equipo completo)</span></div>
+<h3 class="subsection-title" id="semana-11-sesiones-3xsemana-l-m-j-c30cda">Semana 11 - Sesiones 3x/semana (L, M, J)</h3>
+<p class="key-value"><strong>Lunes Semana 11 (10:00-13:00) - Inauguración &amp; Análisis Inicial</strong></p>
+<div class="bullet-item">10:00-10:15: Opening (Javier - contexto retrospectiva)</div>
+<div class="bullet-item">10:15-11:00: Presentación Reporte Forense Q (cifras, highlights, surprises)</div>
+<div class="bullet-item">11:00-12:00: Análisis Ganadas vs Perdidas (qué patrones emergen?)</div>
+<div class="bullet-item">12:00-13:00: Identificación Candidatos Casos Éxito (top 5-7 proyectos)</div>
+<p class="key-value"><strong>Martes Semana 11 (10:00-13:00) - Extracción Casos Éxito</strong></p>
+<div class="bullet-item">10:00-10:30: Workshop &quot;Cómo extraer datos casos éxito&quot; (plantilla + ejemplos)</div>
+<div class="bullet-item">10:30-13:00: PM + Socio 2 trabajan en extracción (facilitadores disponibles para Q&amp;A)</div>
+<p class="key-value"><strong>Jueves Semana 11 (10:00-13:00) - Validación &amp; Playbooks Comienzan</strong></p>
+<div class="bullet-item">10:00-10:45: Presentación Casos Éxito borradores (Socio 2 valida completitud)</div>
+<div class="bullet-item">10:45-11:30: Identificar cambios necesarios a playbooks (brainstorm)</div>
+<div class="bullet-item">11:30-13:00: Inicio actualización playbooks (equipos por playbook)</div>
+<h3 class="subsection-title" id="semana-12-sesiones-3xsemana-l-m-j-da7add">Semana 12 - Sesiones 3x/semana (L, M, J)</h3>
+<p class="key-value"><strong>Lunes Semana 12 (10:00-13:00) - Refinamiento Discurso &amp; Análisis Ganadas/Perdidas</strong></p>
+<div class="bullet-item">10:00-11:00: Análisis Argumentos Que Funcionaron (Javier + Socio 3)</div>
+<div class="bullet-item">11:00-12:00: Workshop Objeción Handling (top 5 objeciones + scripts)</div>
+<div class="bullet-item">12:00-13:00: Comenzar docurneto &quot;Discurso Q[X]&quot;</div>
+<p class="key-value"><strong>Martes Semana 12 (10:00-13:00) - Finalización Playbooks</strong></p>
+<div class="bullet-item">10:00-11:00: Review playbooks actualizados (cada dueño presenta cambios)</div>
+<div class="bullet-item">11:00-12:00: Testing de argumentos nuevos (roleplay)</div>
+<div class="bullet-item">12:00-13:00: Ajustes finales + validación</div>
+<p class="key-value"><strong>Jueves Semana 12 (10:00-13:00) - Plan Q+1 &amp; Cierre</strong></p>
+<div class="bullet-item">10:00-11:00: Presentación datos Q vs objetivos (análisis varianza)</div>
+<div class="bullet-item">11:00-12:00: Decisiones Q+1 (workshop, voting)</div>
+<div class="bullet-item">12:00-13:00: Síntesis Plan Q+1 + cierre retrospectiva</div>
+<h3 class="subsection-title" id="postretrospectiva-semana-13-6c05bd">Post-Retrospectiva (Semana 13)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Publicación Casos Éxito:</strong> Socio 3 publica en landing, LinkedIn, email</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Training Equipo:</strong> Javier entrena equipo en nuevos argumentos/objeciones</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Incorporación Playbooks:</strong> Nuevas versiones go-live en sistemas (CRM, Google Drive, etc.)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Compartir Plan Q+1:</strong> Documento publicado a todo equipo (acceso Google Drive)</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-entregables-requeridos-1e4017" data-searchable aria-labelledby="head-5-entregables-requeridos-1e4017">
+            <div class="phase-header" id="head-5-entregables-requeridos-1e4017" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. ENTREGABLES REQUERIDOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Entregable</th><th scope="col">Formato</th><th scope="col">Responsable</th><th scope="col">Fecha Límite</th></tr></thead><tbody><tr><td>1</td><td>5-7 Casos Éxito Documentados</td><td>Google Docs</td><td>Socio 2 + PM</td><td>Viernes Semana 11</td></tr><tr><td>2</td><td>Sales Enablement Kit Actualizado</td><td>Google Doc (v1.X)</td><td>Javier</td><td>Miércoles Semana 12</td></tr><tr><td>3</td><td>Guion Webinar Actualizado</td><td>Google Doc (v1.X)</td><td>Socio 3</td><td>Miércoles Semana 12</td></tr><tr><td>4</td><td>Proceso Venta Simplificado Actualizado</td><td>Documento + Diagrama</td><td>Javier</td><td>Miércoles Semana 12</td></tr><tr><td>5</td><td>Estructura Módulo Cero Actualizada</td><td>Google Doc (v1.X)</td><td>PM</td><td>Miércoles Semana 12</td></tr><tr><td>6</td><td>Discurso Q[X] Refinado</td><td>1-página + Objeción Handling</td><td>Javier</td><td>Jueves Semana 12</td></tr><tr><td>7</td><td>Plan Estratégico Q+1</td><td>5-7 páginas</td><td>Javier + Equipo</td><td>Viernes Semana 12</td></tr></tbody></table></div>
+<p class="key-value"><strong>Criterios Aceptación:</strong></p>
+<div class="bullet-item">Todos documentos sin TODOs (100% completados)</div>
+<div class="bullet-item">Cada playbook tiene mínimo 3 cambios documentados</div>
+<div class="bullet-item">Casos éxito están cliente-aprobados</div>
+<div class="bullet-item">Plan Q+1 está basado datos (no intuición)</div>
+<div class="bullet-item">Equipo entiende Plan Q+1 (no ambigüedad)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-decisiones-requeridas-e50a00" data-searchable aria-labelledby="head-6-decisiones-requeridas-e50a00">
+            <div class="phase-header" id="head-6-decisiones-requeridas-e50a00" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 6. DECISIONES REQUERIDAS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Decisión</th><th scope="col">Responsable</th><th scope="col">Criterios</th><th scope="col">Plazo</th></tr></thead><tbody><tr><td><strong>Casos Éxito Finales</strong></td><td>Socio 2</td><td>Criterios de impacto, documentación, cliente-approved</td><td>Viernes Semana 11</td></tr><tr><td><strong>Cambios a Playbooks</strong></td><td>Dueño respectivo</td><td>Basado datos, testeado, impacto claro</td><td>Miércoles Semana 12</td></tr><tr><td><strong>Argumentos Priorizados</strong></td><td>Javier</td><td>Data-backed, testeados, resonate con clientes</td><td>Jueves Semana 12</td></tr><tr><td><strong>Decisiones Q+1</strong></td><td>Javier + Equipo</td><td>Basado 100% datos Q real, no intuición</td><td>Jueves Semana 12</td></tr><tr><td><strong>Presupuesto Q+1</strong></td><td>Javier + CFO</td><td>Basado ROI por canal, realismo</td><td>Viernes Semana 12</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-riesgos-y-mitigaciones-9523f4" data-searchable aria-labelledby="head-7-riesgos-y-mitigaciones-9523f4">
+            <div class="phase-header" id="head-7-riesgos-y-mitigaciones-9523f4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. RIESGOS Y MITIGACIONES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Riesgo</th><th scope="col">Probabilidad</th><th scope="col">Impacto</th><th scope="col">Mitigación</th></tr></thead><tbody><tr><td><strong>Datos Incompletos</strong></td><td>Media</td><td>Alto</td><td>Validación dual Semana 10; si falta: usar parcialmente</td></tr><tr><td><strong>Playbooks No Cambian Significativamente</strong></td><td>Baja</td><td>Medio</td><td>Mínimo 3 cambios por playbook; Javier valida</td></tr><tr><td><strong>Equipo Cansado (2 semanas intensas)</strong></td><td>Media</td><td>Bajo</td><td>Sesiones 3h máximo; breaks, actividades dinámicas</td></tr><tr><td><strong>Casos Éxito No Aprobados Cliente</strong></td><td>Baja</td><td>Bajo</td><td>Draft temprano a cliente (Semana 11); ajustes iterativos</td></tr><tr><td><strong>Plan Q+1 Es Copia Q Anterior</strong></td><td>Baja</td><td>Crítico</td><td>Javier cuestiona cada decisión (&quot;¿qué cambió vs Q?&quot;)</td></tr><tr><td><strong>Discurso Refinado No Es Creíble</strong></td><td>Baja</td><td>Medio</td><td>Testing en roleplay (Martes Semana 12) antes de go-live</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-raci-expandida-6f22cf" data-searchable aria-labelledby="head-8-raci-expandida-6f22cf">
+            <div class="phase-header" id="head-8-raci-expandida-6f22cf" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. RACI EXPANDIDA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>RACI Matrix - Retrospectiva Trimestral
+
+                      Javier  Socio2  Socio3  PM   Socio4  Contador
+Análisis Forense        C      I       I      -     -       R
+Casos Éxito Identif.    I      R       -      C     -       -
+Extracción Casos        C      R       I      R     -       -
+Validar Clientes        C      R       -      C     -       -
+Sales Enablement        R      C       C      -     -       -
+Guion Webinar           C      -       R      C     -       -
+Proceso Venta           R      C       C      -     -       -
+Módulo Cero             I      -       -      R     -       -
+Discurso Refinado       R      C       C      C     C       -
+Plan Q+1                R      C       C      C     -       C
+
+Leyenda: R=Responsible (ejecuta), A=Accountable (aprueba), C=Consulted (aporta), I=Informed (notificado)
+Nota: Javier es A (final decision) en Discurso y Plan Q+1</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-monitoreo-y-governance-57b003" data-searchable aria-labelledby="head-9-monitoreo-y-governance-57b003">
+            <div class="phase-header" id="head-9-monitoreo-y-governance-57b003" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. MONITOREO Y GOVERNANCE</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Métricas de Éxito - Retrospectiva Misma:</strong></p>
+<div class="bullet-item">100% documentos completados (no versiones incompletas)</div>
+<div class="bullet-item">5-7 casos éxito publicados (cliente-aprobados)</div>
+<div class="bullet-item">4+ playbooks actualizados (3+ cambios c/u)</div>
+<div class="bullet-item">Plan Q+1 basado 100% datos (auditoría de sources)</div>
+<p class="key-value"><strong>Post-Retrospectiva:</strong></p>
+<div class="bullet-item">Tracking Plan Q+1 (daily standup verifica alignment)</div>
+<div class="bullet-item">Impact de playbooks actualizados (¿conversión mejoró?)</div>
+<div class="bullet-item">Casos éxito generación de leads (tracking origen)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e" data-searchable aria-labelledby="head-7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e">
+            <div class="phase-header" id="head-7-dimensiones-del-sop-protocolo-10x-elevation-cf6f0e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7 DIMENSIONES DEL SOP - PROTOCOLO 10x ELEVATION</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="dimensin-1-supuestos-explcitos-9-supuestos-crticos-7e447c">Dimensión 1: Supuestos Explícitos (9 Supuestos Críticos)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Supuesto:</strong> 5-7 casos de éxito existen cada trimestre (si buscas intencionalmente)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Proyectos completados CON métrica + cliente satisfecho = caso potencial</div>
+<div class="bullet-item"><strong>Validación:</strong> Criterios definidos (impacto, evangelista, aplicabilidad, común, documentación)</div>
+<div class="bullet-item"><strong>Si falla:</strong> Reducir criterios; todo proyecto tiene ALGO de valor (documenta ese algo)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Supuesto:</strong> Datos Q están disponibles y son 100% confiables</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Sin datos veraces, Plan Q+1 es especulación</div>
+<div class="bullet-item"><strong>Validación:</strong> Auditoría de coherencia (ingresos = suma CRM + facturas, etc.)</div>
+<div class="bullet-item"><strong>Si falla:</strong> Pausar retrospectiva, rectificar datos, reprogramar</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Supuesto:</strong> Argumentos que funcionaron son identificables (via CRM, feedback, recordings)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Refinar discurso requiere saber qué resonó</div>
+<div class="bullet-item"><strong>Validación:</strong> Mínimo 50% de deals tienen &quot;nota de what closed it&quot;</div>
+<div class="bullet-item"><strong>Si falla:</strong> Crear protocolo post-cierre: Javier documenta &quot;what closed this?&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Supuesto:</strong> Equipo tiene capacidad para 2 semanas de retrospectiva (no otros proyectos críticos)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Fragmentación = baja calidad learnings</div>
+<div class="bullet-item"><strong>Validación:</strong> Blocar calendarios semanas 11-12 (no exceptions)</div>
+<div class="bullet-item"><strong>Si falla:</strong> Realizar retrospectiva en 1 semana (compressed, menos profund)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Supuesto:</strong> Playbooks actualizados serán adoptatdos por equipo (no se ignoran)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Si playbooks se actualizan pero nadie los usa: desperdicio</div>
+<div class="bullet-item"><strong>Validación:</strong> Training post-retrospectiva + CRM checklist que referencia playbooks</div>
+<div class="bullet-item"><strong>Si falla:</strong> Hacer playbooks &quot;mandatory&quot; (en sistema, no opcional)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Supuesto:</strong> Clientes aprobarán publicación de casos éxito</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Sin aprobación cliente: no se puede publicar (legal, confidencial)</div>
+<div class="bullet-item"><strong>Validación:</strong> Draft temprano (Semana 11); cliente tiene opción sí/no/modifica</div>
+<div class="bullet-item"><strong>Si falta:</strong> 20% casos pueden ser &quot;internal only&quot; (no publicados, pero útiles para sales)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Supuesto:</strong> Plan Q+1 servirá como norte operativo (no será ignorado)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Si retrospectiva genera plan Q+1 pero nadie lo lee: waste</div>
+<div class="bullet-item"><strong>Validación:</strong> Strategy Day Q+1 usa Plan Q+1 como input</div>
+<div class="bullet-item"><strong>Si falla:</strong> Javier &quot;enforces&quot; plan (daily standup checks alineamiento)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Supuesto:</strong> Discurso refinado es más efectivo que discurso anterior</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Si cambio discurso pero conversión no mejora: cambio fue inútil</div>
+<div class="bullet-item"><strong>Validación:</strong> Track conversión antes/después cambio discurso (60d post-retrospectiva)</div>
+<div class="bullet-item"><strong>Si falla:</strong> Revertir a discurso anterior, investigar por qué cambio no funcionó</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Supuesto:</strong> Ciclo learning-execution-refinement es CERRADO (Q+1 ejecuta learnings de Q)</span></div>
+<div class="bullet-item"><strong>Justificación:</strong> Si retrospectiva no genera cambios en Q+1: feedback loop roto</div>
+<div class="bullet-item"><strong>Validación:</strong> Auditoría &quot;¿cuántos learnings de Q se implementaron en Q+1?&quot; (meta: 80%+)</div>
+<div class="bullet-item"><strong>Si falla:</strong> Hacer retrospectiva menos ambiciosa, focarse en 2-3 learnings clave</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-2-lmites-del-sop-definicin-precisa-de-alc-c0ed1a">Dimensión 2: Límites del SOP (Definición Precisa de Alcance)</h3>
+<p class="key-value"><strong>Qué INCLUYE este SOP:</strong></p>
+<div class="bullet-item">Identificación y documentación de casos de éxito</div>
+<div class="bullet-item">Actualización de playbooks con datos campo</div>
+<div class="bullet-item">Refinamiento de discurso de ventas</div>
+<div class="bullet-item">Planificación estratégica Q+1</div>
+<div class="bullet-item">Análisis de lo que funcionó vs no funcionó</div>
+<p class="key-value"><strong>Qué NO INCLUYE (out of scope):</strong></p>
+<div class="bullet-item">Implementación de Plan Q+1 (eso es &quot;Strategy Day SOP&quot;)</div>
+<div class="bullet-item">Cambios de product roadmap (eso es &quot;Product Planning SOP&quot;)</div>
+<div class="bullet-item">Ejecución de nuevas iniciativas (eso es &quot;Project Execution SOP&quot;)</div>
+<div class="bullet-item">Análisis de competencia profundo (eso es &quot;Market Research SOP&quot;)</div>
+<div class="bullet-item">Cambios organizacionales (eso es &quot;Org Planning SOP&quot;)</div>
+<p class="key-value"><strong>Duración:</strong> 2 semanas calendario (semanas 11-12 cada trimestre)</p>
+<p class="key-value"><strong>Plazo máximo:</strong> No se extiende a semana 13; Plan Q+1 publicado fin semana 12</p>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-3-criterios-de-aceptacin-binarios-10-crit-ff1360">Dimensión 3: Criterios de Aceptación Binarios (10 Criterios - Pass/Fail)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Criterio</th><th scope="col">Condición Pass</th><th scope="col">Condición Fail</th><th scope="col">Validador</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Casos Éxito Documentados</td><td>5-7 casos con contexto, solución, resultados, testimonial, lección</td><td>Menos de 5 casos o sin algún field</td><td>Socio 2</td></tr><tr><td><strong>2</strong></td><td>Casos Éxito Cliente-Aprobados</td><td>100% de casos tienen email/confirmación cliente de aprobación</td><td>1+ caso sin aprobación o rechazado</td><td>PM</td></tr><tr><td><strong>3</strong></td><td>Sales Enablement Actualizado</td><td>3+ cambios documentados (argumentos, objeciones, material, conversión)</td><td>Menos de 3 cambios o es copia Q anterior</td><td>Javier</td></tr><tr><td><strong>4</strong></td><td>Guion Webinar Actualizado</td><td>3+ cambios documentados (engagement, preguntas, timing, mejoras)</td><td>Menos de 3 cambios o sin evidencia cambios</td><td>Socio 3</td></tr><tr><td><strong>5</strong></td><td>Proceso Venta Actualizado</td><td>3+ cambios documentados (pasos efectivos, fricción, facilitadores, velocidad)</td><td>Menos de 3 cambios</td><td>Javier</td></tr><tr><td><strong>6</strong></td><td>Módulo Cero Actualizado</td><td>3+ cambios documentados (contenido, faltantes, conversión, duración)</td><td>Menos de 3 cambios</td><td>PM</td></tr><tr><td><strong>7</strong></td><td>Discurso Refinado</td><td>Documento &quot;Discurso Q[X]&quot; + Objeción Handling (top 5 objeciones con respuestas)</td><td>Falta documento o incompleto</td><td>Javier</td></tr><tr><td><strong>8</strong></td><td>Plan Q+1 Basado Datos</td><td>7 decisiones tienen source de datos (CRM, feedback, números), no intuición</td><td>Decisión sin source o especulación</td><td>Javier</td></tr><tr><td><strong>9</strong></td><td>Plan Q+1 Aprobado</td><td>Javier + Socio 2 + Socio 3 hicieron sign-off (Slack message OK)</td><td>Plan sin aprobación</td><td>Javier</td></tr><tr><td><strong>10</strong></td><td>Plan Q+1 Publicado</td><td>Plan está en Google Drive compartido; equipo tiene acceso; sin edits (FINAL)</td><td>No publicado o en borrador</td><td>Javier</td></tr></tbody></table></div>
+<p class="key-value"><strong>Regla:</strong> Todos 10 criterios deben ser <strong>PASS</strong> para dar retrospectiva por terminada.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-4-casos-borde-57-escenarios-excepcionales-896b72">Dimensión 4: Casos Borde (5-7 Escenarios Excepcionales)</h3>
+<p class="key-value"><strong>Caso Borde 1: Datos Q Son Inconsistentes</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Números no cuadran entre CRM y contabilidad (20%+ varianza)</div>
+<div class="bullet-item"><strong>Trigger:</strong> Auditoría de datos Semana 10-11</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Contador + Javier investigan discrepancia (2-4h)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Marcar datos &quot;confiables&quot; vs &quot;investigación pendiente&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Plan Q+1 usa solo datos confiables</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Tema abierto para resolver post-Q (no pausa retrospectiva)</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Plan Q+1 puede ser menos preciso, pero síse ejecuta</div>
+<p class="key-value"><strong>Caso Borde 2: Menos de 5 Casos Éxito Candidatos Existen</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Solo 3 proyectos Q cumplieron criterios &quot;caso de éxito&quot;</div>
+<div class="bullet-item"><strong>Trigger:</strong> Revisión Semana 11 muestra shortage</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Reducir criterios &quot;caso de éxito&quot; (ej: impacto cualitativo vale, no solo cuantitativo)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Documentar 3-5 casos con lo disponible</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Registrar: &quot;Q fue trimestre de &#x27;building phase&#x27;, menos casos éxito&quot; (es válido)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Plan Q+1 incluye focus en &quot;generar más casos éxito&quot; (meta-learning)</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Menos cases, pero sí se publican; meta para Q+1 es aumentar</div>
+<p class="key-value"><strong>Caso Borde 3: Cliente Rechaza Publicación de Caso Éxito</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Cliente aprobó draft, luego dice &quot;en realidad, prefiero no publicar&quot;</div>
+<div class="bullet-item"><strong>Trigger:</strong> Cliente dice no en validación Semana 11</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Respetar decisión cliente (relación &gt; contenido)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Documentar caso como &quot;Internal Only&quot; (útil para sales deck, no público)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Registrar: &quot;qué datos sensibles había que cliente no quiso compartir?&quot; (learning)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Continuar con otros casos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Ofrecimiento: &quot;¿nos contactas si alguna vez quieres publicar?&quot;</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Caso no es público, pero existe internally; meta de 5-7 ajusta a 4-6</div>
+<p class="key-value"><strong>Caso Borde 4: Playbook Actualización Descubre &quot;Problem Sistémico&quot;</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Durante actualización Sales Enablement, descubren que 40% de lost deals dicen &quot;price too high&quot;</div>
+<div class="bullet-item"><strong>Trigger:</strong> Análisis de objeciones comunes (Semana 12)</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Escalación inmediata a Javier: &quot;tenemos problema de pricing&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Decisión urgente: ¿cambiar precios? ¿cambiar propuesta? ¿aceptar como tradeoff?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si es crítico: Plan Q+1 debe priorizar &quot;pricing optimization&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si no hay solución rápida: documentar como &quot;known issue&quot; en Plan Q+1</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Puede cambiar decisiones Q+1; importante learnings</div>
+<p class="key-value"><strong>Caso Borde 5: Discurso Refinado Falla en Testing (Roleplay)</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Martes Semana 12, equipo practica nuevos argumentos en roleplay; algunos caen planos</div>
+<div class="bullet-item"><strong>Trigger:</strong> Testing descubre &quot;argumento no es creíble&quot;</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>No salir del testing sin que pasen</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Refinar argumentos (basado feedback roleplay)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Re-test (otro roleplay)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si sigue fallando: mantener argumento anterior</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Documentar: &quot;qué no funcionó y por qué&quot;</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Discurso se refina basado testing (better); no va a campo sin validación</div>
+<p class="key-value"><strong>Caso Borde 6: Plan Q+1 Es &quot;Más de lo Mismo&quot;</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Draft Plan Q+1 es copia de Q anterior (mismos canales, mismos productos, presupuesto igual)</div>
+<div class="bullet-item"><strong>Trigger:</strong> Javier revisa Plan Q+1; ve falta de cambios</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Javier desaprueba: &quot;esto no usa datos de Q; rehagamos&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Equipo regresa a analizar: ¿qué CAMBIÓ realmente en Q?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Decisiones deben ser diferentes si datos son diferentes (si no hay cambios: significa Q funcionó bien, mantener)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si datos SÍ muestran cambios: Plan Q+1 debe reflejarlos</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Plan Q+1 se retrasa 1-2 días; pero es más robusto</div>
+<p class="key-value"><strong>Caso Borde 7: Equipo Desmotivado por Retrospectiva Larga</strong></p>
+<div class="bullet-item"><strong>Escenario:</strong> Semana 12, equipo está cansado; sesiones son menos productivas</div>
+<div class="bullet-item"><strong>Trigger:</strong> Facilitador nota engagement bajo (pocas preguntas, menos ideas)</div>
+<div class="bullet-item"><strong>Protocolo:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Shortenacción (comprimir Jueves Semana 12; mover ciertos items a Semana 13)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Actividades dinámicas: menos presentaciones, más workshops/discussions</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Breaks extra, comidas grupales</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Javier: &quot;agradecimiento por esfuerzo retrospectiva; esto genera Plan Q+1 sólido&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Bonus (si aplica): afternoon off Viernes Semana 12 (celebración)</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Retrospectiva se completa, pero con menor fricción emocional</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-5-decisiones-de-diseo-con-justificacin-5--da7758">Dimensión 5: Decisiones de Diseño con Justificación (5 Decisiones Arquitectónicas)</h3>
+<p class="key-value"><strong>Decisión 1: ¿Por qué 2 semanas (Semanas 11-12) y no 1 semana?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> Comprimir a 1 semana intensiva (5 días full)</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">Extracción de casos éxito requiere interviews cliente, recopilación datos (no es rápido)</div>
+<div class="bullet-item">Actualización 4 playbooks en paralelo requiere coordinación (2 semanas da tiempo sin crush)</div>
+<div class="bullet-item">Refinamiento discurso requiere testing/validation (roleplay, feedback, iteration)</div>
+<div class="bullet-item">Planeamiento Q+1 requiere análisis profundo (no es 4h brainstorm)</div>
+<div class="bullet-item">Equipo puede mantener velocidad en ejecución (no se pausa todo por retrospectiva)</div>
+<div class="bullet-item"><strong>Beneficio:</strong> 40% mejor calidad learnings vs formato comprimido; menos quemarse equipo</div>
+<p class="key-value"><strong>Decisión 2: ¿Por qué 3 sesiones/semana (L, M, J) y no todos los días?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> 5 días/semana (lunes-viernes) full day</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">Equipo puede ejecutar trabajo &quot;normal&quot; entre sesiones (no todo pausa)</div>
+<div class="bullet-item">Sesiones 3x/semana permite &quot;processing time&quot; (reflection entre sesiones)</div>
+<div class="bullet-item">3h/sesión es máximo cognitivo-útil sin caída productividad</div>
+<div class="bullet-item">Timing permite que PM + equipo hagan trabajo extraction entre L y J (no presencial)</div>
+<div class="bullet-item"><strong>Beneficio:</strong> Balance entre rigor retrospectiva y continuidad operativa; menos disrupción</div>
+<p class="key-value"><strong>Decisión 3: ¿Por qué 5-7 Casos Éxito (no 2, no 10)?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> 2 casos (muy pocos para banco de social proof), 10 casos (overkill esfuerzo)</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">5-7 casos = 1-2 por mes (cadencia sostenible)</div>
+<div class="bullet-item">5-7 = suficiente para banco diversos (por canal, por industria, por tipo proyecto)</div>
+<div class="bullet-item">Más de 10 = esfuerzo no vale marginal gain (ROI decae)</div>
+<div class="bullet-item">Menos de 5 = insuficiente para cobertura de diferentes tipos clientes</div>
+<div class="bullet-item"><strong>Beneficio:</strong> Optimización esfuerzo vs impacto; banco de social proof que crece 20-28/año</div>
+<p class="key-value"><strong>Decisión 4: ¿Por qué Actualizar 4 Playbooks (Sales, Webinar, Proceso, Módulo) y no 10?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> Actualizar todos playbooks (overhead excesivo), solo 1-2 (insuficiente)</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">4 playbooks cubren 80% de valor-generación (ventas, delivery, product)</div>
+<div class="bullet-item">Actualizar todos = parálisis (equipo overwhelmed)</div>
+<div class="bullet-item">4 playbooks = actualización sin generar burnout</div>
+<div class="bullet-item">Otros playbooks (soporte, onboarding, etc.) pueden actualizarse ad-hoc si needed</div>
+<div class="bullet-item"><strong>Beneficio:</strong> Cobertura de alta-leverage areas sin exceso administrativo</div>
+<p class="key-value"><strong>Decisión 5: ¿Por qué Plan Q+1 es Obligatorio (no &quot;nice-to-have&quot;)?</strong></p>
+<div class="bullet-item"><strong>Alternativa rechazada:</strong> Retrospectiva sin output formal plan Q+1</div>
+<div class="bullet-item"><strong>Justificación:</strong></div>
+<div class="bullet-item">Si retrospectiva no genera plan Q+1: learnings no se ejecutan (broken loop)</div>
+<div class="bullet-item">Plan Q+1 fuerza conversión learning → action</div>
+<div class="bullet-item">Plan Q+1 da norte operativo claro (alineamiento)</div>
+<div class="bullet-item">Strategy Day Q+1 usa Plan Q+1 como input (conexión trimestre a trimestre)</div>
+<div class="bullet-item"><strong>Beneficio:</strong> Cierre de feedback loop; retrospectiva genera decisiones ejecutables, no solo insights</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-6-antipatterns-5-patrones-a-evitar-explci-1afa91">Dimensión 6: Anti-patterns (5 Patrones a Evitar Explícitamente)</h3>
+<p class="key-value"><strong>Anti-pattern 1: &quot;Retrospective Theater&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Retrospectiva ocurre, documentos se crean, pero nada cambia en Q+1 vs Q</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;Plan Q+1 se parece a Plan Q&quot;, &quot;Equipo no usa nuevos playbooks&quot;, &quot;Argumentos no cambiaron&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Documentos se crean pero no se &quot;force&quot; adoption; cambio requiere repetición</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Plan Q+1 debe tener 5-7 decisiones DISTINTAS de Q (no copia)</div>
+<div class="bullet-item">Javier audita 2 semanas en Q+1: &quot;¿se está usando Plan Q+1?&quot; (daily standup)</div>
+<div class="bullet-item">Playbooks no son &quot;suggestions&quot;; son sistema (CRM templated con playbook references)</div>
+<div class="bullet-item">Training post-retrospectiva (no confío equipoabsorberá sin explicación)</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Retrospectiva es overhead sin valor; equipo desmoralizado</div>
+<p class="key-value"><strong>Anti-pattern 2: &quot;Casos Éxito Inflados / Falsos&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Casos documentados exageran resultados o no son reales</div>
+<div class="bullet-item"><strong>Síntoma:</strong> Cliente ve &quot;caso éxito&quot; y dice &quot;eso no es exacto&quot; o &quot;resultados no fueron así&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> PM presionado por número (5-7 cases), exagera un poco</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Validación estricta con cliente (draft temprano, cliente aprueba versión final)</div>
+<div class="bullet-item">Números DEBEN estar respaldados por datos (CRM, invoice, cliente quote)</div>
+<div class="bullet-item">Si no puedes probar métrica: documenta como &quot;cualitativo&quot; (también vale)</div>
+<div class="bullet-item">Javier audita 20% casos: &quot;¿estos números son reales?&quot; (spot check)</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Credibilidad case studies se daña; cliente se enoja; social proof inútil</div>
+<p class="key-value"><strong>Anti-pattern 3: &quot;Playbook Actualización Sin Evidencia&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Playbooks se actualizan pero cambios no están basados datos (especulación)</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;Cambié la estructura porque pensé que sería mejor&quot;; &quot;agregué esto porque suena bien&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Pereza análisis; depender intuición vs datos</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Cada cambio playbook debe tener source: &quot;CRM muestra X&quot;, &quot;cliente feedback fue Y&quot;, &quot;análisis Z&quot;</div>
+<div class="bullet-item">Javier audita playbooks actualizado: &quot;dónde está la data que justifica este cambio?&quot;</div>
+<div class="bullet-item">Si no hay data: cambio se revierte (o se prueba antes de implementar)</div>
+<div class="bullet-item">Para cambios que no pueden ser data-backed: documenta como &quot;hypothesis to test Q+1&quot;</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Playbooks se degradan (se llenan de ideas que no funcionan)</div>
+<p class="key-value"><strong>Anti-pattern 4: &quot;Discurso Refinado Sin Testing&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Nuevos argumentos/scripts se crean pero nunca se prueban antes de ir a campo</div>
+<div class="bullet-item"><strong>Síntoma:</strong> Equipo usa nuevos argumentos Q+1, clientes no responden bien</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Falta de rigor; confianza en que &quot;suena bien en paper&quot;</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Martes Semana 12: Testing obligatorio (roleplay, feedback, refinement)</div>
+<div class="bullet-item">Scripts que no pasan testing no van a campo</div>
+<div class="bullet-item">Javier práctica argumentos (él es vendedor, sabe si crean</div>
+<div class="bullet-item">Documentar: &quot;testeado con X personas, Y% encontró creíble&quot;</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Nuevos argumentos caen planos con clientes; confianza equipo baja</div>
+<p class="key-value"><strong>Anti-pattern 5: &quot;Plan Q+1 Ignorado Post-Publicación&quot;</strong></p>
+<div class="bullet-item"><strong>Descripción:</strong> Plan Q+1 se publica, pero equipo no lo consulta o lo ignora durante ejecución</div>
+<div class="bullet-item"><strong>Síntoma:</strong> &quot;¿Cuál era meta conversión Q+1?&quot; (equipo no sabe), &quot;Plan Q+1 decía X pero estamos haciendo Y&quot;</div>
+<div class="bullet-item"><strong>Por qué ocurre:</strong> Plan publicado pero no es &quot;active north&quot;; strategy es vaga</div>
+<div class="bullet-item"><strong>Cómo evitarlo:</strong></div>
+<div class="bullet-item">Strategy Day Q+1 (Semana 1 de Q+1) comienza reviendo Plan Q+1 (refrescando memoria)</div>
+<div class="bullet-item">Daily standup menciona plan (&quot;¿eso está en Plan Q+1?&quot; para decisiones)</div>
+<div class="bullet-item">Javier audita progress vs Plan Q+1 (weekly, no menos)</div>
+<div class="bullet-item">Plan Q+1 está &quot;visible&quot; (printed en office, en Asana board, no solo doc)</div>
+<div class="bullet-item"><strong>Costo de no evitarlo:</strong> Retrospectiva fue ejercicio académico; no guía ejecución</div>
+<hr class="divider">
+<h3 class="subsection-title" id="dimensin-7-fallbacks-operativos-5-planes-de-contin-faf7ac">Dimensión 7: Fallbacks Operativos (5 Planes de Contingencia)</h3>
+<p class="key-value"><strong>Fallback 1: Si Javier No Disponible Semanas 11-12</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Javier enfermo/viaje/emergencia durante retrospectiva</div>
+<div class="bullet-item"><strong>Activación:</strong> Socio 2 + Socio 3 co-facilitan</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Socio 2 lidera análisis datos + casos éxito</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Socio 3 lidera playbooks + discurso refinado</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Javier participa remotamente (calls 30min/día si posible)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Decisiones Plan Q+1 se toman sin Javier (Socio 2 + Socio 3), Javier aprueba al regresar</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>No se pausa retrospectiva</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> +1-2 días ajuste (menos velocidad); timeline se respeta</div>
+<p class="key-value"><strong>Fallback 2: Si Datos Q No Están Listos Inicio Semana 11</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Contador comunica &quot;números no estarán listos hasta Semana 11 martes&quot;</div>
+<div class="bullet-item"><strong>Activación:</strong> Plan alternativo</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Iniciar retrospectiva sin números (hacer sesiones de caos éxito, playbooks)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Martes Semana 11: incorporar números cuando lleguen</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Plan Q+1 se retrasa a Semana 12 (martes) cuando tengas datos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Compresión: Jueves Semana 12 + Viernes, decidir Plan Q+1</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>No ideal, pero retrospectiva se completa</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> +3-4 días de presión (martes-viernes Semana 12 intensive); plan Q+1 es más &quot;rushed&quot;</div>
+<p class="key-value"><strong>Fallback 3: Si 5-7 Casos Éxito No Existen</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Semana 11, PM descubre que solo 2-3 proyectos realmente merecen ser &quot;caso&quot;</div>
+<div class="bullet-item"><strong>Activación:</strong> Reducir criterios</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Expandir definición &quot;caso éxito&quot; (ej: proyectos donde aprendimos mucho, aunque métrica no fue perfecta)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Documentar &quot;Casos Éxito&quot; (5-7) + &quot;Proyectos Aprendizaje&quot; (2-3 adicionales sin publicar)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Meta de 5-7 baja a lo que realmente existe (ej: 4 casos, 2 learnings)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Registrar: &quot;Q fue trimestre de building; Q+1 foco en generar casos&quot;</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Menos cases publicados, pero retrospectiva se completa; meta para Q+1 es generar más</div>
+<p class="key-value"><strong>Fallback 4: Si Playbooks Actualización Revela Muchos Cambios Needed</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Durante actualización descubren que 50%+ del playbook debería cambiar</div>
+<div class="bullet-item"><strong>Activación:</strong> Priorización</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>De 50% cambios, seleccionar &quot;Top 5&quot; más impactantes (no puedes hacerlo todo)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Documentar otros cambios como &quot;Backlog para próxima retrospectiva&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Implementar Top 5 en Q+1 como &quot;hypothesis&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Aprendizaje: &quot;Playbooks desviaban mucho de realidad; need more frequent updates&quot;</span></div>
+<div class="bullet-item"><strong>Impacto:</strong> Actualización es parcial, pero Top 5 cambios impactantes sí van live</div>
+<p class="key-value"><strong>Fallback 5: Si Plan Q+1 No Llega a Consenso</strong></p>
+<div class="bullet-item"><strong>Trigger:</strong> Jueves Semana 12, equipo no se pone de acuerdo en decisiones Q+1</div>
+<div class="bullet-item"><strong>Activación:</strong> Decisión por Javier (no consensus)</div>
+<div class="bullet-item"><strong>Plan:</strong></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Javier escucha argumentos (30 min max per decision)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Javier decide (basado datos, input equipo, pero él hace call final)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Documenta decisión + &quot;minorityopinion&quot; si es significativa (learning para futuro)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Plan Q+1 se publica con decisiones Javier</span></div>
+<div class="bullet-item"><strong>Tiempo Fallback:</strong> +1-2 horas discusión; Plan Q+1 sale igual (Javier es decision-maker)</div>
+<hr class="divider">
+<p><strong>FIN DE SOP - EJECUTAR RETROSPECTIVA TRIMESTRAL</strong></p>
+<p>Version Control: v1.0 | Aprobado: [fecha] | Próxima Review: Q2 2026</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

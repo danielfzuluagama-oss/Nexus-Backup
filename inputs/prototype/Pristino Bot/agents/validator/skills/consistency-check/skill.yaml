@@ -1,0 +1,538 @@
+id: consistency-check
+name: Consistency Check
+purpose: Verify internal consistency of responses by detecting logical contradictions, factual inconsistencies, structural problems, and cross-reference errors.
+businessValue: Prevents delivery of self-contradicting outputs that undermine user trust and cause confusion, serving as an essential quality gate for multi-section or complex responses.
+triggerTypes:
+  - user_message
+  - internal_routing
+  - command
+owningAgent: validator
+
+inputs:
+  - "output: string - The output to check for consistency"
+  - "consistencyType: string - 'logical'|'factual'|'structural'|'cross-reference'"
+  - "referenceData: string[] - Optional reference data for cross-reference checking"
+  - "originalQuery: string - The original user request"
+
+outputs:
+  - "consistencyResult: ConsistencyResult - Pass/Fail/Partial with details"
+  - "inconsistencies: Inconsistency[] - Found inconsistencies with severity and evidence"
+  - "consistencyScore: number - Consistency score 0-100"
+  - "recommendations: string[] - Specific fixes for found inconsistencies"
+
+dependencies:
+  - "agents/validator/agent.md"
+  - "security/checkpoint-cp1.ts"
+  - "security/checkpoint-cp2.ts"
+  - "security/checkpoint-cp3.ts"
+  - "memory/read-context.ts"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads:
+    - "conversation_history: Recent messages for context"
+    - "delegated_task: Task with output from orchestrator"
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - inconsistency_detected
+  - consistency_verified
+  - contradiction_found
+  - validation_failed
+  - fallback_triggered
+
+failureHandling:
+  - "Output too short for consistency check: Report as 'trivially consistent' with note"
+  - "Cannot determine consistency type: Apply all types and report combined results"
+  - "Ambiguous contradiction: Report as 'potential inconsistency' with lower severity"
+  - "Reference data unavailable: Perform internal consistency only"
+
+interoperabilityContract:
+  inputType: "ConsistencyRequest { output: string, consistencyType: string, referenceData?: string[], originalQuery: string }"
+  outputType: "ConsistencyResult { consistencyResult: object, inconsistencies: Inconsistency[], consistencyScore: number, recommendations: string[] }"
+
+wowCriteria:
+  - "Each inconsistency cites both contradicting statements with exact quotes"
+  - "Severity accurately reflects the user-facing impact of the inconsistency"
+  - "Recommendations specify exactly which statement should be corrected and how"
+  - "Subtle inconsistencies (implications, not just explicit contradictions) are detected"
+
+safeCriteria:
+  - "No false inconsistencies flagged — every finding is evidence-based"
+  - "Nuanced positions not falsely flagged as contradictions"
+  - "Style differences distinguished from factual inconsistencies"
+  - "Severity is proportional to actual impact"
+
+workflows:
+  - id: logical-consistency
+    title: Logical Consistency Check
+    objective: Verify that the output contains no logical contradictions, invalid inferences, or self-defeating arguments
+    trigger: "consistencyType === 'logical'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Output contains reasoning or argumentation to check"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "output: string (sanitized)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Extract logical claims
+        desc: Sanitize input and extract the logical structure of the output, identifying claims, premises, and conclusions.
+        whyThisMatters: Logical consistency checking requires understanding the argument structure; without extraction, only surface-level contradictions are detectable.
+        inputNeeded: "Output to check and original query"
+        actionInstruction: "Call sanitizeInput(output). Call llm.chat() with logical extraction prompt."
+        promptToUse: |
+          You are the Validator agent extracting logical structure from an output.
+
+          Output:
+          {{output}}
+          Original query: {{originalQuery}}
+
+          Extract logical structure:
+          1. Explicit claims (stated as facts or conclusions)
+          2. Implicit claims (implied by the text)
+          3. Premises (what the output assumes to be true)
+          4. Inferences (A therefore B relationships)
+          5. Conclusions (final positions taken)
+
+          For each, note its location in the output for citation.
+        expectedOutput: "LogicalStructure { claims: Claim[], premises: Premise[], inferences: Inference[], conclusions: Conclusion[] }"
+        validationRule: "At least 2 claims extracted, locations noted"
+        failureSignal: "No logical structure extractable"
+        recoveryAction: "Report 'output contains no checkable logical structure' as Info finding"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Check for contradictions
+        desc: Systematically check all claim pairs for logical contradictions and check inferences for validity.
+        whyThisMatters: Systematic pairwise checking catches contradictions that a casual read might miss, especially in long outputs.
+        inputNeeded: "LogicalStructure with claims and inferences"
+        actionInstruction: "Call llm.chat() with contradiction checking prompt."
+        promptToUse: |
+          You are the Validator agent checking for logical contradictions.
+
+          Logical structure:
+          {{logicalStructure}}
+
+          Check systematically:
+          1. Do any claims contradict each other? (A and not-A)
+          2. Do any inferences have invalid logic? (premise does not support conclusion)
+          3. Do conclusions follow from the stated premises?
+          4. Are there circular arguments? (A proves B proves A)
+          5. Are there claims that contradict the premises?
+
+          For each issue found:
+          - Cite both conflicting statements exactly
+          - Explain the logical error
+          - Rate severity: Critical (core argument broken) / High (significant flaw) / Medium (minor flaw) / Low (pedantic)
+
+          Be careful: nuance is not contradiction. "X is partly true" does not contradict "X has limitations."
+        expectedOutput: "LogicalCheck { contradictions: Contradiction[], invalidInferences: InvalidInference[], circularArguments: string[], overallLogicalSoundness: string }"
+        validationRule: "All claim pairs checked, findings cite specific statements"
+        failureSignal: "Contradictions flagged without specific citations"
+        recoveryAction: "Re-check with explicit citation requirement"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Score and compile results
+        desc: Calculate consistency score and compile all logical consistency findings with recommendations.
+        whyThisMatters: The compiled results with scoring enable automated quality gates and provide actionable fixing guidance.
+        inputNeeded: "LogicalCheck results"
+        actionInstruction: "Calculate consistency score. Compile findings. Call validateOutput()."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ConsistencyReport { score: number, verdict: string, findings: Finding[], recommendations: string[] }"
+        validationRule: "Score reflects finding severity, verdict matches findings"
+        failureSignal: "Score inconsistent with findings"
+        recoveryAction: "Recalculate score using simple formula"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 and deliver the logical consistency results.
+        whyThisMatters: Final validation ensures the consistency report is safe and complete.
+        inputNeeded: "ConsistencyReport"
+        actionInstruction: "Call validateOutput(). Format as ConsistencyResult. Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsistencyResult with logical consistency findings"
+        validationRule: "CP3 passed, all findings present"
+        failureSignal: "CP3 flags content or findings missing"
+        recoveryAction: "Deliver verdict without detailed findings"
+        handoffIfNeeded: null
+
+    mainOutput: "Logical consistency assessment with cited contradictions, invalid inferences, and fixing recommendations"
+    secondaryOutputs:
+      - "logical_structure for reference"
+      - "pairwise_check_results for audit"
+      - "consistency_metrics (score, contradiction count, inference validity rate)"
+    DoD:
+      - "Logical structure extracted"
+      - "Claim pairs checked for contradictions"
+      - "Inferences checked for validity"
+      - "Score and verdict assigned"
+      - "CP3 passed"
+    qaChecklist:
+      - "Contradictions cite both conflicting statements"
+      - "Nuance not falsely flagged as contradiction"
+      - "Severity is proportional"
+      - "Recommendations are specific"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "claim_coverage: all extractable claims checked"
+      - "citation_quality: every finding cites specific statements"
+      - "false_positive_rate: nuanced positions not flagged"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when logical consistency check is needed)"
+    errorHandling: "If output has no logical structure, report as 'not applicable'"
+    fallbackRoute: "Perform simple contradiction scan without deep logical analysis"
+    escalationRoute: "Report Critical logical contradictions to orchestrator"
+
+  - id: factual-consistency
+    title: Factual Consistency Check
+    objective: Verify that all factual claims within the output are internally consistent and do not contradict each other
+    trigger: "consistencyType === 'factual'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Output contains factual claims"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "output: string (sanitized)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Extract factual claims
+        desc: Sanitize input and extract all factual claims (dates, numbers, names, stated facts) from the output.
+        whyThisMatters: Factual consistency requires comparing specific claims; without extraction, only obvious contradictions in adjacent sentences are detectable.
+        inputNeeded: "Output to check"
+        actionInstruction: "Call sanitizeInput(output). Call llm.chat() with fact extraction prompt."
+        promptToUse: |
+          You are the Validator agent extracting factual claims from an output.
+
+          Output:
+          {{output}}
+
+          Extract ALL factual claims:
+          - Dates and time references
+          - Numbers, quantities, and measurements
+          - Names and attributions
+          - Stated facts and assertions
+          - Definitions and categorizations
+
+          For each: Note the exact quote and its location in the output.
+          Group related facts (same subject or topic).
+        expectedOutput: "FactualClaims { claims: FactClaim[], groups: FactGroup[], totalClaims: number }"
+        validationRule: "Claims extracted with exact quotes and locations"
+        failureSignal: "No factual claims extractable"
+        recoveryAction: "Report 'no factual claims to verify' as Info finding"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Cross-check factual claims
+        desc: Compare all factual claims within the same group for internal consistency, detecting contradictions and discrepancies.
+        whyThisMatters: Factual inconsistencies (e.g., stating two different dates for the same event) directly undermine output credibility.
+        inputNeeded: "FactualClaims with grouped facts"
+        actionInstruction: "Call llm.chat() with factual cross-check prompt."
+        promptToUse: |
+          You are the Validator agent cross-checking factual claims for internal consistency.
+
+          Factual claims grouped by topic:
+          {{factGroups}}
+
+          Cross-check within each group:
+          1. Do any facts contradict each other? (different numbers for the same thing)
+          2. Are dates and timelines consistent?
+          3. Are names and attributions consistent throughout?
+          4. Do any quantities or measurements conflict?
+
+          For each inconsistency:
+          - Cite both conflicting facts with exact quotes
+          - Explain the discrepancy
+          - Severity: Critical (core facts wrong) / High (significant discrepancy) / Medium (minor inconsistency) / Low (trivial)
+
+          Do not flag approximate vs. precise as inconsistency unless they contradict.
+        expectedOutput: "FactualCheck { inconsistencies: FactInconsistency[], consistentGroups: string[], overallFactualConsistency: string }"
+        validationRule: "All groups checked, inconsistencies cite specific conflicting facts"
+        failureSignal: "Groups unchecked or findings without specific citations"
+        recoveryAction: "Check the largest groups only and note incomplete coverage"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Score and deliver results
+        desc: Calculate consistency score, compile findings, apply CP3, and deliver.
+        whyThisMatters: The scored results enable automated quality decisions about whether the output needs factual correction.
+        inputNeeded: "FactualCheck results"
+        actionInstruction: "Calculate score. Compile recommendations. Call validateOutput(). Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsistencyResult with factual consistency findings and score"
+        validationRule: "CP3 passed, score reflects findings"
+        failureSignal: "CP3 flags or score mismatch"
+        recoveryAction: "Deliver findings list without computed score"
+        handoffIfNeeded: null
+
+    mainOutput: "Factual consistency assessment with cited discrepancies and correction recommendations"
+    secondaryOutputs:
+      - "factual_claims for reference"
+      - "cross_check_results for audit"
+      - "consistency_metrics (score, inconsistency count, group coverage)"
+    DoD:
+      - "Factual claims extracted"
+      - "Claims cross-checked within groups"
+      - "Inconsistencies cited with evidence"
+      - "Score and verdict assigned"
+      - "CP3 passed"
+    qaChecklist:
+      - "Both conflicting facts cited for each inconsistency"
+      - "Approximate vs. precise not falsely flagged"
+      - "Severity is proportional"
+      - "All fact groups checked"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "claim_extraction: all substantive facts extracted"
+      - "group_coverage: all groups cross-checked"
+      - "citation_quality: both conflicting facts cited"
+      - "response_time_p95: < 25s"
+    cadence: "Per-request (when factual consistency check is needed)"
+    errorHandling: "If output has no factual claims, report as 'not applicable'"
+    fallbackRoute: "Perform simple keyword-based contradiction scan"
+    escalationRoute: "Report Critical factual inconsistencies to orchestrator"
+
+  - id: structural-consistency
+    title: Structural Consistency Check
+    objective: Verify that the output is structurally consistent with proper formatting, section organization, and internal cross-references
+    trigger: "consistencyType === 'structural'"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Output has identifiable structure"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "output: string (sanitized)"
+      - "expectedStructure: string - expected format or template"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Analyze output structure
+        desc: Sanitize input and map the structural elements of the output including sections, formatting patterns, and internal references.
+        whyThisMatters: Structural analysis reveals the actual organization, which must be compared against expectations to find structural inconsistencies.
+        inputNeeded: "Output and expected structure"
+        actionInstruction: "Call sanitizeInput(output). Call llm.chat() with structural analysis prompt."
+        promptToUse: |
+          You are the Validator agent analyzing output structure.
+
+          Output:
+          {{output}}
+          Expected structure: {{expectedStructure}}
+
+          Analyze:
+          1. Identify all sections/headings/divisions
+          2. Map the hierarchy (section > subsection > paragraph)
+          3. Find internal references (references to other sections or earlier content)
+          4. Identify formatting patterns used
+          5. Compare against expected structure
+        expectedOutput: "StructuralMap { sections: Section[], hierarchy: HierarchyNode[], internalReferences: Reference[], formattingPatterns: string[] }"
+        validationRule: "Structure mapped with sections identified"
+        failureSignal: "Cannot identify any structure in the output"
+        recoveryAction: "Report 'unstructured output' as finding and assess content quality only"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Check structural consistency
+        desc: Verify that the structure is internally consistent: sections do not overlap, hierarchy is logical, and formatting is uniform.
+        whyThisMatters: Structural inconsistencies make outputs harder to read and navigate, reducing their practical utility.
+        inputNeeded: "StructuralMap, expected structure"
+        actionInstruction: "Call llm.chat() with structural consistency prompt."
+        promptToUse: |
+          You are the Validator agent checking structural consistency.
+
+          Structural map:
+          {{structuralMap}}
+          Expected structure: {{expectedStructure}}
+
+          Check:
+          1. Are sections logically ordered?
+          2. Is the hierarchy consistent (no orphan subsections)?
+          3. Are internal references valid (do referenced sections exist)?
+          4. Is formatting consistent (same style for same-level elements)?
+          5. Does the structure match the expected format?
+          6. Are there missing expected sections or unexpected extras?
+
+          For each issue: describe, cite location, rate severity, suggest fix.
+        expectedOutput: "StructuralCheck { issues: StructuralIssue[], formatConsistency: string, hierarchyValid: boolean, brokenReferences: string[] }"
+        validationRule: "All structural aspects checked, issues cite specific locations"
+        failureSignal: "Structural aspects unchecked or issues without locations"
+        recoveryAction: "Check major structural elements only (section presence and order)"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Score and deliver
+        desc: Calculate structural consistency score and deliver results.
+        whyThisMatters: The scored results enable automated structural quality assessment.
+        inputNeeded: "StructuralCheck results"
+        actionInstruction: "Calculate score. Call validateOutput(). Format and return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsistencyResult with structural findings and score"
+        validationRule: "CP3 passed, score reflects structural issues"
+        failureSignal: "CP3 flags or score mismatch"
+        recoveryAction: "Deliver structural issue list without score"
+        handoffIfNeeded: null
+
+    mainOutput: "Structural consistency assessment with formatting issues, hierarchy problems, and broken references"
+    secondaryOutputs:
+      - "structural_map for reference"
+      - "format_analysis for style audit"
+      - "structural_metrics (section count, broken references, format violations)"
+    DoD:
+      - "Output structure mapped"
+      - "Hierarchy validated"
+      - "References checked"
+      - "Format consistency assessed"
+      - "CP3 passed"
+    qaChecklist:
+      - "All sections accounted for"
+      - "Broken references identified"
+      - "Format inconsistencies noted"
+      - "Fixes are specific"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "section_coverage: all sections analyzed"
+      - "reference_check: all internal references validated"
+      - "format_uniformity: consistent formatting flagged"
+      - "response_time_p95: < 20s"
+    cadence: "Per-request (when structural consistency check is needed)"
+    errorHandling: "If output is plain text without structure, check paragraph-level consistency"
+    fallbackRoute: "Report structural observations without formal scoring"
+    escalationRoute: "Report severe structural problems to orchestrator"
+
+  - id: cross-reference-consistency
+    title: Cross-Reference Consistency Check
+    objective: Verify consistency between the output and external reference data, ensuring claims align with provided reference materials
+    trigger: "consistencyType === 'cross-reference' or referenceData provided"
+    preconditions:
+      - "Input sanitized via CP1"
+      - "Output and reference data both provided"
+      - "Validator agent available at depth 1"
+    inputs:
+      - "output: string (sanitized)"
+      - "referenceData: string[] (sanitized)"
+      - "originalQuery: string"
+    steps:
+      - stepNumber: 1
+        title: Map output to references
+        desc: Sanitize inputs and identify which claims in the output correspond to which reference data, creating a traceability map.
+        whyThisMatters: Traceability mapping enables precise cross-referencing rather than vague consistency assessment.
+        inputNeeded: "Output and reference data"
+        actionInstruction: "Call sanitizeInput() on all inputs. Call llm.chat() with mapping prompt."
+        promptToUse: |
+          You are the Validator agent mapping output claims to reference data.
+
+          Output:
+          {{output}}
+          Reference data:
+          {{referenceData}}
+
+          Map output claims to references:
+          1. For each substantive claim in the output, identify the corresponding reference
+          2. Note claims that have no reference support (unsupported claims)
+          3. Note references that are not reflected in the output (unused references)
+          4. Identify claims that should reference data but do not
+
+          Build a traceability matrix.
+        expectedOutput: "TraceabilityMap { mappedClaims: MappedClaim[], unsupportedClaims: string[], unusedReferences: string[], missingReferences: string[] }"
+        validationRule: "Mapping completed, all claims categorized"
+        failureSignal: "Claims not mapped or references not checked"
+        recoveryAction: "Map major claims only, note incomplete traceability"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Verify cross-reference accuracy
+        desc: For each mapped claim, verify that the output accurately represents the reference data.
+        whyThisMatters: Cross-reference verification catches misrepresentation of reference data, which is a critical quality issue.
+        inputNeeded: "TraceabilityMap with mapped claims"
+        actionInstruction: "Call llm.chat() with cross-reference verification prompt."
+        promptToUse: |
+          You are the Validator agent verifying cross-reference accuracy.
+
+          Mapped claims:
+          {{mappedClaims}}
+
+          For each mapped claim:
+          1. Does the output accurately represent the reference?
+          2. Is the reference taken out of context?
+          3. Is the reference distorted or exaggerated?
+          4. Are important qualifications from the reference preserved?
+
+          For each discrepancy:
+          - Cite the output claim and the reference fact
+          - Describe the discrepancy
+          - Rate severity: Critical / High / Medium / Low
+          - Suggest correction
+        expectedOutput: "CrossRefVerification { accurate: string[], discrepancies: Discrepancy[], overallAccuracy: string }"
+        validationRule: "All mapped claims verified, discrepancies cite both output and reference"
+        failureSignal: "Claims unverified or discrepancies without citations"
+        recoveryAction: "Verify most critical claims only"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Score and deliver
+        desc: Calculate cross-reference consistency score and deliver all findings.
+        whyThisMatters: The cross-reference score and findings enable decisions about whether the output faithfully represents its sources.
+        inputNeeded: "CrossRefVerification, TraceabilityMap"
+        actionInstruction: "Calculate score. Compile all findings. Call validateOutput(). Return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated ConsistencyResult with cross-reference findings, traceability, and score"
+        validationRule: "CP3 passed, score reflects cross-reference accuracy"
+        failureSignal: "CP3 flags or score mismatch"
+        recoveryAction: "Deliver discrepancy list without computed score"
+        handoffIfNeeded: null
+
+    mainOutput: "Cross-reference consistency assessment with traceability map, discrepancies, and correction recommendations"
+    secondaryOutputs:
+      - "traceability_map for audit"
+      - "verification_details for review"
+      - "cross_reference_metrics (accuracy rate, unsupported claims, unused references)"
+    DoD:
+      - "Output mapped to references"
+      - "Mapped claims verified for accuracy"
+      - "Unsupported and unused items identified"
+      - "Score and verdict assigned"
+      - "CP3 passed"
+    qaChecklist:
+      - "Traceability is complete"
+      - "Discrepancies cite both sources"
+      - "Context is considered in accuracy assessment"
+      - "Unsupported claims flagged"
+    raci:
+      responsible: validator
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "traceability_coverage: all claims mapped or noted as unsupported"
+      - "verification_coverage: all mapped claims verified"
+      - "citation_quality: discrepancies cite both output and reference"
+      - "response_time_p95: < 30s"
+    cadence: "Per-request (when cross-reference checking is needed)"
+    errorHandling: "If reference data is empty, perform internal consistency only"
+    fallbackRoute: "Return traceability map without accuracy verification"
+    escalationRoute: "Report Critical cross-reference discrepancies to orchestrator"

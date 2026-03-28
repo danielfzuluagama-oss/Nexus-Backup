@@ -1,0 +1,665 @@
+id: tz-conversion
+name: Timezone Conversion
+purpose: >
+  Convert times between different timezones with precision, handling DST transitions
+  and providing multi-target conversions for cross-timezone scheduling.
+businessValue: >
+  Enables accurate cross-timezone scheduling by converting specific times between
+  any IANA timezones, critical for global teams and international coordination.
+triggerTypes:
+  - user_message
+owningAgent: timekeeper
+
+inputs:
+  - "userMessage: string (sanitized query about timezone conversion)"
+  - "sourceTime: string (the time to convert, with timezone)"
+  - "sourceTimezone: string (IANA timezone of the source time)"
+  - "targetTimezone: string | string[] (one or more target IANA timezones)"
+
+outputs:
+  - "convertedTimes: object[] (array of { timezone, time, dayOfWeek, dateChange })"
+  - "formattedResult: string (human-readable conversion result)"
+  - "dstWarning: string | null (warning if DST affects the conversion)"
+
+dependencies:
+  - "get_current_time tool (for current time reference and DST status)"
+  - "security.ts (CP1 sanitizeInput, CP3 validateOutput)"
+  - "IANA timezone database (timezone validation and offset lookup)"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads: []
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text before processing"
+  - "CP2: buildSecurePrompt() applied to system prompt by orchestrator"
+  - "CP3: validateOutput() on all LLM responses before delivery to user"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - tool_invoked
+  - timezone_resolved
+  - conversion_performed
+  - dst_warning_emitted
+  - validation_failed
+  - fallback_triggered
+  - skill_completed
+
+failureHandling:
+  - "Invalid source timezone: ask user to clarify the source timezone"
+  - "Invalid target timezone: ask user to clarify the target timezone"
+  - "Ambiguous time (DST overlap): present both possibilities to user"
+  - "get_current_time failure: use offset-based calculation as fallback"
+
+interoperabilityContract:
+  inputType: "TzConversionRequest { userMessage: string, sourceTime: string, sourceTimezone: string, targetTimezones: string[] }"
+  outputType: "TzConversionResponse { convertedTimes: ConvertedTime[], formattedResult: string, dstWarning?: string }"
+
+wowCriteria:
+  - "Proactively warns about DST transitions near the conversion date"
+  - "Notes when conversion crosses a date boundary (e.g., 'next day' in target timezone)"
+  - "Suggests optimal meeting times when converting for scheduling purposes"
+  - "Handles half-hour and 45-minute offset timezones (India, Nepal, Chatham Islands)"
+
+safeCriteria:
+  - "Converted times are accurate to the minute"
+  - "Source and target timezones are always explicitly labeled"
+  - "Date boundary crossings are clearly communicated"
+  - "DST ambiguities are surfaced, never silently resolved"
+
+workflows:
+  - id: simple-conversion
+    title: Simple Timezone Conversion
+    objective: Convert a specific time from one timezone to another
+    trigger: "User asks to convert a time between two timezones (e.g., 'What is 3 PM EST in Tokyo?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "Source time, source timezone, and target timezone identified"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "sourceTime: string (e.g., '3 PM')"
+      - "sourceTimezone: string (e.g., 'EST')"
+      - "targetTimezone: string (e.g., 'Asia/Tokyo')"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before timezone parsing begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Parse conversion parameters
+        desc: Extract the source time, source timezone, and target timezone from the user message, resolving to IANA identifiers.
+        whyThisMatters: Accurate parsing of all three components (time, source tz, target tz) is essential for a correct conversion.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Use LLM to parse all conversion parameters. Call get_current_time({ timezone: 'UTC' }) to establish today's date for context."
+        promptToUse: |
+          Parse this timezone conversion request:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Extract and return as YAML:
+          sourceTime: "HH:MM" (24-hour format)
+          sourceDate: YYYY-MM-DD (today if not specified)
+          sourceTimezone: "IANA timezone identifier"
+          targetTimezone: "IANA timezone identifier"
+          Rules:
+          - Map timezone abbreviations to IANA (e.g., "EST" -> "America/New_York")
+          - Map city names to IANA (e.g., "Tokyo" -> "Asia/Tokyo")
+          - If no date specified, assume today
+          - Convert 12-hour to 24-hour format
+        expectedOutput: "Source time in 24h format, source date, source IANA timezone, target IANA timezone"
+        validationRule: "Time is valid HH:MM, date is valid ISO 8601, both timezones match IANA pattern"
+        failureSignal: "Any component cannot be parsed or timezone is unrecognized"
+        recoveryAction: "Ask user to clarify the missing component: time, source timezone, or target timezone"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Perform timezone conversion
+        desc: Calculate the equivalent time in the target timezone using UTC offset arithmetic.
+        whyThisMatters: Timezone conversion must account for UTC offsets, DST status, and potential date boundary crossings.
+        inputNeeded: "Source time, source date, source timezone, target timezone"
+        actionInstruction: "Use LLM to perform the conversion with explicit offset calculation."
+        promptToUse: |
+          Convert this time between timezones:
+          Source: {{sourceTime}} on {{sourceDate}} in {{sourceTimezone}}
+          Target: {{targetTimezone}}
+          Steps:
+          1. Determine the UTC offset for {{sourceTimezone}} on {{sourceDate}} (account for DST)
+          2. Convert source time to UTC
+          3. Determine the UTC offset for {{targetTimezone}} on the same UTC moment
+          4. Convert UTC to target timezone
+          5. Check if the date changed (crossed midnight)
+          Return as YAML:
+          convertedTime: "HH:MM" (24-hour)
+          convertedDate: YYYY-MM-DD
+          convertedDayOfWeek: "Monday" through "Sunday"
+          dateChanged: true | false
+          sourceOffset: "+/-HH:MM"
+          targetOffset: "+/-HH:MM"
+          totalOffsetDifference: "+/-H hours [and MM minutes]"
+        expectedOutput: "Converted time, date, day of week, date change flag, and offset details"
+        validationRule: "Converted time is valid, offsets are consistent, date change flag matches date comparison"
+        failureSignal: "Converted time invalid or offset arithmetic inconsistent"
+        recoveryAction: "Recalculate by converting both timezones to UTC separately and comparing"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format conversion response
+        desc: Format the conversion result into a clear, unambiguous response highlighting any date changes.
+        whyThisMatters: Users must clearly see both the source and target times with timezone labels to avoid scheduling errors.
+        inputNeeded: "Conversion result with all details"
+        actionInstruction: "Use LLM to format the response."
+        promptToUse: |
+          Format this timezone conversion result:
+          Source: {{sourceTime}} {{sourceTimezone}} on {{sourceDate}}
+          Result: {{convertedTime}} {{targetTimezone}} on {{convertedDate}} ({{convertedDayOfWeek}})
+          Date changed: {{dateChanged}}
+          Offset difference: {{totalOffsetDifference}}
+          Format: "{{sourceTime_12h}} {{sourceTZ_abbr}} is {{convertedTime_12h}} {{targetTZ_abbr}}{{dateChangeNote}}"
+          If date changed, add: " (next day)" or " (previous day)"
+          Include the offset difference as context.
+        expectedOutput: "Formatted conversion string with timezone labels and date change note"
+        validationRule: "Output contains both source and target times with timezone labels"
+        failureSignal: "Output missing timezone labels or times"
+        recoveryAction: "Return minimal format: '{{sourceTime}} {{sourceTZ}} = {{convertedTime}} {{targetTZ}}'"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the conversion to the orchestrator.
+        whyThisMatters: Final security gate ensures no leaked prompts or incorrect data reaches the user.
+        inputNeeded: "Formatted conversion response string"
+        actionInstruction: "Call validateOutput(formattedResponse). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response string delivered to orchestrator"
+        validationRule: "CP3 passed and response is non-empty with both timezone labels"
+        failureSignal: "CP3 flags output or response is empty"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted timezone conversion result delivered to user"
+    secondaryOutputs:
+      - "conversion_performed event with offset details"
+      - "tool_invoked event for get_current_time"
+    DoD:
+      - "User received accurate converted time"
+      - "Both timezones clearly labeled"
+      - "Date boundary crossing noted if applicable"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Conversion arithmetic is correct"
+      - "DST status accounted for on the given date"
+      - "Date change clearly communicated"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <4s"
+      - "conversion_accuracy: 100% correct to the minute"
+      - "date_change_communication: 100% of date crossings noted"
+    cadence: "Per-request (when user asks for single timezone conversion)"
+    errorHandling: "If source or target timezone unrecognized, ask for clarification"
+    fallbackRoute: "Ask user to specify timezones using IANA names or major city names"
+    escalationRoute: "Orchestrator logs unrecognized timezone for pattern analysis"
+
+  - id: multi-target-conversion
+    title: Multi-Target Timezone Conversion
+    objective: Convert a single source time to multiple target timezones simultaneously
+    trigger: "User asks to convert a time to several timezones (e.g., 'What is 9 AM NYC time in London, Tokyo, and Sydney?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "Source time, source timezone, and 2+ target timezones identified"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "sourceTime: string"
+      - "sourceTimezone: string"
+      - "targetTimezones: string[] (2+ target IANA timezones)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before multi-target parsing begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Parse source and all targets
+        desc: Extract the source time, source timezone, and all target timezones from the user message.
+        whyThisMatters: Missing a target timezone means an incomplete answer; wrong source timezone corrupts all results.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }) for today's date, then use LLM to parse all parameters."
+        promptToUse: |
+          Parse this multi-target timezone conversion request:
+          User message: {{cleanedMessage}}
+          Today's date: {{todayDate}}
+          Extract and return as YAML:
+          sourceTime: "HH:MM" (24-hour format)
+          sourceDate: YYYY-MM-DD
+          sourceTimezone: "IANA timezone"
+          targetTimezones:
+            - "IANA timezone 1"
+            - "IANA timezone 2"
+            - ... (all requested targets)
+          Maximum 10 target timezones.
+        expectedOutput: "Source time, date, timezone, and list of 2+ target IANA timezones"
+        validationRule: "Source is valid, target list has 2+ entries, all match IANA pattern"
+        failureSignal: "Fewer than 2 targets or source parameters invalid"
+        recoveryAction: "If 1 target, route to simple-conversion. If source invalid, ask for clarification."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Convert to all target timezones
+        desc: Perform timezone conversion from source to each target timezone, computing offsets for each.
+        whyThisMatters: Each target may have a different DST status and offset; batch conversion ensures consistency.
+        inputNeeded: "Source time, date, timezone, and list of target timezones"
+        actionInstruction: "Use LLM to convert the source time to each target timezone."
+        promptToUse: |
+          Convert this time to multiple timezones:
+          Source: {{sourceTime}} on {{sourceDate}} in {{sourceTimezone}}
+          Targets: {{targetTimezones}}
+          For each target timezone:
+          1. Determine UTC offset on the given date (DST-aware)
+          2. Convert source to target time
+          3. Note date change if applicable
+          Return as YAML list:
+          conversions:
+            - timezone: "IANA name"
+              abbreviation: "TZ abbreviation"
+              convertedTime: "HH:MM"
+              convertedDate: "YYYY-MM-DD"
+              dayOfWeek: "DayName"
+              dateChanged: true | false
+              offsetFromSource: "+/-H:MM"
+        expectedOutput: "Array of conversion results, one per target timezone"
+        validationRule: "Result count matches target count, all times valid, offsets consistent"
+        failureSignal: "Missing targets in results or inconsistent offset arithmetic"
+        recoveryAction: "Convert each target individually and collect results"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format comparison table
+        desc: Format all conversions into an aligned, sortable comparison for the user.
+        whyThisMatters: Multiple conversions without structure are confusing; an ordered table aids quick comprehension.
+        inputNeeded: "Array of conversion results"
+        actionInstruction: "Use LLM to format into an ordered comparison."
+        promptToUse: |
+          Format these timezone conversions into a clear comparison:
+          Source: {{sourceTime_12h}} {{sourceTZ_abbr}} ({{sourceTimezone}})
+          Conversions: {{conversions}}
+          Format as a list sorted by UTC offset:
+          - CityName (ABBR): DayOfWeek HH:MM AM/PM {{dateChangeNote}}
+          Start with the source time, then list all targets.
+          Highlight any entries where the date differs from source.
+        expectedOutput: "Formatted multi-line comparison with source and all targets"
+        validationRule: "All targets present, sorted by offset, date changes noted"
+        failureSignal: "Missing targets or unsorted results"
+        recoveryAction: "Return unsorted list as fallback"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the multi-target comparison to the orchestrator.
+        whyThisMatters: Final quality gate ensures complete and accurate multi-timezone data reaches the user.
+        inputNeeded: "Formatted comparison string"
+        actionInstruction: "Call validateOutput(formattedComparison). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated comparison string delivered to orchestrator"
+        validationRule: "CP3 passed and response contains all target timezones"
+        failureSignal: "CP3 flags output or response missing targets"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted multi-target conversion comparison delivered to user"
+    secondaryOutputs:
+      - "conversion_performed events for each target"
+      - "tool_invoked event for get_current_time"
+    DoD:
+      - "User received conversions for all requested timezones"
+      - "Source time clearly labeled"
+      - "Date changes highlighted"
+      - "Results sorted by UTC offset"
+    qaChecklist:
+      - "All target timezones represented"
+      - "Offset arithmetic consistent across all entries"
+      - "Date changes correctly flagged"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <6s"
+      - "completeness: 100% of targets included"
+      - "accuracy: all conversions correct to the minute"
+    cadence: "Per-request (when user asks for multi-target conversion)"
+    errorHandling: "If some targets fail, return partial results with note"
+    fallbackRoute: "Return successfully converted targets with apology for failures"
+    escalationRoute: "Orchestrator logs partial failure for monitoring"
+
+  - id: meeting-time-optimization
+    title: Meeting Time Optimization
+    objective: Find optimal meeting times across multiple timezones within business hours
+    trigger: "User asks for a good meeting time across timezones (e.g., 'Find a meeting time for NYC, London, and Tokyo')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "2+ timezones identified for coordination"
+      - "Business hours assumed as 9 AM to 5 PM unless specified otherwise"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "participantTimezones: string[] (IANA timezones for each participant group)"
+      - "businessHoursStart: string (default '09:00')"
+      - "businessHoursEnd: string (default '17:00')"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before scheduling analysis begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Parse participant timezones and constraints
+        desc: Extract all participant timezones and any custom business hour constraints from the user message.
+        whyThisMatters: Missing a participant timezone or ignoring constraints leads to unusable meeting suggestions.
+        inputNeeded: "Sanitized user message"
+        actionInstruction: "Use LLM to parse participant locations and constraints."
+        promptToUse: |
+          Parse this meeting scheduling request:
+          User message: {{cleanedMessage}}
+          Extract:
+          participantTimezones:
+            - timezone: "IANA timezone"
+              label: "participant label (e.g., 'NYC team')"
+          businessHoursStart: "HH:MM" (default "09:00" if not specified)
+          businessHoursEnd: "HH:MM" (default "17:00" if not specified)
+          preferredTime: "morning" | "afternoon" | null
+        expectedOutput: "List of participant timezones with labels and business hour constraints"
+        validationRule: "2+ participant timezones, valid IANA identifiers, business hours are valid times"
+        failureSignal: "Fewer than 2 timezones or invalid timezone identifiers"
+        recoveryAction: "Ask user to specify participant locations"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Calculate overlap windows
+        desc: Find time windows where all participants are within business hours simultaneously.
+        whyThisMatters: Without overlap analysis, suggested times could fall outside working hours for some participants.
+        inputNeeded: "Participant timezones and business hour constraints"
+        actionInstruction: "Use LLM to calculate business hour overlap across all timezones."
+        promptToUse: |
+          Find business hour overlap for these timezones:
+          Participants: {{participantTimezones}}
+          Business hours: {{businessHoursStart}} to {{businessHoursEnd}} (local time for each)
+          Steps:
+          1. For each timezone, calculate the business hours window in UTC
+          2. Find the intersection of all UTC windows
+          3. Convert the intersection back to each participant's local time
+          4. If no overlap exists, find the window with minimum inconvenience (fewest people outside business hours)
+          Return as YAML:
+          hasFullOverlap: true | false
+          overlapWindows:
+            - startUTC: "HH:MM"
+              endUTC: "HH:MM"
+              durationMinutes: integer
+              localTimes:
+                - timezone: "IANA"
+                  localStart: "HH:MM"
+                  localEnd: "HH:MM"
+          bestMeetingTime: "HH:MM UTC"
+          bestMeetingTimeLocal: (list for each participant)
+        expectedOutput: "Overlap windows with local times for each participant and best meeting time suggestion"
+        validationRule: "If hasFullOverlap is true, all local times fall within business hours. Duration > 0."
+        failureSignal: "Overlap duration is negative or local times inconsistent with UTC conversion"
+        recoveryAction: "Calculate minimum-disruption window where at most one participant is slightly outside business hours"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format scheduling suggestion
+        desc: Present the optimal meeting time(s) with local times for each participant and context notes.
+        whyThisMatters: Clear presentation of options with each participant's local time prevents scheduling confusion.
+        inputNeeded: "Overlap analysis results"
+        actionInstruction: "Use LLM to format the scheduling suggestion."
+        promptToUse: |
+          Format this meeting time suggestion:
+          Has full overlap: {{hasFullOverlap}}
+          Best meeting time: {{bestMeetingTime}}
+          Local times: {{bestMeetingTimeLocal}}
+          Overlap duration: {{overlapDurationMinutes}} minutes
+          Format:
+          - Lead with the recommended meeting time
+          - List each participant's local time on its own line
+          - Note the overlap window duration
+          - If no full overlap, explain the compromise and who is slightly outside business hours
+          - Suggest 1-2 alternative times if available
+        expectedOutput: "Formatted meeting suggestion with all local times and context"
+        validationRule: "All participants' local times are listed and consistent with the UTC meeting time"
+        failureSignal: "Missing participant times or inconsistent conversions"
+        recoveryAction: "Return simple UTC time with individual conversion notes"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the scheduling suggestion to the orchestrator.
+        whyThisMatters: Final quality check ensures scheduling data is accurate before users plan real meetings.
+        inputNeeded: "Formatted scheduling suggestion"
+        actionInstruction: "Call validateOutput(formattedSuggestion). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated suggestion delivered to orchestrator"
+        validationRule: "CP3 passed and all participant timezones are represented"
+        failureSignal: "CP3 flags output or missing participant timezones"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Optimized meeting time suggestion with all participants' local times"
+    secondaryOutputs:
+      - "overlap_calculated event with window details"
+      - "optimization_result event with best time and alternatives"
+    DoD:
+      - "User received an actionable meeting time suggestion"
+      - "All participants' local times clearly listed"
+      - "Overlap window duration communicated"
+      - "Compromise clearly explained if no full overlap"
+    qaChecklist:
+      - "All participant timezones accounted for"
+      - "Local times are consistent with UTC meeting time"
+      - "Business hours respected or compromise clearly noted"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <6s"
+      - "overlap_accuracy: 100% correct overlap calculation"
+      - "participant_coverage: 100% of participants included"
+    cadence: "Per-request (when user asks for meeting time optimization)"
+    errorHandling: "If timezones cannot be resolved, ask for clarification"
+    fallbackRoute: "Suggest a UTC time and let user convert manually"
+    escalationRoute: "Orchestrator logs complex scheduling request for analysis"
+
+  - id: dst-aware-conversion
+    title: DST-Aware Conversion
+    objective: Perform timezone conversions with explicit awareness and communication of DST transitions
+    trigger: "User converts times near a DST transition, or explicitly asks about DST effects"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "Conversion involves a timezone that observes DST"
+      - "Date is near a DST transition (within 2 weeks) or user asks about DST"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "sourceTime: string (time to convert)"
+      - "sourceTimezone: string (IANA timezone)"
+      - "targetTimezone: string (IANA timezone)"
+      - "conversionDate: string (date of the conversion)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before DST analysis begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string }"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Detect DST context
+        desc: Determine the DST status of both source and target timezones on the given date and identify any nearby transitions.
+        whyThisMatters: DST transitions change UTC offsets, making conversions that work on one date wrong on another; users must be warned.
+        inputNeeded: "Source timezone, target timezone, conversion date"
+        actionInstruction: "Use LLM to analyze DST status for both timezones on the given date."
+        promptToUse: |
+          Analyze DST status for this timezone conversion:
+          Source timezone: {{sourceTimezone}}
+          Target timezone: {{targetTimezone}}
+          Date: {{conversionDate}}
+          For each timezone, determine:
+          1. Is DST currently in effect on this date? (yes/no)
+          2. Current UTC offset (standard vs DST)
+          3. Next DST transition date and direction (spring forward / fall back)
+          4. Is the conversion date within 2 weeks of a DST transition?
+          Return as YAML:
+          source:
+            dstActive: true | false
+            currentOffset: "+/-HH:MM"
+            standardOffset: "+/-HH:MM"
+            dstOffset: "+/-HH:MM"
+            nextTransition: YYYY-MM-DD
+            transitionDirection: "spring_forward" | "fall_back"
+            nearTransition: true | false
+          target:
+            (same structure)
+          warningNeeded: true | false
+          warningReason: "explanation if warning needed"
+        expectedOutput: "DST analysis for both timezones with transition proximity assessment"
+        validationRule: "Both timezone analyses are complete, offsets are valid, transition dates are real"
+        failureSignal: "Missing DST data or offsets that do not match known timezone rules"
+        recoveryAction: "Proceed with conversion using current offsets and add generic DST disclaimer"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Perform DST-aware conversion
+        desc: Convert the time using the correct DST-adjusted offsets for the specific date.
+        whyThisMatters: Using standard offsets during DST (or vice versa) produces times that are exactly 1 hour wrong.
+        inputNeeded: "Source time, date, both timezone DST analyses"
+        actionInstruction: "Use LLM to perform conversion with the DST-correct offsets."
+        promptToUse: |
+          Perform this DST-aware timezone conversion:
+          Source: {{sourceTime}} on {{conversionDate}} in {{sourceTimezone}}
+          Source offset on this date: {{source.currentOffset}} (DST active: {{source.dstActive}})
+          Target: {{targetTimezone}}
+          Target offset on this date: {{target.currentOffset}} (DST active: {{target.dstActive}})
+          Steps:
+          1. Convert source time to UTC using the DST-correct offset
+          2. Convert UTC to target time using the DST-correct offset
+          3. Check for date boundary crossing
+          Return:
+          convertedTime: "HH:MM"
+          convertedDate: YYYY-MM-DD
+          dayOfWeek: "DayName"
+          dateChanged: true | false
+          If the source time falls in a DST gap (does not exist) or overlap (ambiguous), flag it.
+        expectedOutput: "DST-aware converted time with gap/overlap analysis"
+        validationRule: "Converted time uses correct DST offsets for the specific date"
+        failureSignal: "Offset used does not match DST status on the given date"
+        recoveryAction: "Recalculate using UTC as intermediate step with explicit offset verification"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format response with DST context
+        desc: Format the conversion result including DST warnings, transition proximity notes, and offset explanations.
+        whyThisMatters: DST context helps users understand why the offset might differ from what they expect and plan accordingly.
+        inputNeeded: "Converted time, DST analysis, warning status"
+        actionInstruction: "Use LLM to format a comprehensive DST-aware response."
+        promptToUse: |
+          Format this DST-aware conversion result:
+          Source: {{sourceTime}} {{sourceTimezone}} (DST: {{source.dstActive}}, offset: {{source.currentOffset}})
+          Result: {{convertedTime}} {{targetTimezone}} (DST: {{target.dstActive}}, offset: {{target.currentOffset}})
+          Date changed: {{dateChanged}}
+          Warning needed: {{warningNeeded}}
+          Warning reason: {{warningReason}}
+          Next transitions:
+          - {{sourceTimezone}}: {{source.nextTransition}} ({{source.transitionDirection}})
+          - {{targetTimezone}}: {{target.nextTransition}} ({{target.transitionDirection}})
+          Format:
+          1. Primary conversion result
+          2. DST status for both timezones
+          3. Warning if near a transition (explain how the offset will change and when)
+          4. Note if this conversion would differ after the upcoming transition
+        expectedOutput: "Formatted conversion with DST context, warnings, and transition notes"
+        validationRule: "Output includes conversion result, DST status, and transition warning if applicable"
+        failureSignal: "Output missing DST context or warning when one is needed"
+        recoveryAction: "Return basic conversion result with generic DST disclaimer"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the DST-aware conversion to the orchestrator.
+        whyThisMatters: Final quality gate ensures DST information is accurate before users rely on it for scheduling.
+        inputNeeded: "Formatted DST-aware response"
+        actionInstruction: "Call validateOutput(formattedResponse). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response delivered to orchestrator"
+        validationRule: "CP3 passed and response contains DST context"
+        failureSignal: "CP3 flags output or response missing DST info"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "DST-aware timezone conversion with transition warnings delivered to user"
+    secondaryOutputs:
+      - "dst_warning_emitted event with transition details"
+      - "conversion_performed event with DST offsets"
+    DoD:
+      - "User received accurate DST-aware conversion"
+      - "DST status clearly communicated for both timezones"
+      - "Upcoming transitions warned about if within 2 weeks"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Offsets match DST status for the given date"
+      - "DST gap/overlap times properly flagged"
+      - "Transition warnings are accurate"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <5s"
+      - "dst_accuracy: 100% correct DST offset application"
+      - "warning_coverage: 100% of near-transition conversions include warning"
+    cadence: "Per-request (when conversion involves DST-affected timezones)"
+    errorHandling: "If DST data cannot be determined, proceed with conversion and add uncertainty disclaimer"
+    fallbackRoute: "Perform conversion with standard offset and warn user to verify DST"
+    escalationRoute: "Orchestrator logs DST data gap for system improvement"

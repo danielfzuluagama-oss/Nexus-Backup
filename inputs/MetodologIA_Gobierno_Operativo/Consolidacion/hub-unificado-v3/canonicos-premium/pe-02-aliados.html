@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="PE-02 — Digital Champions Program (Aliados) — Proceso de Delivery MetodologIA">
+    <title>PE-02 — Digital Champions Program (Aliados) — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Premium</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">PE-02 — Digital Champions Program (Aliados)</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>PE-02 — Digital Champions Program (Aliados)</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: PE-02-ALIADOS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">11</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-aliados-14e982')" aria-label="Ir a Documento Canónico | Segmento: ALIADOS">Documento Canónico | Segmento: ALIA</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-modelo-de-alianza-62bf0a')" aria-label="Ir a 2. Modelo de Alianza">2. Modelo de Alianza</button>
+<button class="nav-btn" onclick="scrollToSection('3-contenido-del-programa-671d15')" aria-label="Ir a 3. Contenido del Programa">3. Contenido del Programa</button>
+<button class="nav-btn" onclick="scrollToSection('4-entregas-aead30')" aria-label="Ir a 4. Entregas">4. Entregas</button>
+<button class="nav-btn" onclick="scrollToSection('5-modelo-econmico-partner-4e1e56')" aria-label="Ir a 5. Modelo Económico - PARTNER">5. Modelo Económico - PARTNER</button>
+<button class="nav-btn" onclick="scrollToSection('6-ciclo-de-venta-f21648')" aria-label="Ir a 6. Ciclo de Venta">6. Ciclo de Venta</button>
+<button class="nav-btn" onclick="scrollToSection('7-responsabilidades-368a80')" aria-label="Ir a 7. Responsabilidades">7. Responsabilidades</button>
+<button class="nav-btn" onclick="scrollToSection('8-certificacin-de-partners-6c69b6')" aria-label="Ir a 8. Certificación de Partners">8. Certificación de Partners</button>
+<button class="nav-btn" onclick="scrollToSection('9-soporte-a-partner-c0493c')" aria-label="Ir a 9. Soporte a Partner">9. Soporte a Partner</button>
+<button class="nav-btn" onclick="scrollToSection('10-trminos-d43d8f')" aria-label="Ir a 10. Términos">10. Términos</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-aliados-14e982" data-searchable aria-labelledby="head-documento-cannico-segmento-aliados-14e982">
+            <div class="phase-header" id="head-documento-cannico-segmento-aliados-14e982" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: ALIADOS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> PE-02-ALIADOS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Aliados (Co-entrega con partners)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>Programa de 200+ horas</strong> (12 semanas) para formar Digital Champions, co-entregado por partner + MetodologIA.</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Duración</strong></td><td>12 semanas (2-3 horas/semana + proyecto)</td></tr><tr><td><strong>Modalidad</strong></td><td>Híbrida (virtual + sesiones presenciales)</td></tr><tr><td><strong>Capacidad</strong></td><td>15-30 participantes por cohorte</td></tr><tr><td><strong>Público</strong></td><td>Multiplicadores, influenciadores internos</td></tr><tr><td><strong>Modelo partner</strong></td><td>Revenue share 25-35% o fee fixed</td></tr><tr><td><strong>Inversión cliente</strong></td><td>COP 80M-250M (según tamaño)</td></tr><tr><td><strong>Co-facilitadores</strong></td><td>Partner + especialista MetodologIA</td></tr><tr><td><strong>Certificación</strong></td><td>MetodologIA certifica, partner promociona</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-modelo-de-alianza-62bf0a" data-searchable aria-labelledby="head-2-modelo-de-alianza-62bf0a">
+            <div class="phase-header" id="head-2-modelo-de-alianza-62bf0a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Modelo de Alianza</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Partner lidera:</strong> Relación con cliente, logística, seguimiento.</div>
+<div class="bullet-item"><strong>MetodologIA aporta:</strong> Curriculum, facilitación core, validación.</div>
+<div class="bullet-item"><strong>Revenue share:</strong> Cliente paga, partner 65-75%, MetodologIA 25-35%.</div>
+<div class="bullet-item"><strong>Alternativa:</strong> Fee fixed (MetodologIA cobra COP 40M-80M).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-contenido-del-programa-671d15" data-searchable aria-labelledby="head-3-contenido-del-programa-671d15">
+            <div class="phase-header" id="head-3-contenido-del-programa-671d15" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Contenido del Programa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Semana 1-2: Fundamentos IA</strong></p>
+<div class="bullet-item">Tendencias transformación digital.</div>
+<div class="bullet-item">IA para negocios.</div>
+<div class="bullet-item">Casos de éxito.</div>
+<p class="key-value"><strong>Semana 3-4: Herramientas IA</strong></p>
+<div class="bullet-item">Productividad con IA.</div>
+<div class="bullet-item">Herramientas low-code.</div>
+<div class="bullet-item">Primeros proyectos.</div>
+<p class="key-value"><strong>Semana 5-6: Liderazgo de Cambio</strong></p>
+<div class="bullet-item">Cómo impulsar adopción digital.</div>
+<div class="bullet-item">Comunicación de cambio.</div>
+<div class="bullet-item">Gestión de resistencia.</div>
+<p class="key-value"><strong>Semana 7-8: Estrategia Digital</strong></p>
+<div class="bullet-item">Roadmap de transformación.</div>
+<div class="bullet-item">KPIs y medición.</div>
+<div class="bullet-item">Business case de iniciativas.</div>
+<p class="key-value"><strong>Semana 9-10: Proyecto Champions</strong></p>
+<div class="bullet-item">Cada champion elige iniciativa de adopción.</div>
+<div class="bullet-item">Mentoría 1-to-1.</div>
+<div class="bullet-item">Prototipado de solución.</div>
+<p class="key-value"><strong>Semana 11-12: Presentación y Escalabilidad</strong></p>
+<div class="bullet-item">Presentación de iniciativas.</div>
+<div class="bullet-item">Plan de escalabilidad.</div>
+<div class="bullet-item">Red de champions consolidada.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-entregas-aead30" data-searchable aria-labelledby="head-4-entregas-aead30">
+            <div class="phase-header" id="head-4-entregas-aead30" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Entregas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Por champion:</strong></p>
+<div class="bullet-item">Certificación de &quot;Digital Champion&quot; (MetodologIA).</div>
+<div class="bullet-item">Plan de iniciativa (documentado).</div>
+<div class="bullet-item">Acceso a comunidad de champions.</div>
+<p class="key-value"><strong>Por empresa (cliente):</strong></p>
+<div class="bullet-item">Reporte de iniciativas (porfolio de projects).</div>
+<div class="bullet-item">Plan de escalabilidad de programas.</div>
+<div class="bullet-item">Evaluación de impacto (3 meses post-programa).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-modelo-econmico-partner-4e1e56" data-searchable aria-labelledby="head-5-modelo-econmico-partner-4e1e56">
+            <div class="phase-header" id="head-5-modelo-econmico-partner-4e1e56" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Modelo Económico - PARTNER</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Opción 1: Revenue Share</strong></p>
+<div class="bullet-item">Cliente paga: COP 80M-250M (según tamaño y profundidad).</div>
+<div class="bullet-item">Partner cobra: 65-75% de facturación.</div>
+<div class="bullet-item">MetodologIA cobra: 25-35% de facturación.</div>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Facturación cliente</th><th scope="col">A partner</th><th scope="col">A MetodologIA</th></tr></thead><tbody><tr><td>COP 100M</td><td>COP 70M</td><td>COP 30M</td></tr><tr><td>COP 150M</td><td>COP 105M</td><td>COP 45M</td></tr><tr><td>COP 200M</td><td>COP 140M</td><td>COP 60M</td></tr></tbody></table></div>
+<p class="key-value"><strong>Opción 2: Fee Fixed</strong></p>
+<div class="bullet-item">MetodologIA cobra: COP 40M-80M (según complejidad).</div>
+<div class="bullet-item">Partner cobra directamente al cliente.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-ciclo-de-venta-f21648" data-searchable aria-labelledby="head-6-ciclo-de-venta-f21648">
+            <div class="phase-header" id="head-6-ciclo-de-venta-f21648" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Ciclo de Venta</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Partner:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Identifica empresa con necesidad de transformación digital.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Propone: &quot;Programa Digital Champions con MetodologIA&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Partner contacta a MetodologIA para validar oportunidad.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Joint proposal: Tamaño, duracion, inversión.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Co-diseñan curriculum si necesario.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Ejecutan programa juntos (partner 70%, MetodologIA 30%).</span></div>
+<p class="key-value"><strong>Duración:</strong> 12 semanas desde inicio a entrega.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-responsabilidades-368a80" data-searchable aria-labelledby="head-7-responsabilidades-368a80">
+            <div class="phase-header" id="head-7-responsabilidades-368a80" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Responsabilidades</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Partner:</strong></p>
+<div class="bullet-item">Relación con cliente.</div>
+<div class="bullet-item">Facturación y contrato.</div>
+<div class="bullet-item">Logística de sesiones presenciales.</div>
+<div class="bullet-item">Mentoría de champions (co-facilitate).</div>
+<div class="bullet-item">Seguimiento post-programa.</div>
+<p class="key-value"><strong>MetodologIA:</strong></p>
+<div class="bullet-item">Curriculum y materiales.</div>
+<div class="bullet-item">Facilitación de módulos core.</div>
+<div class="bullet-item">Certificación de champions.</div>
+<div class="bullet-item">Quality assurance.</div>
+<div class="bullet-item">Soporte técnico.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-certificacin-de-partners-6c69b6" data-searchable aria-labelledby="head-8-certificacin-de-partners-6c69b6">
+            <div class="phase-header" id="head-8-certificacin-de-partners-6c69b6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Certificación de Partners</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Partner debe estar certificado en MetodologIA (3 jornadas, COP 5M).</div>
+<div class="bullet-item">Evaluación: Copilot en 1 programa completo observado.</div>
+<div class="bullet-item">Recertificación anual (8 horas, COP 2M).</div>
+<div class="bullet-item">Acceso a curriculum, templates, community.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-soporte-a-partner-c0493c" data-searchable aria-labelledby="head-9-soporte-a-partner-c0493c">
+            <div class="phase-header" id="head-9-soporte-a-partner-c0493c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Soporte a Partner</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Incluido:</strong></p>
+<div class="bullet-item">Curriculum completo (editable en partes).</div>
+<div class="bullet-item">Plantillas de project plan.</div>
+<div class="bullet-item">Biblioteca de casos de estudio.</div>
+<div class="bullet-item">Helpdesk MetodologIA (24h).</div>
+<div class="bullet-item">Comunidad de partners.</div>
+<div class="bullet-item">Actualizaciones anuales de contenido.</div>
+<p class="key-value"><strong>Opcional:</strong></p>
+<div class="bullet-item">Co-facilitación de módulo (pago adicional).</div>
+<div class="bullet-item">Mentoría avanzada de champions.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-trminos-d43d8f" data-searchable aria-labelledby="head-10-trminos-d43d8f">
+            <div class="phase-header" id="head-10-trminos-d43d8f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Términos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Vigencia:</strong> 2 años, renovación automática.</div>
+<div class="bullet-item"><strong>Cancelación:</strong> 90 días aviso.</div>
+<div class="bullet-item"><strong>Exclusividad:</strong> Según territorio (negociable).</div>
+<div class="bullet-item"><strong>Propiedad:</strong> Partner retiene relación con cliente, MetodologIA retiene metodología.</div>
+<div class="bullet-item"><strong>Escalabilidad:</strong> Partner puede ofrecer múltiples cohortes/año.</div>
+<hr class="divider">
+<p class="key-value"><strong>Próximo paso:</strong> Partner interesado contacta a MetodologIA para iniciar alianza.</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

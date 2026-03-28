@@ -1,0 +1,1387 @@
+<!--
+  @license Copyleft
+  @copyright MetodologIA
+  @author Javier Montaño
+  @technology Antigravity | GoogleAI Studio | Gemini 3 Pro | Gemini 3 Flash
+  @poweredBy Pristino Agent
+-->
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playbook Ventas B2B 2026 | MetodologIA</title>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Configuración Tailwind Brand -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            base: '#0A122A',       // Navy profundo
+                            surface: '#1E293B',    // Slate oscuro
+                            gold: 'var(--brand-gold-dark)',       // Dorado marca
+                            cyan: '#00B8B8',       // Cian acento
+                            text: '#F8F9FA',       // Blanco humo
+                            muted: '#94A3B8'       // Gris medio
+                        }
+                    },
+                    backgroundImage: {
+                        'gold-gradient': 'linear-gradient(135deg, var(--brand-gold-dark) 0%, #FFA000 100%)',
+                        'glass': 'linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(10, 18, 42, 0.8) 100%)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0A122A;
+            color: #F8F9FA;
+            background-image: radial-gradient(circle at 50% 0%, #1E3A5F 0%, #0A122A 70%);
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-panel:hover {
+            border-color: var(--brand-gold-glow);
+            box-shadow: 0 0 20px var(--brand-gold-glow);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A122A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--brand-gold-dark);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+    <link rel="apple-touch-icon" href="../../../favicon.svg">
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- ICONOS ---
+        const Icon = ({ name, size = 20, className = "" }) => {
+            const icons = {
+                Brain: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" /><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" /><path d="M17.599 6.5a3 3 0 0 0 .399-1.375" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.896a4 4 0 0 1 .585-.396" /><path d="M19.938 10.5a4 4 0 0 1 .585.396" /><path d="M6 18a4 4 0 0 1-1.97-3.465" /><path d="M12 21a4 4 0 0 0 1.97-3.465" /></svg>,
+                Rocket: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" /></svg>,
+                Target: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>,
+                Zap: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>,
+                BookOpen: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>,
+                MessageSquare: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>,
+                Copy: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>,
+                Check: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12" /></svg>,
+                BarChart: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" x2="12" y1="20" y2="10" /><line x1="18" x2="18" y1="20" y2="4" /><line x1="6" x2="6" y1="20" y2="16" /></svg>,
+                Menu: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>,
+                X: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>,
+                Search: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>,
+                Filter: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>,
+                Sparkles: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /><path d="M5 3v4" /><path d="M9 5H3" /><path d="M6 16l-2.023 2.023a1.1 1.1 0 0 0 1.556 1.556L7.577 17.577" /></svg>,
+                Users: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>,
+                Globe: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></svg>,
+                Shield: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>,
+                CheckSquare: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>,
+                HelpCircle: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>,
+                Star: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
+                Brain: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z" /><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z" /></svg>,
+                UserCheck: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><polyline points="17 11 19 13 23 9" /></svg>,
+                DollarSign: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" x2="12" y1="2" y2="22" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>,
+                MessageCircle: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" /></svg>,
+                Feather: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" /><line x1="16" x2="2" y1="8" y2="22" /><line x1="17.5" x2="9" y1="15" y2="15" /></svg>
+            };
+            return icons[name] || null;
+        };
+
+        // --- DATA DE PROMPTS 2026 ---
+        const promptsDatabase = [
+            {
+                id: 1,
+                title: "Permission-based Opener (Cold Call)",
+                category: "Prospección",
+                tags: ["cold call", "apertura", "latam"],
+                context: "Usar al inicio de una llamada en frío para bajar la barrera defensiva inmediatamente.",
+                content: `Hola [Nombre], sé que te llamo sin aviso previo y probablemente estás ocupado.\n\n¿Tienes 30 segundos para que te cuente brevemente por qué llamo y tú decides si colgamos o si seguimos conversando?`
+            },
+            {
+                id: 2,
+                title: "Signal-Based: Cambio de Ejecutivo",
+                category: "Prospección",
+                tags: ["email", "trigger", "investigación"],
+                context: "Enviar cuando un target ha cambiado de rol en los últimos 90 días.",
+                content: `Hola [Nombre],\n\nFelicitaciones por el nuevo rol como [Cargo]. Típicamente, cuando un líder asume este desafío en [Industria], los primeros 90 días se enfocan en auditar [Problema X].\n\n¿Es este un foco para ti ahora mismo o estás priorizando otras áreas?`
+            },
+            {
+                id: 3,
+                title: "The Break-up Email (Recuperación)",
+                category: "Recuperación",
+                tags: ["email", "ghosting", "cierre"],
+                context: "Usar cuando un prospecto desaparece después de una propuesta.",
+                content: `Hola [Nombre],\n\nDado que no he tenido noticias, asumo que [Proyecto X] no es una prioridad en este momento.\n\nVoy a cerrar este expediente por mi parte para no llenar tu bandeja de entrada. Si esto vuelve a ser relevante en el futuro, aquí estaré.`
+            },
+            {
+                id: 4,
+                title: "Diagnosis: La Pregunta de Oro",
+                category: "Diagnóstico",
+                tags: ["discovery", "reunión", "problema"],
+                context: "Identifica el costo de la inacción. Técnica 'Problem-First'.",
+                content: `Si decidieran NO hacer nada al respecto y dejaran esta situación tal cual por otros 6 meses, ¿cuál sería el impacto financiero u operativo real para la organización?`
+            },
+            {
+                id: 5,
+                title: "Pricing Anchor (Negociación)",
+                category: "Negociación",
+                tags: ["precio", "cierre", "presupuesto"],
+                context: "Califica presupuesto temprano sin dar un precio fijo.",
+                content: `Para una solución de este alcance, típicamente vemos inversiones en el rango de $40k a $60k anuales.\n\n¿Esto se alinea con lo que tenían presupuestado o estamos muy lejos?`
+            },
+            {
+                id: 6,
+                title: "Consensus Workshop Invite",
+                category: "Comité de Compra",
+                tags: ["multi-threading", "reunión"],
+                context: "Reúne a los stakeholders para alinear criterios de éxito.",
+                content: `[Nombre], en proyectos así, Finanzas e IT suelen tener criterios distintos.\n\nPropongo una sesión de 45 min de 'Alineación de Consenso' para mapear los requisitos de todos y co-crear un Plan de Acción Mutuo (MAP). ¿Te parece útil?`
+            },
+            {
+                id: 7,
+                title: "Priming: Configuración de Agente",
+                category: "IA prompts",
+                tags: ["priming", "system", "setup"],
+                context: "Configura a la IA como un experto en ventas consultivas de alto nivel.",
+                content: `Actúa como un Senior Sales Strategist con 20 años de experiencia en B2B Tech. Tu tono es profesional, desafiante (Challenger) y altamente ejecutivo.\n\nTu objetivo es auditar mi estrategia actual y encontrar 'puntos ciegos' en el comité de compra. No me des palmaditas en la espalda, encuentra el riesgo.`
+            },
+            {
+                id: 8,
+                title: "Brand Voice: Calibración",
+                category: "IA prompts",
+                tags: ["marketing", "tono", "marca"],
+                context: "Asegura que el output de la IA suene como un humano experto, no como un bot.",
+                content: `Analiza este texto adjunto de mi autoría. Identifica: 1. Nivel de jerga técnica, 2. Longitud promedio de frases, 3. Uso de humor/sarcasmo.\n\nAhora, reescribe el siguiente borrador manteniendo exactamente ese perfil lingüístico. Evita palabras 'de IA' como 'embracing', 'tapestry' o 'streamlining'.`
+            },
+            {
+                id: 9,
+                title: "The Excellence Loop (Feedback)",
+                category: "IA prompts",
+                tags: ["mejora", "iteración", "calidad"],
+                context: "Fuerza a la IA a mejorar su propio trabajo antes de entregarlo.",
+                content: `He revisado tu respuesta. Antes de continuar, califica tu propio output del 1 al 10 basándote en: 1. Originalidad estratégica, 2. Falta de clichés, 3. Utilidad táctica.\n\nSi la nota es menor a 9, propón 3 cambios específicos para llegar al 10 y ejecútalos.`
+            },
+            {
+                id: 10,
+                title: "LATAM: Abordaje SECOP II",
+                category: "Prospección",
+                tags: ["colombia", "publico", "gov"],
+                context: "Para empresas que venden al estado en Colombia usando señales de SECOP.",
+                content: `Hola [Nombre],\n\nVi el proceso [Número de Proceso] en SECOP II sobre [Objeto]. Note que en el anexo técnico priorizan [Requisito X].\n\nHemos ayudado a empresas similares a cumplir con ese punto específico reduciendo el riesgo de rechazo en un 30%.\n\n¿Estarías abierto a una charla técnica de 10 min sobre cómo estructurar esa respuesta?`
+            }
+        ];
+
+        // --- NEW MIGRATED PROMPTS (FROM LEGACY PLAYBOOK) ---
+        const migratedPrompts = [
+            // --- INVESTIGACIÓN ---
+            {
+                id: 11,
+                title: "Metaprompt: Datos Básicos",
+                category: "Investigación",
+                tags: ["research", "datos", "inicio"],
+                context: "Recopila datos fundamentales. Input: Razón Social + País.",
+                content: `Actúa como un analista de inteligencia comercial experto. Tu objetivo es recopilar la 'Ficha Técnica' fundamental de [NOMBRE EMPRESA] en [PAÍS].\n\nBusca y estructura:\n1. Razón Social exacta y NIT/RUT (si es público).\n2. Representante Legal actual.\n3. Dirección principal y sedes clave.\n4. Página web y redes sociales oficiales por canal.\n5. Descripción corta de su actividad económica principal (CIIU si aplica).\n\nFormato de salida: Tabla Markdown limpia. Si no encuentras un dato exacto, indica 'No verificado' en lugar de alucinar.`
+            },
+            {
+                id: 12,
+                title: "Metaprompt: Voz de Marca",
+                category: "Investigación",
+                tags: ["branding", "arquetipo", "comunicación"],
+                context: "Ingeniería inversa de la estrategia de comunicación del cliente.",
+                content: `Analiza los siguientes textos de la web/redes de [EMPRESA]:\n[PEGAR TEXTOS AQUÍ]\n\nDefine su Voz de Marca basándote en:\n1. Tono (¿Formal, Juguetón, Autoritario, Empático?)\n2. Arquetipo de Jung dominante (ej: El Sabio, El Héroe, El Cuidador).\n3. Palabras clave recurrentes.\n4. Nivel de complejidad técnica (1-10).\n\nSalida: Un 'Prompt de Personalidad' que yo pueda usar para instruir a una IA a escribir como ellos.`
+            },
+            {
+                id: 13,
+                title: "Metaprompt: Opiniones & Riesgos",
+                category: "Investigación",
+                tags: ["riesgo", "reputación", "reviews"],
+                context: "Detecta banderas rojas y sentiment de mercado.",
+                content: `Realiza un análisis de sentimiento y reputación para [EMPRESA].\n\nBusca en:\n- Google Reviews / Glassdoor (Cultura interna).\n- Noticias recientes (últimos 12 meses).\n- Reclamos en redes sociales o entes de control.\n\nIdentifica:\n1. Puntos de dolor recurrentes de sus clientes.\n2. Problemas operativos visibles.\n3. Quejas frecuentes.\n\nEsto es para entender sus desafíos, no para juzgar. Sé objetivo.`
+            },
+            {
+                id: 14,
+                title: "Metaprompt: Tendencias Sector",
+                category: "Investigación",
+                tags: ["mercado", "futuro", "oportunidad"],
+                context: "Contextualiza al cliente en su industria.",
+                content: `Actúa como consultor de estrategia para el sector [SECTOR/INDUSTRIA].\n\nIdentifica las 3 macrotendencias que más están presionando a las empresas de este sector en 2025-2026.\n\nPara cada tendencia:\n1. Describe la presión (amenaza).\n2. Oportunidad oculta.\n3. Cómo tecnologías como IA o Automatización están respondiendo a esto.\n\nEnfócate en dolores financieros u operativos de alto nivel.`
+            },
+            {
+                id: 15,
+                title: "Investigación 360° (Deep Dive)",
+                category: "Investigación",
+                tags: ["full", "reporte", "ejecutivo"],
+                context: "Consolida toda la investigación en un reporte ejecutivo.",
+                content: `Toma toda la información recopilada (Datos, Voz, Opiniones, Tendencias) y genera un 'Dossier Estratégico de Cliente' de 1 página.\n\nEstructura:\n1. Snapshot: Datos clave y Arquetipo.\n2. Pain Map: 3 dolores principales inferidos por reviews y tendencias.\n3. Opportunity Match: Dónde nuestros servicios de [TU SERVICIO] hacen match perfecto.\n4. Icebreaker: Una frase de apertura para un cold email basada en un dato curioso o reciente encontrado.`
+            },
+            {
+                id: 16,
+                title: "Validación de Información",
+                category: "Investigación",
+                tags: ["calidad", "check", "seguridad"],
+                context: "Verifica alucinaciones antes de usar los datos.",
+                content: `Tengo estos datos sobre [EMPRESA]:\n[PEGAR DATOS]\n\nActúa como un auditor escéptico. Clasifica cada dato en:\n- ALTA CONFIANZA (Verificable en web oficial).\n- MEDIA CONFIANZA (Mencionado en noticias/terceros).\n- BAJA CONFIANZA (Posible alucinación o dato genérico).\n\nAdviérteme sobre cualquier inconsistencia lógica (ej: ingresos que no cuadran con tamaño de empleados).`
+            },
+
+            // --- ESTRATEGIA & PERFILAMIENTO ---
+            {
+                id: 17,
+                title: "Perfilamiento Buyer Persona",
+                category: "Estrategia",
+                tags: ["persona", "empatía", "stakeholder"],
+                context: "Simula al tomador de decisiones para entender su psicología.",
+                content: `Crea un perfil de Buyer Persona para el cargo de [CARGO, ej: Gerente Financiero] en una empresa del sector [SECTOR].\n\nDetalla:\n1. KPIs por los que lo miden (y por los que lo despiden).\n2. Pesadillas operativas diarias.\n3. Jerga y tecnicismos que usa y respeta.\n4. Objeciones 'default' a comprar [TU SERVICIO].\n\nDame 3 'Trigger Questions' para abrir una conversación con él que demuestren que entiendo su mundo.`
+            },
+            {
+                id: 18,
+                title: "Matriz de Oportunidades",
+                category: "Estrategia",
+                tags: ["match", "venta", "gap"],
+                context: "Alinea dolores del cliente con tu portafolio.",
+                content: `Considerando que vendo [TU PRODUCTO/SERVICIO] y el cliente tiene estos dolores: [LISTAR DOLORES].\n\nCrea una Matriz de Alineación:\nColumna 1: Dolor/Desafío del Cliente.\nColumna 2: Implicación de NO resolverlo (Cost of Inaction).\nColumna 3: Característica específica de mi producto que lo resuelve.\nColumna 4: Beneficio traducido a dinero o tiempo.\n\nSé específico, evita generalidades.`
+            },
+
+            // --- PROPUESTAS ---
+            {
+                id: 19,
+                title: "Estructura High-Ticket",
+                category: "Propuestas",
+                tags: ["estructura", "esqueleto", "high-ticket"],
+                context: "Genera el índice para una propuesta de alto valor.",
+                content: `Diseña el índice de contenidos para una Propuesta Comercial High-Ticket dirigida a un CFO.\n\nNo uses la estructura tradicional 'Nosotros > Servicios > Precio'.\n\nUsa una estructura narrativa:\n1. El Contexto/Desafío (Lo que entendimos).\n2. El Costo de la Inacción (Por qué cambiar ahora).\n3. La Transformación (Estado Futuro).\n4. El Camino (Metodología/Cronograma).\n5. La Inversión (ROI).\n\nPara cada punto, sugiere qué gráfico o dato incluir.`
+            },
+            {
+                id: 20,
+                title: "Generador de Propuesta Base",
+                category: "Propuestas",
+                tags: ["draft", "escritura", "base"],
+                context: "Redacta el primer borrador de la propuesta.",
+                content: `Escribe la sección 'El Contexto y Desafío' para la propuesta a [EMPRESA].\n\nUsa los siguientes insights de investigación: [INSERTAR INSIGHTS].\n\nTono: Ejecutivo, directo, sin adjetivos innecesarios. Estilo 'Challenger Sale': empieza desafiando el status quo.\n\nMenciona explícitamente cómo la tendencia de [TENDENCIA] está afectando su operación actual.`
+            },
+            {
+                id: 21,
+                title: "Personalizador IA",
+                category: "Propuestas",
+                tags: ["rewrite", "personalización", "tono"],
+                context: "Reescribe textos genéricos para que suenen al cliente.",
+                content: `Tengo este párrafo genérico de mi servicio:\n[TEXTO GENÉRICO]\n\nReescríbelo totalmente para que resuene con [EMPRESA], usando su Voz de Marca (que es [ADJETIVOS]) y mencionando su problema específico de [PROBLEMA].\n\nEl objetivo es que sientan que esto fue escrito SOLO para ellos.`
+            },
+            {
+                id: 22,
+                title: "Auditor de Propuestas",
+                category: "Propuestas",
+                tags: ["review", "calidad", "crítica"],
+                context: "Critica tu propia propuesta antes de enviarla.",
+                content: `Actúa como el CFO de [EMPRESA]. Acabas de leer esta propuesta: [PEGAR PROPUESTA].\n\nSé brutalmente honesto:\n1. ¿Dónde suena a 'vendedor' y no a socio?\n2. ¿Qué promesas suenan vagas o sin sustento?\n3. ¿Entiendes claramente el ROI?\n\nDame 3 correcciones urgentes para que apruebes esto.`
+            },
+
+            // --- DEFENSA & CIERRE ---
+            {
+                id: 23,
+                title: "Defensa de Precio (ROI)",
+                category: "Defensa",
+                tags: ["precio", "negociación", "finanzas"],
+                context: "Justifica la inversión financieramente.",
+                content: `El cliente dice que mi precio ($[PRECIO]) es muy alto comparado con la competencia.\n\nAyúdame a construir 3 argumentos de defensa de valor basados en ROI, no en descuento.\n\nArgumento 1: Costo de oportunidad (Lo que pierden por ir con una opción barata/incompleta).\nArgumento 2: Eficiencia operativa (Ahorros ocultos).\nArgumento 3: Riesgo mitigado (El costo de un fallo).\n\nUsa analogías de negocios.`
+            },
+            {
+                id: 24,
+                title: "Sustentación Técnica",
+                category: "Defensa",
+                tags: ["técnico", "it", "factibilidad"],
+                context: "Para convencer al Technical Buyer (CTO/IT).",
+                content: `El equipo de tecnología está bloqueando la venta por dudas sobre [TEMA TÉCNICO, ej: seguridad de datos].\n\nGenera una explicación técnica pero clara que aborde:\n1. Nuestros protocolos estándar.\n2. Cómo nos integramos sin romper su stack actual.\n3. Por qué somos más seguros que su proceso manual actual.\n\nEvita marketing fluffy, usa terminología técnica precisa.`
+            },
+            {
+                id: 25,
+                title: "Banco de Objeciones",
+                category: "Defensa",
+                tags: ["roleplay", "preparación", "respuestas"],
+                context: "Anticipa las 5 objeciones más probables.",
+                content: `Para vender [PRODUCTO] a [INDUSTRIA], genera las 5 objeciones más crueles y difíciles que podría poner un comprador escéptico.\n\nPara cada una, redacta una respuesta 'Reframe' (Reencuadre) que no sea defensiva, sino que use la objeción para profundizar en el valor.\n\nEjemplo: 'Es muy caro' -> 'Caro comparado con qué? Porque comparado con el costo de tu problema X...'`
+            },
+            {
+                id: 26,
+                title: "Simulador de Cierre",
+                category: "Defensa",
+                tags: ["simulación", "práctica", "interactivo"],
+                context: "Practica la reunión de cierre con la IA.",
+                content: `Vamos a jugar un rol. Tú eres el Gerente de Compras hostil de [EMPRESA]. Yo soy el vendedor.\n\nEmpieza diciéndome: "Revisamos tu propuesta, está 20% por encima de presupuesto y no vemos por qué pagar la diferencia".\n\nEspera mi respuesta y contraataca si titubeo. Evalúa mi manejo de la presión.`
+            },
+            {
+                id: 27,
+                title: "Seguimiento Post-Propuesta",
+                category: "Cierre",
+                tags: ["email", "follow-up", "no-pushy"],
+                context: "Emails de seguimiento que aportan valor, no ansiedad.",
+                content: `La propuesta se envió hace 5 días y no hay respuesta. NO quiero enviar un 'Just checking in'.\n\nRedacta un email de seguimiento basado en 'Deposit Value'.\n\nIncluye: 'Vi esta noticia/artículo sobre [TENDENCIA] que afecta su sector y pensé en nuestra conversación sobre [PUNTO DE DOLOR]. Les comparto este insight...'\n\nCierra preguntando si pudieron revisar la propuesta, pero como secundario.`
+            },
+            {
+                id: 28,
+                title: "Defensa Acelerada (Speed Prep)",
+                category: "Defensa",
+                tags: ["rápido", "calentamiento", "meeting"],
+                context: "Tienes una reunión en 10 minutos y necesitas prepararte YA.",
+                content: ` Tengo una reunión de venta con [CLIENTE] en 15 minutos. No tengo tiempo para research profundo.\n\nDame una 'Hoja de Preparación de Emergencia' con:\n1. 3 preguntas de descubrimiento infalibles para su industria.\n2. El dato público más reciente (noticia/post) que deba mencionar para parecer informado.\n3. Un 'Elevator Pitch' adaptado a [DOLOR PROBABLE] de esta industria.\n\nPrioriza velocidad y confianza.`
+            },
+            {
+                id: 29,
+                title: "Estrategias High-Ticket",
+                category: "Estrategia",
+                tags: ["deal-room", "complejo", "b2b"],
+                context: "Plan para cerrar negocios complejos de alto valor.",
+                content: `Estoy trabajando un deal de alto valor ($50k+) con [EMPRESA].\n\nDiseña una estrategia de 'Stakeholder Management' para este deal.\n\nIdentifica qué roles necesito influenciar (Champion, Blocker, Economic Buyer) típicos en esta industria.\n\nPara cada rol, sugiere:\n- Qué le importa (WIIFM - What's in it for me).\n- Qué entregable de valor puedo darle gratis para ganarme su confianza antes de pedir la venta.`
+            }
+        ];
+
+        // Merge existing and migrated prompts
+        const allPrompts = [...promptsDatabase, ...migratedPrompts];
+
+        // --- COMPONENTS ---
+
+        const PromptCard = ({ prompt }) => {
+            const [copied, setCopied] = useState(false);
+
+            const handleCopy = () => {
+                const textToCopy = `CONTEXTO: ${prompt.context}\n\nPROMPT: ${prompt.content}`;
+                try {
+                    navigator.clipboard.writeText(textToCopy).then(() => setCopied(true));
+                } catch (err) {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = textToCopy;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    setCopied(true);
+                }
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            return (
+                <div class="glass-panel p-6 rounded-2xl border-t border-brand-gold/20 hover:border-brand-gold transition-all duration-300 group flex flex-col h-full">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="px-2 py-1 rounded-md bg-brand-gold/10 text-brand-gold text-[10px] font-bold uppercase tracking-wider border border-brand-gold/20">
+                            {prompt.category}
+                        </span>
+                        <button
+                            onClick={handleCopy}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${copied ? 'bg-green-500/20 text-green-300' : 'bg-brand-surface text-brand-muted hover:text-white group-hover:bg-brand-gold/20 group-hover:text-brand-gold'}`}
+                        >
+                            {copied ? <><Icon name="Check" size={14} /> Copiado</> : <><Icon name="Copy" size={14} /> Copiar</>}
+                        </button>
+                    </div>
+
+                    <h4 class="text-lg font-bold text-white mb-2 font-heading line-clamp-2">
+                        {prompt.title}
+                    </h4>
+
+                    <div class="mb-4 pl-3 border-l-2 border-brand-cyan/30 min-h-[40px]">
+                        <p class="text-xs text-brand-muted italic line-clamp-3">{prompt.context}</p>
+                    </div>
+
+                    <div class="bg-[#050a19] p-4 rounded-lg font-mono text-sm text-gray-100 border border-white/5 relative group-hover:border-brand-gold/20 transition-colors flex-grow overflow-y-auto max-h-48 scrollbar-thin">
+                        <pre class="whitespace-pre-wrap font-sans">{prompt.content}</pre>
+                    </div>
+                </div>
+            );
+        };
+
+        const SearchBar = ({ onSearch, onCategoryChange, categories }) => (
+            <div class="mb-8 space-y-4">
+                <div class="relative">
+                    <Icon name="Search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-brand-muted" />
+                    <input
+                        type="text"
+                        placeholder="Buscar prompts (ej: cierre, precio, email)..."
+                        onChange={(e) => onSearch(e.target.value)}
+                        class="w-full bg-brand-surface/50 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-brand-gold/50 focus:ring-1 focus:ring-brand-gold/50 transition-all placeholder-gray-500"
+                    />
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    <button
+                        onClick={() => onCategoryChange('Todas')}
+                        class="px-4 py-2 rounded-lg text-xs font-bold uppercase bg-brand-gold text-brand-base whitespace-nowrap"
+                    >
+                        Todas
+                    </button>
+                    {categories.map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => onCategoryChange(cat)}
+                            class="px-4 py-2 rounded-lg text-xs font-bold uppercase bg-brand-surface border border-white/10 text-brand-muted hover:text-white hover:border-brand-gold/30 whitespace-nowrap transition-colors"
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const Section = ({ title, subtitle, children, id }) => (
+            <section id={id} class="py-16 border-b border-white/5 last:border-0 animate-fade-in">
+                <div class="mb-10 max-w-3xl">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 font-heading tracking-tight flex items-center gap-3">
+                        <span class="text-brand-gold">#</span> {title}
+                    </h2>
+                    {subtitle && <p class="text-brand-muted text-lg font-light leading-relaxed">{subtitle}</p>}
+                </div>
+                {children}
+            </section>
+        );
+
+        const PlanCard = ({ title, focus, items, color }) => (
+            <div className={`glass-panel p-6 rounded-2xl border-t-4 ${color} h-full`}>
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold text-white font-heading">{title}</h3>
+                    <p class="text-xs text-brand-gold uppercase tracking-wider mt-1">{focus}</p>
+                </div>
+                <ul class="space-y-3">
+                    {items.map((item, i) => (
+                        <li key={i} class="flex gap-3 text-sm text-gray-100">
+                            <span class="text-brand-cyan mt-1">●</span>
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+
+        // --- CHECKLIST COMPONENT ---
+        const ChecklistItem = ({ id, label }) => {
+            const [checked, setChecked] = React.useState(localStorage.getItem(id) === 'true');
+            const handleChange = (e) => {
+                const newValue = e.target.checked;
+                setChecked(newValue);
+                localStorage.setItem(id, newValue);
+            };
+            return (
+                <label class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group select-none">
+                    <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={handleChange}
+                        class="mt-1 w-5 h-5 rounded border-gray-600 text-brand-gold focus:ring-brand-gold bg-transparent cursor-pointer"
+                    />
+                    <span className={`text-sm transition-colors ${checked ? 'text-brand-gold line-through opacity-70' : 'text-gray-100 group-hover:text-white'}`}>{label}</span>
+                </label>
+            );
+        };
+
+        // --- MAIN APP ---
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('intro');
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [selectedCategory, setSelectedCategory] = useState('Todas');
+
+            const navigation = [
+                { id: 'intro', label: 'Visión 2026', icon: 'Rocket' },
+                { id: 'role', label: 'Perfiles & Desarrollo', icon: 'UserCheck' },
+                { id: 'ticket', label: 'High vs Low Ticket', icon: 'DollarSign' },
+                { id: 'consultative', label: 'Venta Consultiva', icon: 'MessageCircle' },
+                { id: 'relationship', label: 'Relacionamiento', icon: 'Heart' },
+                { id: 'methodology', label: 'Estrategia & Madurez', icon: 'Users' },
+                { id: 'governance', label: 'Gobernanza IA', icon: 'Shield' },
+                { id: 'process', label: 'Proceso Comercial', icon: 'Target' },
+                { id: 'checklists', label: 'Checklists', icon: 'CheckSquare' },
+                { id: 'prompts', label: 'Buscador de Prompts', icon: 'Zap' },
+                { id: 'troubleshooting', label: 'Troubleshooting', icon: 'HelpCircle' },
+                { id: 'practices', label: 'Best Practices', icon: 'Star' },
+                { id: 'plan', label: 'Plan 30-60-90', icon: 'BarChart' },
+                { id: 'bibliography', label: 'Bibliografía', icon: 'BookOpen' },
+                { id: 'authors', label: 'Autores & Creadores', icon: 'Feather' }
+            ];
+
+            const categories = [...new Set(allPrompts.map(p => p.category))];
+
+            const filteredPrompts = useMemo(() => {
+                return allPrompts.filter(p => {
+                    const matchesSearch = (p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        p.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        p.tags.some(tag => tag.includes(searchQuery.toLowerCase())));
+                    const matchesCategory = selectedCategory === 'Todas' || p.category === selectedCategory;
+                    return matchesSearch && matchesCategory;
+                });
+            }, [searchQuery, selectedCategory]);
+
+            const scrollToSection = (id) => {
+                setActiveTab(id);
+                setMobileMenuOpen(false);
+                const element = document.getElementById(id);
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <div class="flex h-screen overflow-hidden bg-brand-base text-brand-text font-sans selection:bg-brand-gold selection:text-black">
+
+                    {/* Sidebar Navigation (Desktop) */}
+                    <aside class="hidden md:flex flex-col w-72 bg-[#0A122A]/95 border-r border-white/5 h-full backdrop-blur-xl relative z-20">
+                        <div class="p-8 border-b border-white/5">
+                            <div class="mb-6 flex flex-col items-center">
+                                <img src="https://github.com/ejemplo-deo-repo/img/blob/main/LOGOTIPO-IAC-05-1-2048x731.png?raw=true" alt="IAC Logo" class="h-10 w-auto mb-2 opacity-90 hover:opacity-100 transition-opacity" />
+                                <h1 class="font-heading font-black text-2xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
+                                    METODOLOG<span class="text-brand-gold">IA</span>
+                                </h1>
+                                <p class="text-[10px] text-brand-muted tracking-widest uppercase">Playbook Ventas 2026</p>
+                            </div>
+                        </div>
+
+                        <nav class="flex-1 overflow-y-auto py-6 px-4">
+                            <ul class="space-y-1">
+                                {navigation.map((item) => (
+                                    <li key={item.id}>
+                                        <button
+                                            onClick={() => scrollToSection(item.id)}
+                                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${activeTab === item.id
+                                                ? 'bg-brand-gold/10 text-brand-gold border border-brand-gold/20'
+                                                : 'text-slate-100 hover:text-white hover:bg-white/5'
+                                                }`}
+                                        >
+                                            <Icon name={item.icon} size={18} className={activeTab === item.id ? 'text-brand-gold' : 'text-slate-200 group-hover:text-white'} />
+                                            {item.label}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+
+                        <div class="p-6 border-t border-white/5">
+                            <div class="bg-gradient-to-r from-brand-base to-[#1E293B] p-4 rounded-xl border border-white/5">
+                                <p class="text-xs font-semibold text-white mb-1">Cliente: IAC & MetodologIA</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                    <p class="text-[10px] text-brand-muted">Versión 2.0 (High-Perf)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    {/* Mobile Header */}
+                    <div class="md:hidden fixed top-0 w-full bg-[#0A122A]/90 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between p-4">
+                        <span class="font-heading font-bold text-lg text-white">Metodolog<span class="text-brand-gold">IA</span></span>
+                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} class="text-white p-2">
+                            <Icon name={mobileMenuOpen ? "X" : "Menu"} />
+                        </button>
+                    </div>
+
+                    {/* Mobile Menu Overlay */}
+                    {mobileMenuOpen && (
+                        <div class="md:hidden fixed inset-0 bg-[#0A122A] z-40 pt-24 px-6 overflow-y-auto">
+                            <ul class="space-y-4">
+                                {navigation.map((item) => (
+                                    <li key={item.id}>
+                                        <button onClick={() => scrollToSection(item.id)} class="w-full flex items-center gap-4 text-lg font-medium text-gray-100 py-3 border-b border-white/5">
+                                            <Icon name={item.icon} size={20} class="text-brand-gold" /> {item.label}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    {/* Main Content Area */}
+                    <main class="flex-1 overflow-y-auto relative scroll-smooth bg-brand-base">
+                        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+                        <div class="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-20 mt-10 md:mt-0 relative z-10">
+
+                            {/* Hero */}
+                            <div class="text-center py-16 md:py-24 border-b border-white/5">
+                                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-brand-gold text-xs font-bold mb-6 tracking-wide uppercase">
+                                    <Icon name="Sparkles" size={12} />
+                                    Actualización Estratégica 2026
+                                </div>
+                                <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight font-heading leading-tight">
+                                    Ventas B2B: <br />
+                                    <span class="text-transparent bg-clip-text bg-gold-gradient">La Nueva Arquitectura</span>
+                                </h1>
+                                <p class="text-lg md:text-xl text-brand-muted max-w-3xl mx-auto font-light leading-relaxed">
+                                    En la "Economía de la Validación", la excelencia no se compra, se diseña. Pasamos de vender velocidad a <strong>diseñar certeza</strong> en un mercado saturado de IA.
+                                </p>
+                            </div>
+
+                            {/* Section 1: Vision 2026 */}
+                            <Section id="intro" title="La Crisis de Confianza 2026" subtitle="Por qué los métodos viejos fallan hoy">
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    <div class="glass-panel p-8 rounded-2xl border-l-4 border-red-500/50">
+                                        <h3 class="text-xl font-bold text-white mb-4 font-heading">🛑 El Colapso del Volumen</h3>
+                                        <p class="text-slate-100 mb-4 text-sm leading-relaxed">
+                                            El "Spray & Pray" está muerto. Las tasas de respuesta a cold emails han caído al <strong>1-5%</strong>. Los compradores tienen fatiga digital y rechazan automatizaciones obvias.
+                                        </p>
+                                        <div class="flex gap-2 text-xs text-red-400 font-mono bg-red-500/10 p-2 rounded">
+                                            <span>!</span> "No decisión" es hoy el mayor competidor (40% de deals).
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-gold">
+                                        <h3 class="text-xl font-bold text-white mb-4 font-heading text-brand-gold">🚀 La Nueva Realidad</h3>
+                                        <ul class="space-y-4 text-gray-100 text-sm">
+                                            <li class="flex gap-3"><span class="text-brand-gold font-bold">✓</span> <strong>Signal-Based Selling:</strong> Atacar solo cuando hay un "trigger" (cambio de rol, financiación).</li>
+                                            <li class="flex gap-3"><span class="text-brand-gold font-bold">✓</span> <strong>Multi-threading Temprano:</strong> Orquestar 3+ contactos antes de la propuesta.</li>
+                                            <li class="flex gap-3"><span class="text-brand-gold font-bold">✓</span> <strong>MAPs (Mutual Action Plans):</strong> Co-crear el camino al cierre para evitar parálisis.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 1.1: Rol Comercial */}
+                            <Section id="role" title="Perfiles & Desarrollo de Negocios" subtitle="La evolución del profesional comercial: De Vendedor a Consultor Estratégico.">
+                                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                                    <div class="glass-panel p-8 rounded-2xl border-l-4 border-gray-500">
+                                        <h3 class="text-xl font-bold text-white mb-4 font-heading">👴 Perfil Tradicional (Obsoleto)</h3>
+                                        <p class="text-xs text-brand-muted mb-4 uppercase tracking-wider">El "Toma-Pedidos"</p>
+                                        <ul class="space-y-3 text-slate-100 text-sm">
+                                            <li>• <strong>Foco:</strong> Cumplir cuota mensual a cualquier costo.</li>
+                                            <li>• <strong>Herramienta:</strong> Script genérico y presión.</li>
+                                            <li>• <strong>Relación:</strong> Transaccional y de corto plazo.</li>
+                                            <li>• <strong>Uso de Tiempo:</strong> 60% Admin / 40% Venta.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-gold bg-brand-gold/5">
+                                        <h3 class="text-xl font-bold text-white mb-4 font-heading text-brand-gold">🚀 Perfil MetodologIA (2026)</h3>
+                                        <p class="text-xs text-brand-gold mb-4 uppercase tracking-wider">El "Trusted Advisor"</p>
+                                        <ul class="space-y-3 text-white text-sm">
+                                            <li>• <strong>Foco:</strong> Construir casos de negocio y ROI.</li>
+                                            <li>• <strong>Herramienta:</strong> IA generativa y empatía radical.</li>
+                                            <li>• <strong>Relación:</strong> Socio estratégico de largo plazo.</li>
+                                            <li>• <strong>Uso de Tiempo:</strong> 10% Admin / 90% Estrategia.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="glass-panel p-8 rounded-2xl">
+                                    <h3 class="text-xl font-bold text-white mb-6 font-heading text-center">Competencias de Desarrollo (Skill Stack)</h3>
+                                    <div class="grid md:grid-cols-3 gap-6">
+                                        <div class="text-center p-4 border border-white/5 rounded-xl hover:border-brand-gold/30 transition-colors">
+                                            <div class="inline-flex p-3 rounded-full bg-brand-cyan/10 text-brand-cyan mb-4">
+                                                <Icon name="Brain" size={24} />
+                                            </div>
+                                            <h4 class="font-bold text-white mb-2">Prompt Engineering</h4>
+                                            <p class="text-xs text-slate-100">Capacidad de orquestar múltiples agentes de IA para investigación, creación de contenido y análisis de datos sin saber programar.</p>
+                                        </div>
+                                        <div class="text-center p-4 border border-white/5 rounded-xl hover:border-brand-gold/30 transition-colors">
+                                            <div class="inline-flex p-3 rounded-full bg-brand-gold/10 text-brand-gold mb-4">
+                                                <Icon name="Target" size={24} />
+                                            </div>
+                                            <h4 class="font-bold text-white mb-2">Pensamiento Sistémico</h4>
+                                            <p class="text-xs text-slate-100">Entender el negocio del cliente mejor que ellos mismos. Conectar puntos entre industria, tendencias y soluciones.</p>
+                                        </div>
+                                        <div class="text-center p-4 border border-white/5 rounded-xl hover:border-brand-gold/30 transition-colors">
+                                            <div class="inline-flex p-3 rounded-full bg-purple-500/10 text-purple-400 mb-4">
+                                                <Icon name="Users" size={24} />
+                                            </div>
+                                            <h4 class="font-bold text-white mb-2">Inteligencia Emocional</h4>
+                                            <p class="text-xs text-slate-100">Lectura de salas, gestión de stakeholders difíciles y construcción de confianza profunda. Lo que la IA no puede hacer.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 1.2: High vs Low Ticket */}
+                            <Section id="ticket" title="High Ticket vs Low Ticket" subtitle="Estrategias diferenciadas por complejidad y valor.">
+                                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                                    {/* Low Ticket */}
+                                    <div class="glass-panel p-6 rounded-2xl border border-brand-cyan/30">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <h3 class="text-2xl font-bold text-brand-cyan font-heading">Low Ticket</h3>
+                                            <span class="px-3 py-1 rounded-full bg-brand-cyan/10 text-brand-cyan text-xs font-bold">Velocidad</span>
+                                        </div>
+                                        <p class="text-sm text-slate-100 mb-6 italic">"Ventas transaccionales, decisión rápida, volumen."</p>
+
+                                        <div class="space-y-4 mb-8">
+                                            <div>
+                                                <div class="flex justify-between text-xs text-slate-100 mb-1"><span>Complejidad</span><span>Baja</span></div>
+                                                <div class="h-1.5 bg-gray-700 rounded-full overflow-hidden"><div class="h-full bg-brand-cyan w-[20%]"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between text-xs text-slate-100 mb-1"><span>Velocidad</span><span>Crítica</span></div>
+                                                <div class="h-1.5 bg-gray-700 rounded-full overflow-hidden"><div class="h-full bg-brand-cyan w-[95%]"></div></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-white/5 rounded-xl p-4">
+                                            <h4 class="text-sm font-bold text-white mb-2">KPIs Clave</h4>
+                                            <ul class="text-xs text-slate-100 space-y-1">
+                                                <li>• Tasa de Cierre: 30-60%</li>
+                                                <li>• Ciclo: 1-4 semanas</li>
+                                                <li>• Foco IA: Automatización total</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {/* High Ticket */}
+                                    <div class="glass-panel p-6 rounded-2xl border border-brand-gold/50 shadow-[0_0_30px_rgba(234,179,8,0.1)]">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <h3 class="text-2xl font-bold text-brand-gold font-heading">High Ticket</h3>
+                                            <span class="px-3 py-1 rounded-full bg-brand-gold/10 text-brand-gold text-xs font-bold">Valor</span>
+                                        </div>
+                                        <p class="text-sm text-slate-100 mb-6 italic">"Ventas consultivas, múltiples stakeholders, confianza."</p>
+
+                                        <div class="space-y-4 mb-8">
+                                            <div>
+                                                <div class="flex justify-between text-xs text-slate-100 mb-1"><span>Complejidad</span><span>Alta</span></div>
+                                                <div class="h-1.5 bg-gray-700 rounded-full overflow-hidden"><div class="h-full bg-brand-gold w-[90%]"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between text-xs text-slate-100 mb-1"><span>Interacción Humana</span><span>Alta</span></div>
+                                                <div class="h-1.5 bg-gray-700 rounded-full overflow-hidden"><div class="h-full bg-brand-gold w-[85%]"></div></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-white/5 rounded-xl p-4">
+                                            <h4 class="text-sm font-bold text-white mb-2">KPIs Clave</h4>
+                                            <ul class="text-xs text-slate-100 space-y-1">
+                                                <li>• Tasa de Cierre: 15-30%</li>
+                                                <li>• Ciclo: 4-12 meses</li>
+                                                <li>• Foco IA: Profundidad & Personalización</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 1.3: Venta Consultiva */}
+                            <Section id="consultative" title="Venta Consultiva & IA" subtitle="Metodologías clásicas potenciadas por inteligencia artificial.">
+                                <div class="mb-8 p-6 glass-panel rounded-2xl border-l-4 border-brand-gold">
+                                    <h3 class="text-xl font-bold text-white mb-4">Principios Fundamentales</h3>
+                                    <div class="grid md:grid-cols-3 gap-6 text-sm">
+                                        <div>
+                                            <h4 class="font-bold text-brand-gold mb-2">1. Discovery Profundo</h4>
+                                            <p class="text-slate-100">Entender el problema subyacente, no el síntoma. La IA ayuda a generar hipótesis de dolor antes de preguntar.</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-brand-gold mb-2">2. Educación y Valor</h4>
+                                            <p class="text-slate-100">El cliente no compra productos, compra mejores versiones de sí mismo. Enséñales algo nuevo sobre su negocio.</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-brand-gold mb-2">3. Confianza Radical</h4>
+                                            <p class="text-slate-100">La venta es una consecuencia de la confianza. Sé un asesor, no un vendedor.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid md:grid-cols-3 gap-6 mb-10">
+                                    <div class="glass-panel p-6 rounded-2xl">
+                                        <h3 class="text-lg font-bold text-white mb-3">SPIN Selling</h3>
+                                        <p class="text-xs text-slate-100 mb-4">Situación, Problema, Implicación, Necesidad.</p>
+                                        <div class="p-3 bg-white/5 rounded-lg border border-white/5">
+                                            <p class="text-xs text-brand-gold font-bold mb-1">Boost con IA:</p>
+                                            <p class="text-[10px] text-gray-100">Genera preguntas de 'Implicación' basadas en noticias reales de la industria del cliente para maximizar el dolor/urgencia.</p>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl">
+                                        <h3 class="text-lg font-bold text-white mb-3">MEDDIC</h3>
+                                        <p class="text-xs text-slate-100 mb-4">Metrics, Economic Buyer, Decision Criteria...</p>
+                                        <div class="p-3 bg-white/5 rounded-lg border border-white/5">
+                                            <p class="text-xs text-brand-cyan font-bold mb-1">Boost con IA:</p>
+                                            <p class="text-[10px] text-gray-100">Usa IA para mapear el organigrama y detectar al 'Economic Buyer' en LinkedIn, infiriendo su perfil psicográfico.</p>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl">
+                                        <h3 class="text-lg font-bold text-white mb-3">Challenger Sale</h3>
+                                        <p class="text-xs text-slate-100 mb-4">Teach, Tailor, Take Control.</p>
+                                        <div class="p-3 bg-white/5 rounded-lg border border-white/5">
+                                            <p class="text-xs text-purple-400 font-bold mb-1">Boost con IA:</p>
+                                            <p class="text-[10px] text-gray-100">Crea insights comerciales provocativos ("Commercial Insights") analizando reportes anuales del cliente en segundos.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 1.4: Relacionamiento (New) */}
+                            <Section id="relationship" title="Relacionamiento & Confianza" subtitle="Construyendo alianzas estratégicas en la era digital.">
+                                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                                    <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-gold">
+                                        <h3 class="text-xl font-bold text-white mb-4 font-heading text-brand-gold">🤝 La Ecuación de Confianza</h3>
+                                        <p class="text-gray-100 text-sm mb-4">
+                                            Confianza = (Credibilidad + Fiabilidad + Intimidad) / Auto-orientación.
+                                        </p>
+                                        <ul class="space-y-3 text-slate-100 text-sm">
+                                            <li class="flex gap-2"><span class="text-brand-gold">●</span> <strong>Credibilidad:</strong> Demuestra que sabes (Insights de IA).</li>
+                                            <li class="flex gap-2"><span class="text-brand-gold">●</span> <strong>Fiabilidad:</strong> Cumple lo que prometes (Seguimiento automatizado).</li>
+                                            <li class="flex gap-2"><span class="text-brand-gold">●</span> <strong>Intimidad:</strong> Conexión humana genuina (Empatía).</li>
+                                            <li class="flex gap-2"><span class="text-red-400">●</span> <strong>Auto-orientación:</strong> Reduce tu ego. Habla de ELLOS, no de ti.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-cyan">
+                                        <h3 class="text-xl font-bold text-white mb-4 font-heading text-brand-cyan">❤️ Humanidad + IA</h3>
+                                        <p class="text-gray-100 text-sm mb-4">
+                                            La IA maneja la lógica, tú manejas la emoción.
+                                        </p>
+                                        <div class="space-y-4">
+                                            <div class="bg-white/5 p-4 rounded-lg">
+                                                <h4 class="text-brand-cyan font-bold text-sm mb-1">IA Hace:</h4>
+                                                <p class="text-xs text-slate-100">Recordar cumpleaños, trackear interacciones pasadas, sugerir temas de conversación basados en sus posts recientes.</p>
+                                            </div>
+                                            <div class="bg-white/5 p-4 rounded-lg">
+                                                <h4 class="text-brand-gold font-bold text-sm mb-1">Tú Haces:</h4>
+                                                <p class="text-xs text-slate-100">Llamar para felicitar, enviar un regalo físico significativo, escuchar activamente durante una crisis.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 2: Strategy & Maturity */}
+                            <Section id="methodology" title="Estrategia & Madurez Digital" subtitle="La segmentación de arquetipos permite una aproximación quirúrgica a cada cuenta B2B.">
+                                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                                    {[
+                                        { title: "Arquetipo: Experto", subtitle: "5-10% del Mercado", desc: "IA nativa, CRMs con flujos complejos. Desafío: 'Efficiency Gap'. Véndeles optimización radical.", color: "border-brand-gold" },
+                                        { title: "Arquetipo: Competente", subtitle: "20-30% del Mercado", desc: "CRM estándar, automatizaciones básicas. Desafío: 'Scalability'. Véndeles integración total.", color: "border-brand-cyan" },
+                                        { title: "Arquetipo: Curioso", subtitle: "40-50% del Mercado", desc: "Excel/WhatsApp como CRM. Quieren IA pero temen al cambio. Véndeles 'Done-for-you'.", color: "border-purple-500" },
+                                        { title: "Arquetipo: Analfabeta", subtitle: "10-20% del Mercado", desc: "Papel o cero digitalización. Riesgo alto de churn. Útiles solo para BPO o legacy.", color: "border-gray-600" }
+                                    ].map((seg, i) => (
+                                        <div key={i} className={`glass-panel p-5 rounded-xl border-t-4 ${seg.color}`}>
+                                            <h4 class="font-bold text-white text-lg">{seg.title}</h4>
+                                            <p class="text-xs text-brand-gold uppercase font-bold mb-2">{seg.subtitle}</p>
+                                            <p class="text-sm text-slate-100">{seg.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-cyan">
+                                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                        <Icon name="Globe" class="text-brand-cyan" />
+                                        Contexto Regional: El 'Tropical Edge'
+                                    </h3>
+                                    <div class="grid md:grid-cols-2 gap-8 text-sm text-slate-100">
+                                        <div>
+                                            <p class="mb-4">En Colombia y LATAM, las ventas B2B tienen matices críticos que la IA global ignora:</p>
+                                            <ul class="space-y-2">
+                                                <li class="flex gap-2"><span class="text-brand-gold">●</span> <strong>WhatsApp como CRM:</strong> El 80% del B2B LATAM se cierra en chat. La IA debe auditar hilos de WhatsApp.</li>
+                                                <li class="flex gap-2"><span class="text-brand-gold">●</span> <strong>SECOP II & RUP:</strong> Las señales de compra de gobierno son predecibles y auditables vía prompts.</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <ul class="space-y-2">
+                                                <li class="flex gap-2"><span class="text-brand-gold">●</span> <strong>Comités Extendidos:</strong> De 10 a 13 stakeholders. Se requiere "Multi-threading" extremo.</li>
+                                                <li class="flex gap-2"><span class="text-brand-gold">●</span> <strong>Pre-selección:</strong> El 81% de la decisión ocurre antes de hablar con el humano. Tu marca debe vender sola.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 2.5: IA Governance */}
+                            <Section id="governance" title="Gobernanza & Explicabilidad" subtitle="Límites éticos y operativos para el uso de IA en el proceso comercial.">
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    <div class="bg-green-500/10 border border-green-500/20 p-8 rounded-2xl">
+                                        <h3 class="text-lg font-bold text-green-400 mb-4 flex items-center gap-2">
+                                            <Icon name="Check" size={18} /> Casos de Uso: SÍ
+                                        </h3>
+                                        <ul class="space-y-3 text-sm text-gray-100">
+                                            <li>Auditoría de llamadas y transcripciones para coaching.</li>
+                                            <li>Generación de borradores de MAPs (Mutual Action Plans).</li>
+                                            <li>Resumen de hilos de correo largos para handover.</li>
+                                            <li>Investigación de triggers financieros (Reportes anuales).</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-red-500/10 border border-red-500/20 p-8 rounded-2xl">
+                                        <h3 class="text-lg font-bold text-red-400 mb-4 flex items-center gap-2">
+                                            <Icon name="X" size={18} /> Casos de Uso: NO
+                                        </h3>
+                                        <ul class="space-y-3 text-sm text-gray-100">
+                                            <li>Envío masivo de mensajes sin oversight humano.</li>
+                                            <li>Toma de decisiones de pricing sin validación comercial.</li>
+                                            <li>Alimentación de datos confidenciales en IAs públicas.</li>
+                                            <li>Sustitución total del "Economic Buyer Call" por bots.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 3: Process */}
+                            <Section id="process" title="Proceso Comercial Acelerado" subtitle="Flujos de trabajo optimizados con Inteligencia Artificial.">
+                                <div class="space-y-8">
+                                    {/* Workflow 1: Investigación */}
+                                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-brand-cyan">
+                                        <div class="flex items-center gap-4 mb-4">
+                                            <div class="w-12 h-12 rounded-full bg-brand-cyan/20 flex items-center justify-center text-brand-cyan font-bold text-xl">1</div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-white">Investigación Profunda (Deep Research)</h3>
+                                                <p class="text-xs text-brand-cyan uppercase tracking-wider">Tiempo: 15 min (vs 4 horas)</p>
+                                            </div>
+                                        </div>
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div class="space-y-2 text-sm text-slate-100">
+                                                <p><strong class="text-white">Objetivo:</strong> Entender al cliente mejor que él mismo antes de la primera llamada.</p>
+                                                <p><strong class="text-white">Pasos IA:</strong></p>
+                                                <ul class="list-disc ml-4 space-y-1">
+                                                    <li>Ejecutar <strong>Metaprompt de Datos Básicos</strong> (NIT, Web, Redes).</li>
+                                                    <li>Analizar <strong>Voz de Marca y Arquetipos</strong> (¿Cómo se comunican?).</li>
+                                                    <li>Identificar <strong>Dolores y Tendencias</strong> del sector.</li>
+                                                </ul>
+                                            </div>
+                                            <div class="bg-white/5 p-4 rounded-xl flex flex-col justify-center">
+                                                <p class="text-xs font-mono text-slate-200 mb-2">// Output Esperado</p>
+                                                <p class="text-sm text-white font-medium">"Reporte Ejecutivo de Cliente"</p>
+                                                <p class="text-xs text-slate-100 mt-1">Un documento de 1 página con: Perfil, Retos Clave, Hipótesis de Valor y Ángulo de Entrada.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Workflow 2: Propuesta */}
+                                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-brand-gold">
+                                        <div class="flex items-center gap-4 mb-4">
+                                            <div class="w-12 h-12 rounded-full bg-brand-gold/20 flex items-center justify-center text-brand-gold font-bold text-xl">2</div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-white">Generación de Propuesta de Valor</h3>
+                                                <p class="text-xs text-brand-gold uppercase tracking-wider">Tiempo: 20 min (vs 6 horas)</p>
+                                            </div>
+                                        </div>
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div class="space-y-2 text-sm text-slate-100">
+                                                <p><strong class="text-white">Objetivo:</strong> Crear una narrativa irresistible y personalizada.</p>
+                                                <p><strong class="text-white">Pasos IA:</strong></p>
+                                                <ul class="list-disc ml-4 space-y-1">
+                                                    <li>Definir <strong>Estructura Narrativa</strong> (Problema &rarr; Agitación &rarr; Solución).</li>
+                                                    <li>Generar <strong>Draft Personalizado</strong> (Usando inputs de investigación).</li>
+                                                    <li>Auditoría de <strong>Crítica Brutal</strong> (IA critica su propio trabajo).</li>
+                                                </ul>
+                                            </div>
+                                            <div class="bg-white/5 p-4 rounded-xl flex flex-col justify-center">
+                                                <p class="text-xs font-mono text-slate-200 mb-2">// Output Esperado</p>
+                                                <p class="text-sm text-white font-medium">"Propuesta de Alto Impacto"</p>
+                                                <p class="text-xs text-slate-100 mt-1">Deck o documento que habla el lenguaje del cliente, enfocado en SU problema, no en TU producto.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Workflow 3: Defensa */}
+                                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-purple-500">
+                                        <div class="flex items-center gap-4 mb-4">
+                                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-xl">3</div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-white">Defensa y Cierre (War Room)</h3>
+                                                <p class="text-xs text-purple-400 uppercase tracking-wider">Tiempo: 10 min (vs 2 horas)</p>
+                                            </div>
+                                        </div>
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div class="space-y-2 text-sm text-slate-100">
+                                                <p><strong class="text-white">Objetivo:</strong> Anticipar objeciones y cerrar sin fricción.</p>
+                                                <p><strong class="text-white">Pasos IA:</strong></p>
+                                                <ul class="list-disc ml-4 space-y-1">
+                                                    <li>Simular <strong>Roleplay de Objeciones</strong> (Precio, Competencia, Tiempo).</li>
+                                                    <li>Preparar <strong>Defensa de ROI</strong> cuantificado.</li>
+                                                    <li>Generar <strong>Mutual Action Plan (MAP)</strong> borrador.</li>
+                                                </ul>
+                                            </div>
+                                            <div class="bg-white/5 p-4 rounded-xl flex flex-col justify-center">
+                                                <p class="text-xs font-mono text-slate-200 mb-2">// Output Esperado</p>
+                                                <p class="text-sm text-white font-medium">"Kit de Defensa Comercial"</p>
+                                                <p class="text-xs text-slate-100 mt-1">Un script con respuestas a las 5 objeciones más probables y un plan de acción claro para firmar.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 3.5: Checklists */}
+                            <Section id="checklists" title="Checklists de Implementación" subtitle="Protocolos paso a paso para asegurar ejecución perfecta.">
+                                <div class="grid md:grid-cols-3 gap-6">
+                                    <div class="glass-panel p-6 rounded-2xl border-t border-brand-cyan/20">
+                                        <h3 class="text-xl font-bold text-white mb-4">Investigación</h3>
+                                        <div class="space-y-1">
+                                            <ChecklistItem id="chk_inv_1" label="Recopilar razón social y NIT oficial" />
+                                            <ChecklistItem id="chk_inv_2" label="Ejecutar metaprompt de 'Datos Básicos'" />
+                                            <ChecklistItem id="chk_inv_3" label="Analizar Voz de Marca (Arquetipos)" />
+                                            <ChecklistItem id="chk_inv_4" label="Validar reputación en Glassdoor/Google" />
+                                            <ChecklistItem id="chk_inv_5" label="Identificar 3 tendencias del sector" />
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl border-t border-brand-gold/20">
+                                        <h3 class="text-xl font-bold text-white mb-4">Propuestas</h3>
+                                        <div class="space-y-1">
+                                            <ChecklistItem id="chk_prop_1" label="Definir estructura narrativa (Storytelling)" />
+                                            <ChecklistItem id="chk_prop_2" label="Generar draft con 'Generador de Propuesta'" />
+                                            <ChecklistItem id="chk_prop_3" label="Personalizar con insights del cliente" />
+                                            <ChecklistItem id="chk_prop_4" label="Auditar con el prompt de 'Crítica Brutal'" />
+                                            <ChecklistItem id="chk_prop_5" label="Verificar ROI claro y visible" />
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl border-t border-purple-500/20">
+                                        <h3 class="text-xl font-bold text-white mb-4">Defensa</h3>
+                                        <div class="space-y-1">
+                                            <ChecklistItem id="chk_def_1" label="Preparar 'Defensa Acelerada' (15 min)" />
+                                            <ChecklistItem id="chk_def_2" label="Simular objeción de precio con IA" />
+                                            <ChecklistItem id="chk_def_3" label="Tener listo argumento técnico (CTO)" />
+                                            <ChecklistItem id="chk_def_4" label="Definir 'Next Steps' claros" />
+                                            <ChecklistItem id="chk_def_5" label="Redactar email de seguimiento pre-reunión" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 4: Searchable Prompts */}
+                            <Section id="prompts" title="Buscador de Prompts Tácticos" subtitle="Guiones listos para copiar, validados para 2026.">
+                                <SearchBar
+                                    onSearch={setSearchQuery}
+                                    onCategoryChange={setSelectedCategory}
+                                    categories={categories}
+                                />
+
+                                {filteredPrompts.length > 0 ? (
+                                    <div class="grid md:grid-cols-2 gap-6">
+                                        {filteredPrompts.map(prompt => (
+                                            <PromptCard key={prompt.id} prompt={prompt} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div class="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                        <p class="text-slate-100">No encontramos prompts con esos criterios. Intenta "email", "cierre" o "diagnóstico".</p>
+                                    </div>
+                                )}
+                            </Section>
+
+                            {/* Section 4.5: Troubleshooting */}
+                            <Section id="troubleshooting" title="Troubleshooting & FAQs" subtitle="Solución rápida a problemas comunes con la IA.">
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-red-500/50">
+                                        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">⚠️ Problema: Resultados Genéricos</h3>
+                                        <p class="text-sm text-slate-100 mb-4">La IA devuelve texto que parece "Wikipedia" o "Vendedor de humo".</p>
+                                        <div class="bg-white/5 p-4 rounded-lg text-sm">
+                                            <strong class="text-brand-gold">Causa:</strong> Falta contexto específico.
+                                            <ul class="list-disc ml-4 mt-2 text-slate-100 space-y-1">
+                                                <li><strong>Solución 1:</strong> Usa Metaprompts para extraer datos únicos del cliente.</li>
+                                                <li><strong>Solución 2:</strong> Pide "Rol": <em>"Actúa como un Consultor Senior de BCG..."</em></li>
+                                                <li><strong>Solución 3:</strong> Da ejemplos (Few-Shot): <em>"Usa este tono: [Ejemplo]"</em></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-red-500/50">
+                                        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">⚠️ Problema: Alucinaciones</h3>
+                                        <p class="text-sm text-slate-100 mb-4">La IA inventa cifras, nombres o cargos inexistentes.</p>
+                                        <div class="bg-white/5 p-4 rounded-lg text-sm">
+                                            <strong class="text-brand-gold">Causa:</strong> IA predictiva, no verificadora.
+                                            <ul class="list-disc ml-4 mt-2 text-slate-100 space-y-1">
+                                                <li><strong>Solución 1:</strong> Ejecuta el prompt de <strong>'Validación de Información'</strong>.</li>
+                                                <li><strong>Solución 2:</strong> Contrasta con LinkedIn/Google (La IA es tu research asst, no la fuente).</li>
+                                                <li><strong>Solución 3:</strong> Instrucción explícita: <em>"Si no sabes, di 'No verificado'"</em>.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-yellow-500/50">
+                                        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">⚠️ Problema: Tono Robótico</h3>
+                                        <p class="text-sm text-slate-100 mb-4">El texto suena frío, formal y sin alma.</p>
+                                        <div class="bg-white/5 p-4 rounded-lg text-sm">
+                                            <strong class="text-brand-gold">Causa:</strong> Entrenamiento corporativo default.
+                                            <ul class="list-disc ml-4 mt-2 text-slate-100 space-y-1">
+                                                <li><strong>Solución:</strong> Pide un tono específico: <em>"Conversacional, empático, directo pero respetuoso".</em></li>
+                                                <li><strong>Solución:</strong> Pide reescribir: <em>"Hazlo sonar más humano y menos corporativo".</em></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-yellow-500/50">
+                                        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">⚠️ Problema: Olvida Instrucciones</h3>
+                                        <p class="text-sm text-slate-100 mb-4">La IA ignora partes del prompt en chats largos.</p>
+                                        <div class="bg-white/5 p-4 rounded-lg text-sm">
+                                            <strong class="text-brand-gold">Causa:</strong> Ventana de contexto llena.
+                                            <ul class="list-disc ml-4 mt-2 text-slate-100 space-y-1">
+                                                <li><strong>Solución:</strong> Reinicia el chat e inicia con un resumen del contexto.</li>
+                                                <li><strong>Solución:</strong> Repite la instrucción crítica al final del prompt.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            {/* Section 4.8: Best Practices */}
+                            <Section id="practices" title="Best Practices 2026" subtitle="Hábitos de alto rendimiento para el vendedor aumentado.">
+                                <div class="grid md:grid-cols-4 gap-4">
+                                    {[
+                                        { title: "Iteración", desc: "Nunca aceptes el primer output. Pide 3 variantes.", icon: "Sparkles", color: "text-brand-gold" },
+                                        { title: "Sinergia", desc: "El output de un prompt es el input del siguiente.", icon: "Zap", color: "text-brand-cyan" },
+                                        { title: "Contexto", desc: "Más contexto = Menos alucinación. Alimenta a la bestia.", icon: "BookOpen", color: "text-purple-400" },
+                                        { title: "Validación", desc: "Tú eres el piloto, la IA es el copiloto. Tú firmas.", icon: "Shield", color: "text-green-400" },
+                                    ].map((item, i) => (
+                                        <div key={i} class="glass-panel p-6 rounded-2xl text-center hover:bg-white/5 transition-colors">
+                                            <div className={`inline-flex p-3 rounded-full bg-white/5 mb-4 ${item.color}`}>
+                                                <Icon name={item.icon} size={24} />
+                                            </div>
+                                            <h4 class="font-bold text-white mb-2">{item.title}</h4>
+                                            <p class="text-xs text-slate-100">{item.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Section>
+
+                            {/* Section 5: 30-60-90 Plan */}
+                            <Section id="plan" title="Plan de Implementación 30-60-90" subtitle="Hoja de ruta para la transformación comercial">
+                                <div class="grid md:grid-cols-3 gap-6 h-full">
+                                    <PlanCard
+                                        color="border-blue-500"
+                                        title="Días 1-30: Diagnóstico"
+                                        focus="Fundamentos & Higiene"
+                                        items={[
+                                            "Auditoría de Pipeline: Limpiar deals 'zombies' (>60 días sin actividad).",
+                                            "Mapeo de Cuentas Top 10 con Sales Navigator (5-7 stakeholders).",
+                                            "Implementación de A/B Testing en emails (Problem-First vs Trigger)."
+                                        ]}
+                                    />
+                                    <PlanCard
+                                        color="border-brand-gold"
+                                        title="Días 31-60: Escalamiento"
+                                        focus="Habilitación & MAPs"
+                                        items={[
+                                            "Adopción oficial de MAPs para deals >$20k.",
+                                            "Publicación de contenido específico por rol (Finanzas, IT).",
+                                            "Piloto de IA Copilot con casos de uso 'Sí' (resúmenes, drafts)."
+                                        ]}
+                                    />
+                                    <PlanCard
+                                        color="border-green-500"
+                                        title="Días 61-90: Consolidación"
+                                        focus="Ejecución & Governance"
+                                        items={[
+                                            "Forecast basado en datos históricos, no 'gut feel'.",
+                                            "Auditoría de calidad de datos CRM profunda.",
+                                            "Win/Loss Analysis formalizado (entrevistas mensuales)."
+                                        ]}
+                                    />
+                                </div>
+                            </Section>
+
+                            {/* Section 6: Bibliography */}
+                            <Section id="bibliography" title="Fuentes & Bibliografía" subtitle="Respaldo teórico y empírico para la estrategia 2026.">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div class="glass-panel p-6 rounded-2xl">
+                                        <h3 class="font-bold text-white mb-4 flex items-center gap-2">
+                                            <Icon name="BookOpen" size={18} class="text-brand-gold" /> Estrategia de Ventas
+                                        </h3>
+                                        <ul class="text-xs space-y-3 text-slate-100">
+                                            <li>• <strong>Challenger Sale:</strong> Matthew Dixon & Brent Adamson (CEB).</li>
+                                            <li>• <strong>Never Split the Difference:</strong> Chris Voss (Negociación táctica).</li>
+                                            <li>• <strong>Start With Why:</strong> Simon Sinek (Propósito y Liderazgo).</li>
+                                            <li>• <strong>Pitch Anything:</strong> Oren Klaff (Neurociencia de la venta).</li>
+                                            <li>• <strong>The 10X Rule:</strong> Grant Cardone (Massive Action).</li>
+                                            <li>• <strong>This is Marketing:</strong> Seth Godin (Conexión genuina).</li>
+                                        </ul>
+                                    </div>
+                                    <div class="glass-panel p-6 rounded-2xl">
+                                        <h3 class="font-bold text-white mb-4 flex items-center gap-2">
+                                            <Icon name="Brain" size={18} class="text-brand-gold" /> IA & Futuro del Trabajo
+                                        </h3>
+                                        <ul class="text-xs space-y-3 text-slate-100">
+                                            <li>• <strong>AI Superpowers:</strong> Kai-Fu Lee (Contexto global IA).</li>
+                                            <li>• <strong>Prediction Machines:</strong> Ajay Agrawal (Economía de la IA).</li>
+                                            <li>• <strong>Human + Machine:</strong> Paul Daugherty (Colaboración hombre-máquina).</li>
+                                            <li>• <strong>The Coming Wave:</strong> Mustafa Suleyman (Hitos de 2026).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-8 text-[10px] text-brand-muted italic text-center">
+                                    * Este documento integra hallazgos de más de 145 artículos de investigación analizados vía CrewAI y AutoGPT en Enero 2026.
+                                </div>
+                            </Section>
+
+
+                            {/* Section 7: Autores & Creadores */}
+                            <Section id="authors" title="Mentes Detrás del Playbook" subtitle="Ingeniería y Empoderamiento Comercial.">
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    <div class="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+                                        <div class="absolute top-0 right-0 p-4 opacity-50"><Icon name="Feather" size={48} class="text-brand-cyan" /></div>
+                                        <div class="flex items-center gap-4 mb-6">
+                                            <div class="w-20 h-20 rounded-full bg-gray-700 border-2 border-brand-cyan overflow-hidden">
+                                                <img src="https://github.com/ejemplo-deo-repo/img/blob/main/daniel-zuluaga.jpg?raw=true" alt="Daniel Zuluaga" class="w-full h-full object-cover" />
+                                            </div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-white">Daniel Zuluaga</h3>
+                                                <p class="text-brand-cyan text-sm font-semibold">CEO of Efficiency</p>
+                                            </div>
+                                        </div>
+                                        <p class="text-slate-100 text-sm leading-relaxed mb-6">
+                                            Especialista en optimización de procesos y eficiencia operacional. Su enfoque en automatización inteligente transforma el caos en sistemas predecibles.
+                                        </p>
+                                        <div class="flex gap-2 text-[10px] text-slate-200 uppercase tracking-wider">
+                                            <span class="px-2 py-1 bg-white/5 rounded">Gobernanza AI</span>
+                                            <span class="px-2 py-1 bg-white/5 rounded">Analytics</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+                                        <div class="absolute top-0 right-0 p-4 opacity-50"><Icon name="Feather" size={48} class="text-brand-gold" /></div>
+                                        <div class="flex items-center gap-4 mb-6">
+                                            <div class="w-20 h-20 rounded-full bg-gray-700 border-2 border-brand-gold overflow-hidden">
+                                                <img src="https://github.com/ejemplo-deo-repo/img/blob/main/javier-montano.webp?raw=true" alt="Javier Montaño" class="w-full h-full object-cover" />
+                                            </div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-white">Javier Montaño</h3>
+                                                <p class="text-brand-gold text-sm font-semibold">CEO of Empowerment</p>
+                                            </div>
+                                        </div>
+                                        <p class="text-slate-100 text-sm leading-relaxed mb-6">
+                                            Estratega de crecimiento y especialista en empoderamiento humano. Su visión conecta la tecnología con la psicología de la persuasión.
+                                        </p>
+                                        <div class="flex gap-2 text-[10px] text-slate-200 uppercase tracking-wider">
+                                            <span class="px-2 py-1 bg-white/5 rounded">Strategy</span>
+                                            <span class="px-2 py-1 bg-white/5 rounded">Psychology</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-12 text-center">
+                                    <h4 class="text-lg font-bold text-white mb-2">Nuestros Mentores Digitales</h4>
+                                    <p class="text-xs text-brand-muted mb-6 max-w-2xl mx-auto italic">
+                                        * Destacamos a estos autores porque realizamos un <span class="text-brand-gold font-bold">Deep Dive</span> en sus metodologías para integrarlas en el núcleo de nuestro sistema de IA, diferenciándolos de las fuentes bibliográficas generales.
+                                    </p>
+                                    <div class="flex flex-wrap justify-center gap-4 mb-12">
+                                        {['Seth Godin', 'Chris Voss', 'Daniel Pink', 'Simon Sinek', 'Grant Cardone', 'Oren Klaff'].map(author => (
+                                            <span key={author} class="px-4 py-2 rounded-full border border-white/10 text-slate-100 text-xs hover:border-brand-gold hover:text-brand-gold transition-colors cursor-default">
+                                                {author}
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    {/* Detailed Library */}
+                                    <div class="text-left max-w-4xl mx-auto mb-16 space-y-6">
+                                        {/* Seth Godin Featured */}
+                                        <div class="glass-panel p-8 rounded-2xl border border-brand-gold/30 relative overflow-hidden">
+                                            <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+                                            <h3 class="text-2xl font-bold text-white mb-2">Seth Godin</h3>
+                                            <p class="text-brand-gold italic mb-6 text-sm">"El marketing ya no se trata de lo que haces, sino de la historia que cuentas."</p>
+                                            
+                                            <div class="grid md:grid-cols-2 gap-8">
+                                                <div>
+                                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Libros Recomendados</h4>
+                                                    <ul class="space-y-2 text-sm text-slate-100">
+                                                        <li><span class="text-brand-gold font-bold">This is Marketing:</span> Crear valor y conexión.</li>
+                                                        <li><span class="text-brand-gold font-bold">Purple Cow:</span> Destacar en mercados saturados.</li>
+                                                        <li><span class="text-brand-gold font-bold">The Dip:</span> Estrategia de persistencia.</li>
+                                                        <li><span class="text-brand-gold font-bold">Linchpin:</span> Ser indispensable.</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-white/5 p-4 rounded-xl">
+                                                    <h4 class="text-xs font-bold text-brand-cyan uppercase tracking-wider mb-2">Aplicación a Ventas con IA</h4>
+                                                    <p class="text-xs text-gray-100 leading-relaxed">
+                                                        La IA permite personalizar masivamente, pero el mensaje debe ser auténtico (Permission Marketing). Usamos IA para estructurar narrativas que importan, no para interrumpir.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Other Authors Grid */}
+                                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            {[
+                                                { name: "Daniel Pink", book: "To Sell is Human", desc: "Ventas como persuasión humana moderna." },
+                                                { name: "Chris Voss", book: "Never Split the Difference", desc: "Negociación del FBI para situaciones límite." },
+                                                { name: "Simon Sinek", book: "Start With Why", desc: "Inspirar comunicando el propósito primero." },
+                                                { name: "Grant Cardone", book: "The 10X Rule", desc: "Metas y acciones 10 veces más grandes." },
+                                                { name: "Oren Klaff", book: "Pitch Anything", desc: "Neurociencia para el control de marcos." }
+                                            ].map((item, i) => (
+                                                <div key={i} class="glass-panel p-5 rounded-xl border-l-2 border-white/10 hover:border-brand-cyan transition-colors">
+                                                    <h4 class="font-bold text-white text-base">{item.name}</h4>
+                                                    <p class="text-brand-cyan text-xs font-bold mb-2">{item.book}</p>
+                                                    <p class="text-xs text-slate-100 leading-tight">{item.desc}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div class="border-t border-white/5 pt-8">
+                                        <h4 class="text-sm font-bold text-brand-gold mb-4 uppercase tracking-wider">Fuente & Recursos Oficiales</h4>
+                                        <a href="https://metodologia.info" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-surface border border-brand-gold/30 hover:bg-brand-gold/10 hover:border-brand-gold transition-all group">
+                                            <Icon name="Globe" size={18} class="text-brand-cyan group-hover:text-brand-gold transition-colors" />
+                                            <span class="text-gray-100 font-medium group-hover:text-white">Visitar MetodologIA.info</span>
+                                            <Icon name="ExternalLink" size={14} class="text-brand-muted opacity-50 group-hover:opacity-100" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </Section>
+
+                            <footer class="text-center py-16 border-t border-white/5 mt-20">
+                                <div class="flex justify-center items-center gap-2 mb-4">
+                                    <Icon name="Sparkles" size={16} class="text-brand-gold" />
+                                    <span class="font-heading font-bold text-lg text-white">Metodolog<span class="text-brand-gold">IA</span></span>
+                                </div>
+                                <p class="text-brand-muted text-sm">© 2026 Documento Estratégico Confidencial.</p>
+                                <p class="text-brand-muted text-xs mt-2 opacity-50">Diseñado con estándares de alto rendimiento en colaboración con IAC - Bogotá, Colombia.</p>
+                            </footer>
+
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>

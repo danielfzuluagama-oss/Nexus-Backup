@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "playbook-ritual-v1",
+  "title": "MetodologIA Playbook Ritual Data",
+  "description": "Schema for ritual playbook JSON data files. Each ritual in the Gobierno Operativo repo must have a co-located .json conforming to this schema.",
+  "type": "object",
+  "required": ["meta", "playbook", "glossary", "steps", "vitamin", "standard"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["id", "segment", "sop", "version", "standard", "lastUpdated"],
+      "properties": {
+        "id": { "type": "string", "description": "Kebab-case ritual identifier, e.g. 'calificar-oportunidad-b2b'" },
+        "segment": { "type": "string", "enum": ["empresas-b2b", "personas-b2c", "aliados-gtm"] },
+        "sop": { "type": "string", "description": "Parent SOP identifier, e.g. 'sop-scouting'" },
+        "version": { "type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+$" },
+        "standard": { "type": "string", "description": "Certification standard, e.g. 'Moat Certified'" },
+        "lastUpdated": { "type": "string", "format": "date" }
+      }
+    },
+    "playbook": {
+      "type": "object",
+      "required": ["title", "subtitle", "docType", "sopPhase", "breadcrumb", "tldr", "objective"],
+      "properties": {
+        "title": { "type": "string", "description": "Human-readable ritual title" },
+        "subtitle": { "type": "string", "description": "English tagline for the ritual" },
+        "docType": { "type": "string", "default": "Playbook Operativo" },
+        "sopPhase": { "type": "string", "description": "Parent SOP phase name (Scouting, Discovery, Structuring, Success)" },
+        "breadcrumb": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3,
+          "description": "Navigation path from root to this ritual"
+        },
+        "tldr": {
+          "type": "object",
+          "required": ["hook", "summary", "time", "mainOutput"],
+          "properties": {
+            "hook": { "type": "string", "description": "Question that captures the ritual's raison d'être" },
+            "summary": { "type": "string", "description": "3-line max summary of purpose and outcome" },
+            "time": { "type": "string", "description": "Estimated execution time, e.g. '~30 min'" },
+            "mainOutput": { "type": "string", "description": "Primary deliverable of the ritual" }
+          }
+        },
+        "objective": { "type": "string", "description": "Full objective statement" }
+      }
+    },
+    "glossary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["term", "definition"],
+        "properties": {
+          "term": { "type": "string" },
+          "definition": { "type": "string" }
+        }
+      },
+      "minItems": 1
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "desc", "output"],
+        "properties": {
+          "title": { "type": "string" },
+          "desc": { "type": "string" },
+          "output": { "type": "string" }
+        }
+      },
+      "minItems": 8,
+      "maxItems": 10,
+      "description": "Atomic Law: 8-10 steps per ritual"
+    },
+    "vitamin": { "type": "string", "description": "Inspirational quote or operational insight" },
+    "standard": { "type": "string", "description": "Standard identifier, e.g. 'Sovereign Sales Flow | Bottom-Up Standard'" }
+  }
+}

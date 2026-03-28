@@ -1,0 +1,509 @@
+id: time-query
+name: Time Query
+purpose: >
+  Answer user queries about the current time in any timezone, providing accurate
+  real-time information formatted for clarity and context.
+businessValue: >
+  Delivers accurate real-time information via the get_current_time tool, enabling
+  users to quickly obtain current time in UTC or any IANA timezone without manual lookup.
+triggerTypes:
+  - user_message
+owningAgent: timekeeper
+
+inputs:
+  - "userMessage: string (sanitized query about current time)"
+  - "requestedTimezone: string | null (IANA timezone identifier, e.g. America/New_York)"
+  - "userId: string (requesting user identifier)"
+
+outputs:
+  - "formattedTime: string (human-readable time with timezone context)"
+  - "rawTimestamp: string (ISO 8601 timestamp for programmatic use)"
+  - "timezoneUsed: string (IANA timezone that was resolved)"
+
+dependencies:
+  - "get_current_time tool (runtime)"
+  - "security.ts (CP1 sanitizeInput, CP3 validateOutput)"
+  - "IANA timezone database (timezone validation)"
+
+toolUsage:
+  - get_current_time
+
+memoryReadsWrites:
+  reads: []
+  writes: []
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text before processing"
+  - "CP2: buildSecurePrompt() applied to system prompt by orchestrator"
+  - "CP3: validateOutput() on all LLM responses before delivery to user"
+
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - tool_invoked
+  - timezone_resolved
+  - validation_failed
+  - fallback_triggered
+  - skill_completed
+
+failureHandling:
+  - "Invalid timezone: fall back to UTC with warning message to user"
+  - "get_current_time tool failure: report error to orchestrator with clear message"
+  - "Ambiguous query: request clarification via orchestrator"
+  - "Timeout on tool call: retry once, then return cached UTC time with staleness warning"
+
+interoperabilityContract:
+  inputType: "TimeQueryRequest { userMessage: string, timezone?: string }"
+  outputType: "TimeQueryResponse { formattedTime: string, rawTimestamp: string, timezoneUsed: string }"
+
+wowCriteria:
+  - "Response includes local context (e.g. 'It is currently morning in Tokyo')"
+  - "Proactively mentions DST status when relevant"
+  - "Sub-2-second response time for single timezone queries"
+  - "Handles colloquial timezone names (e.g. 'Eastern time' resolves to America/New_York)"
+
+safeCriteria:
+  - "Time returned is accurate within 1 second of actual time"
+  - "Timezone is always explicitly stated in the response"
+  - "Invalid timezones fall back to UTC with a warning"
+  - "No invented or hallucinated time data"
+
+workflows:
+  - id: utc-time-query
+    title: UTC Time Query
+    objective: Return the current UTC time when no specific timezone is requested
+    trigger: "User asks for current time without specifying a timezone"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "get_current_time tool is available"
+    inputs:
+      - "userMessage: string (sanitized)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message to strip control characters and detect injection patterns.
+        whyThisMatters: Prevents prompt injection and malformed input from reaching the tool invocation pipeline.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string } with control characters stripped"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with message: 'I could not understand your time query. Could you rephrase it?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Invoke get_current_time
+        desc: Call the get_current_time tool with UTC as the timezone parameter to retrieve the current timestamp.
+        whyThisMatters: This is the only authorized source of real-time data; without it the agent would hallucinate times.
+        inputNeeded: "Timezone parameter set to 'UTC'"
+        actionInstruction: "Call get_current_time({ timezone: 'UTC' }). Parse the returned timestamp."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ISO 8601 timestamp string (e.g. '2026-03-06T15:30:00Z')"
+        validationRule: "Returned string is valid ISO 8601 format and date is within 24 hours of expected"
+        failureSignal: "Tool throws exception, returns null, or returns malformed string"
+        recoveryAction: "Retry once after 1 second. If retry fails, report tool error to orchestrator."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Format time response
+        desc: Format the raw UTC timestamp into a human-readable string with day of week, date, time, and timezone label.
+        whyThisMatters: Raw ISO timestamps are not user-friendly; proper formatting ensures readability and prevents confusion.
+        inputNeeded: "ISO 8601 timestamp from get_current_time"
+        actionInstruction: >
+          Use LLM to format the timestamp into the pattern:
+          "DayOfWeek, Month DD, YYYY, HH:MM AM/PM UTC"
+        promptToUse: |
+          Format this UTC timestamp into a clear, human-readable response:
+          Timestamp: {{timestamp}}
+          Use this exact format: "DayOfWeek, Month DD, YYYY, HH:MM AM/PM UTC"
+          Example: "Thursday, March 6, 2026, 3:45 PM UTC"
+          Always include the timezone label at the end.
+        expectedOutput: "Formatted string like 'Thursday, March 6, 2026, 3:45 PM UTC'"
+        validationRule: "Output contains a day name, date, time with AM/PM, and 'UTC' label"
+        failureSignal: "Output missing timezone label or containing invalid date components"
+        recoveryAction: "Return the raw ISO timestamp with prefix: 'The current UTC time is: '"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 output validation to the formatted response and return it to the orchestrator for delivery.
+        whyThisMatters: Security and quality gate ensures no leaked prompts or malformed data reaches the user.
+        inputNeeded: "Formatted time response string"
+        actionInstruction: "Call validateOutput(formattedResponse). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response string delivered to orchestrator"
+        validationRule: "CP3 passed and response is non-empty string containing timezone label"
+        failureSignal: "CP3 flags output or response is empty"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted current UTC time delivered to user"
+    secondaryOutputs:
+      - "skill_completed event with latency metric"
+      - "tool_invoked event with get_current_time call log"
+    DoD:
+      - "User received current UTC time in human-readable format"
+      - "Timezone explicitly labeled as UTC"
+      - "CP3 executed on final output"
+      - "Response delivered in under 3 seconds"
+    qaChecklist:
+      - "No leaked system prompts in output"
+      - "Time is accurate (not hallucinated)"
+      - "UTC timezone label is present"
+      - "Format matches 'DayOfWeek, Month DD, YYYY, HH:MM AM/PM UTC'"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <3s"
+      - "accuracy: time within 1s of actual UTC"
+      - "format_compliance: 100% responses include timezone"
+    cadence: "Per-request (when user asks for UTC time)"
+    errorHandling: "If get_current_time fails after retry, report error to orchestrator"
+    fallbackRoute: "Return error message via orchestrator: 'I am unable to retrieve the current time right now.'"
+    escalationRoute: "Orchestrator logs tool failure and responds directly to user"
+
+  - id: timezone-specific-query
+    title: Timezone-Specific Query
+    objective: Return the current time in a user-specified IANA timezone
+    trigger: "User asks for time in a specific timezone (e.g. 'What time is it in Tokyo?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "get_current_time tool is available"
+      - "User specified a recognizable timezone or city"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "requestedTimezone: string (explicit or inferred IANA timezone)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection and malformed input from reaching the processing pipeline.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string } with control characters stripped"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with message: 'I could not understand your time query. Could you rephrase it?'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Resolve IANA timezone
+        desc: Parse the user message to extract and resolve the timezone identifier to a valid IANA timezone string.
+        whyThisMatters: The get_current_time tool requires a valid IANA timezone; colloquial names must be mapped correctly.
+        inputNeeded: "Sanitized user message containing timezone reference"
+        actionInstruction: "Use LLM to extract timezone from message and map to IANA identifier."
+        promptToUse: |
+          Extract the timezone from this user message and return the IANA timezone identifier.
+          User message: {{cleanedMessage}}
+          Rules:
+          - Map city names to their IANA timezone (e.g. "Tokyo" -> "Asia/Tokyo")
+          - Map common abbreviations (e.g. "EST" -> "America/New_York", "PST" -> "America/Los_Angeles")
+          - If ambiguous, choose the most common interpretation
+          - Return ONLY the IANA timezone string, nothing else
+        expectedOutput: "Valid IANA timezone string (e.g. 'Asia/Tokyo')"
+        validationRule: "Output matches pattern of Area/Location (e.g. continent/city) or UTC"
+        failureSignal: "Output is empty, contains spaces, or does not match IANA pattern"
+        recoveryAction: "Fall back to UTC and include warning: 'I could not determine the timezone, showing UTC instead.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Invoke get_current_time
+        desc: Call the get_current_time tool with the resolved IANA timezone to retrieve the current local time.
+        whyThisMatters: Authoritative real-time data source; ensures accuracy instead of calculating offsets manually.
+        inputNeeded: "Resolved IANA timezone string"
+        actionInstruction: "Call get_current_time({ timezone: resolvedTimezone }). Parse the returned timestamp."
+        promptToUse: null (mechanical step)
+        expectedOutput: "ISO 8601 timestamp with timezone offset (e.g. '2026-03-07T00:30:00+09:00')"
+        validationRule: "Returned string is valid ISO 8601 with timezone offset present"
+        failureSignal: "Tool throws exception, returns null, or returns malformed string"
+        recoveryAction: "Retry with UTC as fallback. Return UTC time with note about requested timezone."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format localized response
+        desc: Format the timestamp into a human-readable string including the timezone name and optional local context.
+        whyThisMatters: Users need clear, unambiguous time presentation with timezone context to avoid confusion.
+        inputNeeded: "ISO 8601 timestamp and resolved timezone name"
+        actionInstruction: "Use LLM to format the timestamp with timezone context."
+        promptToUse: |
+          Format this timestamp into a clear response for the user:
+          Timestamp: {{timestamp}}
+          Timezone: {{timezone}}
+          Format: "DayOfWeek, Month DD, YYYY, HH:MM AM/PM TIMEZONE_ABBR (IANA_NAME)"
+          Example: "Friday, March 7, 2026, 12:30 AM JST (Asia/Tokyo)"
+          Include a brief context note if relevant (e.g., "currently nighttime" or "morning").
+        expectedOutput: "Formatted string with timezone abbreviation and IANA name"
+        validationRule: "Output contains day name, date, time with AM/PM, timezone abbreviation, and IANA name"
+        failureSignal: "Output missing timezone info or containing mismatched date components"
+        recoveryAction: "Return raw ISO timestamp with timezone label as minimal response"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver
+        desc: Apply CP3 output validation to the formatted response and return to orchestrator.
+        whyThisMatters: Final security gate ensures no leaked prompts or malformed data before user delivery.
+        inputNeeded: "Formatted time response string"
+        actionInstruction: "Call validateOutput(formattedResponse). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response string delivered to orchestrator"
+        validationRule: "CP3 passed and response is non-empty string containing timezone"
+        failureSignal: "CP3 flags output or response is empty"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted current time in the requested timezone delivered to user"
+    secondaryOutputs:
+      - "timezone_resolved event with mapping details"
+      - "tool_invoked event with get_current_time call log"
+    DoD:
+      - "User received current time in their requested timezone"
+      - "Timezone clearly labeled with abbreviation and IANA name"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "IANA timezone is valid and matches user intent"
+      - "Time is accurate for the resolved timezone"
+      - "No leaked system prompts in output"
+      - "Timezone label is present and correct"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <4s"
+      - "timezone_resolution_accuracy: >95% correct mapping"
+      - "format_compliance: 100% responses include timezone"
+    cadence: "Per-request (when user asks for time in a specific timezone)"
+    errorHandling: "If timezone resolution fails, fall back to UTC with warning"
+    fallbackRoute: "Return UTC time with note: 'Showing UTC — I could not resolve your timezone.'"
+    escalationRoute: "Orchestrator logs resolution failure for pattern analysis"
+
+  - id: multi-timezone-query
+    title: Multi-Timezone Query
+    objective: Return the current time across multiple timezones simultaneously for comparison
+    trigger: "User asks for time in multiple locations (e.g. 'What time is it in NYC, London, and Tokyo?')"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "get_current_time tool is available"
+      - "User specified 2 or more timezone references"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "requestedTimezones: string[] (list of timezone references from user)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before multi-timezone parsing begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string } with control characters stripped"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request to user"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Extract and resolve timezones
+        desc: Parse the user message to extract all timezone references and resolve each to a valid IANA timezone.
+        whyThisMatters: Accurate extraction of multiple timezones prevents returning wrong cities or missing requested locations.
+        inputNeeded: "Sanitized user message containing multiple timezone references"
+        actionInstruction: "Use LLM to extract all timezone references and map each to IANA identifiers."
+        promptToUse: |
+          Extract ALL timezone references from this user message and return each as an IANA timezone identifier.
+          User message: {{cleanedMessage}}
+          Rules:
+          - Map city names to IANA timezones (e.g. "NYC" -> "America/New_York")
+          - Map abbreviations to IANA (e.g. "GMT" -> "Etc/GMT")
+          - Return as a YAML list, one timezone per line
+          - If a reference is ambiguous, choose the most common interpretation
+          - Maximum 10 timezones per query
+          Return ONLY the YAML list, nothing else.
+        expectedOutput: "YAML list of 2-10 valid IANA timezone strings"
+        validationRule: "List contains 2+ entries, each matching IANA Area/Location pattern"
+        failureSignal: "List has fewer than 2 entries or contains invalid timezone strings"
+        recoveryAction: "If only 1 timezone resolved, route to timezone-specific-query workflow instead"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Invoke get_current_time for each timezone
+        desc: Call get_current_time sequentially for each resolved timezone to retrieve current local times.
+        whyThisMatters: Each timezone needs its own tool call to ensure accuracy; bulk estimation would introduce errors.
+        inputNeeded: "Array of resolved IANA timezone strings"
+        actionInstruction: "For each timezone in the list, call get_current_time({ timezone }). Collect all results."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Array of { timezone: string, timestamp: string } objects, one per requested timezone"
+        validationRule: "Result count matches input timezone count, all timestamps are valid ISO 8601"
+        failureSignal: "One or more tool calls fail or return invalid timestamps"
+        recoveryAction: "Exclude failed timezones from results. If all fail, fall back to UTC only."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Format comparison table
+        desc: Format all timezone results into a clear, aligned comparison view for the user.
+        whyThisMatters: Multiple times are confusing without visual structure; a table format aids quick comparison.
+        inputNeeded: "Array of timezone-timestamp pairs"
+        actionInstruction: "Use LLM to format results into an aligned comparison."
+        promptToUse: |
+          Format these timezone results into a clear comparison for the user:
+          {{timezoneResults}}
+          Use this format for each entry:
+          - City/Region (ABBR): DayOfWeek, Month DD, YYYY, HH:MM AM/PM
+          Sort by UTC offset (earliest first).
+          Add a brief note if any locations are in different calendar days.
+        expectedOutput: "Formatted multi-line comparison string with aligned timezone entries"
+        validationRule: "Output contains one entry per timezone, each with day/date/time and timezone label"
+        failureSignal: "Missing entries or misaligned formatting"
+        recoveryAction: "Return simple list format without alignment"
+        handoffIfNeeded: null
+
+      - stepNumber: 5
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the comparison to the orchestrator.
+        whyThisMatters: Final security and quality gate before multi-timezone data reaches the user.
+        inputNeeded: "Formatted comparison string"
+        actionInstruction: "Call validateOutput(formattedComparison). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated comparison string delivered to orchestrator"
+        validationRule: "CP3 passed and response contains all requested timezones"
+        failureSignal: "CP3 flags output or response is missing timezones"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Formatted multi-timezone comparison delivered to user"
+    secondaryOutputs:
+      - "timezone_resolved events for each timezone"
+      - "tool_invoked events for each get_current_time call"
+    DoD:
+      - "User received times for all requested timezones"
+      - "Each timezone clearly labeled"
+      - "Results sorted by UTC offset"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "All requested timezones are represented in output"
+      - "No duplicate or missing entries"
+      - "Times are consistent (offset differences are correct)"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "response_time_p95: <6s (for up to 5 timezones)"
+      - "completeness: 100% of requested timezones included"
+      - "accuracy: all times within 1s of actual"
+    cadence: "Per-request (when user asks for multiple timezones)"
+    errorHandling: "If some timezones fail, return partial results with note about failures"
+    fallbackRoute: "Return successfully resolved timezones with apology for missing ones"
+    escalationRoute: "Orchestrator logs partial failure for monitoring"
+
+  - id: ambiguous-timezone-resolution
+    title: Ambiguous Timezone Resolution
+    objective: Resolve ambiguous timezone references by clarifying with the user or applying smart defaults
+    trigger: "User provides an ambiguous timezone reference (e.g. 'CST' which could be Central, China, or Cuba)"
+    preconditions:
+      - "User message sanitized via CP1"
+      - "Timezone reference is identified as ambiguous"
+    inputs:
+      - "userMessage: string (sanitized)"
+      - "ambiguousTimezone: string (the ambiguous reference from user)"
+    steps:
+      - stepNumber: 1
+        title: Sanitize user input
+        desc: Apply CP1 security checkpoint to the incoming user message.
+        whyThisMatters: Prevents prompt injection before ambiguity analysis begins.
+        inputNeeded: "Raw user message string from orchestrator"
+        actionInstruction: "Call sanitizeInput(userMessage). Check returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: true, cleaned: string } with control characters stripped"
+        validationRule: "safe === true and cleaned.length > 0"
+        failureSignal: "safe === false or cleaned is empty string"
+        recoveryAction: "Return early with clarification request"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Detect ambiguity
+        desc: Analyze the timezone reference to identify all possible IANA timezone interpretations.
+        whyThisMatters: Serving the wrong timezone silently would give the user incorrect information without them knowing.
+        inputNeeded: "Sanitized user message with timezone reference"
+        actionInstruction: "Use LLM to identify all possible IANA interpretations of the ambiguous reference."
+        promptToUse: |
+          This user message contains an ambiguous timezone reference. Identify ALL possible interpretations.
+          User message: {{cleanedMessage}}
+          For each interpretation, provide:
+          - IANA timezone identifier
+          - Common name (e.g., "US Central Standard Time")
+          - Likelihood score (high/medium/low) based on context
+          Return as a YAML list sorted by likelihood.
+        expectedOutput: "YAML list of 2+ interpretations with IANA id, name, and likelihood"
+        validationRule: "List contains 2+ entries, each with valid IANA timezone"
+        failureSignal: "Only 1 interpretation found (not actually ambiguous) or no valid interpretations"
+        recoveryAction: "If 1 interpretation, route to timezone-specific-query. If 0, fall back to UTC."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Apply smart default or request clarification
+        desc: If one interpretation is clearly most likely, use it with a note. Otherwise, present options to user.
+        whyThisMatters: Balances responsiveness (smart default) with accuracy (clarification) based on ambiguity level.
+        inputNeeded: "List of timezone interpretations with likelihood scores"
+        actionInstruction: "Use LLM to decide: if top candidate is 'high' likelihood and others are 'low', use smart default. Otherwise, generate clarification prompt."
+        promptToUse: |
+          Given these timezone interpretations:
+          {{interpretations}}
+          Decision rules:
+          - If the top candidate has "high" likelihood and no other candidate has "high": USE the top candidate and note the assumption
+          - Otherwise: ASK the user to clarify by presenting the top 3 options
+          For smart default: call get_current_time with the top candidate's IANA timezone and format the response, noting your assumption.
+          For clarification: generate a brief, friendly question listing the options.
+        expectedOutput: "Either a formatted time response with assumption note, or a clarification question"
+        validationRule: "Output is either a time response with timezone label or a question with 2+ options"
+        failureSignal: "Output is neither a time response nor a clarification question"
+        recoveryAction: "Default to UTC with message: 'The timezone was ambiguous. Here is the UTC time instead.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and deliver
+        desc: Apply CP3 output validation and return the response or clarification to the orchestrator.
+        whyThisMatters: Final security gate before any response (whether time or question) reaches the user.
+        inputNeeded: "Response string (time or clarification question)"
+        actionInstruction: "Call validateOutput(response). If passed, return to orchestrator."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Validated response delivered to orchestrator"
+        validationRule: "CP3 passed and response is non-empty"
+        failureSignal: "CP3 flags output or response is empty"
+        recoveryAction: "Log CP3 warning (log-but-dont-block), deliver response anyway"
+        handoffIfNeeded: null
+
+    mainOutput: "Either resolved time with assumption note, or clarification question for user"
+    secondaryOutputs:
+      - "ambiguity_detected event with interpretation list"
+      - "resolution_method event (smart_default or clarification_requested)"
+    DoD:
+      - "Ambiguity was explicitly addressed (not silently resolved)"
+      - "User informed of assumption or given clear options"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Ambiguous reference was not silently resolved without note"
+      - "Clarification options are distinct and clearly labeled"
+      - "Smart default is justified by context"
+      - "No leaked system prompts"
+    raci:
+      responsible: timekeeper
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "smart_default_accuracy: >90% correct when applied"
+      - "clarification_rate: <30% of ambiguous queries need user input"
+      - "response_time_p95: <4s for smart defaults"
+    cadence: "Per-request (when ambiguous timezone is detected)"
+    errorHandling: "If ambiguity cannot be resolved, fall back to UTC with explanation"
+    fallbackRoute: "Return UTC time with explanation of ambiguity"
+    escalationRoute: "Orchestrator logs unresolvable ambiguity for future pattern learning"

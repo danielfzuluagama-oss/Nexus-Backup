@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Gestionar Marca Blanca — SOP — Proceso de Delivery MetodologIA">
+    <title>Gestionar Marca Blanca — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Aliados Comercial</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Gestionar Marca Blanca — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Gestionar Marca Blanca — SOP</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">- Versión: 1.0</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">7</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">19</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-ejecutivo-78a77e')" aria-label="Ir a Propósito Ejecutivo">Propósito Ejecutivo</button>
+<button class="nav-btn" onclick="scrollToSection('10x-elevation-protocol-7-secciones-normativas-fecca7')" aria-label="Ir a 10x Elevation Protocol — 7 Secciones Normativas">10x Elevation Protocol — 7 Seccione</button>
+<button class="nav-btn" onclick="scrollToSection('flujos-operacionales-5-workflows-0f899f')" aria-label="Ir a Flujos Operacionales (5 Workflows)">Flujos Operacionales (5 Workflows)</button>
+<button class="nav-btn" onclick="scrollToSection('diferencias-clave-modelo-marca-blanca-vs-modelo-co-629927')" aria-label="Ir a Diferencias Clave: Modelo Marca Blanca vs. Modelo Comisión">Diferencias Clave: Modelo Marca Bla</button>
+<button class="nav-btn" onclick="scrollToSection('requisitos-de-marca-36b44c')" aria-label="Ir a Requisitos de Marca">Requisitos de Marca</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-de-xito-9519c5')" aria-label="Ir a Métricas de Éxito">Métricas de Éxito</button>
+<button class="nav-btn" onclick="scrollToSection('conexiones-sistmicas-0b0399')" aria-label="Ir a Conexiones Sistémicas">Conexiones Sistémicas</button>
+<button class="nav-btn" onclick="scrollToSection('ecuacin-metodologia-rentabilidad-marca-blanca-609d59')" aria-label="Ir a Ecuación MetodologIA (Rentabilidad Marca Blanca)">Ecuación MetodologIA (Rentabilidad </button>
+<button class="nav-btn" onclick="scrollToSection('anexos-operacionales-369a22')" aria-label="Ir a Anexos Operacionales">Anexos Operacionales</button>
+<button class="nav-btn" onclick="scrollToSection('escalation-gobierno-4f52e2')" aria-label="Ir a Escalation &amp; Gobierno">Escalation &amp; Gobierno</button>
+<button class="nav-btn" onclick="scrollToSection('control-de-cambios-12ae9d')" aria-label="Ir a Control de Cambios">Control de Cambios</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vehículo:</strong> Canal de Marca Blanca (White-Label)</div>
+<div class="bullet-item"><strong>Proceso Padre:</strong> Proceso Comercial → Aliados GTM</div>
+<div class="bullet-item"><strong>Owner:</strong> Germán (C-Level Ecosystem)</div>
+<div class="bullet-item"><strong>Versión:</strong> 1.0</div>
+<div class="bullet-item"><strong>Última Actualización:</strong> 2026-03-24</div>
+<div class="bullet-item"><strong>Clasificación:</strong> Operativo — Crítico</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-ejecutivo-78a77e" data-searchable aria-labelledby="head-propsito-ejecutivo-78a77e">
+            <div class="phase-header" id="head-propsito-ejecutivo-78a77e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito Ejecutivo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Manual operativo para aliados que operan bajo modelo <strong>Marca Blanca</strong>. Lema: *&quot;Tu marca al frente. Nosotros ponemos el Método.&quot;*</p>
+<p>El aliado integra y vende las metodologías MetodologIA como propias, gestionando la relación con el cliente final con <strong>total autonomía</strong>. MetodologIA/Engine opera <strong>invisible al cliente final</strong>.</p>
+<p class="key-value"><strong>Modelo Financiero:</strong> Aliado paga Precio de Referencia a MetodologIA. Ganancia = diferencia entre Precio Final al cliente y Precio de Referencia. <strong>Sin comisiones</strong>, solo margen directo.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10x-elevation-protocol-7-secciones-normativas-fecca7" data-searchable aria-labelledby="head-10x-elevation-protocol-7-secciones-normativas-fecca7">
+            <div class="phase-header" id="head-10x-elevation-protocol-7-secciones-normativas-fecca7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10x Elevation Protocol — 7 Secciones Normativas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="1-nueve-9-supuestos-foundacionales-01a0d9">1. Nueve (9) Supuestos Foundacionales</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Autonomía del Aliado:</strong> El aliado tiene capacidad y autoridad para establecer precios finales sin interferencia de MetodologIA.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Relación Directa Cliente-Aliado:</strong> MetodologIA nunca contacta, factura ni se relaciona comercialmente con el cliente final.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Margen como Incentivo:</strong> El margen (diferencia de precios) es el único incentivo económico; no hay bonificaciones adicionales por volumen bajo este modelo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Precio de Referencia Estable:</strong> El PdR se publica al inicio de cada período (trimestre) y no cambia intra-período.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Entrega Invisible:</strong> El servicio/producto entregado al cliente final es indistinguible (funcional y operativamente) de lo que ofrece MetodologIA directamente.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Cumplimiento Regulatorio:</strong> Ambas partes cumplen normativas de propiedad intelectual, tributarias y comerciales del país de operación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Escalabilidad Bilateral:</strong> MetodologIA puede escalar capacidad de delivery; aliado puede escalar su red comercial sin coordinación previa.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Acceso a Plataforma:</strong> Aliado obtiene acceso a portal de gestión, reporting y APIs de MetodologIA bajo acuerdo de integración.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Termino Reversible:</strong> Cualquier parte puede rescindir el acuerdo con 30 días de aviso; clientes activos transicionan a operación MetodologIA directa.</span></div>
+<h3 class="subsection-title" id="2-lmites-operacionales-lo-que-no-se-permite-bdef99">2. Límites Operacionales (Lo Que NO Se Permite)</h3>
+<div class="bullet-item"><strong>No Subcontratación Secundaria:</strong> Aliado NO puede transferir derechos de Marca Blanca a terceros sin autorización explícita escrita.</div>
+<div class="bullet-item"><strong>No Modificación de IP:</strong> Aliado NO puede alterar, remixar o derivar productos MetodologIA sin licencia específica.</div>
+<div class="bullet-item"><strong>No Conflicto de Marca:</strong> Aliado NO puede operar simultáneamente bajo marca propia Y como revendedor comisionado de MetodologIA en el mismo segmento.</div>
+<div class="bullet-item"><strong>No Acceso a Clientes Internos:</strong> Aliado NO puede acceder a lista de clientes de MetodologIA directa para solicitud directa o poaching.</div>
+<div class="bullet-item"><strong>No Descuento Predatorio:</strong> Aliado NO puede vender por menos del 80% del Precio Final recomendado; esto dispara revisión de PdR y posible rescisión.</div>
+<div class="bullet-item"><strong>No Data Exfiltration:</strong> Aliado NO puede transferir data de clientes fuera de plataforma MetodologIA sin consentimiento de cliente.</div>
+<h3 class="subsection-title" id="3-diez-10-criterios-de-validacin-operacional-4ee067">3. Diez (10) Criterios de Validación Operacional</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Acuerdo de Integración Firmado:</strong> Contrato Marca Blanca vigente, con cláusulas de PI, SLA y terminación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Identidad Fiscal Verificada:</strong> Aliado registrado, con CUIT/RFC válido y cuentas bancarias auditables.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Portal Activado:</strong> Acceso confirma a plataforma MetodologIA; credenciales seguras; 2FA habilitado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Precio de Referencia Aceptado:</strong> Aliado acepta por escrito (email, portal) el PdR para período vigente.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>SLA de Delivery Acordado:</strong> Tiempos máximos de implementación, soporte, escalation claros en acuerdo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Atribución de IP Confirmada:</strong> Documento anexo especifica qué componentes son MetodologIA vs. Aliado vs. Híbridos.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Margen Mínimo Publicado:</strong> Aliado entiende y acepta que margen esperado es (Precio Final recomendado − PdR).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Auditoría de Recaudo:</strong> Sistema CRM vinculado; MetodologIA puede auditar origen de ingresos del aliado por compliance.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Contacto Operativo 24/7:</strong> Aliado designa POC (Point of Contact) disponible para escalonamiento crítico.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">10</span><span><strong>Métricas de Tracking Visibles:</strong> Aliado accede a dashboard de actividad, clientes, recaudos asociados a su cuenta.</span></div>
+<h3 class="subsection-title" id="4-siete-7-casos-borde-crticos-dd8a42">4. Siete (7) Casos Borde Críticos</h3>
+<p class="key-value"><strong>Caso Borde 1: Cliente Pide Cambio de Proveedor a MetodologIA Directa</strong></p>
+<div class="bullet-item">*Escenario:* Cliente negocia directamente con MetodologIA pidiendo mejor precio.</div>
+<div class="bullet-item">*Regla:* MetodologIA NO recluta ni ofrece mejor precio a cliente activo bajo Marca Blanca del aliado. Si cliente rescindir, transición ordenada con 30d aviso al aliado.</div>
+<div class="bullet-item">*Excepción:* Si aliado incumple SLA &gt;30d o desactiva, MetodologIA puede tomar cliente directo sin penalidad.</div>
+<p class="key-value"><strong>Caso Borde 2: Aliado Vende a Precio Inferior a Margen Mínimo (Dumping)</strong></p>
+<div class="bullet-item">*Escenario:* Aliado ofrece cliente a precio &lt;80% recomendado para ganar volumen rápido.</div>
+<div class="bullet-item">*Regla:* Sistema alerta a Germán. Si persiste &gt;2 transacciones, se requiere justificación escrita. Tercera ocurrencia dispara rescisión.</div>
+<div class="bullet-item">*Fallback:* Renegociación de PdR para ese segmento.</div>
+<p class="key-value"><strong>Caso Borde 3: Cliente Sufre Fallo o Data Breach Bajo Marca Blanca</strong></p>
+<div class="bullet-item">*Escenario:* Cliente experimenta incidente de seguridad o servicio degradado.</div>
+<div class="bullet-item">*Responsabilidad:* Aliado actúa como &quot;cara&quot; ante cliente. MetodologIA proporciona soporte técnico detrás de escenas (invisible).</div>
+<div class="bullet-item">*Regla:* Aliado responsable de comunicación con cliente; MetodologIA maneja root cause + remediation. Costos de remediación los absorbe MetodologIA.</div>
+<p class="key-value"><strong>Caso Borde 4: Aliado Solicita Reducción de Precio de Referencia Mid-Período</strong></p>
+<div class="bullet-item">*Escenario:* Aliado compite con otro player, pide descuento urgente en PdR para mantener cliente.</div>
+<div class="bullet-item">*Regla:* NO se renegocia PdR intra-período. Próximo trimestre, puede formalizarse ajuste si causa justificada.</div>
+<div class="bullet-item">*Excepción:* Si cliente es estratégico (&gt;$100k/año acumulado), escalada a Germán para decisión discrecional.</div>
+<p class="key-value"><strong>Caso Borde 5: Aliado Desaparece Operacionalmente (Comunicación Nula &gt;30d)</strong></p>
+<div class="bullet-item">*Escenario:* POC del aliado no responde, no hay movimiento en cuenta &gt;30 días.</div>
+<div class="bullet-item">*Regla:* Después de 14d sin respuesta, se notifica formalmente. Día 30, cuenta entra en &quot;suspensión operativa&quot;. Clientes activos notificados de transición a MetodologIA directa. Pago adeudado se congela hasta resolución.</div>
+<div class="bullet-item">*Resolución:* Si aliado reaparece &lt;60d, puede reactivar con penalidad de 5% sobre saldos adeudados.</div>
+<p class="key-value"><strong>Caso Borde 6: MetodologIA Lanza Producto Nuevo; Aliado Pide Derecho Prioritario</strong></p>
+<div class="bullet-item">*Escenario:* MetodologIA anuncia nuevo servicio; aliado solicita incluirlo en Marca Blanca al mismo margen.</div>
+<div class="bullet-item">*Regla:* Productos nuevos se ofrecen a todos los aliados activos simultáneamente. No hay derecho de exclusividad temporal. PdR publicado en ventana de 7 días.</div>
+<p class="key-value"><strong>Caso Borde 7: Disputa de Atribución: ¿Quién Trajo al Cliente?</strong></p>
+<div class="bullet-item">*Escenario:* Cliente fue referido por agente MetodologIA, pero aliado reclama haber hecho la venta.</div>
+<div class="bullet-item">*Regla:* Sistema CRM es fuente única de verdad. Entrada inicial (lead origin) determina atribución. Si hay ambigüedad, escalada a Germán con evidencia de ambas partes. Decisión en &lt;48h.</div>
+<hr class="divider">
+<h3 class="subsection-title" id="5-cinco-5-decisiones-de-diseo-crticas-68e558">5. Cinco (5) Decisiones de Diseño Críticas</h3>
+<p class="key-value"><strong>Decisión 1: Transparencia de Precio vs. Confidencialidad</strong></p>
+<div class="bullet-item">*Decisión:* Aliado PUEDE (pero no DEBE) revelar que usa MetodologIA como proveedor. Atribución es discreta o explícita, según estrategia del aliado.</div>
+<div class="bullet-item">*Rationale:* Marca Blanca implica autonomía de posicionamiento. Aliado decide si MetodologIA es ventaja competitiva visible o invisible.</div>
+<p class="key-value"><strong>Decisión 2: SLA Dual: Aliado → Cliente vs. MetodologIA → Aliado</strong></p>
+<div class="bullet-item">*Decisión:* Hay dos SLAs: uno externo (Aliado-Cliente, definido por aliado) y uno interno (MetodologIA-Aliado, fijo en acuerdo). Aliado es responsable ante cliente, pero puede reclasificar a MetodologIA si fallo es de engine.</div>
+<div class="bullet-item">*Rationale:* Preserva reputación del aliado; MetodologIA asume responsabilidad técnica. Win-win contractual.</div>
+<p class="key-value"><strong>Decisión 3: Acceso Limitado a Reporting</strong></p>
+<div class="bullet-item">*Decisión:* Aliado accede a dashboard con métricas de su propia actividad, recaudos, clientes asociados. NO accede a data de otros aliados ni a clientes de MetodologIA directa.</div>
+<div class="bullet-item">*Rationale:* Competencia sana; privacidad de terceros; seguridad informática.</div>
+<p class="key-value"><strong>Decisión 4: Terminación Asimétrica</strong></p>
+<div class="bullet-item">*Decisión:* Ambas partes pueden rescindir con 30d aviso. Si MetodologIA rescindir por causa (incumplimiento SLA, dumping), plazo es inmediato. Si aliado rescindir, transición es 30d (clientes migrables a MetodologIA directa).</div>
+<div class="bullet-item">*Rationale:* Protección de cliente final; incentivo de cumplimiento para aliado.</div>
+<p class="key-value"><strong>Decisión 5: Margen NO es Comisión (Implicancias Tributarias)</strong></p>
+<div class="bullet-item">*Decisión:* El margen es ingreso del aliado, no comisión de MetodologIA. Aliado es vendedor independiente, no empleado ni agente comisionado. Tributación según régimen del aliado.</div>
+<div class="bullet-item">*Rationale:* Claridad fiscal; flexibilidad operativa; separación de responsabilidades laborales.</div>
+<hr class="divider">
+<h3 class="subsection-title" id="6-cinco-5-antipatterns-identificados-qu-evitar-a10658">6. Cinco (5) Anti-Patterns Identificados (¿Qué Evitar?)</h3>
+<p class="key-value"><strong>Anti-Pattern 1: &quot;Esperanza de Comisión Futura&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado asume que operará bajo Marca Blanca indefinidamente y planifica modelo de negocio sobre margen esperado sin contrato vigente.</div>
+<div class="bullet-item">*Impacto:* Si rescisión llega, aliado pierde pipeline. Rotación de clientes es traumática.</div>
+<div class="bullet-item">*Mitigación:* Contrato Marca Blanca siempre vigente, con revisión semestral. Aliado no planifica &gt;18 meses sin renovación explícita.</div>
+<p class="key-value"><strong>Anti-Pattern 2: &quot;Sobreextensión de Delivery&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado vende más capacidad de la que puede entregar, espera que MetodologIA cubra el exceso.</div>
+<div class="bullet-item">*Impacto:* SLA breach; cliente insatisfecho; ambigüedad de responsabilidad.</div>
+<div class="bullet-item">*Mitigación:* Límite claro de &quot;clientes concurrentes&quot; por aliado. Si excede, debe escalar a MetodologIA y pagar tasa adicional de delivery (margen reducido).</div>
+<p class="key-value"><strong>Anti-Pattern 3: &quot;Margen Parasitario&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado actúa solo como &quot;vendedor de contactos&quot; sin valor agregado, cargando margen innecesario.</div>
+<div class="bullet-item">*Impacto:* Cliente paga más; aliado añade poco; MetodologIA no se beneficia de escalabilidad.</div>
+<div class="bullet-item">*Mitigación:* Auditoría trimestral de &quot;valor agregado&quot; del aliado (formación cliente, customización, soporte local). Si score &lt;3/10, rescisión o renegociación de PdR.</div>
+<p class="key-value"><strong>Anti-Pattern 4: &quot;Conflicto de Intereses Latente&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado es simultáneamente revendedor comisionado Y Marca Blanca en segmento adyacente. Incentivos cruzados → falta de foco.</div>
+<div class="bullet-item">*Impacto:* Licitud contractual; confusión de ingresos; posible incumplimiento de SLA.</div>
+<div class="bullet-item">*Mitigación:* Cláusula de exclusividad segmentaria. Aliado elige Marca Blanca O Revendedor en territorio/vertical; no ambos.</div>
+<p class="key-value"><strong>Anti-Pattern 5: &quot;API Abandonada&quot;</strong></p>
+<div class="bullet-item">*Riesgo:* Aliado solicita acceso API, integra, pero luego no la mantiene. Sistema MetodologIA avanza; integraciones quedan obsoletas.</div>
+<div class="bullet-item">*Impacto:* Fricción operativa; bugs; soporte reactivo.</div>
+<div class="bullet-item">*Mitigación:* Acuerdo de integración incluye SLA de &quot;compatibilidad API&quot;: aliado responsable de mantener integración vigente. Si falla &gt;15d, acceso suspendido.</div>
+<hr class="divider">
+<h3 class="subsection-title" id="7-cinco-5-fallbacks-plan-b-d1275b">7. Cinco (5) Fallbacks / Plan B</h3>
+<p class="key-value"><strong>Fallback 1: &quot;Aliado no Paga Precio de Referencia a Tiempo&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Pago adeudado &gt;7d después de corte.</div>
+<div class="bullet-item">*Escalation:* Día 3 de atraso: email recordatorio. Día 7: llamada POC + suspensión temporal de nuevos clientes. Día 14: escalada legal.</div>
+<div class="bullet-item">*Plan B:* Opción de pago parcial + plan de regularización en 30d. Interés de mora 1% mensual.</div>
+<p class="key-value"><strong>Fallback 2: &quot;Sistema MetodologIA Sufre Outage; Cliente del Aliado Afectado&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Downtime &gt;4h en horario operativo.</div>
+<div class="bullet-item">*Respuesta:* MetodologIA asume totalmente el costo/remediación. Aliado notifica a cliente (MetodologIA proporciona template de comunicación).</div>
+<div class="bullet-item">*Plan B:* Crédito de 5% del PdR del mes siguiente por cada hora de downtime sobre 4h.</div>
+<p class="key-value"><strong>Fallback 3: &quot;Aliado Solicita Escala de Precios por Volumen&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Aliado alcanza 20+ clientes activos en trimestre.</div>
+<div class="bullet-item">*Respuesta:* Evaluación de economía. Si volumen justifica, se negocia descuento de 5-10% en PdR para siguiente trimestre.</div>
+<div class="bullet-item">*Plan B:* Si no hay espacio fiscal, se ofrece &quot;bonus de abundancia&quot; (crédito adicional en tickets de soporte o formación).</div>
+<p class="key-value"><strong>Fallback 4: &quot;Cliente Bajo Marca Blanca Demanda Transición a Contrato Directo MetodologIA&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Cliente comunica deseo de pasar a operación directa.</div>
+<div class="bullet-item">*Respuesta:* Aliado tiene derecho a 30d de aviso. Transición gestionada por Germán. MetodologIA NO ofrece descuento adicional al cliente como incentivo de cambio.</div>
+<div class="bullet-item">*Plan B:* Si aliado se niega a transicionar, cliente puede rescindir contrato aliado y contratar MetodologIA (cliente decide).</div>
+<p class="key-value"><strong>Fallback 5: &quot;Discrepancia en Recaudos: Aliado Reporta vs. CRM Real&quot;</strong></p>
+<div class="bullet-item">*Trigger:* Aliado reporta ingresos que no coinciden con data de sistema MetodologIA.</div>
+<div class="bullet-item">*Respuesta:* Auditoría automática. Sistema CRM es fuente única de verdad. Se corrige a data de CRM.</div>
+<div class="bullet-item">*Plan B:* Si discrepancia es &gt;5% y recurrente, se escala a auditoría forense. Aliado coopera con investigación. Si hay fraude, rescisión inmediata.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="flujos-operacionales-5-workflows-0f899f" data-searchable aria-labelledby="head-flujos-operacionales-5-workflows-0f899f">
+            <div class="phase-header" id="head-flujos-operacionales-5-workflows-0f899f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Flujos Operacionales (5 Workflows)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="wf01-solicitar-activacin-marca-blanca-1fb59b">WF-01: Solicitar Activación Marca Blanca</h3>
+<p class="key-value"><strong>Entrada:</strong> Aliado expresa interés en modelo Marca Blanca.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Aliado completa formulario de solicitud (datos fiscales, POC, segmento objetivo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Germán revisa elegibilidad (reputación, capacidad operativa, no conflicto con aliados existentes).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si OK, se envía propuesta contractual con Precio de Referencia inicial.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Aliado firma acuerdo de integración (30 días máximo para decisión).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Portal activado. Credenciales asignadas. Capacitación Zoom (2h).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Status: Aliado en estado &quot;Activo — Marca Blanca&quot;.</span></div>
+<p class="key-value"><strong>Salida:</strong> Acuerdo vigente, portal operativo, primer PdR publicado.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf02-configurar-precios-de-referencia-922688">WF-02: Configurar Precios de Referencia</h3>
+<p class="key-value"><strong>Entrada:</strong> Inicio de trimestre (o renegociación solicitada).</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Germán publica propuesta de PdR para todos los productos/servicios MetodologIA.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Aliado revisa en portal durante ventana de 7 días.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Si aliado acepta, registra aceptación digital (checkbox + timestamp).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si aliado rechaza, solicita renegociación con justificación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Si discrepancia, escalada a Germán + Katherine (financiero) para arbitraje.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>PdR confirmado entra en efecto a partir del día 1 del mes siguiente.</span></div>
+<p class="key-value"><strong>Salida:</strong> PdR vigente, público, confirmado en portal.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf03-operar-venta-bajo-marca-propia-1361b4">WF-03: Operar Venta Bajo Marca Propia</h3>
+<p class="key-value"><strong>Entrada:</strong> Aliado identifica prospecto; inicia ciclo de venta.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Aliado contacta prospecto, negocia, prepara oferta (con precio final que aliado define).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Aliado envía propuesta (en nombre de aliado, no MetodologIA). Menciona (o no) soporte técnico MetodologIA según estrategia.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Cliente firma contrato con aliado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Aliado registra cliente nuevo en portal MetodologIA (CRM ingresa lead → cliente).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>MetodologIA asigna &quot;delivery partner&quot; (equipo que acompaña implementación).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Delivery avanza bajo SLA interno (MetodologIA-Aliado).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Aliado mantiene relación comercial con cliente (reportes, renovaciones, upselling).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span>Generación de ingresos: cuando cliente paga a aliado, se registra en CRM. Aliado debe pagar PdR a MetodologIA en ciclo de liquidación (quincena).</span></div>
+<p class="key-value"><strong>Salida:</strong> Cliente activo, delivery en marcha, relación exclusiva Aliado-Cliente.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf04-coordinar-delivery-con-metodologia-6dd927">WF-04: Coordinar Delivery con MetodologIA</h3>
+<p class="key-value"><strong>Entrada:</strong> Cliente registrado en portal; delivery order creada.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>MetodologIA asigna equipo de implementación (Project Manager + Engineers).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Kickoff call: Aliado POC + Cliente + MetodologIA PM (para alineación, no para cliente).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>MetodologIA ejecuta delivery según scope. Aliado es &quot;traductor&quot; ante cliente si es necesario.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Si cliente pide cambios, aliado solicita a MetodologIA (no cliente accesa directamente).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Checkpoints quincenales: reporte de avance a aliado (aliado decide si comparte con cliente).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Cierre: delivery finalizado → documento de aceptación firmado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Aliado responsable de post-delivery (soporte, training cliente, renovación).</span></div>
+<p class="key-value"><strong>Salida:</strong> Servicio entregado, cliente satisfecho, relación consolidada.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf05-facturar-y-conciliar-4fcb07">WF-05: Facturar y Conciliar</h3>
+<p class="key-value"><strong>Entrada:</strong> Cliente paga a aliado; aliado debe pagar PdR a MetodologIA.</p>
+<p class="key-value"><strong>Pasos:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Aliado recibe pago de cliente (parcial o completo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Aliado registra recaudo en CRM de MetodologIA (o sistema vinculado) dentro de 3 días.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>MetodologIA valida recaudo (auditoría automática).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>En ciclo de liquidación quincenal (Fridays), MetodologIA calcula: (Recaudo Cliente − PdR) = Saldo Aliado a pagar.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Si saldo Aliado es positivo, MetodologIA genera factura de cobro a aliado por PdR.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Si saldo es negativo (cliente pagó menos que PdR), aliado debe saldo en próxima quincena.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>Pago de aliado a Metodología vía transferencia bancaria en 3 días.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span>Reconciliación en portal: aliado valida que monto coincide.</span></div>
+<p class="key-value"><strong>Salida:</strong> Factura MetodologIA (a aliado por PdR), pago recibido, ciclo cerrado.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="diferencias-clave-modelo-marca-blanca-vs-modelo-co-629927" data-searchable aria-labelledby="head-diferencias-clave-modelo-marca-blanca-vs-modelo-co-629927">
+            <div class="phase-header" id="head-diferencias-clave-modelo-marca-blanca-vs-modelo-co-629927" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Diferencias Clave: Modelo Marca Blanca vs. Modelo Comisión</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Marca Blanca</th><th scope="col">Comisión (Revendedor)</th></tr></thead><tbody><tr><td><strong>Relación Comercial</strong></td><td>Aliado-Cliente (directo)</td><td>MetodologIA-Cliente (principal); Aliado (soporte)</td></tr><tr><td><strong>Fijación de Precio</strong></td><td>Aliado define precio final</td><td>MetodologIA define precio final; aliado obtiene %</td></tr><tr><td><strong>Margen/Ingreso</strong></td><td>Diferencia PdR → Precio Final (ilimitado)</td><td>% fijo (ej. 25%) sobre precio MetodologIA</td></tr><tr><td><strong>Responsabilidad Cliente</strong></td><td>Aliado = cara ante cliente</td><td>MetodologIA = cara; aliado en background</td></tr><tr><td><strong>Delivery</strong></td><td>Aliado subcontrata a MetodologIA</td><td>MetodologIA entrega; aliado integra</td></tr><tr><td><strong>Data de Cliente</strong></td><td>Aliado propietario</td><td>MetodologIA propietario</td></tr><tr><td><strong>Contrato</strong></td><td>Aliado-Cliente (T&amp;C aliado)</td><td>MetodologIA-Cliente (T&amp;C MetodologIA)</td></tr><tr><td><strong>Renovación</strong></td><td>Aliado gestiona</td><td>MetodologIA gestiona</td></tr><tr><td><strong>Upselling</strong></td><td>Oportunidad aliado</td><td>Oportunidad MetodologIA</td></tr><tr><td><strong>Rescisión</strong></td><td>30d aviso; clientes transicionan a MetodologIA</td><td>30d aviso; relación de comisión cesa</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="requisitos-de-marca-36b44c" data-searchable aria-labelledby="head-requisitos-de-marca-36b44c">
+            <div class="phase-header" id="head-requisitos-de-marca-36b44c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Requisitos de Marca</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Identidad Visual:</strong> Aliado usa logo/marca propia. MetodologIA logo puede ser visible (&quot;Powered by MetodologIA&quot;) o invisible según acuerdo.</div>
+<div class="bullet-item"><strong>Términos &amp; Condiciones:</strong> Aliado define T&amp;C con cliente (siempre que no contradigan acuerdo Marca Blanca).</div>
+<div class="bullet-item"><strong>Atribución de IP:</strong> Documento anexo especifica qué componentes son de MetodologIA (con licencia MIT/Copyleft con atribución mínima).</div>
+<div class="bullet-item"><strong>Nombre de Servicio:</strong> Aliado puede renombrar servicios MetodologIA, pero debe documentar equivalencia en acuerdo.</div>
+<div class="bullet-item"><strong>Soporte al Cliente:</strong> Aliado responsable de soporte Level 1; MetodologIA de Level 2+.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-de-xito-9519c5" data-searchable aria-labelledby="head-mtricas-de-xito-9519c5">
+            <div class="phase-header" id="head-mtricas-de-xito-9519c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métricas de Éxito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Adopción:</strong> Tasa de clientes nuevos/mes bajo Marca Blanca (Meta: &gt;5 clientes nuevos/trimestre por aliado activo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Retención:</strong> % de clientes renovados en año 2 (Meta: &gt;80%).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>NPS (Net Promoter Score):</strong> Aliado gestiona encuestas a cliente. Target: &gt;50 NPS.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Cumplimiento SLA:</strong> % de deliveries on-time, on-scope (Meta: &gt;95%).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Margen Promedio Aliado:</strong> (Precio Final − PdR) / Precio Final (Meta: &gt;40% margen relativo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Recaudo en Tiempo:</strong> % de clientes que pagan en plazo (Meta: &gt;90% en 30d).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Escalation Rate:</strong> Quejas escaladas a MetodologIA / total clientes (Meta: &lt;5%).</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="conexiones-sistmicas-0b0399" data-searchable aria-labelledby="head-conexiones-sistmicas-0b0399">
+            <div class="phase-header" id="head-conexiones-sistmicas-0b0399" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Conexiones Sistémicas</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Proceso Financiero:</strong> Liquidación quincenal de ingresos aliado (WF-05 enlaza a SOP de Liquidación).</div>
+<div class="bullet-item"><strong>Proceso Comercial:</strong> Aliados GTM (estrategia, targeting, incentivos).</div>
+<div class="bullet-item"><strong>Proceso Operativo:</strong> Delivery, SLA, escalation (MetodologIA Engine).</div>
+<div class="bullet-item"><strong>Proceso de Compliance:</strong> Auditoría de recaudos, validación de contratos, inspección de T&amp;C aliado.</div>
+<div class="bullet-item"><strong>CRM Central:</strong> Fuente única de verdad para leads, clientes, recaudos, atribución.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ecuacin-metodologia-rentabilidad-marca-blanca-609d59" data-searchable aria-labelledby="head-ecuacin-metodologia-rentabilidad-marca-blanca-609d59">
+            <div class="phase-header" id="head-ecuacin-metodologia-rentabilidad-marca-blanca-609d59" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ecuación MetodologIA (Rentabilidad Marca Blanca)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>Ingresos_MetodologIA = PdR × Clientes_Activos_Marca_Blanca
+
+Ingresos_Aliado = (Precio_Final_Cliente − PdR) × Clientes
+
+Break-Even Aliado = PdR / (1 − Margen_Objetivo)
+                  = Si PdR = $10k, Margen_Obj = 40% → Precio_Final_Min = $10k / 0.6 = $16.67k
+
+Escalabilidad MetodologIA:
+  - Costo incremental delivery ≈ 20% PdR (fixed team, marginal cost bajo)
+  - Margen MetodologIA por cliente Marca Blanca ≈ 80% PdR
+  - ROI de activación aliado: breakeven en ~3 clientes
+
+Punto de Inflexión (Aliado → Revendedor?):
+  - Si aliado alcanza &gt;100 clientes año, evaluar modelo híbrido (margen + comisión pequeña).</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="anexos-operacionales-369a22" data-searchable aria-labelledby="head-anexos-operacionales-369a22">
+            <div class="phase-header" id="head-anexos-operacionales-369a22" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Anexos Operacionales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Anexo A:</strong> Plantilla de Acuerdo de Integración Marca Blanca.</div>
+<div class="bullet-item"><strong>Anexo B:</strong> Precios de Referencia Vigentes (por período).</div>
+<div class="bullet-item"><strong>Anexo C:</strong> Especificación técnica de API de Integración.</div>
+<div class="bullet-item"><strong>Anexo D:</strong> Template de Comunicación T&amp;C Cliente.</div>
+<div class="bullet-item"><strong>Anexo E:</strong> Rúbrica de Auditoría de Valor Agregado Aliado.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="escalation-gobierno-4f52e2" data-searchable aria-labelledby="head-escalation-gobierno-4f52e2">
+            <div class="phase-header" id="head-escalation-gobierno-4f52e2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Escalation &amp; Gobierno</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escala de Decisión</th><th scope="col">Owner</th><th scope="col">Timing</th></tr></thead><tbody><tr><td>Activación aliado nuevo</td><td>Germán</td><td>5 días hábiles</td></tr><tr><td>Renegociación PdR</td><td>Germán + Katherine</td><td>7 días</td></tr><tr><td>Caso borde: Cliente disputa</td><td>Germán</td><td>48 horas</td></tr><tr><td>Rescisión por causa</td><td>Germán (previo análisis legal)</td><td>Inmediato</td></tr><tr><td>Revisión de margen/rentabilidad</td><td>Germán + CFO</td><td>Trimestral</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="control-de-cambios-12ae9d" data-searchable aria-labelledby="head-control-de-cambios-12ae9d">
+            <div class="phase-header" id="head-control-de-cambios-12ae9d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Control de Cambios</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Versión</th><th scope="col">Fecha</th><th scope="col">Cambio</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>1.0</td><td>2026-03-24</td><td>Creación inicial</td><td>Germán</td></tr></tbody></table></div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

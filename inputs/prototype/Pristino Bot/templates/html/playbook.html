@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}} — Pristino Ecosystem</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #dbeafe;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; color: var(--text); max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.6; background: var(--bg); }
+    .hero { border-bottom: 3px solid var(--primary); padding-bottom: 1rem; margin-bottom: 2rem; }
+    .hero h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+    .hero .meta span { margin-right: 1.5rem; color: var(--muted); font-size: 0.9rem; }
+    .hero .meta span strong { color: var(--text); }
+    .breadcrumb { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .tldr { background: var(--accent); padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 2rem; }
+    .tldr h2 { border: none; margin: 0 0 0.5rem 0; font-size: 1.1rem; }
+    .tldr p { margin: 0; }
+    section { margin-bottom: 2.5rem; }
+    h2 { color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; font-size: 1.4rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+    h4 { font-size: 0.95rem; color: var(--muted); margin: 0.75rem 0 0.25rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { padding: 0.6rem 0.75rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--accent); font-weight: 600; }
+    pre { background: #f3f4f6; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5; }
+    code { background: #f3f4f6; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+    dl { margin: 0; }
+    dt { font-weight: 600; margin-top: 0.75rem; }
+    dd { margin-left: 1rem; color: var(--muted); }
+    ul.checklist { list-style: none; padding-left: 0; }
+    ul.checklist li { padding: 0.3rem 0; }
+    ul.checklist input[type="checkbox"] { margin-right: 0.5rem; }
+
+    /* Step cards */
+    .step { border-left: 3px solid var(--primary); padding-left: 1.25rem; margin-bottom: 2rem; position: relative; }
+    .step-number { position: absolute; left: -1.5rem; top: 0; background: var(--primary); color: white; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+    .step .desc { color: var(--muted); font-style: italic; }
+    .step .why { background: #fef3c7; padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.9rem; margin: 0.5rem 0; }
+    .step .action code { display: block; padding: 0.5rem; background: #f3f4f6; border-radius: 4px; }
+    .step .expected { border-left: 2px solid var(--success); padding-left: 0.75rem; margin: 0.5rem 0; }
+    .step .validation { border-left: 2px solid var(--warning); padding-left: 0.75rem; margin: 0.5rem 0; }
+
+    /* Prompt cards */
+    .prompt-card { background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    .prompt-card h3 { margin-top: 0; }
+    .prompt-card .params { color: var(--muted); font-size: 0.85rem; }
+    .copy-ready { position: relative; cursor: pointer; }
+    .copy-ready:hover::after { content: "Click to copy"; position: absolute; top: -1.5rem; right: 0; font-size: 0.75rem; color: var(--primary); }
+
+    /* KPI cards */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .kpi-card { background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+    .kpi-card h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+    .kpi-card .target { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin: 0; }
+    .kpi-card .current { font-size: 0.85rem; color: var(--muted); margin: 0.25rem 0 0; }
+
+    /* Progress bar */
+    .progress-bar { background: var(--border); border-radius: 6px; overflow: hidden; height: 1.5rem; }
+    .progress-bar .fill { background: var(--primary); color: white; text-align: center; padding: 0.15rem; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; transition: width 0.3s ease; }
+    .progress-info { text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem; }
+
+    @media print {
+      body { max-width: none; padding: 1rem; }
+      .progress-bar .fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .hero { page-break-after: avoid; }
+      .step { page-break-inside: avoid; }
+    }
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Section 1: Hero -->
+  <header class="hero">
+    <h1>{{title}}</h1>
+    <div class="meta">
+      <span><strong>Version:</strong> {{version}}</span>
+      <span><strong>Date:</strong> {{date}}</span>
+      <span><strong>Agent:</strong> {{owningAgent}}</span>
+    </div>
+  </header>
+
+  <!-- Section 2: Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="#">Ecosystem</a> &rsaquo;
+    <a href="#">{{agentName}}</a> &rsaquo;
+    <a href="#">{{skillName}}</a> &rsaquo;
+    <span>{{workflowName}}</span>
+  </nav>
+
+  <!-- Section 3: TL;DR -->
+  <section class="tldr">
+    <h2>TL;DR</h2>
+    <p>{{summary}}</p>
+  </section>
+
+  <!-- Section 4: Objective -->
+  <section class="objective">
+    <h2>Objective</h2>
+    <p>{{objective}}</p>
+  </section>
+
+  <!-- Section 5: Glossary -->
+  <section class="glossary">
+    <h2>Glossary</h2>
+    <dl>
+      <!-- Repeat for each term -->
+      <dt>{{term}}</dt>
+      <dd>{{definition}}</dd>
+    </dl>
+  </section>
+
+  <!-- Section 6: Steps -->
+  <section class="steps">
+    <h2>Steps</h2>
+
+    <!-- Repeat for each step -->
+    <div class="step" data-step="{{stepNumber}}">
+      <div class="step-number">{{stepNumber}}</div>
+      <h3>Step {{stepNumber}}: {{stepTitle}}</h3>
+      <p class="desc">{{stepDesc}}</p>
+      <p class="why"><strong>Why this matters:</strong> {{whyThisMatters}}</p>
+
+      <h4>Input Needed</h4>
+      <p>{{inputNeeded}}</p>
+
+      <h4>Action</h4>
+      <code>{{actionInstruction}}</code>
+
+      <div class="prompt" data-prompt="{{promptId}}">
+        <h4>Prompt</h4>
+        <pre>{{promptToUse}}</pre>
+      </div>
+
+      <div class="expected">
+        <h4>Expected Output</h4>
+        <p>{{expectedOutput}}</p>
+      </div>
+
+      <div class="validation">
+        <h4>Validation Rule</h4>
+        <p>{{validationRule}}</p>
+      </div>
+    </div>
+    <!-- End step repeat -->
+
+  </section>
+
+  <!-- Section 7: Expected Output -->
+  <section class="expected-output">
+    <h2>Expected Output</h2>
+    <p>{{outputDescription}}</p>
+    <ul>
+      <!-- Repeat for each artifact -->
+      <li>{{artifact}}</li>
+    </ul>
+  </section>
+
+  <!-- Section 8: Parametric Prompts -->
+  <section class="prompts">
+    <h2>Parametric Prompts</h2>
+
+    <!-- Repeat for each prompt -->
+    <div class="prompt-card">
+      <h3>{{promptName}}</h3>
+      <pre class="copy-ready">{{promptText}}</pre>
+      <p class="params"><strong>Parameters:</strong> {{paramList}}</p>
+    </div>
+    <!-- End prompt repeat -->
+
+  </section>
+
+  <!-- Section 9: RACI -->
+  <section class="raci">
+    <h2>RACI Matrix</h2>
+    <table>
+      <thead>
+        <tr><th>Role</th><th>Agent / Entity</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Responsible</td><td>{{responsible}}</td></tr>
+        <tr><td>Accountable</td><td>{{accountable}}</td></tr>
+        <tr><td>Consulted</td><td>{{consulted}}</td></tr>
+        <tr><td>Informed</td><td>{{informed}}</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 10: KPIs -->
+  <section class="kpis">
+    <h2>KPIs</h2>
+    <div class="kpi-grid">
+      <!-- Repeat for each KPI -->
+      <div class="kpi-card">
+        <h3>{{kpiName}}</h3>
+        <p class="target">{{target}}</p>
+        <p class="current">Current: {{current}}</p>
+      </div>
+      <!-- End KPI repeat -->
+    </div>
+  </section>
+
+  <!-- Section 11: Cadences -->
+  <section class="cadences">
+    <h2>Cadences</h2>
+    <ul>
+      <li><strong>Execution:</strong> {{executionCadence}}</li>
+      <li><strong>Review:</strong> {{reviewCadence}}</li>
+      <li><strong>Update:</strong> {{updateCadence}}</li>
+    </ul>
+  </section>
+
+  <!-- Section 12: QA / Gates -->
+  <section class="qa-gates">
+    <h2>Quality Gates</h2>
+    <ul class="checklist">
+      <!-- Repeat for each gate -->
+      <li><input type="checkbox"> {{gateCriterion}}</li>
+    </ul>
+    <h3>Definition of Done</h3>
+    <ul>
+      <!-- Repeat for each DoD -->
+      <li>{{dodCriterion}}</li>
+    </ul>
+  </section>
+
+  <!-- Section 13: Progress -->
+  <section class="progress">
+    <h2>Progress</h2>
+    <div class="progress-bar">
+      <div class="fill" style="width: {{percentage}}%">{{percentage}}%</div>
+    </div>
+    <p class="progress-info">{{completedSteps}} of {{totalSteps}} steps completed</p>
+  </section>
+
+  <footer style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 3rem; color: var(--muted); font-size: 0.8rem;">
+    <p>Generated by Pristino Ecosystem v3.0.0 &mdash; {{date}}</p>
+  </footer>
+
+</body>
+</html>

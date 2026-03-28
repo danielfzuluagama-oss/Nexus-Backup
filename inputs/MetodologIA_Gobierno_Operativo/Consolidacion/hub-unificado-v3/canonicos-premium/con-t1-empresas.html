@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="CONSULTORÍA T1 — Diagnóstico Integral — Proceso de Delivery MetodologIA">
+    <title>CONSULTORÍA T1 — Diagnóstico Integral — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Premium</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">CONSULTORÍA T1 — Diagnóstico Integral</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>CONSULTORÍA T1 — Diagnóstico Integral</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: CON-T1-EMPRESAS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-empresas-1651e9')" aria-label="Ir a Documento Canónico | Segmento: EMPRESAS">Documento Canónico | Segmento: EMPR</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-y-alcance-e4c27b')" aria-label="Ir a 2. Definición y Alcance">2. Definición y Alcance</button>
+<button class="nav-btn" onclick="scrollToSection('3-audiencia-corporativa-8698e4')" aria-label="Ir a 3. Audiencia Corporativa">3. Audiencia Corporativa</button>
+<button class="nav-btn" onclick="scrollToSection('4-propuesta-de-valor-2908ef')" aria-label="Ir a 4. Propuesta de Valor">4. Propuesta de Valor</button>
+<button class="nav-btn" onclick="scrollToSection('5-estructura-y-fases-a15216')" aria-label="Ir a 5. Estructura y Fases">5. Estructura y Fases</button>
+<button class="nav-btn" onclick="scrollToSection('6-entregables-577231')" aria-label="Ir a 6. Entregables">6. Entregables</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-comercial-4c8ca0')" aria-label="Ir a 7. Modelo Comercial">7. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('8-canal-de-venta-b4c772')" aria-label="Ir a 8. Canal de Venta">8. Canal de Venta</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-b421c5')" aria-label="Ir a 9. Operación">9. Operación</button>
+<button class="nav-btn" onclick="scrollToSection('10-puente-educativo-82b145')" aria-label="Ir a 10. Puente Educativo">10. Puente Educativo</button>
+<button class="nav-btn" onclick="scrollToSection('11-soporte-dd2ef9')" aria-label="Ir a 11. Soporte">11. Soporte</button>
+<button class="nav-btn" onclick="scrollToSection('12-kpis-15e4c5')" aria-label="Ir a 12. KPIs">12. KPIs</button>
+<button class="nav-btn" onclick="scrollToSection('13-trminos-comerciales-be9cc2')" aria-label="Ir a 13. Términos Comerciales">13. Términos Comerciales</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-empresas-1651e9" data-searchable aria-labelledby="head-documento-cannico-segmento-empresas-1651e9">
+            <div class="phase-header" id="head-documento-cannico-segmento-empresas-1651e9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: EMPRESAS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> CON-T1-EMPRESAS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Empresas (B2B — Corporativo)</p>
+<p class="key-value"><strong>Precio canónico:</strong> GRATUITO (Pipeline) | <strong>Duración:</strong> 3 semanas</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Diagnóstico ejecutivo de madurez digital organizacional. Análisis profundo de capacidades tecnológicas, procesos, cultura y estrategia. Genera reporte ejecutivo de 30 páginas, scorecard de madurez, roadmap de transformación y propuesta comercial de siguiente fase.</p>
+<p class="key-value"><strong>Objetivo de conversión:</strong> 40%+ → CON-T2 Tracción o CON-T3 Evolución.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-y-alcance-e4c27b" data-searchable aria-labelledby="head-2-definicin-y-alcance-e4c27b">
+            <div class="phase-header" id="head-2-definicin-y-alcance-e4c27b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición y Alcance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Análisis integral de la posición digital actual de la empresa mediante frameworks reconocidos (DART, Gartner, McKinsey 7S, Balanced Scorecard). Incluye:</p>
+<div class="bullet-item">Evaluación de infraestructura tecnológica actual</div>
+<div class="bullet-item">Análisis de procesos de negocio y digitalización</div>
+<div class="bullet-item">Evaluación de capacidades internas (skills, roles, estructura)</div>
+<div class="bullet-item">Diagnóstico de cultura organizacional y resistencia al cambio</div>
+<div class="bullet-item">Identificación de oportunidades quick-win y transformación sistémica</div>
+<div class="bullet-item">Benchmarking vs. industria</div>
+<p class="key-value"><strong>No incluye:</strong> Implementación, cambio de sistemas, desarrollo de nuevas soluciones.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-audiencia-corporativa-8698e4" data-searchable aria-labelledby="head-3-audiencia-corporativa-8698e4">
+            <div class="phase-header" id="head-3-audiencia-corporativa-8698e4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Audiencia Corporativa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Decisor principal:</strong> CIO, CTO, VP Operaciones, Gerente General</div>
+<div class="bullet-item"><strong>Stakeholders clave:</strong> Líderes de IT, Operaciones, Finanzas, RH</div>
+<div class="bullet-item"><strong>Rango empresarial:</strong> PYMES medianas a grandes (50-500+ empleados)</div>
+<div class="bullet-item"><strong>Sectores:</strong> Manufactura, retail, servicios financieros, construcción, logística, salud</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-propuesta-de-valor-2908ef" data-searchable aria-labelledby="head-4-propuesta-de-valor-2908ef">
+            <div class="phase-header" id="head-4-propuesta-de-valor-2908ef" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Propuesta de Valor</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Claridad estratégica:</strong> Hoja de ruta clara de transformación digital</div>
+<div class="bullet-item"><strong>Riesgo minimizado:</strong> Identificación de barreras antes de invertir</div>
+<div class="bullet-item"><strong>Priorización:</strong> Enfoque en quick-wins con ROI demostrable</div>
+<div class="bullet-item"><strong>Credibilidad:</strong> Basado en metodologías globales reconocidas</div>
+<div class="bullet-item"><strong>Costo-efectivo:</strong> Inversión cero con análisis profesional</div>
+<div class="bullet-item"><strong>Catalizador de decisión:</strong> Propuesta comercial fundamentada en diagnóstico</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-estructura-y-fases-a15216" data-searchable aria-labelledby="head-5-estructura-y-fases-a15216">
+            <div class="phase-header" id="head-5-estructura-y-fases-a15216" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Estructura y Fases</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fase-1-kickoff-y-alcance-semana-1-das-12-64e58d">Fase 1: Kick-off y Alcance (Semana 1, días 1-2)</h3>
+<div class="bullet-item">Sesión de arranque con stakeholders</div>
+<div class="bullet-item">Definición de scope, cronograma, responsables</div>
+<div class="bullet-item">Envío de cuestionario de autodiagnóstico</div>
+<h3 class="subsection-title" id="fase-2-levantamiento-de-informacin-semana-12-c81705">Fase 2: Levantamiento de Información (Semana 1-2)</h3>
+<div class="bullet-item">Entrevistas profundas con 8-12 stakeholders clave</div>
+<div class="bullet-item">Análisis de documentación (procesos, arquitectura, estrategia)</div>
+<div class="bullet-item">Revisión de sistemas actuales y capacidades</div>
+<div class="bullet-item">Cuestionarios cuantitativos de madurez</div>
+<h3 class="subsection-title" id="fase-3-anlisis-y-codiseo-semana-2-165b1a">Fase 3: Análisis y Co-diseño (Semana 2)</h3>
+<div class="bullet-item">Sesiones de taller con equipo de conducción</div>
+<div class="bullet-item">Validación de hallazgos preliminares</div>
+<div class="bullet-item">Identificación colaborativa de prioridades</div>
+<h3 class="subsection-title" id="fase-4-sntesis-y-presentacin-semana-3-36d6db">Fase 4: Síntesis y Presentación (Semana 3)</h3>
+<div class="bullet-item">Elaboración de reporte ejecutivo</div>
+<div class="bullet-item">Presentación a C-suite</div>
+<div class="bullet-item">Propuesta de siguiente fase (Tracción o Evolución)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-entregables-577231" data-searchable aria-labelledby="head-6-entregables-577231">
+            <div class="phase-header" id="head-6-entregables-577231" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Entregables</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Reporte Diagnóstico (30-40 páginas)</strong></span></div>
+<div class="bullet-item">Resumen ejecutivo (2pp)</div>
+<div class="bullet-item">Estado actual (tecnología, procesos, cultura, estrategia)</div>
+<div class="bullet-item">Análisis FODA digital</div>
+<div class="bullet-item">Benchmarking vs. industria</div>
+<div class="bullet-item">Hallazgos críticos y oportunidades</div>
+<div class="bullet-item">Estimación de impacto financiero</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Scorecard de Madurez Digital</strong></span></div>
+<div class="bullet-item">Puntuación en 8-10 dimensiones (0-5 escala)</div>
+<div class="bullet-item">Gráfico radial de madurez actual vs. aspiracional</div>
+<div class="bullet-item">Brecha por dimensión y recomendaciones</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Roadmap de Transformación</strong></span></div>
+<div class="bullet-item">Timeline de 12-24 meses</div>
+<div class="bullet-item">Iniciativas por fase (quick-wins, evolución sistémica)</div>
+<div class="bullet-item">Dependencias y secuencia lógica</div>
+<div class="bullet-item">Estimación de esfuerzo y costo indicativo</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Propuesta Comercial de Siguiente Paso</strong></span></div>
+<div class="bullet-item">Opciones Tracción (2-3 quick-wins, 4-8 semanas, COP 18M)</div>
+<div class="bullet-item">Opción Evolución (transformación sistémica, 12-24 semanas, COP 35M)</div>
+<div class="bullet-item">Comparativa de valor e impacto esperado</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Documentación de Sesiones</strong></span></div>
+<div class="bullet-item">Resumen de entrevistas (confidencial)</div>
+<div class="bullet-item">Matriz de capacidades y gaps</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-comercial-4c8ca0" data-searchable aria-labelledby="head-7-modelo-comercial-4c8ca0">
+            <div class="phase-header" id="head-7-modelo-comercial-4c8ca0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Precio:</strong> Cero (Gratuito)</p>
+<p class="key-value"><strong>Modelo:</strong> Inversión en pipeline cualificado</p>
+<p class="key-value"><strong>Margen indirecto:</strong> Conversión 40%+ a servicios subsecuentes (Tracción/Evolución)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-canal-de-venta-b4c772" data-searchable aria-labelledby="head-8-canal-de-venta-b4c772">
+            <div class="phase-header" id="head-8-canal-de-venta-b4c772" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Canal de Venta</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Prospectación:</strong> Identificación de empresas en transformación digital</div>
+<div class="bullet-item"><strong>Validación inicial:</strong> Llamada descubrimiento para confirmar fit</div>
+<div class="bullet-item"><strong>Propuesta:</strong> Email + call de cierre remitiendo a diagnóstico gratuito</div>
+<div class="bullet-item"><strong>Activación:</strong> Firma de NDA + Términos de Diagnóstico</div>
+<div class="bullet-item"><strong>Seguimiento:</strong> CRM: fases, entrevistas completadas, temperatura de conversión</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-b421c5" data-searchable aria-labelledby="head-9-operacin-b421c5">
+            <div class="phase-header" id="head-9-operacin-b421c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Equipo asignado:</strong></p>
+<div class="bullet-item">1 Senior Consultant (Director del Diagnóstico, 70% dedicación)</div>
+<div class="bullet-item">1 Analyst/Junior Consultant (Levantamiento, análisis, 100% dedicación)</div>
+<div class="bullet-item">Acceso a biblioteca de benchmarks y templates</div>
+<p class="key-value"><strong>Dedicación estimada:</strong></p>
+<div class="bullet-item">Senior: 80 horas (entrevistas, síntesis, presentación)</div>
+<div class="bullet-item">Junior: 120 horas (levantamiento, análisis, documentación)</div>
+<div class="bullet-item">Total: 200 horas (costo interno ~COP 15-20M; margen en conversión)</div>
+<p class="key-value"><strong>Herramientas:</strong> Miro, Excel/Sheets, PowerPoint, CRM, Slides de presentación</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-puente-educativo-82b145" data-searchable aria-labelledby="head-10-puente-educativo-82b145">
+            <div class="phase-header" id="head-10-puente-educativo-82b145" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Puente Educativo</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Webinar educativo:</strong> &quot;Madurez Digital: Dimensiones y Benchmarks&quot; (pre-diagnóstico)</div>
+<div class="bullet-item"><strong>Guía de autoevaluación:</strong> PDF descargable con cuestionario DART simplificado</div>
+<div class="bullet-item"><strong>Plantilla:</strong> Template de diagnóstico para empresas interesadas en autoevaluación</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-soporte-dd2ef9" data-searchable aria-labelledby="head-11-soporte-dd2ef9">
+            <div class="phase-header" id="head-11-soporte-dd2ef9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Soporte</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Durante diagnóstico:</strong> Email/WhatsApp a consultant asignado (24-48h)</div>
+<div class="bullet-item"><strong>Post-presentación:</strong> Sesión de preguntas y aclaraciones (1h, incluida)</div>
+<div class="bullet-item"><strong>Extensión de garantía:</strong> 2 semanas post-presentación para aclaraciones</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-kpis-15e4c5" data-searchable aria-labelledby="head-12-kpis-15e4c5">
+            <div class="phase-header" id="head-12-kpis-15e4c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. KPIs</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Conversión a Tracción:</strong> Meta 40%</div>
+<div class="bullet-item"><strong>Conversión a Evolución:</strong> Meta 20%</div>
+<div class="bullet-item"><strong>Conversión combinada:</strong> Meta 60%</div>
+<div class="bullet-item"><strong>Tiempo diagnóstico:</strong> 3 semanas (no exceder)</div>
+<div class="bullet-item"><strong>Satisfacción cliente:</strong> NPS mín. 8/10</div>
+<div class="bullet-item"><strong>Generación de pipeline:</strong> 0.6 servicios subsecuentes por diagnóstico</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-trminos-comerciales-be9cc2" data-searchable aria-labelledby="head-13-trminos-comerciales-be9cc2">
+            <div class="phase-header" id="head-13-trminos-comerciales-be9cc2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Términos Comerciales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Confidencialidad:</strong> NDA estándar ejecutado antes de kick-off</div>
+<div class="bullet-item"><strong>Responsabilidades cliente:</strong></div>
+<div class="bullet-item">Disponibilidad de stakeholders para entrevistas (12 horas total)</div>
+<div class="bullet-item">Acceso a documentación relevante</div>
+<div class="bullet-item">Punto de contacto único</div>
+<div class="bullet-item"><strong>Responsabilidades MetodologIA:</strong></div>
+<div class="bullet-item">Diagnóstico dentro de 3 semanas calendario</div>
+<div class="bullet-item">Presentación ejecutiva in-situ (o virtual)</div>
+<div class="bullet-item">Propuesta comercial escrita al final</div>
+<div class="bullet-item"><strong>Límite de alcance:</strong> Máx. 4 departamentos clave, máx. 12 entrevistas</div>
+<div class="bullet-item"><strong>Cancelación:</strong> Sin costo; reschedule en mutuo acuerdo</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

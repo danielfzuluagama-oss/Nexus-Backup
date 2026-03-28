@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Bootcamp BC-06 — Trabajar Amplificado — Proceso de Delivery MetodologIA">
+    <title>Bootcamp BC-06 — Trabajar Amplificado — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Bc</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Bootcamp BC-06 — Trabajar Amplificado</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Bootcamp BC-06 — Trabajar Amplificado</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 1.0</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">19</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-maestro-ssot-de200e')" aria-label="Ir a Documento Canónico MAESTRO (SSOT)">Documento Canónico MAESTRO (SSOT)</button>
+<button class="nav-btn" onclick="scrollToSection('0-encabezado-de-autoridad-14932a')" aria-label="Ir a 0. Encabezado de Autoridad">0. Encabezado de Autoridad</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-60-segundos-a6c18f')" aria-label="Ir a 1. Ficha Rápida (60 segundos)">1. Ficha Rápida (60 segundos)</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-sin-confusiones-c8c3d0')" aria-label="Ir a 2. Definición sin Confusiones">2. Definición sin Confusiones</button>
+<button class="nav-btn" onclick="scrollToSection('3-ubicacin-en-la-ruta-educativa-7e44db')" aria-label="Ir a 3. Ubicación en la Ruta Educativa">3. Ubicación en la Ruta Educativa</button>
+<button class="nav-btn" onclick="scrollToSection('4-fit-antifit-97578b')" aria-label="Ir a 4. Fit / Anti-Fit">4. Fit / Anti-Fit</button>
+<button class="nav-btn" onclick="scrollToSection('5-problema-que-resuelve-lmites-ticos-e718ed')" aria-label="Ir a 5. Problema que Resuelve + Límites Éticos">5. Problema que Resuelve + Límites </button>
+<button class="nav-btn" onclick="scrollToSection('6-arquitectura-curricular-6-mdulos-20h-8c4ad5')" aria-label="Ir a 6. Arquitectura Curricular (6 Módulos, 20h)">6. Arquitectura Curricular (6 Módul</button>
+<button class="nav-btn" onclick="scrollToSection('7-entregables-por-mdulo-inventory-completo-070408')" aria-label="Ir a 7. Entregables por Módulo (Inventory Completo)">7. Entregables por Módulo (Inventor</button>
+<button class="nav-btn" onclick="scrollToSection('8-modelo-de-evaluacin-y-certificacin-ecc212')" aria-label="Ir a 8. Modelo de Evaluación y Certificación">8. Modelo de Evaluación y Certifica</button>
+<button class="nav-btn" onclick="scrollToSection('9-modelo-comercial-79a451')" aria-label="Ir a 9. Modelo Comercial">9. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('10-operacin-y-logstica-26471f')" aria-label="Ir a 10. Operación y Logística">10. Operación y Logística</button>
+<button class="nav-btn" onclick="scrollToSection('11-soporte-sla-y-campus-7eef9b')" aria-label="Ir a 11. Soporte, SLA y Campus">11. Soporte, SLA y Campus</button>
+<button class="nav-btn" onclick="scrollToSection('12-segmentacin-personas-vs-empresas-daa2e7')" aria-label="Ir a 12. Segmentación: PERSONAS vs. EMPRESAS">12. Segmentación: PERSONAS vs. EMPR</button>
+<button class="nav-btn" onclick="scrollToSection('13-kpis-del-servicio-079b9c')" aria-label="Ir a 13. KPIs del Servicio">13. KPIs del Servicio</button>
+<button class="nav-btn" onclick="scrollToSection('14-trminos-contractuales-fa9eac')" aria-label="Ir a 14. Términos Contractuales">14. Términos Contractuales</button>
+<button class="nav-btn" onclick="scrollToSection('15-protocolo-de-contingencia-plan-b-2ff788')" aria-label="Ir a 15. Protocolo de Contingencia (Plan B)">15. Protocolo de Contingencia (Plan</button>
+<button class="nav-btn" onclick="scrollToSection('16-roadmap-futuro-y-evolucin-e3b064')" aria-label="Ir a 16. Roadmap Futuro y Evolución">16. Roadmap Futuro y Evolución</button>
+<button class="nav-btn" onclick="scrollToSection('cierre-promesa-central-1627b1')" aria-label="Ir a Cierre: Promesa Central">Cierre: Promesa Central</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-maestro-ssot-de200e" data-searchable aria-labelledby="head-documento-cannico-maestro-ssot-de200e">
+            <div class="phase-header" id="head-documento-cannico-maestro-ssot-de200e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico MAESTRO (SSOT)</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> BC-06 | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento(s):</strong> Personas (B2C) | Empresas (B2B, up to 20)</p>
+<p class="key-value"><strong>Duración:</strong> 20 horas total (18h core + 2h contexto/nivelación)</p>
+<p class="key-value"><strong>Formato:</strong> Intensive bootcamp (laboratorio + práctica + capstone aplicado)</p>
+<p class="key-value"><strong>Modalidad:</strong> Virtual sincrónico + asincrónico acompañamiento</p>
+<p class="key-value"><strong>Precio:</strong> COP 800,000 (personas) | COP 12,000,000 (empresas, hasta 20 personas)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="0-encabezado-de-autoridad-14932a" data-searchable aria-labelledby="head-0-encabezado-de-autoridad-14932a">
+            <div class="phase-header" id="head-0-encabezado-de-autoridad-14932a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 0. Encabezado de Autoridad</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Este documento es la FUENTE DE VERDAD (SSOT) única y oficial para:</strong></p>
+<div class="bullet-item">Definición de alcance, contenido, entregables del servicio</div>
+<div class="bullet-item">Promesas al cliente (web, oferta, contrato)</div>
+<div class="bullet-item">Operación y logística (facilitación, certificación, soporte)</div>
+<div class="bullet-item">Pricing, modelos de crédito, términos comerciales</div>
+<div class="bullet-item">Integración en la ruta de transformación (entrada → salida → proximal)</div>
+<p class="key-value"><strong>Gobernanza:</strong></p>
+<div class="bullet-item">Propietario: Dirección Académica MetodologIA</div>
+<div class="bullet-item">Cambios: Solo con votación de directorio</div>
+<div class="bullet-item">Vigencia: 2026-Q2 en adelante hasta sustitución formal</div>
+<div class="bullet-item">Referencia: Todos los documentos (web, oferta, contrato, operación) deben alinearse a este maestro</div>
+<p class="key-value"><strong>Advertencia:</strong> Si hay conflicto entre este doc y otros, ESTE PREVALECE. Si encuentras inconsistencia, escala a Académica.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-60-segundos-a6c18f" data-searchable aria-labelledby="head-1-ficha-rpida-60-segundos-a6c18f">
+            <div class="phase-header" id="head-1-ficha-rpida-60-segundos-a6c18f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida (60 segundos)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Objetivo</strong></td><td>Transformar productividad personal/grupal usando IA: de &quot;ocupado sin resultado&quot; a &quot;amplificado y enfocado&quot;</td></tr><tr><td><strong>Público</strong></td><td>Profesionales, emprendedores, equipos que luchan con atención/sobrecarga/delegación</td></tr><tr><td><strong>Duración</strong></td><td>20 horas (5 días × 4h, o compressed 2 días intenso + 3 tardes)</td></tr><tr><td><strong>Formato</strong></td><td>Bootcamp intensivo: teórico (15%) + laboratorio con herramientas (60%) + capstone aplicado (25%)</td></tr><tr><td><strong>Promesa central</strong></td><td>&quot;De ocupado a amplificado: recupera 5-10 horas/semana delegando a IA sin perder control&quot;</td></tr><tr><td><strong>Precio</strong></td><td>COP 800k (personas) / COP 12M (empresas ≤20)</td></tr><tr><td><strong>Ingreso por participante</strong></td><td>COP 800k (personas) / COP 600k (empresas, asiento dentro de 20)</td></tr><tr><td><strong>Certificación</strong></td><td>Certificado asistencia (todos) + Certificado competencia (con capstone)</td></tr><tr><td><strong>Resultado esperado</strong></td><td>1 proyecto capstone aplicado + 10+ prompts + playbook personalizado + competencia en 3 pilares</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-sin-confusiones-c8c3d0" data-searchable aria-labelledby="head-2-definicin-sin-confusiones-c8c3d0">
+            <div class="phase-header" id="head-2-definicin-sin-confusiones-c8c3d0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición sin Confusiones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="qu-es-bc06-7104fe">¿Qué es BC-06?</h3>
+<p>El <strong>Bootcamp Trabajar Amplificado</strong> es un programa intensivo de <strong>20 horas</strong> que enseña a profesionales y equipos a:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Identificar intención verdadera</strong> (qué realmente importa)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Proteger atención</strong> (concentración en lo crítico, eliminar ruido)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Apalancar IA</strong> (delegar tareas repetitivas, análisis, síntesis a AI sin perder control)</span></div>
+<p>El resultado es <strong>recuperar 5-10 horas/semana productivas</strong>, pasar de &quot;atrapado en el hacer&quot; a &quot;enfocado en lo estratégico&quot;.</p>
+<h3 class="subsection-title" id="qu-no-es-bc06-d77feb">¿QUÉ NO ES BC-06?</h3>
+<div class="bullet-item"><strong>NO es un taller de herramientas:</strong> No es &quot;cómo usar ChatGPT&quot; (eso es táctico)</div>
+<div class="bullet-item"><strong>NO es construcción de Custom GPTs:</strong> Eso es BC-04 &quot;Amplified Work&quot;</div>
+<div class="bullet-item"><strong>NO es desarrollo de agentes autónomos:</strong> Ese es BC-07 &quot;Trabajo Agentico&quot;</div>
+<div class="bullet-item"><strong>NO es gestión del tiempo clásica:</strong> No es &quot;GTD tradicional&quot;</div>
+<div class="bullet-item"><strong>NO es aprendizaje de IA teórico:</strong> No es machine learning, estadística, modelos</div>
+<div class="bullet-item"><strong>NO es para desarrolladores técnicos:</strong> (ellos van a BC-07)</div>
+<p>BC-06 es: <strong>Metodología operacional para transformar productividad personal/grupal usando IA como herramienta de amplificación consciente.</strong></p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-ubicacin-en-la-ruta-educativa-7e44db" data-searchable aria-labelledby="head-3-ubicacin-en-la-ruta-educativa-7e44db">
+            <div class="phase-header" id="head-3-ubicacin-en-la-ruta-educativa-7e44db" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Ubicación en la Ruta Educativa</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="la-ruta-de-transformacin-personal-the-productivity-49dde0">La Ruta de Transformación Personal (The Productivity Bridge)</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>WS-08 (3h) &quot;De Ocupado a Productivo&quot;
+  (awareness + diagnóstico de sobrecarga)
+           ↓
+        ┌─────────────────────┐
+        │   BC-06 (20h)       │  ← ESTE PROGRAMA
+        │ TRABAJAR AMPLIFICADO│  (herramientas + método + capstone)
+        │ (puente crítico)    │
+        └─────────────────────┘
+           ↓
+EstrategIA Personal (Programa interno, 6 semanas)
+  (consolidación de prácticas, mentoría 1:1)
+           ↓
+PE-01 (16 semanas) &quot;Programa Empoderamiento&quot;
+  (transformación profunda: liderazgo, impacto, sostenibilidad)</code></pre>
+<h3 class="subsection-title" id="rol-de-bc06-en-la-ruta-b3d554">Rol de BC-06 en la Ruta</h3>
+<p>BC-06 es el <strong>puente crítico</strong> entre:</p>
+<div class="bullet-item"><strong>De entrada (WS-08):</strong> Toma personas que reconocen sobrecarga y quieren herramientas</div>
+<div class="bullet-item"><strong>A destino (PE-01):</strong> Prepara con competencias operacionales (uso IA, flujos, delegación) antes de transformación profunda</div>
+<p class="key-value"><strong>Sin BC-06:</strong> Personas llegan a PE-01 aún atrapadas en el hacer, no pueden beneficiarse del emprendimiento/liderazgo porque sobrecarga absorbe su atención.</p>
+<p class="key-value"><strong>Con BC-06:</strong> Personas llegan a PE-01 habiendo:</p>
+<div class="bullet-item">Recuperado 5-10h/semana</div>
+<div class="bullet-item">Diseñado flujos amplificados personalizados</div>
+<div class="bullet-item">Validado competencia en 3 pilares</div>
+<div class="bullet-item">Liberado atención mental para transformación mayor</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-fit-antifit-97578b" data-searchable aria-labelledby="head-4-fit-antifit-97578b">
+            <div class="phase-header" id="head-4-fit-antifit-97578b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Fit / Anti-Fit</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="perfil-ideal-para-bc06-5864a8">Perfil IDEAL para BC-06</h3>
+<p>✓ Profesional/emprendedor que trabaja 50+ horas/semana pero siente poco resultado</p>
+<p>✓ Responsable de decisiones, análisis, síntesis, comunicación, planeación</p>
+<p>✓ Abierto a herramientas de IA (no tiene miedo, tiene curiosidad)</p>
+<p>✓ Quiere recuperar tiempo, no automatizar su carrera</p>
+<p>✓ Dispuesto a cambiar hábitos (requiere 2-3 semanas de re-ajuste)</p>
+<p>✓ Valora ejecución sobre perfección (fast iteration, learning by doing)</p>
+<h3 class="subsection-title" id="perfil-antifit-no-es-para-ti-bc06-si-a728ea">Perfil ANTI-FIT (no es para ti BC-06 si...)</h3>
+<p>✗ Eres desarrollador fullstack (ve a BC-07 &quot;Trabajo Agentico&quot;)</p>
+<p>✗ Quieres construir apps sin código (ve a BC-05 &quot;Vibe Coding&quot;)</p>
+<p>✗ Solo quieres entender &quot;qué es IA&quot; teóricamente (ve a WS-10)</p>
+<p>✗ No tienes acceso estable a internet o computadora personal</p>
+<p>✗ Tu rol no requiere pensamiento estratégico (ejemplo: ejecutor puro de lista de tareas)</p>
+<p>✗ Crees que IA va a hacer tu trabajo sin ti (no es así, es amplificación)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-problema-que-resuelve-lmites-ticos-e718ed" data-searchable aria-labelledby="head-5-problema-que-resuelve-lmites-ticos-e718ed">
+            <div class="phase-header" id="head-5-problema-que-resuelve-lmites-ticos-e718ed" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 5. Problema que Resuelve + Límites Éticos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="el-problema-raz-9a7b66">El Problema Raíz</h3>
+<p class="key-value"><strong>Síndrome del Ocupado Improductivo:</strong></p>
+<div class="bullet-item">Trabajas 50-60h/semana</div>
+<div class="bullet-item">Tienes 100+ Slack messages sin leer</div>
+<div class="bullet-item">50+ emails sin responder</div>
+<div class="bullet-item">Tarea importante = interrumpida 7 veces en la mañana</div>
+<div class="bullet-item">Resultado: Mucho movimiento, poco impacto</div>
+<div class="bullet-item">Consecuencia: Burnout, familia abanderada, salud comprometida</div>
+<h3 class="subsection-title" id="causas-los-3-pilares-rotos-8aea4d">Causas (Los 3 Pilares Rotos)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>INTENCIÓN perdida:</strong> No distingues entre &quot;urgente&quot; y &quot;importante&quot; → todo parece crítico</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>FOCO erosionado:</strong> Interrupciones constantes, context-switching, notificaciones → atención fragmentada</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>APALANCAMIENTO inexistente:</strong> Todo lo haces tú → cuello de botella permanente</span></div>
+<h3 class="subsection-title" id="cmo-bc06-resuelve-b9f7c0">Cómo BC-06 Resuelve</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Pilar</th><th scope="col">Problema</th><th scope="col">Solución BC-06</th></tr></thead><tbody><tr><td><strong>INTENCIÓN</strong></td><td>Confundes urgencia con importancia</td><td>Ejercicio de valores + matriz impacto/esfuerzo para identificar top 3 rocas</td></tr><tr><td><strong>FOCO</strong></td><td>Interrupciones fragmentan atención</td><td>Protocolos operacionales: bloques de tiempo, limpieza de notificaciones, ritmo personal</td></tr><tr><td><strong>APALANCAMIENTO</strong></td><td>Haces todo tú (cuello de botella)</td><td>IA como delegación inteligente: análisis, síntesis, drafting, research, coding soporte</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="lmites-ticos-explcitos-7a8ecc">Límites Éticos Explícitos</h3>
+<p class="key-value"><strong>BC-06 NO promueve:</strong></p>
+<div class="bullet-item">Deshumanización (IA no reemplaza relaciones, empatía, decisión ética)</div>
+<div class="bullet-item">Delegación negligente (tú decides, IA ejecuta; responsabilidad sigue siendo tuya)</div>
+<div class="bullet-item">Automatización ciega (&quot;porque puedo&quot; ≠ &quot;porque debe&quot;)</div>
+<div class="bullet-item">Engaño (IA como disfraz, no como herramienta honesta)</div>
+<p class="key-value"><strong>BC-06 SÍ enfatiza:</strong></p>
+<div class="bullet-item">Amplificación consciente (tú amplificado, no reemplazado)</div>
+<div class="bullet-item">Decisión humana primero (IA sugiere, TÚ validas y decides)</div>
+<div class="bullet-item">Velocidad con integridad (rápido AND ético)</div>
+<div class="bullet-item">Transferencia de skills (no creamos dependencia de herramienta)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-arquitectura-curricular-6-mdulos-20h-8c4ad5" data-searchable aria-labelledby="head-6-arquitectura-curricular-6-mdulos-20h-8c4ad5">
+            <div class="phase-header" id="head-6-arquitectura-curricular-6-mdulos-20h-8c4ad5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Arquitectura Curricular (6 Módulos, 20h)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="m0-contexto-y-nivelacin-2h-5c0a9e">M0: Contexto y Nivelación (2h)</h3>
+<p class="key-value"><strong>Objetivo:</strong> Alinear mental models, diagnóstico personal, setup técnico.</p>
+<p class="key-value"><strong>Contenido:</strong></p>
+<div class="bullet-item">Bienvenida + dinámica grupal (10min)</div>
+<div class="bullet-item">Diagnóstico: &quot;¿Dónde están tus 5-10 horas perdidas?&quot; (20min, auto-reflexión)</div>
+<div class="bullet-item">Quick primer: qué es IA, tipos de herramientas (modelos, límites, ética) (30min)</div>
+<div class="bullet-item">Arquitectura cognitiva: los 3 pilares (INTENCIÓN, FOCO, APALANCAMIENTO) (30min)</div>
+<div class="bullet-item">Setup técnico: ChatGPT/Gemini/Copilot account, workspace, bookmark toolbar (20min)</div>
+<div class="bullet-item">Contratos psicológicos: qué esperar, qué no (10min)</div>
+<p class="key-value"><strong>Entregables:</strong></p>
+<div class="bullet-item">Worksheet diagnóstico personal completado</div>
+<div class="bullet-item">1 cuaderno de bootcamp (digital o físico)</div>
+<div class="bullet-item">Acceso a Slack grupo + template library</div>
+<hr class="divider">
+<h3 class="subsection-title" id="m1-fundamentos-de-ia-aplicada-3h-847f85">M1: Fundamentos de IA Aplicada (3h)</h3>
+<p class="key-value"><strong>Objetivo:</strong> Entender IA como herramienta de amplificación, no magia.</p>
+<p class="key-value"><strong>Contenido:</strong></p>
+<div class="bullet-item">Cómo funciona LLM (en simple): tokens, probabilidades, contexto, límites (20min)</div>
+<div class="bullet-item">Tipos de tareas que IA maneja bien vs. mal (30min)</div>
+<div class="bullet-item">Bien: análisis, síntesis, drafting, brainstorm, research, coding, estructura</div>
+<div class="bullet-item">Mal: decisiones ética, relaciones humanas, juicio contextual profundo, predicción sobre-confiada</div>
+<div class="bullet-item">Psicología del prompt: cómo darle instrucciones que entienda (30min)</div>
+<div class="bullet-item">Sistemas vs. one-shots: porqué contexto acumulado &gt; pregunta aislada (30min)</div>
+<div class="bullet-item">Elección de motor: ChatGPT vs. Gemini vs. Copilot vs. Claude (trade-offs) (20min)</div>
+<div class="bullet-item">Ejercicio grupal: &quot;Diseña 3 prompts para tu rol en 15min&quot; (20min)</div>
+<div class="bullet-item">Q&amp;A (10min)</div>
+<p class="key-value"><strong>Entregables:</strong></p>
+<div class="bullet-item">Worksheet &quot;Cómo IA agrega valor en MI trabajo&quot; (por rol)</div>
+<div class="bullet-item">3 prompts iniciales diseñados</div>
+<div class="bullet-item">Referencia: Tabla comparativa modelos IA</div>
+<hr class="divider">
+<h3 class="subsection-title" id="m2-prompt-engineering-avanzado-3h-f867cd">M2: Prompt Engineering Avanzado (3h)</h3>
+<p class="key-value"><strong>Objetivo:</strong> Maestría en extraer máximo valor de IA, de manera consistente.</p>
+<p class="key-value"><strong>Contenido:</strong></p>
+<div class="bullet-item">Anatomía del buen prompt: objetivo claro, contexto, tono, restricciones, ejemplos (30min)</div>
+<div class="bullet-item">Framework CARES: Claridad, Actitud, Rango (del resultado), Estructura, Sencillez (30min)</div>
+<div class="bullet-item">Ciclos iterativos: prompt inicial → evalúa → refina → valida (demo + ejercicio, 30min)</div>
+<div class="bullet-item">Chain-of-thought: pedir que &quot;explique su razonamiento&quot; para análisis profundo (20min)</div>
+<div class="bullet-item">Few-shot prompting: enseñarle con ejemplos qué quieres (20min)</div>
+<div class="bullet-item">Evitar alucinaciones: verificación, sourcing, cross-checks (15min)</div>
+<div class="bullet-item">Laboratorio: Construye prompts para tus 3 tareas críticas (30min)</div>
+<p class="key-value"><strong>Entregables:</strong></p>
+<div class="bullet-item">3-5 prompts avanzados (uno por tarea crítica)</div>
+<div class="bullet-item">Framework CARES completado por participante</div>
+<div class="bullet-item">Checklist &quot;validación de respuesta IA&quot;</div>
+<hr class="divider">
+<h3 class="subsection-title" id="m3-sistemas-de-productividad-amplificada-3h-9df068">M3: Sistemas de Productividad Amplificada (3h)</h3>
+<p class="key-value"><strong>Objetivo:</strong> Diseñar flujos operacionales donde IA se integra naturalmente.</p>
+<p class="key-value"><strong>Contenido:</strong></p>
+<div class="bullet-item">Diagnóstico: Mapear tu semana laboral típica (email, calls, analysis, decisions, output) (30min)</div>
+<div class="bullet-item">Pilares reinterpretados:</div>
+<div class="bullet-item">INTENCIÓN: Qué hace solo TÚ (decisión, creatividad, relación) vs. qué puede acelerar IA (draft, analysis)</div>
+<div class="bullet-item">FOCO: Bloques de tiempo protegidos (no Slack/email 8-10am, ejemplo)</div>
+<div class="bullet-item">APALANCAMIENTO: Delega drafts, análisis, research, síntesis a IA</div>
+<div class="bullet-item">Diseño de flujos: email → IA resume + draft response | meeting notes → IA genera accionables | weekly report → IA estructura datos</div>
+<div class="bullet-item">Prototipo de &quot;semana amplificada&quot; (30min)</div>
+<div class="bullet-item">Integración herramientas: ChatGPT, Notion, Gmail, Slack, Zapier (simple) (30min)</div>
+<div class="bullet-item">Métricas de éxito: ¿Cómo sé que estoy ganando tiempo? (30min)</div>
+<p class="key-value"><strong>Entregables:</strong></p>
+<div class="bullet-item">Mapa personal: &quot;Dónde IA entra en MI flujo&quot;</div>
+<div class="bullet-item">Protocolos operacionales (por tarea tipo)</div>
+<div class="bullet-item">Dashboard de seguimiento (template)</div>
+<hr class="divider">
+<h3 class="subsection-title" id="m4-asistentes-y-flujos-personalizados-3h-ca4685">M4: Asistentes y Flujos Personalizados (3h)</h3>
+<p class="key-value"><strong>Objetivo:</strong> Construir asistentes específicos (Custom GPTs o prompts reutilizables) para tus roles.</p>
+<p class="key-value"><strong>Contenido:</strong></p>
+<div class="bullet-item">Cuándo custom GPT vs. prompt reutilizable vs. integración técnica (20min)</div>
+<div class="bullet-item">Diseño de Custom GPT: instrucciones, knowledge base, acciones, límites (demo + laboratorio, 60min)</div>
+<div class="bullet-item">Ejemplo 1: &quot;Asistente para análisis de propuestas comerciales&quot;</div>
+<div class="bullet-item">Ejemplo 2: &quot;Coach de comunicación para emails ejecutivos&quot;</div>
+<div class="bullet-item">Ejemplo 3: &quot;Estructurador de tareas: convierte verbosidad en roadmap&quot;</div>
+<div class="bullet-item">Knowledge base: Documentación personal, templates, estándares (20min)</div>
+<div class="bullet-item">Testing y refinamiento: Prueba con casos reales, ajusta instrucciones (30min)</div>
+<div class="bullet-item">Handoff: Cómo otros en tu equipo usan tu asistente (10min)</div>
+<p class="key-value"><strong>Entregables:</strong></p>
+<div class="bullet-item">1 Custom GPT funcional (por participante, si aplica)</div>
+<div class="bullet-item">Documentación: &quot;Cómo usar MI asistente&quot; (para others)</div>
+<div class="bullet-item">Prompts reutilizables en biblioteca personal</div>
+<hr class="divider">
+<h3 class="subsection-title" id="m5-integracin-y-proyecto-capstone-6h-total-3h-sync-6d2d60">M5: Integración y Proyecto Capstone (6h total: 3h synchronous + 3h asincrónico)</h3>
+<p class="key-value"><strong>Objetivo:</strong> Validar competencia con proyecto real, integración completa de pilares.</p>
+<p class="key-value"><strong>Contenido - Fase síncrona (3h):</strong></p>
+<div class="bullet-item">Intro al capstone: Briefing, criterios de éxito, entrega (15min)</div>
+<div class="bullet-item">Opciones de proyectos:</div>
+<div class="bullet-item">OPCIÓN A (individual): Diseña sistema completo para TU rol, documenta, presenta</div>
+<div class="bullet-item">OPCIÓN B (grupal): Equipo diseña flujo amplificado para proceso real (ventas, marketing, operaciones)</div>
+<div class="bullet-item">OPCIÓN C (empresa): Si es cohorte empresa, optimiza proceso identificado en módulo 3</div>
+<div class="bullet-item">Planning colaborativo + Q&amp;A (30min)</div>
+<div class="bullet-item">Laboratorio abierto: Empieza tu capstone, facilitadores rotan (90min)</div>
+<p class="key-value"><strong>Contenido - Fase asincrónica (3h, entre sesión final):</strong></p>
+<div class="bullet-item">Construye tu capstone (aplicación real de 3 pilares + IA)</div>
+<div class="bullet-item">Itera basado en feedback</div>
+<div class="bullet-item">Documenta: proceso, prompts, métricas, resultados</div>
+<div class="bullet-item">Prepara 5min pitch + demo en vivo</div>
+<p class="key-value"><strong>Criterios de evaluación:</strong></p>
+<div class="bullet-item"><strong>Intención clara (25%):</strong> ¿Resuelve problema real? ¿Por qué importa?</div>
+<div class="bullet-item"><strong>Implementación funcional (25%):</strong> ¿IA integrada efectivamente? ¿Prompts robustos? ¿Flujo operacional?</div>
+<div class="bullet-item"><strong>Impacto medible (25%):</strong> ¿Ganó tiempo? ¿Mejores resultados? ¿Evidencia?</div>
+<div class="bullet-item"><strong>Transferencia de aprendizaje (25%):</strong> ¿Demuestra dominio de 3 pilares? ¿Replicable a otros contextos?</div>
+<p class="key-value"><strong>Ejemplos de capstone:</strong></p>
+<div class="bullet-item">&quot;Recuperé 6h/semana: diseñé flujo email (inbox a IA summary + draft respuestas → mi revisión → envío). Evidencia: comparativa antes/después.&quot;</div>
+<div class="bullet-item">&quot;Equipo diseñó &#x27;Máquina de Propuestas&#x27;: intake → IA estructura → yo personalizo → client ve en 24h vs. antes 5 días.&quot;</div>
+<div class="bullet-item">&quot;Custom GPT para análisis de competencia: ingresa link → IA resume fortalezas/debilidades/gaps vs nuestro positioning → documento ejecutivo.&quot;</div>
+<p class="key-value"><strong>Entregables capstone:</strong></p>
+<div class="bullet-item">Documento: Descripción, proceso, prompts (10-15 páginas)</div>
+<div class="bullet-item">Artefactos: Screenshots, Custom GPT link, dashboard, automatización real</div>
+<div class="bullet-item">Demo en vivo (5min) + Q&amp;A (5min)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-entregables-por-mdulo-inventory-completo-070408" data-searchable aria-labelledby="head-7-entregables-por-mdulo-inventory-completo-070408">
+            <div class="phase-header" id="head-7-entregables-por-mdulo-inventory-completo-070408" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Entregables por Módulo (Inventory Completo)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="m0-contexto-4948a2">M0 Contexto</h3>
+<div class="bullet-item">Worksheet diagnóstico personal</div>
+<div class="bullet-item">Documento &quot;Los 3 Pilares en MI rol&quot;</div>
+<div class="bullet-item">Acceso Slack grupo</div>
+<div class="bullet-item">Bookmark toolbar setup</div>
+<h3 class="subsection-title" id="m1-fundamentos-d0d072">M1 Fundamentos</h3>
+<div class="bullet-item">Video: &quot;Cómo funciona IA en simple&quot;</div>
+<div class="bullet-item">Tabla comparativa: Tareas que IA maneja bien/mal (por rol)</div>
+<div class="bullet-item">Worksheet: &quot;3 prompts para MI trabajo&quot;</div>
+<div class="bullet-item">Referencia: Modelos IA (ChatGPT, Gemini, Copilot, Claude)</div>
+<h3 class="subsection-title" id="m2-prompt-engineering-19558f">M2 Prompt Engineering</h3>
+<div class="bullet-item">Framework CARES (imprimible + digital)</div>
+<div class="bullet-item">Biblioteca: 50+ prompts curados (por industria)</div>
+<div class="bullet-item">Template: &quot;Prompt avanzado para tareas analíticas&quot;</div>
+<div class="bullet-item">Checklist: &quot;Validar respuesta IA&quot;</div>
+<div class="bullet-item">Tus 3-5 prompts personalizados</div>
+<h3 class="subsection-title" id="m3-productividad-800938">M3 Productividad</h3>
+<div class="bullet-item">Mapa personal: &quot;Dónde entra IA en MI flujo&quot;</div>
+<div class="bullet-item">3-5 protocolos operacionales (escritos)</div>
+<div class="bullet-item">Dashboard/template para seguimiento</div>
+<div class="bullet-item">Playbook: &quot;MI semana amplificada&quot; (agenda propuesta)</div>
+<h3 class="subsection-title" id="m4-asistentes-93a9fb">M4 Asistentes</h3>
+<div class="bullet-item">1 Custom GPT funcional (o prompts reutilizables)</div>
+<div class="bullet-item">Documentación técnica: instrucciones + knowledge base + ejemplos</div>
+<div class="bullet-item">Manual de usuario: &quot;Cómo otros usan MI asistente&quot;</div>
+<h3 class="subsection-title" id="m5-capstone-dc20fd">M5 Capstone</h3>
+<div class="bullet-item">Documento capstone (10-15 págs)</div>
+<div class="bullet-item">Artefactos: Custom GPT, screenshots, dashboard, datos</div>
+<div class="bullet-item">Presentación (slide deck, video demo 5min)</div>
+<div class="bullet-item">Certificado de completitud (si meet criterios)</div>
+<h3 class="subsection-title" id="totales-library-c57e15">TOTALES LIBRARY</h3>
+<div class="bullet-item"><strong>100+ prompts curados</strong> (descargables, por industria/rol)</div>
+<div class="bullet-item"><strong>Interactive HTML playbook</strong> (con ejemplos, videos, código)</div>
+<div class="bullet-item"><strong>20+ templates</strong> (por módulo: flujos, dashboards, Custom GPT instructions)</div>
+<div class="bullet-item"><strong>Case studies</strong> (capstones destacados, con permiso)</div>
+<div class="bullet-item"><strong>Referencia rápida</strong> (cheatsheets, guías 1-pager)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-modelo-de-evaluacin-y-certificacin-ecc212" data-searchable aria-labelledby="head-8-modelo-de-evaluacin-y-certificacin-ecc212">
+            <div class="phase-header" id="head-8-modelo-de-evaluacin-y-certificacin-ecc212" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Modelo de Evaluación y Certificación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="evaluacin-continua-39546c">Evaluación Continua</h3>
+<p>Durante bootcamp, monitoreamos:</p>
+<div class="bullet-item"><strong>Participación:</strong> Asistencia (≥80%), preguntas, laboratorio engagement</div>
+<div class="bullet-item"><strong>Comprensión:</strong> Worksheets completados, prompts de calidad creciente</div>
+<div class="bullet-item"><strong>Aplicación:</strong> Evidencia de uso real (screenshots, flujos actualizados)</div>
+<p><strong>NO hay examen formal.</strong> Evaluación es observable (learning by doing).</p>
+<h3 class="subsection-title" id="certificacin-dual-06d417">Certificación Dual</h3>
+<h4 class="h4-title">Certificado de Asistencia</h4>
+<div class="bullet-item"><strong>Requisito:</strong> Asistencia ≥80% (16h de 20h)</div>
+<div class="bullet-item"><strong>Otorgado a:</strong> Todos que completen</div>
+<div class="bullet-item"><strong>Valor:</strong> Continuidad educativa, credencial básica</div>
+<h4 class="h4-title">Certificado de Competencia</h4>
+<div class="bullet-item"><strong>Requisito:</strong> Asistencia ≥80% + capstone aprobado (score ≥3.5/5 en rúbrica)</div>
+<div class="bullet-item"><strong>Otorgado a:</strong> Los que demuestran dominio de 3 pilares aplicados</div>
+<div class="bullet-item"><strong>Valor:</strong> Preparación probada para PE-01, evidencia con empleadores, reconocimiento de habilidades IA</div>
+<div class="bullet-item"><strong>Validez:</strong> Permanente (skill no deprecia)</div>
+<h3 class="subsection-title" id="rbrica-de-capstone-scoring-4d6e88">Rúbrica de Capstone (Scoring)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Criterio</th><th scope="col">Excelente (5)</th><th scope="col">Bueno (4)</th><th scope="col">Satisfactorio (3)</th><th scope="col">Insuficiente (&lt;3)</th></tr></thead><tbody><tr><td><strong>Intención clara</strong></td><td>Resuelve problema real, impacto evidente, justificación sólida</td><td>Problema claro, impacto razonable</td><td>Problema identificado, impacto genérico</td><td>Problema vago, impacto indefinido</td></tr><tr><td><strong>Implementación</strong></td><td>IA integrada naturalmente, prompts robustos, flujo operacional probado</td><td>IA integrada, prompts funcionan, flujo diseñado</td><td>IA presente, prompts básicos, flujo parcial</td><td>Poco uso IA, prompts débiles, no operacional</td></tr><tr><td><strong>Impacto</strong></td><td>Ganancia de tiempo cuantificada (4-10h/semana), resultados superiores</td><td>Tiempo ahorrado estimado (2-4h/semana), mejora notable</td><td>Algo de ahorro, mejora observable</td><td>No evidente impacto</td></tr><tr><td><strong>Transferencia</strong></td><td>Claramente replicable, enseña concepto profundo, aplicable a otros roles</td><td>Buena documentación, replicable con instrucciones, transferencia posible</td><td>Documentado pero requiere experto, transferencia parcial</td><td>Poco evidente qué aprender</td></tr></tbody></table></div>
+<p class="key-value"><strong>Nota de corte:</strong> ≥3.5/5 (suma ponderada de 4 criterios)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-modelo-comercial-79a451" data-searchable aria-labelledby="head-9-modelo-comercial-79a451">
+            <div class="phase-header" id="head-9-modelo-comercial-79a451" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="pricing-cannico-2972be">Pricing Canónico</h3>
+<h4 class="h4-title">Segmento PERSONAS (B2C)</h4>
+<div class="bullet-item"><strong>Precio de lista:</strong> COP 800,000 por persona</div>
+<div class="bullet-item"><strong>Formas de pago:</strong></div>
+<div class="bullet-item">Pago completo (descuento 5%): COP 760,000</div>
+<div class="bullet-item">2 cuotas sin interés: COP 400,000 × 2</div>
+<div class="bullet-item">Mensualidad (Wompi, PSE, tarjeta): COP 800,000</div>
+<div class="bullet-item"><strong>Crédito de puente (WS-08):</strong> 100% del pago WS-08 (COP 200,000 típico) acreditado contra BC-06, válido 6 meses post-WS-08</div>
+<h4 class="h4-title">Segmento EMPRESAS (B2B)</h4>
+<div class="bullet-item"><strong>Precio:</strong> COP 12,000,000 fijo (cubre hasta 20 personas, cohorte privada)</div>
+<div class="bullet-item"><strong>Incluye:</strong></div>
+<div class="bullet-item">Bootcamp customizado a industria/procesos empresa</div>
+<div class="bullet-item">Facilitador dedicado (no compartido)</div>
+<div class="bullet-item">Sesión de diagnóstico inicial (2h)</div>
+<div class="bullet-item">Sesión post-bootcamp de integración a operaciones (2h)</div>
+<div class="bullet-item">Soporte especializado 4 semanas post (email + calls)</div>
+<div class="bullet-item"><strong>Forma de pago:</strong> Típicamente en 2-3 facturas (factura inicial 40%, post-sesión 1 → 30%, final → 30%)</div>
+<div class="bullet-item"><strong>Descuento volumen:</strong> Si &gt;20 personas, se negocia formato (múltiples cohortes)</div>
+<h3 class="subsection-title" id="unit-economics-personas-8ee507">Unit Economics (PERSONAS)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Concepto</th><th scope="col">COP</th></tr></thead><tbody><tr><td>Ingreso por participante</td><td>800,000</td></tr><tr><td><strong>COGS:</strong></td><td></td></tr><tr><td>Facilitador (1.5h by 20h × COP 150k/h)</td><td>45,000</td></tr><tr><td>Infraestructura, tools, platform (prorr.)</td><td>25,000</td></tr><tr><td>Soporte post-bootcamp (1 mes)</td><td>35,000</td></tr><tr><td>Subtotal COGS</td><td>~105,000</td></tr><tr><td><strong>Margen Bruto</strong></td><td><strong>695,000 (87%)</strong></td></tr><tr><td><strong>Margen Neto</strong> (después SG&amp;A central ~30%)</td><td><strong>486,500 (61%)</strong></td></tr></tbody></table></div>
+<p class="key-value"><strong>Model de cohorte:</strong></p>
+<div class="bullet-item">Mínima viable: 8 personas (puede hacerse, pero riesgo)</div>
+<div class="bullet-item">Ideal: 12-15 personas (multiplicador de eficiencia)</div>
+<div class="bullet-item">Máxima (no-virtual): 20 personas</div>
+<h3 class="subsection-title" id="puente-educativo-crdito-ws08-bc06-96cc95">Puente Educativo: Crédito WS-08 → BC-06</h3>
+<p class="key-value"><strong>Política:</strong></p>
+<div class="bullet-item">Si completaste WS-08 en últimos 6 meses, tu pago (típicamente COP 200k) se <strong>acredita 100%</strong> contra BC-06</div>
+<div class="bullet-item">Resultado: BC-06 cuesta COP 600k (no 800k) después del crédito</div>
+<div class="bullet-item"><strong>Validez:</strong> 6 meses post-WS-08, luego caduca</div>
+<p class="key-value"><strong>Rationale:</strong> WS-08 es puerta de entrada (diagnóstico); BC-06 es implementación. El crédito incentiva continuidad sin &quot;doble pago&quot;.</p>
+<h3 class="subsection-title" id="descuentos-y-promociones-7452cc">Descuentos y Promociones</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Segmento</th><th scope="col">Descuento</th><th scope="col">Condición</th></tr></thead><tbody><tr><td>Referido</td><td>COP 50k crédito</td><td>Si traes 1+ person nueva a MetodologIA</td></tr><tr><td>Grupo (3+)</td><td>10%</td><td>Si vienes con 3+ colegas</td></tr><tr><td>Alumni MetodologIA</td><td>15%</td><td>Si ya completaste otro programa</td></tr><tr><td>Early bird</td><td>8%</td><td>Primeras 48h de apertura cohorte</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-operacin-y-logstica-26471f" data-searchable aria-labelledby="head-10-operacin-y-logstica-26471f">
+            <div class="phase-header" id="head-10-operacin-y-logstica-26471f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Operación y Logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="modalidades-de-entrega-0d13b1">Modalidades de Entrega</h3>
+<h4 class="h4-title">Opción 1: Intensivo (2 días)</h4>
+<div class="bullet-item">Viernes 9am-6pm + Sábado 9am-6pm (con breaks, ~16h participación activa)</div>
+<div class="bullet-item">Para personas con poco tiempo / cohortes pequeñas</div>
+<div class="bullet-item">Ventaja: Inmersión total, momentum</div>
+<div class="bullet-item">Desventaja: Cansancio, menos tiempo aplicar entre módulos</div>
+<h4 class="h4-title">Opción 2: Comprimido (5 días)</h4>
+<div class="bullet-item">Lunes-Viernes, 9am-1pm (4h sincrónico + 2h asincrónico)</div>
+<div class="bullet-item">Estándar recomendado</div>
+<div class="bullet-item">Ventaja: Balance inmersión + tiempo aplicar, momentum sin burnout</div>
+<div class="bullet-item">Desventaja: Requiere semana dedicada</div>
+<h4 class="h4-title">Opción 3: Flexible (3 semanas)</h4>
+<div class="bullet-item">2 sesiones de 3h por semana (jue+sab)</div>
+<div class="bullet-item">Para empleados con agendas rígidas</div>
+<div class="bullet-item">Ventaja: Flexible, más tiempo aplicar</div>
+<div class="bullet-item">Desventaja: Menos momentum, abandono si disruption</div>
+<div class="bullet-item">NO recomendado para empresas (requiere intensidad)</div>
+<h3 class="subsection-title" id="infraestructura-requerida-1ab92d">Infraestructura Requerida</h3>
+<p class="key-value"><strong>Plataforma:</strong></p>
+<div class="bullet-item">Zoom (sesiones sincrónicas, recording automático)</div>
+<div class="bullet-item">Slack (comunicación, Q&amp;A, community)</div>
+<div class="bullet-item">Google Drive (compartir templates, worksheets, biblioteca)</div>
+<div class="bullet-item">ChatGPT/Gemini (herramienta principal, participante provee su cuenta o acceso)</div>
+<p class="key-value"><strong>Pre-bootcamp:</strong></p>
+<div class="bullet-item">Onboarding call (20min, semanal antes de start):</div>
+<div class="bullet-item">Verificar setup técnico</div>
+<div class="bullet-item">Clarificar expectativas</div>
+<div class="bullet-item">Diagnosticar dolor/objetivo personal</div>
+<div class="bullet-item">Asignar facilitador/embajador</div>
+<div class="bullet-item">Pre-work (videos asincrónico, 30min):</div>
+<div class="bullet-item">&quot;Qué es IA en 10 minutos&quot;</div>
+<div class="bullet-item">&quot;El problema del ocupado productivo&quot;</div>
+<div class="bullet-item">&quot;Los 3 Pilares&quot;</div>
+<div class="bullet-item">Workspace setup:</div>
+<div class="bullet-item">Crear ChatGPT/Gemini cuenta (si no tiene)</div>
+<div class="bullet-item">Acceso a Slack grupo</div>
+<div class="bullet-item">Descarga templates iniciales</div>
+<h3 class="subsection-title" id="durante-bootcamp-12b76e">Durante Bootcamp</h3>
+<p class="key-value"><strong>Estructura diaria típica (4h sesión):</strong></p>
+<div class="bullet-item">Warm-up + repaso (10min)</div>
+<div class="bullet-item">Micro-teoría (15min)</div>
+<div class="bullet-item">Demo con herramientas en vivo (20min)</div>
+<div class="bullet-item">Laboratorio guiado (participante hace, facilitador ayuda) (60min)</div>
+<div class="bullet-item">Ejercicio aplicado a caso real del participante (40min)</div>
+<div class="bullet-item">Cierre + Q&amp;A (15min)</div>
+<p class="key-value"><strong>Soporte durante:</strong></p>
+<div class="bullet-item">Facilitador: Disponible en sesión (troubleshooting, preguntas)</div>
+<div class="bullet-item">Slack: &lt;2h response time</div>
+<div class="bullet-item">Office hours (async): 1 sesión de 1h mínimo (troubleshooting, personalizado)</div>
+<p class="key-value"><strong>Ritmo asincrónico:</strong></p>
+<div class="bullet-item">Worksheet completada por módulo (deadline: EOD siguiente)</div>
+<div class="bullet-item">Prompts/protocolos aplicados a caso real</div>
+<div class="bullet-item">Slack: compartir avances, pedir feedback</div>
+<h3 class="subsection-title" id="postbootcamp-primer-mes-e984d4">Post-Bootcamp (Primer Mes)</h3>
+<p class="key-value"><strong>Consolidación:</strong></p>
+<div class="bullet-item">Email + Slack support: &lt;1 día respuesta</div>
+<div class="bullet-item">1 sesión &quot;integración&quot; (30min, grupal o 1:1)</div>
+<div class="bullet-item">Monthly check-in call (opcional, para que quieran continuar a PE-01)</div>
+<p class="key-value"><strong>Campus + Community:</strong></p>
+<div class="bullet-item">Acceso a campus de aprendizaje MetodologIA (4 semanas incluído, luego COP 20k/mes opcional)</div>
+<div class="bullet-item">Alumni Slack channel (permanente)</div>
+<div class="bullet-item">Masterclass mensual (gratuita para alumni)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-soporte-sla-y-campus-7eef9b" data-searchable aria-labelledby="head-11-soporte-sla-y-campus-7eef9b">
+            <div class="phase-header" id="head-11-soporte-sla-y-campus-7eef9b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Soporte, SLA y Campus</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="matriz-de-soporte-7b44cf">Matriz de Soporte</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Tipo</th><th scope="col">Medio</th><th scope="col">SLA</th><th scope="col">Quién</th></tr></thead><tbody><tr><td><strong>Urgente</strong> (bloqueado en ejercicio)</td><td>Slack @facilitador</td><td>&lt;1h (durante bootcamp)</td><td>Facilitador asignado</td></tr><tr><td><strong>Técnico</strong> (IA, acceso, etc.)</td><td>Slack + email</td><td>&lt;2h</td><td>Tech support MetodologIA</td></tr><tr><td><strong>Pedagógico</strong> (no entiendo concepto)</td><td>Slack, office hours</td><td>&lt;24h</td><td>Facilitador</td></tr><tr><td><strong>Post-bootcamp</strong> (después 4 sem)</td><td>Email (boletín + office hrs)</td><td>&lt;2 días</td><td>Alumni team</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="campus-acadmico-incluido-4-semanas-luego-cop-20kme-13dc49">Campus Académico (Incluido 4 semanas, luego COP 20k/mes)</h3>
+<p class="key-value"><strong>Durante bootcamp:</strong> Acceso FULL</p>
+<div class="bullet-item">Video recoding de todas las sesiones (permanente)</div>
+<div class="bullet-item">Biblioteca: 100+ prompts, templates, case studies</div>
+<div class="bullet-item">Foros: Hacer preguntas, compartir capstones</div>
+<div class="bullet-item">Masterclass archive: Sesiones anteriores (IA, productividad, etc.)</div>
+<p class="key-value"><strong>Post-bootcamp (4 semanas, gratuito):</strong></p>
+<div class="bullet-item">Acceso a materials sigue</div>
+<div class="bullet-item">Masterclass mensual (live, gratuita)</div>
+<div class="bullet-item">Comunidad Slack activa</div>
+<div class="bullet-item">Optional: Coaching 1:1 (COP 300-500k por sesión)</div>
+<p class="key-value"><strong>Después 4 semanas (OPT-IN a COP 20k/mes):</strong></p>
+<div class="bullet-item">Acceso continuado a recursos</div>
+<div class="bullet-item">Participación en masterclass nuevo</div>
+<div class="bullet-item">Actualización de biblioteca (nuevos prompts, case studies)</div>
+<div class="bullet-item">Comunidad de práctica (cohort calls, proyectos colaborativos)</div>
+<h3 class="subsection-title" id="embajador-asignado-personas-y-empresas-7b51ea">Embajador Asignado (Personas y Empresas)</h3>
+<p class="key-value"><strong>Quién es:</strong> Facilitador o alumni senior responsable del seguimiento.</p>
+<p class="key-value"><strong>Responsabilidades:</strong></p>
+<div class="bullet-item">Pre-bootcamp: Onboarding call, diagnóstico, expectativas</div>
+<div class="bullet-item">Durante: Check-in mid-bootcamp (¿cómo va?), resolver blockers</div>
+<div class="bullet-item">Post: Integración a PE-01 (si es candidate), feedback, certificación</div>
+<p class="key-value"><strong>Disponibilidad:</strong> Email + Slack, &lt;24h respuesta</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-segmentacin-personas-vs-empresas-daa2e7" data-searchable aria-labelledby="head-12-segmentacin-personas-vs-empresas-daa2e7">
+            <div class="phase-header" id="head-12-segmentacin-personas-vs-empresas-daa2e7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Segmentación: PERSONAS vs. EMPRESAS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="diferencias-clave-7fa4b8">Diferencias Clave</h3>
+<h4 class="h4-title">PERSONAS (B2C)</h4>
+<div class="bullet-item"><strong>Precio:</strong> COP 800k</div>
+<div class="bullet-item"><strong>Cohorte:</strong> Grupos abiertos, 10-18 personas diversas</div>
+<div class="bullet-item"><strong>Duración:</strong> 5 días (opción flexible: 3 semanas)</div>
+<div class="bullet-item"><strong>Customización:</strong> Genérica (templates para roles generales)</div>
+<div class="bullet-item"><strong>Aplicación:</strong> Caso personal (tu rol, tu equipo interno)</div>
+<div class="bullet-item"><strong>Post:</strong> Alumni community, campus abierta</div>
+<div class="bullet-item"><strong>Objetivo:</strong> Transformación personal + preparación PE-01</div>
+<h4 class="h4-title">EMPRESAS (B2B, ≤20 personas)</h4>
+<div class="bullet-item"><strong>Precio:</strong> COP 12M (cohorte privada, hasta 20)</div>
+<div class="bullet-item"><strong>Cohorte:</strong> Grupo interno (mismo empresa o partner)</div>
+<div class="bullet-item"><strong>Duración:</strong> 5 días intensivo (no flexible, sincronización es crítica)</div>
+<div class="bullet-item"><strong>Customización:</strong> ALTA (diagrama de procesos empresa, diagnóstico inicial, casos reales empresa)</div>
+<div class="bullet-item"><strong>Aplicación:</strong> Proceso operacional real (ventas, marketing, operaciones identificado)</div>
+<div class="bullet-item"><strong>Post:</strong> Integración a operaciones, soporte 4 semanas, optional follow-up</div>
+<div class="bullet-item"><strong>Objetivo:</strong> Transformación operacional (equipo completo amplificado)</div>
+<h3 class="subsection-title" id="customizacin-empresas-74c828">Customización Empresas</h3>
+<p class="key-value"><strong>Diagnóstico inicial (incluido):</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Entrevista con stakeholders (2-3h)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Mapeo: Procesos críticos, pain points, silo información, decisiones lentas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Identificar &quot;quick wins&quot; (dónde IA entra)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Definir métrica de éxito (e.g., &quot;reducir 2 semanas en propuestas&quot;, &quot;respuestas en &lt;24h&quot;)</span></div>
+<p class="key-value"><strong>Durante bootcamp:</strong></p>
+<div class="bullet-item">Ejemplos y casos reales de empresa (no genéricos)</div>
+<div class="bullet-item">Aplicación directa a procesos existentes</div>
+<div class="bullet-item">Custom GPT para proceso empresa (si aplica)</div>
+<p class="key-value"><strong>Post-bootcamp:</strong></p>
+<div class="bullet-item">Sesión &quot;operacionalización&quot; (cómo integrar a workflow daily)</div>
+<div class="bullet-item">Monthly check-in (primeros 3 meses)</div>
+<div class="bullet-item">ROI tracking: Horas ahorradas, calidad mejora, velocity aumenta</div>
+<h3 class="subsection-title" id="contratos-por-segmento-8c3739">Contratos por Segmento</h3>
+<p class="key-value"><strong>PERSONAS:</strong></p>
+<div class="bullet-item">Referencia: Términos estándar en web</div>
+<div class="bullet-item">Cancelación hasta 5 días antes: reembolso 100%</div>
+<div class="bullet-item">Después: No reembolsable, transferible a otra cohorte</div>
+<p class="key-value"><strong>EMPRESAS:</strong></p>
+<div class="bullet-item">Contrato customizado (firma ejecutivas)</div>
+<div class="bullet-item">Claúsula: IP, confidencialidad, datos de empresa</div>
+<div class="bullet-item">Cancelación: Sin reembolso si &lt;10 días antes (evento dado por operativo)</div>
+<div class="bullet-item">Post-servicio SLA: Email/Slack support 4 semanas</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-kpis-del-servicio-079b9c" data-searchable aria-labelledby="head-13-kpis-del-servicio-079b9c">
+            <div class="phase-header" id="head-13-kpis-del-servicio-079b9c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. KPIs del Servicio</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="adquisicin-0aa5fe">Adquisición</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th><th scope="col">Cómo medir</th></tr></thead><tbody><tr><td>CAC (cost of acquisition)</td><td>&lt; COP 150k</td><td>Gasto marketing / # nuevo leads</td></tr><tr><td>Conversión lead-to-pago</td><td>20-28%</td><td>Pagos / leads calificados</td></tr><tr><td>Referral rate</td><td>25%+</td><td>Nuevos via referido / total</td></tr><tr><td>Net promoter score (NPS, pre-bootcamp)</td><td>&gt;8.5</td><td>Survey: &quot;Recomendarías?&quot;</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="ejecucin-9f1b66">Ejecución</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th><th scope="col">Cómo medir</th></tr></thead><tbody><tr><td>Asistencia</td><td>≥80% (16h/20h)</td><td>Attendance log Zoom</td></tr><tr><td>Completion</td><td>≥95%</td><td>N participantes completan 20h</td></tr><tr><td>Engagement Slack</td><td>≥60% participan</td><td>N posts, answers, preguntas</td></tr><tr><td>Capstone submission</td><td>≥90%</td><td>Submit deliverables finales</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="resultado-impacto-bf3294">Resultado / Impacto</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th><th scope="col">Cómo medir</th></tr></thead><tbody><tr><td>Certificación competencia</td><td>≥75%</td><td>Score ≥3.5/5 en rúbrica</td></tr><tr><td>Time savings (auto-reported)</td><td>5-10h/semana</td><td>Survey post-bootcamp</td></tr><tr><td>Operacionalization</td><td>≥80% usando activamente IA 1m post</td><td>Follow-up: &quot;Usas IA 2+ veces/semana?&quot;</td></tr><tr><td>Upgrade a PE-01</td><td>≥35%</td><td>Tracking: N conversiones</td></tr><tr><td>Recomendación (NPS post)</td><td>&gt;9/10</td><td>Survey: &quot;Overall experience?&quot;</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="empresas-adicionales-2c5aeb">Empresas - Adicionales</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th><th scope="col">Cómo medir</th></tr></thead><tbody><tr><td>Proceso mejorado</td><td>ROI claro</td><td>Métrica pre/post: horas, velocity, calidad</td></tr><tr><td>Adopción interna</td><td>≥75% usa regularmente</td><td>Check-in 30 días: pull-through</td></tr><tr><td>Team satisfaction</td><td>&gt;8/10</td><td>Survey anónima interno</td></tr><tr><td>Recommendation</td><td>Rescuesta (upsell BC-06 otra división)</td><td>Likelihood de referral/rescale</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-trminos-contractuales-fa9eac" data-searchable aria-labelledby="head-14-trminos-contractuales-fa9eac">
+            <div class="phase-header" id="head-14-trminos-contractuales-fa9eac" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 14. Términos Contractuales</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="cancelacin-y-reembolsos-2be430">Cancelación y Reembolsos</h3>
+<p class="key-value"><strong>PERSONAS:</strong></p>
+<div class="bullet-item"><strong>Hasta 10 días antes del start:</strong> Reembolso 100%</div>
+<div class="bullet-item"><strong>5-10 días antes:</strong> Reembolso 50% (costos operacionales)</div>
+<div class="bullet-item"><strong>0-5 días antes:</strong> No reembolsable, transferible a otra cohorte (6 meses)</div>
+<div class="bullet-item"><strong>Después de sesión 1:</strong> No reembolsable</div>
+<p class="key-value"><strong>EMPRESAS:</strong></p>
+<div class="bullet-item"><strong>Hasta 15 días antes:</strong> Reembolso 100%</div>
+<div class="bullet-item"><strong>10-15 días antes:</strong> Reembolso 50%</div>
+<div class="bullet-item"><strong>&lt;10 días:</strong> No reembolsable (gastos facilitador, customización)</div>
+<h3 class="subsection-title" id="certificacin-y-credenciales-492aeb">Certificación y Credenciales</h3>
+<p class="key-value"><strong>Requerimientos:</strong></p>
+<div class="bullet-item">Asistencia ≥80%</div>
+<div class="bullet-item">Capstone completo y aprobado (≥3.5/5)</div>
+<div class="bullet-item">Términos cumplidos (pagos, conducta)</div>
+<p class="key-value"><strong>Certificado de Competencia incluye:</strong></p>
+<div class="bullet-item">Nombre participante, fecha, criterios demostrados</div>
+<div class="bullet-item">QR verificable (blockchain opcional)</div>
+<div class="bullet-item">Permanente (skill no deprecia)</div>
+<div class="bullet-item">Transferible (puedes agregarlo a LinkedIn)</div>
+<h3 class="subsection-title" id="datos-personales-y-privacidad-35b771">Datos Personales y Privacidad</h3>
+<p class="key-value"><strong>Recopilamos:</strong></p>
+<div class="bullet-item">Nombre, email, teléfono</div>
+<div class="bullet-item">Rol, industria, empresa</div>
+<div class="bullet-item">Pain points, objetivos</div>
+<div class="bullet-item">Progreso bootcamp (scores, capstone, feedback)</div>
+<p class="key-value"><strong>Uso:</strong></p>
+<div class="bullet-item">Peer matching (si aplica grupo)</div>
+<div class="bullet-item">Case studies (anonimizados, con permiso)</div>
+<div class="bullet-item">Analytics y mejora programa</div>
+<div class="bullet-item">Marketing (testimonios, con consentimiento)</div>
+<p class="key-value"><strong>Cumplimiento:</strong> LRPDP (Ley Régimen Protección Datos Personales, Colombia), GDPR si es EU</p>
+<p class="key-value"><strong>Derechos:</strong></p>
+<div class="bullet-item">Acceso a tus datos</div>
+<div class="bullet-item">Corrección</div>
+<div class="bullet-item">Eliminación (con restricciones contractuales)</div>
+<div class="bullet-item">Oposición a marketing</div>
+<h3 class="subsection-title" id="ip-y-contenido-fbc3a4">IP y Contenido</h3>
+<p class="key-value"><strong>De MetodologIA:</strong></p>
+<div class="bullet-item">Prompts, templates, playbooks: Propiedad MetodologIA (usable, no revendible)</div>
+<div class="bullet-item">Video recordings: MetodologIA, puedes usar para estudio personal</div>
+<div class="bullet-item">Case studies, nombres: Anonimizados a menos que des permiso</div>
+<p class="key-value"><strong>De Participante:</strong></p>
+<div class="bullet-item">Capstone, Custom GPT, proyectos: Propiedad completa participante</div>
+<div class="bullet-item">MetodologIA puede showcase anonimizado (con permiso)</div>
+<div class="bullet-item">Ideas: Confidenciales, no compartidas con otros participantes</div>
+<p class="key-value"><strong>Transferencia de Conocimiento:</strong></p>
+<div class="bullet-item">Eres dueño de tus prompts, flujos, documentación</div>
+<div class="bullet-item">Puedes aplicar a múltiples contextos</div>
+<div class="bullet-item">No hay lock-in herramienta o plataforma</div>
+<h3 class="subsection-title" id="community-guidelines-5910c0">Community Guidelines</h3>
+<p class="key-value"><strong>Esperamos:</strong></p>
+<div class="bullet-item">Respeto mutuo (no discriminación, lenguaje apropiado)</div>
+<div class="bullet-item">Confidencialidad (no comparte ideas/businesses ajenas)</div>
+<div class="bullet-item">Soporte colaborativo (ayuda peers si puedes)</div>
+<div class="bullet-item">Responsabilidad (cumples deadlines asincrónico, preguntas claras)</div>
+<p class="key-value"><strong>No toleramos:</strong></p>
+<div class="bullet-item">Spam, solicitud inapropiada</div>
+<div class="bullet-item">Plagiarismo (pasar trabajo ajeno como propio)</div>
+<div class="bullet-item">Comercio sin permiso (usar materiales para vender sin acuerdo)</div>
+<p class="key-value"><strong>Violations:</strong> Warning → Suspensión Slack → Expulsión bootcamp (sin reembolso)</p>
+<h3 class="subsection-title" id="cambios-de-horario-y-contingencias-8dc12a">Cambios de Horario y Contingencias</h3>
+<p class="key-value"><strong>MetodologIA se reserva:</strong></p>
+<div class="bullet-item">Cambiar horario sesión (máx 1 cambio, 10 días notificación)</div>
+<div class="bullet-item">Mover a modalidad async si urgencia técnica (&lt;24h para recuperar)</div>
+<div class="bullet-item">Cambiar facilitador (manteniendo calidad, siempre con aviso)</div>
+<p class="key-value"><strong>Grabaciones:</strong></p>
+<div class="bullet-item">Todas sesiones grabadas y disponibles permanente</div>
+<div class="bullet-item">Puedes ver async si pierdes vivo</div>
+<div class="bullet-item">Acceso 1 año post-bootcamp</div>
+<h3 class="subsection-title" id="postbootcamp-responsabilidades-d80aab">Post-Bootcamp Responsabilidades</h3>
+<p class="key-value"><strong>MetodologIA NO es responsable de:</strong></p>
+<div class="bullet-item">Mantenimiento de Custom GPT (OpenAI cambia, tú mantienes)</div>
+<div class="bullet-item">Cambios de plataforma IA (si ChatGPT pivota, aprendes Gemini)</div>
+<div class="bullet-item">Adopción post-bootcamp (si no aplicas = no es culpa nuestro)</div>
+<p class="key-value"><strong>MetodologIA SÍ provee:</strong></p>
+<div class="bullet-item">Soporte técnico inicial (4 semanas)</div>
+<div class="bullet-item">Office hours (follow-up) gratuito 1 mes</div>
+<div class="bullet-item">Campus acceso (materiales)</div>
+<div class="bullet-item">Coaching optional (pagado)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="15-protocolo-de-contingencia-plan-b-2ff788" data-searchable aria-labelledby="head-15-protocolo-de-contingencia-plan-b-2ff788">
+            <div class="phase-header" id="head-15-protocolo-de-contingencia-plan-b-2ff788" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 15. Protocolo de Contingencia (Plan B)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="si-hay-restriccin-ti-en-empresa-firewall-chatgpt-p-b56d0b">Si hay restricción TI en empresa (Firewall ChatGPT, por ejemplo)</h3>
+<p class="key-value"><strong>Soluciones alternativas:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Claude.ai (Anthropic) — similar a ChatGPT, mismo acceso</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Google Gemini (más universal en corporativos)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Microsoft Copilot (si tienen Microsoft 365)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>On-premises soluciones (si empresa tiene LLM local)</span></div>
+<p class="key-value"><strong>Plan de bootcamp:</strong></p>
+<div class="bullet-item">Primer día: Diagnóstico de restricciones</div>
+<div class="bullet-item">Adaptar a herramienta disponible (conceptos son agnósticos)</div>
+<div class="bullet-item">Custom GPT → Custom Claude Project (si aplica)</div>
+<div class="bullet-item">Lab asincrónico con acceso compartido si restricción es personal</div>
+<h3 class="subsection-title" id="si-participante-no-tiene-acceso-estable-a-internet-f77a37">Si participante no tiene acceso estable a internet</h3>
+<p class="key-value"><strong>Mitigation:</strong></p>
+<div class="bullet-item">Grab todos los materiales pre-bootcamp (PDFs, offline videos)</div>
+<div class="bullet-item">Sesión async + replay (puedes ver después)</div>
+<div class="bullet-item">Ejercicios offline: worksheets, prompts en doc</div>
+<div class="bullet-item">Reintegración cuando internet vuelve</div>
+<h3 class="subsection-title" id="si-cohorte-cae-a-8-personas-viability-risk-c710f4">Si cohorte cae a &lt;8 personas (viability risk)</h3>
+<p class="key-value"><strong>Opciones:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Combinar con otra cohorte (virtual)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Postpone a próxima (con crédito reembolso o transferencia)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Formato 1:1 intenso (COP 1M, 5 sesiones de 4h)</span></div>
+<h3 class="subsection-title" id="si-facilitador-no-puede-enfermedad-renuncia-fc1592">Si facilitador no puede (enfermedad, renuncia)</h3>
+<p class="key-value"><strong>Continuidad:</strong></p>
+<div class="bullet-item">Backup facilitador capacitado asume (sin interrupción)</div>
+<div class="bullet-item">Si cambio mid-bootcamp: Sesión transition (facilitador anterior → nuevo)</div>
+<div class="bullet-item">Grabaciones disponibles (no pierden contenido)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="16-roadmap-futuro-y-evolucin-e3b064" data-searchable aria-labelledby="head-16-roadmap-futuro-y-evolucin-e3b064">
+            <div class="phase-header" id="head-16-roadmap-futuro-y-evolucin-e3b064" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 16. Roadmap Futuro y Evolución</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="variantes-planeadas-20262027-896459">Variantes Planeadas (2026-2027)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>BC-06 Advanced (Q3 2026):</strong> Después PE-01, sistemas IA aún más complejos (agents, reasoning)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>BC-06 Industria Vertical:</strong> Versiones específicas (healthcare, fintech, education)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>BC-06 Team Builder:</strong> Cómo liderar adopción IA en tu equipo (Q4 2026)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Certificación Partner:</strong> Permitir facilitadores externos con licencia MetodologIA (2027)</span></div>
+<h3 class="subsection-title" id="feedback-loop-43a080">Feedback Loop</h3>
+<div class="bullet-item">Survey post-bootcamp (NPS, mejoras)</div>
+<div class="bullet-item">Capstone analysis (qué resuelven, dónde fallan)</div>
+<div class="bullet-item">Upgrade tracking (% van a PE-01)</div>
+<div class="bullet-item">Alumni pulse checks (¿qué falta?)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="cierre-promesa-central-1627b1" data-searchable aria-labelledby="head-cierre-promesa-central-1627b1">
+            <div class="phase-header" id="head-cierre-promesa-central-1627b1" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Cierre: Promesa Central</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>El Bootcamp BC-06 &quot;Trabajar Amplificado&quot; es tu pasaporte de productividad del siglo XXI.</strong></p>
+<p>Recuperarás <strong>5-10 horas/semana</strong>, diseñarás flujos donde <strong>IA es tu aliado</strong>, y demostarás competencia en <strong>3 pilares que importan</strong>: Intención, Foco, Apalancamiento.</p>
+<p>Saldrás con:</p>
+<div class="bullet-item">100+ prompts operacionales</div>
+<div class="bullet-item">1 Custom GPT o flujo amplificado personal</div>
+<div class="bullet-item">1 capstone validado</div>
+<div class="bullet-item">Certificado de competencia</div>
+<div class="bullet-item">Comunidad de peers amplificados</div>
+<p><strong>No es &quot;aprender IA teórica.&quot;</strong></p>
+<p><strong>Es transformar cómo trabajas.</strong></p>
+<hr class="divider">
+<p class="key-value"><strong>Documento autorizado por:</strong></p>
+<p>Dirección Académica MetodologIA</p>
+<p>Fecha: 2026-03-24</p>
+<p>Versión: 1.0</p>
+<p>Próxima revisión: 2026-Q4</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

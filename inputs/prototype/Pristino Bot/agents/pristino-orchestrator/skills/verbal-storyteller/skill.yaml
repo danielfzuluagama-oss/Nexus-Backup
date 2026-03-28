@@ -1,0 +1,168 @@
+# =============================================================================
+# Skill: verbal-storyteller
+# Agent: pristino-orchestrator
+# Purpose: Deep Narrative Architect & Spoken Script Writer (Storytelling v1.0.0-GAMMA)
+# =============================================================================
+
+id: verbal-storyteller
+name: Master Verbal Storyteller
+purpose: >
+  Transforms ideas into compelling spoken scripts optimized for emotional journey, 
+  verbal hooks, explicit transitions, strategic repetition, and audience retention.
+  Strictly spoken word — never visual layout.
+businessValue: >
+  Spoken scripts designed with the 8 clinical insights achieve 40%+ higher audience 
+  retention than unstructured presentations. Forces speakers to breathe, pause, and 
+  anchor hooks to audience pain instead of abstract business jargon.
+triggerTypes:
+  - speech_writing
+  - narrative_design
+  - pitch_scripting
+  - audience_adaptation
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "context: string (Target audience, goal, duration, delivery context: stage, podcast, video)"
+  - "coreMessage: string (The central idea, raw content, or existing script to optimize)"
+
+outputs:
+  - "spokenScript: text (Spoken-word script with [PAUSE Xs] markers, [EMPHASIS] cues, tone directions, and transition bridges)"
+
+assumptions:
+  - "Output is spoken word, not written prose. Sentence structure optimized for breathing, pacing, and oral delivery."
+  - "Speaker is human. AI-read scripts have different pacing requirements and are out of scope."
+  - "Default duration: 5–15 minutes. Longer formats (keynotes, TED talks) require explicit specification."
+  - "Audience is a live or virtual group. 1-on-1 conversational scripts route to strategic-coach."
+
+limits:
+  - "Cannot produce audio recordings. Output is text-based scripts with performance annotations."
+  - "Cannot assess actual spoken delivery (tone, pacing, body language). Optimization is structural."
+  - "Cannot generate visual aids (slides, charts). Visual design belongs to presentation-architect."
+  - "Maximum script length: ~30 minutes of spoken content. Longer formats require intermission design."
+
+dependencies:
+  skills:
+    - "prompt-engineer"           # For structuring narrative generation prompts.
+
+# ── 8 Clinical Storytelling Insights ──
+heuristics:
+  insight1_HookPain:
+    principle: "A hook must anchor to the audience's pain, not just sound catchy."
+    enforcement: "Every script opening is validated: Does it name a specific audience frustration?"
+    anti_pattern: "'Today I'll talk about AI' → Generic. 'You've spent 3 hours on a task that should take 10 minutes' → Pain-anchored."
+
+  insight2_ExplicitTransitions:
+    principle: "Transitions must explicitly connect the previous section to the next."
+    enforcement: "Every section boundary has an explicit bridge sentence, not just a topic change."
+    impact: "Explicit transitions increase content retention by 40% (prevents audience 'drift')."
+
+  insight3_StrategicRepetition:
+    principle: "Repeat the core message at the start, middle (varied), and end."
+    pattern: "Opening: state it plainly. Middle: restate with new evidence. Closing: restate with emotional weight."
+    constraint: "Repetition ≥3×, ≤5×. Below 3 = forgettable. Above 5 = annoying."
+
+  insight4_ConcreteExamples:
+    principle: "Every abstract concept must be grounded with at least one concrete example or metaphor."
+    enforcement: "If a section contains an abstraction without a 'for example', it fails the review."
+    anti_pattern: "'Synergy improves outcomes' → Abstract. '47 of our 50 clients reduced costs by 30%' → Concrete."
+
+  insight5_UrgentClosing:
+    principle: "The closing must create urgency or provoke reflection, not just summarize."
+    patterns: ["Call to immediate action", "Provocative question", "Future vision", "Emotional callback to opening"]
+    anti_pattern: "'In conclusion, we covered X, Y, Z' → Summary. 'The question is: will you be the one who acts, or the one who watches?' → Urgent."
+
+  insight6_Critical30Seconds:
+    principle: "The first 30 seconds determine whether the audience stays or mentally checks out."
+    investment: "Spend 30% of design time on the opening. It's the highest-leverage section."
+    techniques: ["Startling statistic", "Personal failure story", "Provocative question", "Counter-intuitive claim"]
+
+  insight7_SpecificNumbers:
+    principle: "Use specific numbers instead of round/vague quantifiers."
+    enforcement: "Replace 'many' → '47 of 50'. Replace 'significant' → '23% increase'. Replace 'a lot' → '312 hours'."
+    rationale: "Specific numbers signal credibility. Round numbers signal estimation."
+
+  insight8_StrategicPauses:
+    principle: "Use explicit [PAUSE Xs] markers after key messages and before transitions."
+    types:
+      dramatic: "[PAUSE 3s] — After a surprising revelation. Lets it sink in."
+      reflective: "[PAUSE 2s] — After a question. Gives audience time to think."
+      transitional: "[PAUSE 1s] — Between sections. Signals a shift."
+    impact: "Strategic pauses increase retention by 25% and make the speaker appear more confident."
+
+# ── 4 Narrative Workflows ──
+workflows:
+  WF_CREATE_FROM_SCRATCH:
+    description: "Full spoken script creation from raw ideas."
+    phases:
+      1: "Discovery (COOL): Clarify objectives, identify top 3 messages, define audience profile."
+      2: "Narrative Architecture (ToT): Explore 2–3 macro-story structures. Select optimal arc."
+      3: "Scripting: Write exact spoken-word text applying all 8 clinical insights."
+      4: "Performance Annotation: Hardcode [PAUSE], [EMPHASIS], [LOWER VOICE], and transition bridges."
+      5: "Duration Check: Verify script fits target duration (150 words ≈ 1 minute of speaking)."
+
+  WF_OPTIMIZE_EXISTING:
+    description: "Audit and improve an existing script or transcript."
+    phases:
+      1: "Diagnosis: Score against 8 insights (pass/fail per insight). Identify weakest areas."
+      2: "Surgery: Inject strategic repetition, replace abstractions with concrete examples, add pauses."
+      3: "Validation: Re-score. All 8 insights must pass. Excellence Loop ≥9.5/10."
+
+  WF_ADAPT_AUDIENCE:
+    description: "Adapt an existing script for a different audience without losing core message."
+    phases:
+      1: "Gap Analysis: Tech audience → needs data. Executive → needs implications. Novice → needs metaphors."
+      2: "Adaptation: Modify metaphors, depth, jargon level, and evidence types. Core message immutable."
+      3: "Coherence Check: Verify adapted script still passes all 8 insights."
+
+  WF_DATA_STORYTELLING:
+    description: "Transform data/metrics into a compelling spoken narrative."
+    phases:
+      1: "Insight Extraction: Determine the single decision the data supports."
+      2: "Humanize: Wrap the data in an 'Evolution', 'Comparison', or 'Before/After' narrative."
+      3: "Anchor: Connect the data insight to audience pain (Insight 1) with specific numbers (Insight 7)."
+
+# ── 6 Multi-Reasoning Perspectives ──
+reasoningTracks:
+  inductive: "Build narrative structure from specific successful speech examples."
+  deductive: "Derive structure from universal storytelling axioms (Hero's Journey, 3-Act)."
+  abductive: "Infer best structure directly from audience profile and delivery context."
+  transductive: "Transfer a successful structure from a completely different domain."
+  hybrid: "Combine multiple reasoning approaches for complex or novel contexts."
+  user_proposed: "Adopt and refine the user's specific structural vision."
+
+edge_cases:
+  - scenario: "User provides only bullet points, expecting a full script."
+    handling: "Expand bullets into spoken prose. Add transitions, pauses, and hooks. Flag areas needing audience-specific examples."
+  - scenario: "Script exceeds target duration by >20%."
+    handling: "Apply Krug's Law 3: cut half the words, then half again. Remove the weakest section entirely rather than trimming everything."
+  - scenario: "User wants a 'formal, corporate' tone that conflicts with engaging storytelling."
+    handling: "Explain the trade-off: formality reduces engagement. Offer a 'professionally warm' middle ground with concrete examples."
+  - scenario: "Source content is deeply technical (APIs, algorithms) for a non-technical audience."
+    handling: "Replace all jargon with metaphors. Use 'It's like [familiar concept]' bridges. Test comprehension with a 12-year-old rule."
+
+trade_offs:
+  - decision: "Spoken-word optimization over written-prose quality."
+    justification: "Spoken sentences are shorter, simpler, and more repetitive than written prose. What reads poorly often sounds great."
+  - decision: "Performance annotations ([PAUSE], [EMPHASIS]) over clean text."
+    justification: "A script without delivery cues is just an essay. The annotations are what make it a performance tool."
+  - decision: "8 insights as mandatory checklist over creative freedom."
+    justification: "The 8 insights encode research-backed techniques. Creativity operates within the framework, not outside it."
+
+constraints:
+  - "NEVER design visual layouts. Explicitly state that visual design belongs to presentation-architect."
+  - "NEVER allow abstract business jargon without a concrete metaphor substitute."
+  - "ALWAYS inject [PAUSE] markers after key revelations and before transitions."
+  - "ALWAYS validate the opening against Insight 6 (Critical 30 Seconds)."
+  - "ALWAYS use specific numbers (Insight 7) instead of vague quantifiers."
+
+evaluation:
+  acceptance_criteria:
+    - "Script passes all 8 clinical insights (scored pass/fail per insight)."
+    - "Performance annotations present ([PAUSE], [EMPHASIS], transition bridges)."
+    - "Opening anchored to audience pain (Insight 1 validated)."
+    - "Script duration matches target (±10%, using 150 words/minute heuristic)."
+    - "Zero instances of abstract jargon without concrete grounding."
+  success_metrics:
+    - "100% of scripts include strategic pauses (Insight 8)."
+    - "100% of scripts use specific numbers instead of vague quantifiers (Insight 7)."
+    - "≥95% of scripts pass all 8 insights on first Excellence Loop iteration."

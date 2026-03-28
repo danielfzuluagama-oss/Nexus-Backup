@@ -1,0 +1,121 @@
+id: "notes-orchestrator"
+name: "Lean Memory Orchestrator (vNext-GAMMA)"
+version: "1.0.0"
+description: "Curates raw notes, brain dumps, and inbox chaos into structured, actionable knowledge using a mathematical Promotion Score (50% Impact, 30% Urgency, 20% WoW Factor). Routes high-value notes to strategic modules; archives or discards low-value noise."
+owner: "agent_orchestrator"
+category: "cognitive-operation"
+
+business_value: |
+  The average professional captures 50+ notes/week but acts on <10%. This skill applies
+  a mathematical filter to surface the 10% that drives 90% of outcomes, eliminating
+  cognitive overload and preventing high-value insights from drowning in noise.
+
+triggers:
+  - keywords: ["notas", "notes", "brain dump", "ideas", "inbox", "organizar", "curar", "priorizar notas"]
+  - context_patterns:
+      - pattern: "(?i)(organizar|curar|procesar|limpiar).* (notas|ideas|inbox|apuntes)"
+      - pattern: "(?i)(tengo|hay).* (muchas|varias|demasiadas).* (notas|ideas)"
+
+dependencies:
+  skills:
+    - "tasks-orchestrator"    # High-urgency notes route here as actionable tasks.
+    - "strategic-planning"     # Strategic insights route here for OKR/roadmap integration.
+    - "quality-excellence"     # 16D scoring on curated note quality.
+
+assumptions:
+  - "Notes arrive in any format: bullet points, paragraphs, voice transcriptions, screenshots-as-text."
+  - "Each note is atomic. If a note contains 3 unrelated ideas, the skill decomposes it into 3 separate entries."
+  - "Default urgency decay: notes older than 14 days without action lose 50% of their Urgency score."
+  - "User's strategic context (current OKRs, active projects) is available for Impact scoring. Without context, Impact defaults to generic assessment."
+
+limits:
+  - "Cannot read handwritten notes or process images. Input must be text (typed, transcribed, or OCR'd)."
+  - "Cannot determine factual accuracy of notes. Curation is structural and strategic, not fact-checking."
+  - "Maximum batch size: 100 notes per processing cycle. Larger batches require sequential processing."
+  - "Does not replace a second brain tool (Notion, Obsidian). Output is structured text for import, not native integration."
+
+capabilities:
+  promotion_score:
+    formula: "Score = (0.50 × Impact) + (0.30 × Urgency) + (0.20 × WoW)"
+    dimensions:
+      impact:
+        weight: 0.50
+        scale: "0–10"
+        criteria: "How much does acting on this note move the user toward their top 3 priorities?"
+        calibration: "10 = directly advances #1 priority. 5 = tangentially related. 0 = no strategic relevance."
+      urgency:
+        weight: 0.30
+        scale: "0–10"
+        criteria: "Time sensitivity. Does this note lose value if not acted upon within 48 hours?"
+        calibration: "10 = expires today. 5 = this week. 1 = no deadline. Apply 50% decay after 14 days."
+      wow_factor:
+        weight: 0.20
+        scale: "0–10"
+        criteria: "Novelty and insight density. Does this note contain a non-obvious connection or breakthrough idea?"
+        calibration: "10 = paradigm-shifting insight. 5 = useful observation. 1 = common knowledge."
+    thresholds:
+      promote: "Score ≥7.0 → Route to strategic module (tasks, planning, knowledge base)."
+      hold: "Score 4.0–6.9 → Schedule for weekly review ('Someday/Maybe')."
+      archive: "Score 1.0–3.9 → Archive with searchable tags."
+      discard: "Score <1.0 → Discard (with user confirmation)."
+
+  curation_modules:
+    intake:
+      description: "Fast capture with zero friction. Accept any format, any length."
+      processing: "Decompose multi-idea notes into atomic entries. Tag with source and timestamp."
+    classification:
+      description: "Apply Promotion Score to each atomic note."
+      processing: "Score → Threshold → Route decision."
+    routing:
+      promote_to_tasks: "Actionable notes with deadline → tasks-orchestrator."
+      promote_to_strategy: "Strategic insights → strategic-planning."
+      promote_to_knowledge: "Evergreen principles → knowledge base (Firestore)."
+    weekly_review:
+      description: "Friday ritual: process 'Hold' backlog, re-score with fresh context, promote or archive."
+      constraint: "Maximum 30 minutes. If backlog exceeds 30-minute capacity, force-archive lowest-scored items."
+
+workflows:
+  - id: "wflow_note_curation"
+    name: "Full Note Curation Pipeline"
+    steps:
+      - "1. Intake: Receive raw notes. Decompose multi-idea notes into atomic entries."
+      - "2. Scoring: Apply Promotion Score formula to each entry (Impact, Urgency, WoW)."
+      - "3. Routing: Route based on threshold (Promote ≥7.0, Hold 4.0–6.9, Archive 1.0–3.9, Discard <1.0)."
+      - "4. Enrichment: Add tags, source attribution, and strategic context links to promoted notes."
+      - "5. Weekly Review: Re-score 'Hold' backlog. Promote survivors, archive the rest."
+
+edge_cases:
+  - scenario: "User submits a single massive brain dump (>50 ideas in one message)."
+    handling: "Decompose into atomic notes first. Process in order of apparent urgency. Warn user about high volume and estimated processing time."
+  - scenario: "All notes score below the promotion threshold (<7.0)."
+    handling: "Report the scoring results honestly. Suggest the user may need clearer strategic priorities (context for Impact scoring) rather than more notes."
+  - scenario: "User disagrees with a note's score."
+    handling: "Allow manual override. Log the override reason. Adjust scoring calibration for future similar notes."
+  - scenario: "Notes are in multiple languages."
+    handling: "Process each note in its original language. Score language-agnostically. Tag with language for downstream routing."
+
+trade_offs:
+  - decision: "Mathematical scoring over intuitive curation."
+    justification: "Intuition is biased toward recency and emotional salience. The 50/30/20 formula corrects for these biases systematically."
+  - decision: "Atomic decomposition over preserving original note structure."
+    justification: "Multi-idea notes hide low-value items behind high-value ones. Atomic decomposition ensures each idea is evaluated independently."
+  - decision: "14-day urgency decay over permanent urgency scores."
+    justification: "Notes that aren't acted on lose time-sensitive value. The decay mechanism prevents stale urgent notes from crowding current priorities."
+
+constraints:
+  - "NEVER discard a note without user confirmation. Archive first; discard only on explicit approval."
+  - "NEVER skip the Promotion Score calculation. All notes must be scored before routing."
+  - "ALWAYS decompose multi-idea notes into atomic entries before scoring."
+  - "ALWAYS apply the 14-day urgency decay rule on re-scored notes."
+  - "Weekly review MUST complete within 30 minutes. Force-archive excess if needed."
+
+evaluation:
+  acceptance_criteria:
+    - "Every note receives a Promotion Score with visible dimension breakdown (Impact, Urgency, WoW)."
+    - "Routing matches the threshold rules (≥7.0 promote, 4.0–6.9 hold, 1.0–3.9 archive, <1.0 discard)."
+    - "Multi-idea notes are decomposed into atomic entries before scoring."
+    - "Zero notes discarded without user confirmation."
+  success_metrics:
+    - "≥80% of promoted notes result in downstream action (task created, strategy updated, or knowledge stored)."
+    - "Weekly review completes within 30 minutes."
+    - "≥90% of notes processed within 24 hours of intake."

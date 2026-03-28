@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Ejecutar Evento de Activación — SOP — Proceso de Delivery MetodologIA">
+    <title>Ejecutar Evento de Activación — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Operaciones Transversales</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Ejecutar Evento de Activación — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Ejecutar Evento de Activación — SOP</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">- Versión: 1.0 — 10x Elevation Protocol</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">18</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">4</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-fdec8e')" aria-label="Ir a Propósito">Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('1-supuestos-explcitos-9-fbbcfe')" aria-label="Ir a 1. SUPUESTOS EXPLÍCITOS (9)">1. SUPUESTOS EXPLÍCITOS (9)</button>
+<button class="nav-btn" onclick="scrollToSection('2-lmites-93216c')" aria-label="Ir a 2. LÍMITES">2. LÍMITES</button>
+<button class="nav-btn" onclick="scrollToSection('3-criterios-de-aceptacin-10-23d955')" aria-label="Ir a 3. CRITERIOS DE ACEPTACIÓN (10)">3. CRITERIOS DE ACEPTACIÓN (10)</button>
+<button class="nav-btn" onclick="scrollToSection('4-casos-borde-7-6d037e')" aria-label="Ir a 4. CASOS BORDE (7)">4. CASOS BORDE (7)</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-5-fb462a')" aria-label="Ir a 5. DECISIONES DE DISEÑO (5)">5. DECISIONES DE DISEÑO (5)</button>
+<button class="nav-btn" onclick="scrollToSection('6-antipatterns-5-0d178f')" aria-label="Ir a 6. ANTI-PATTERNS (5)">6. ANTI-PATTERNS (5)</button>
+<button class="nav-btn" onclick="scrollToSection('7-fallbacks-5-9421f7')" aria-label="Ir a 7. FALLBACKS (5)">7. FALLBACKS (5)</button>
+<button class="nav-btn" onclick="scrollToSection('workflows-5-uno-por-tipo-de-evento-81ac27')" aria-label="Ir a WORKFLOWS (5 — uno por tipo de evento)">WORKFLOWS (5 — uno por tipo de even</button>
+<button class="nav-btn" onclick="scrollToSection('funnel-conversion-targets-tabla-703edf')" aria-label="Ir a Funnel Conversion Targets (tabla)">Funnel Conversion Targets (tabla)</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-del-sop-1abec3')" aria-label="Ir a Métricas del SOP">Métricas del SOP</button>
+<button class="nav-btn" onclick="scrollToSection('conexiones-y-dependencias-8dac21')" aria-label="Ir a Conexiones y Dependencias">Conexiones y Dependencias</button>
+<button class="nav-btn" onclick="scrollToSection('ecuacin-metodologia-d6e023')" aria-label="Ir a Ecuación MetodologIA">Ecuación MetodologIA</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-cumplimiento-preevento-owner-43cb60')" aria-label="Ir a Checklist de Cumplimiento Pre-Evento (Owner)">Checklist de Cumplimiento Pre-Event</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-cumplimiento-postevento-owner-followu-787937')" aria-label="Ir a Checklist de Cumplimiento Post-Evento (Owner Follow-up)">Checklist de Cumplimiento Post-Even</button>
+<button class="nav-btn" onclick="scrollToSection('escalacin-y-soportes-2d4aa6')" aria-label="Ir a Escalación y Soportes">Escalación y Soportes</button>
+<button class="nav-btn" onclick="scrollToSection('versionado-y-mejora-continua-3b8986')" aria-label="Ir a Versionado y Mejora Continua">Versionado y Mejora Continua</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vehículo:</strong> Bridge Comercial ↔ Delivery</div>
+<div class="bullet-item"><strong>Proceso padre:</strong> Operaciones Transversales (cross-cutting)</div>
+<div class="bullet-item"><strong>Frecuencia:</strong> 2-4 eventos/mes por C-Level, más eventos de Embajadores</div>
+<div class="bullet-item"><strong>Owner:</strong> Cada C-Level en su vertical + Embajadores certificados</div>
+<div class="bullet-item"><strong>Última actualización:</strong> 2026-03-24</div>
+<div class="bullet-item"><strong>Versión:</strong> 1.0 — 10x Elevation Protocol</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-fdec8e" data-searchable aria-labelledby="head-propsito-fdec8e">
+            <div class="phase-header" id="head-propsito-fdec8e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Los eventos de activación son el <strong>PUENTE entre el proceso comercial y el delivery</strong>. Son el mecanismo de conversión donde prospectos experimentan MetodologIA antes de comprar. Este SOP cubre los 5 tipos de eventos de activación que conforman el funnel de conversión.</p>
+<h3 class="subsection-title" id="5-tipos-de-eventos-de-activacin-funnel-1c966b">5 Tipos de Eventos de Activación (Funnel)</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Talk (30-45min)</strong> — Conferencia inspiracional. Genera awareness. CTA: Diagnóstico N0 gratuito.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Diagnóstico N0 (20min)</strong> — Evaluación gratuita del nivel de evolución digital. CTA: Taller/Workshop.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Taller de Activación (1.5-2h)</strong> — Experiencia hands-on con resultado tangible. CTA: Workshop WS-08 o Módulo 0.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Workshop WS-08 (3h)</strong> — Workshop completo standalone. CTA: Módulo 0 del programa.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Módulo 0/Módulo 1 (gratuito)</strong> — Primera sesión del programa, sin costo, sin riesgo. Valida inversión. CTA: Matrícula.</span></div>
+<p class="key-value"><strong>Principio clave:</strong> Cada evento tiene UN ÚNICO CTA claro al siguiente paso del funnel.</p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Talk → Diagnóstico N0 → Taller → Workshop WS-08 → Módulo 0/1 (gratis) → Matrícula</code></pre>
+<p class="key-value"><strong>Roles executores:</strong></p>
+<div class="bullet-item"><strong>Embajador:</strong> Puede ejecutar todos los 5 tipos.</div>
+<div class="bullet-item"><strong>C-Level:</strong> Enfoque primario en Talks y Módulo 0/1.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-supuestos-explcitos-9-fbbcfe" data-searchable aria-labelledby="head-1-supuestos-explcitos-9-fbbcfe">
+            <div class="phase-header" id="head-1-supuestos-explcitos-9-fbbcfe" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 1. SUPUESTOS EXPLÍCITOS (9)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Supuesto</th><th scope="col">Validación</th></tr></thead><tbody><tr><td>1</td><td>Audiencia pre-calificada (minimum interest signal)</td><td>Registro confirmado ≥48h antes; registro debe incluir score de intención</td></tr><tr><td>2</td><td>Venue/plataforma confirmada 72h antes</td><td>Confirmación escrita de disponibilidad, acceso técnico testeado</td></tr><tr><td>3</td><td>Speaker/facilitador preparado con contenido específico</td><td>Deck/outline completado ≥48h antes; rehearsal ejecutado</td></tr><tr><td>4</td><td>Material promocional distribuido (mínimo 48h antes)</td><td>Email + LinkedIn + WhatsApp a registro histórico</td></tr><tr><td>5</td><td>Sistema de registro activo</td><td>Formulario en landing o CRM; capture automático de emails</td></tr><tr><td>6</td><td>Owner de follow-up post-evento asignado</td><td>Persona nombrada explícitamente; checklist de tareas creado</td></tr><tr><td>7</td><td>CRM actualizado con asistentes</td><td>Todos los registros importados en T-24h</td></tr><tr><td>8</td><td>Cada evento tiene EXACTAMENTE UN CTA claro</td><td>CTA explícito en cierre + próximo paso schedulizado</td></tr><tr><td>9</td><td>Módulo 0/1 es SIEMPRE FREE (non-negotiable)</td><td>Zero costo, zero condiciones. Derribamos fricción de inversión</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-lmites-93216c" data-searchable aria-labelledby="head-2-lmites-93216c">
+            <div class="phase-header" id="head-2-lmites-93216c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 2. LÍMITES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Definición</th></tr></thead><tbody><tr><td><strong>Inicio temporal</strong></td><td>T-72h (confirmación de evento)</td></tr><tr><td><strong>Fin temporal</strong></td><td>T+48h (follow-up enviado + CRM actualizado)</td></tr><tr><td><strong>Incluye</strong></td><td>Coordinación pre-evento, ejecución, cierre, follow-up inmediato</td></tr><tr><td><strong>NO incluye</strong></td><td>Creación de contenido (otros SOPs), lead generation/marketing (proceso comercial), delivery post-matrícula (programas)</td></tr><tr><td><strong>Responsable</strong></td><td>Owner del evento (C-Level o Embajador) + Owner de follow-up (puede ser distinto)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-criterios-de-aceptacin-10-23d955" data-searchable aria-labelledby="head-3-criterios-de-aceptacin-10-23d955">
+            <div class="phase-header" id="head-3-criterios-de-aceptacin-10-23d955" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 3. CRITERIOS DE ACEPTACIÓN (10)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Criterio</th><th scope="col">Target</th><th scope="col">Método de Validación</th><th scope="col">Pass/Fail</th></tr></thead><tbody><tr><td><strong>Tasa de asistencia</strong></td><td>≥60% de registrados</td><td>Contador manual + software zoom/meet</td><td>✓ si ≥60%</td></tr><tr><td><strong>Conversión CTA</strong></td><td>Talk: 5%, Diagnóstico: 30%, Taller: 20%, WS-08: 25%, Módulo 0: 20%</td><td>Lead tracked en CRM post-CTA</td><td>✓ si ≥target</td></tr><tr><td><strong>NPS evento</strong></td><td>≥8</td><td>Post-event survey (1 pregunta)</td><td>✓ si ≥8</td></tr><tr><td><strong>Follow-up timing</strong></td><td>&lt;48h después de evento</td><td>Timestamp en CRM</td><td>✓ si &lt;48h</td></tr><tr><td><strong>CRM update timing</strong></td><td>&lt;24h después de evento</td><td>Verificación de field update date</td><td>✓ si &lt;24h</td></tr><tr><td><strong>Contenido entregado</strong></td><td>100% del deck/outline</td><td>Speaker confirm en post-mortem</td><td>✓ si 100%</td></tr><tr><td><strong>Gestión de tiempo</strong></td><td>±5min del timebox planificado</td><td>Reloj en ejecución</td><td>✓ si ±5min</td></tr><tr><td><strong>Setup técnico</strong></td><td>Audio/video/screen sin issues</td><td>Tech lead sign-off</td><td>✓ si sin issues</td></tr><tr><td><strong>Evaluación speaker</strong></td><td>≥4/5</td><td>Encuesta a asistentes</td><td>✓ si ≥4/5</td></tr><tr><td><strong>Next step schedulizado</strong></td><td>100% de leads convertidos tienen cita agendada</td><td>CRM field: next_event_date populated</td><td>✓ si 100%</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-casos-borde-7-6d037e" data-searchable aria-labelledby="head-4-casos-borde-7-6d037e">
+            <div class="phase-header" id="head-4-casos-borde-7-6d037e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 4. CASOS BORDE (7)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Caso</th><th scope="col">Trigger</th><th scope="col">Protocolo</th><th scope="col">Owner</th></tr></thead><tbody><tr><td><strong>Cero registros &lt;24h</strong></td><td>No hay asistentes confirmados 24h antes</td><td>Cancelar evento, enviar comunicado, reschedule en ≤7 días con boost promocional</td><td>C-Level/Embajador</td></tr><tr><td><strong>Falla técnica mid-evento</strong></td><td>Plataforma cae o audio muere</td><td>Switchear a backup (Zoom room pre-creada OR call phone bridge); reschedule 80% del contenido para session adicional dentro de 48h</td><td>Tech Lead + Owner</td></tr><tr><td><strong>Audiencia &gt;2x esperada</strong></td><td>Capacity overflow</td><td>Overflow room, simultaneous stream, o split en dos horarios. Protocolo: comunicar cambio ≤30min antes de inicio</td><td>Owner evento</td></tr><tr><td><strong>Audiencia muy pequeña (&lt;3)</strong></td><td>Low attendance</td><td>Pivot a formato íntimo (1-on-1 o small group); upgrade experience quality; garantizar CTA mismo</td><td>Owner evento</td></tr><tr><td><strong>Prospect quiere skip funnel</strong></td><td>Asistente quiere saltarse a matrícula directo</td><td>Fast-track protocol: Contactar Sales Lead + C-Level; ejecutar 15min discovery call; si qualified, matrícula directa. Log en CRM como &quot;accelerated path&quot;</td><td>Owner evento + Sales</td></tr><tr><td><strong>Evento competencia mismo día</strong></td><td>Marketing/sales identifica conflicto</td><td>Diferenciación clara en promotion: &quot;Únicos que hacemos X&quot;; opción: mover fecha ≤7 días si impacto es alto</td><td>Marketing + Owner</td></tr><tr><td><strong>Embajador necesita soporte C-Level</strong></td><td>Embajador overwhelmed o audience muy senior</td><td>Escalación: C-Level co-facilita en vivo o pre-graba segmento. Embajador maneja piso; C-Level maneja cierre técnico.</td><td>Embajador + C-Level</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-5-fb462a" data-searchable aria-labelledby="head-5-decisiones-de-diseo-5-fb462a">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-5-fb462a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5. DECISIONES DE DISEÑO (5)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Decisión</th><th scope="col">Justificación</th><th scope="col">Alternativa Rechazada</th></tr></thead><tbody><tr><td>1</td><td><strong>Módulo 0/1 siempre gratis</strong></td><td>Cero fricción de inversión = conversión &gt;2x. Trust signal más fuerte.</td><td>Cobrar $99: reduce conversion 60%</td></tr><tr><td>2</td><td><strong>Exactamente UN CTA por evento</strong></td><td>Sin parálisis de decisión. Lead sabe qué hacer next.</td><td>CTAs múltiples: confusión, drop-off 40%</td></tr><tr><td>3</td><td><strong>Embajadores ejecutan todos los tipos</strong></td><td>Escala sin bottleneck de C-Level. Training + templates = quality.</td><td>Solo C-Level: max 2 eventos/mes vs 10+</td></tr><tr><td>4</td><td><strong>5 tipos, no más</strong></td><td>Simplifica funnel. Evita varianza. Clear progression.</td><td>8-10 tipos: confusión, hard to optimize</td></tr><tr><td>5</td><td><strong>Funnel order recomendado, no mandatorio</strong></td><td>Flexibilidad por contexto (algunos ready para WS-08 directo).</td><td>Orden rígido: pierde fast-movers</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-antipatterns-5-0d178f" data-searchable aria-labelledby="head-6-antipatterns-5-0d178f">
+            <div class="phase-header" id="head-6-antipatterns-5-0d178f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 6. ANTI-PATTERNS (5)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Anti-patrón</th><th scope="col">Symptom</th><th scope="col">Por qué daña</th><th scope="col">Corrección</th></tr></thead><tbody><tr><td><strong>Ejecutar sin CTA explícito</strong></td><td>Cierre borroso; &quot;vuelvan pronto&quot;</td><td>Leads no saben next step; vanish</td><td>Cierre: &quot;Tu próximo paso: [X]. Te llamo mañana para agendar.&quot;</td></tr><tr><td><strong>No follow-up &lt;48h</strong></td><td>Leads se enfrian</td><td>Conversion cae 70% si &gt;48h</td><td>Owner checklist: day 1 (email), day 2 (call)</td></tr><tr><td><strong>Overselling en eventos free</strong></td><td>Soft pitch becomes hard sell</td><td>Destruye trust; boca a boca negativo</td><td>Vender MetodologIA, no soluciones empresariales. Product close solo en Módulo 0</td></tr><tr><td><strong>Módulo 0 sin infra de enrollment ready</strong></td><td>Conversión rápida pero sin onboarding</td><td>Chaos en delivery; churn aumenta</td><td>Pre-evento: Ensure CRM workflows, welcome email, LMS access, tutor assignment active</td></tr><tr><td><strong>Mezclar tipos de eventos</strong></td><td>Half talk, half workshop</td><td>Audiencia confundida; ningún objetivo se logra bien</td><td>Un evento = un tipo. Si dos temas, dos eventos.</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-fallbacks-5-9421f7" data-searchable aria-labelledby="head-7-fallbacks-5-9421f7">
+            <div class="phase-header" id="head-7-fallbacks-5-9421f7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 7. FALLBACKS (5)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Fallback</th><th scope="col">Trigger</th><th scope="col">Activación</th><th scope="col">Propietario</th></tr></thead><tbody><tr><td><strong>Speaker cancela &lt;24h</strong></td><td>Speaker notify sick/unavailable</td><td>Roster de Embajadores backup activados; call order: [Embajador 1, Embajador 2, C-Level]. Evento procede.</td><td>Owner evento + HR</td></tr><tr><td><strong>Platform crash</strong></td><td>Plataforma no responde</td><td>Pre-recorded video 10min (stored en cloud); live Q&amp;A vía call bridge o reschedule. Comunique cambio en &lt;30min.</td><td>Tech Lead</td></tr><tr><td><strong>Conversión = 0%</strong></td><td>Post-evento: no one took CTA</td><td>Post-mortem dentro de 72h: Topic resonó? Audience fit? Speaker delivery? CTA clarity? 1 cambio para próximo evento.</td><td>Owner evento + C-Level</td></tr><tr><td><strong>Embajador underperforms</strong></td><td>Evaluación &lt;3/5 o NPS &lt;6</td><td>Next event: co-facilitate con C-Level. Coaching 1-on-1 antes. Si recurrente, retrain o retire de roster.</td><td>C-Level + Training Owner</td></tr><tr><td><strong>CRM down</strong></td><td>Sistema no responde</td><td>Manual spreadsheet (Google Sheet con columns: Name, Email, Event, CTA Taken, Next Step, Date). Retroactive import cuando CRM back up &lt;24h después.</td><td>Owner follow-up</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="workflows-5-uno-por-tipo-de-evento-81ac27" data-searchable aria-labelledby="head-workflows-5-uno-por-tipo-de-evento-81ac27">
+            <div class="phase-header" id="head-workflows-5-uno-por-tipo-de-evento-81ac27" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> WORKFLOWS (5 — uno por tipo de evento)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="wf01-ejecutar-talk-3045min-53b3b4">WF-01: Ejecutar Talk (30-45min)</h3>
+<p class="key-value"><strong>Trigger:</strong> Registro de audiencia ≥10 personas confirmadas ≥48h antes.</p>
+<p><strong>T-72h a T-0 (Pre-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Confirmar speaker (C-Level, Expert invitado o Embajador senior).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Confirmar venue/plataforma; test tech 24h antes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Distribuir promo: email + LinkedIn + WhatsApp (≥48h antes).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Crear landing con registro; target: ≥25 registros.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Asignar owner follow-up (debe estar documentado).</span></div>
+<p><strong>T-0 (Durante)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Inicio: welcome + agenda (2min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Content: inspirational talk sobre transformación digital (30-40min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Cierre: &quot;Siguiente paso → diagnóstico gratuito. Te lo agendan hoy.&quot; (3-5min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Q&amp;A: 5-10min si tiempo permite.</span></div>
+<p><strong>T+0 a T+48h (Post-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Enviar email thank you + link a Diagnóstico N0.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Call 24h después a todos los registrados que asistieron.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>CRM: tag &quot;Talk-[fecha]&quot;, field CTA_taken = &quot;Diagnóstico N0&quot; si acceptaron.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>NPS survey via email 12h después.</span></div>
+<p class="key-value"><strong>Output:</strong></p>
+<div class="bullet-item">Registro de asistentes (nombre, email, CTA taken: Y/N).</div>
+<div class="bullet-item">NPS score.</div>
+<div class="bullet-item">Next event agendado para Diagnóstico N0.</div>
+<p class="key-value"><strong>Tools:</strong> Zoom/Google Meet, CRM, Email marketing tool, Survey tool (Typeform).</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf02-ejecutar-diagnstico-n0-20min-56a09f">WF-02: Ejecutar Diagnóstico N0 (20min)</h3>
+<p class="key-value"><strong>Trigger:</strong> Lead converted desde Talk o lead inbound con high intent.</p>
+<p><strong>T-72h a T-0 (Pre-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Confirmar lead: email confirmación con hora y link 48h antes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Agenda: &quot;20min para diagnosticar nivel de evolución digital. Cero venta.&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Preparar Diagnóstico template: 6 preguntas clave sobre madurez digital.</span></div>
+<p><strong>T-0 (Durante)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Intro: &quot;Hoy solo descubrimos dónde estás. Cero compromiso.&quot; (2min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Diagnóstico: 6 preguntas + notas (15min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Cierre: &quot;Basado en tu nivel, te propongo [Taller/WS-08]. Agendo para [fecha]?&quot; (3min).</span></div>
+<p><strong>T+0 a T+48h (Post-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Enviar reporte diagnóstico escrito (1 pág): nivel identificado, gaps, próximo paso.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Agendar Taller en calendario (&lt;48h después).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>CRM: field diagnosis_level = [Nivel 1/2/3/4]; CTA_next = &quot;Taller&quot; o &quot;WS-08&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Owner follow-up: confirm asistencia 24h antes de Taller.</span></div>
+<p class="key-value"><strong>Output:</strong></p>
+<div class="bullet-item">Diagnóstico report.</div>
+<div class="bullet-item">Next event (Taller o WS-08) agendado y confirmado.</div>
+<p class="key-value"><strong>Tools:</strong> Zoom, Diagnóstico template (Google Doc), CRM.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf03-ejecutar-taller-de-activacin-152h-b268ca">WF-03: Ejecutar Taller de Activación (1.5-2h)</h3>
+<p class="key-value"><strong>Trigger:</strong> Lead completó Diagnóstico N0 o inbound high-intent directo.</p>
+<p><strong>T-72h a T-0 (Pre-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Preparar contenido hands-on: 1 herramienta o framework que lead pueda usar.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Confirmar Embajador/Speaker; ensayo 24h antes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Enviar pre-work email (15min lectura) 48h antes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Setup: plataforma, breakout rooms (si needed), miro board o worksheet.</span></div>
+<p><strong>T-0 (Durante)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Welcome + agenda (5min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Contexto: &quot;Por qué esto importa + MetodologIA intro&quot; (15min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Hands-on: Lead trabaja en un mini-proyecto con guidance (60min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Q&amp;A + insights (20min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Cierre: &quot;Resultado que lograste + próximo paso (Workshop WS-08) agendado. Te llamo mañana.&quot; (5min).</span></div>
+<p><strong>T+0 a T+48h (Post-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Enviar: Taller recording, worksheet completa, tool access (trial).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Call 24h después: review resultados, answer questions, confirmar Workshop.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>CRM: tag &quot;Taller-[fecha]&quot;; CTA_next = &quot;Workshop WS-08&quot; + fecha agendada.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>NPS survey.</span></div>
+<p class="key-value"><strong>Output:</strong></p>
+<div class="bullet-item">Taller recording + materials.</div>
+<div class="bullet-item">Lead has tangible output (completed project).</div>
+<div class="bullet-item">Workshop WS-08 agendado.</div>
+<p class="key-value"><strong>Tools:</strong> Zoom, Miro/Google Sheets, CRM, email.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf04-ejecutar-workshop-ws08-standalone-3h-510263">WF-04: Ejecutar Workshop WS-08 Standalone (3h)</h3>
+<p class="key-value"><strong>Trigger:</strong> Lead qualified desde funnel anterior O inbound very high intent que quiere deep dive.</p>
+<p><strong>T-72h a T-0 (Pre-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Confirmar C-Level o expert Embajador como facilitador.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Agenda detallada 3h (90min content, 30min hands-on, 30min Q&amp;A).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Enviar pre-work: 30min lectura + 1 assessment tool.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Setup: zoom, breakout rooms, Miro board, Slack channel para Q&amp;A live.</span></div>
+<p><strong>T-0 (Durante)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Welcome + objectives (5min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Module 1: &quot;Situación actual del prospect&quot; (40min: presentation + exercise).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Module 2: &quot;Framework MetodologIA deep dive&quot; (40min: interactive).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Hands-on: Lead designs mini-strategy usando framework (20min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Share + feedback (10min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Cierre: &quot;Siguiente paso: Módulo 0 gratuito. Es la prueba de presupuesto/ROI sin riesgo. Agendo hoy?&quot; (5min).</span></div>
+<p><strong>T+0 a T+48h (Post-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Enviar: WS-08 recording, toolkit, resource library access.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Call 24h después: WS impact review, answer technical Qs, confirm Módulo 0.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>CRM: tag &quot;WS-08-[fecha]&quot;; CTA_next = &quot;Módulo 0 Free&quot; + fecha + confirmar asistencia.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Sales enable: &quot;Lead WS-08 qualified&quot; → Sales puede proseguir post-Módulo 0.</span></div>
+<p class="key-value"><strong>Output:</strong></p>
+<div class="bullet-item">WS-08 recording + materials.</div>
+<div class="bullet-item">Mini-strategy document (lead&#x27;s design).</div>
+<div class="bullet-item">Módulo 0 agendado + enrollment workflow initiated.</div>
+<p class="key-value"><strong>Tools:</strong> Zoom pro, Miro, Slack, CRM, email.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf05-ejecutar-mdulo-0mdulo-1-gratuito-543f08">WF-05: Ejecutar Módulo 0/Módulo 1 Gratuito</h3>
+<p class="key-value"><strong>Trigger:</strong> Lead converted desde Workshop WS-08 O escalated from any prior event. High qualification required.</p>
+<p><strong>T-72h a T-0 (Pre-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Confirmar lead completó all pre-reqs (WS-08 o equivalent).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Email: &quot;Tu Módulo 0 valida si esto es para ti. Zero costo. Solo 1 sesión de 2h. Zero compromise.&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Preparar: content (Módulo 0 outline), enrollment form (post-session), LMS access (standby).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Tutor asignado; tutor reviews lead profile 24h antes.</span></div>
+<p><strong>T-0 (Durante)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Welcome: &quot;Esta es la prueba. Si resueña, nos inscribimos. Si no, zero problema.&quot; (3min).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Content: Módulo 0 full (105min): sesión real del programa, same quality as paid.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Cierre: &quot;¿Qué te pareció? Si quieres continuar, enrollment es [fecha]. ROI, investimiento, y plan.&quot; (12min).</span></div>
+<p><strong>T+0 a T+48h (Post-evento)</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Tutor follow-up email: &quot;Gracias por asistir. Tus preguntas + feedback → enrollment.&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Sales call (optional, only if lead shows hesitation): address objections, financing if needed, close enrollment.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>CRM: tag &quot;Módulo 0-[fecha]&quot;; field enrollment_status = &quot;Ready for Sales Close&quot; o &quot;Needs Nurture&quot; o &quot;Not Fit&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Enrollment form (if converted): populate LMS, send welcome email, assign tutor + start date.</span></div>
+<p class="key-value"><strong>Output:</strong></p>
+<div class="bullet-item">Módulo 0 completion certificate.</div>
+<div class="bullet-item">Enrollment form signed (if converted).</div>
+<div class="bullet-item">LMS access granted + tutor assigned.</div>
+<div class="bullet-item">Next tutor session scheduled.</div>
+<p class="key-value"><strong>Tools:</strong> Zoom, CRM, LMS, email, enrollment form (Google Form or Typeform).</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="funnel-conversion-targets-tabla-703edf" data-searchable aria-labelledby="head-funnel-conversion-targets-tabla-703edf">
+            <div class="phase-header" id="head-funnel-conversion-targets-tabla-703edf" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Funnel Conversion Targets (tabla)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Event Type</th><th scope="col">Duration</th><th scope="col">Attendee Target</th><th scope="col">CTA Conversion %</th><th scope="col">Next Step</th><th scope="col">Típ. Timeline</th></tr></thead><tbody><tr><td><strong>Talk</strong></td><td>30-45min</td><td>15-50</td><td>5%</td><td>Diagnóstico N0</td><td>+7 días</td></tr><tr><td><strong>Diagnóstico N0</strong></td><td>20min</td><td>1 (individual)</td><td>30%</td><td>Taller o WS-08</td><td>+7-14 días</td></tr><tr><td><strong>Taller</strong></td><td>1.5-2h</td><td>5-20</td><td>20%</td><td>Workshop WS-08</td><td>+7 días</td></tr><tr><td><strong>Workshop WS-08</strong></td><td>3h</td><td>3-15</td><td>25%</td><td>Módulo 0 Free</td><td>+3-5 días</td></tr><tr><td><strong>Módulo 0/1 Free</strong></td><td>2h</td><td>1-10 (cohorte)</td><td>20%</td><td>Enrollment Paid</td><td>+7 días</td></tr></tbody></table></div>
+<p class="key-value"><strong>Notas:</strong></p>
+<div class="bullet-item">Conversión = % de attendees que accepted CTA (agendaron next step).</div>
+<div class="bullet-item">Funnel típico: Talk → Diagnóstico → Taller → WS-08 → Módulo 0 → Pago = 6-8 semanas total.</div>
+<div class="bullet-item">Fast-track posible: skip Talk + Diagnóstico si lead inbound con high intent, entra directo a Taller/WS-08.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-del-sop-1abec3" data-searchable aria-labelledby="head-mtricas-del-sop-1abec3">
+            <div class="phase-header" id="head-mtricas-del-sop-1abec3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métricas del SOP</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Cálculo</th><th scope="col">Target</th><th scope="col">Frecuencia</th></tr></thead><tbody><tr><td><strong>Eventos ejecutados/mes</strong></td><td>Count de eventos completed</td><td>8-12 (2-4 por C-Level + Embajadores)</td><td>Monthly</td></tr><tr><td><strong>Attendance rate</strong></td><td>Attendees / Registrados</td><td>≥60%</td><td>Per event</td></tr><tr><td><strong>CTA conversion rate</strong></td><td>CTAs taken / Attendees</td><td>Depends type (5%-30%)</td><td>Per event</td></tr><tr><td><strong>NPS promedio</strong></td><td>Survey score</td><td>≥8</td><td>Per event</td></tr><tr><td><strong>Follow-up timing</strong></td><td>% de follow-ups &lt;48h</td><td>100%</td><td>Weekly</td></tr><tr><td><strong>CRM health</strong></td><td>% fields populated</td><td>≥95%</td><td>Weekly</td></tr><tr><td><strong>Funnel conversion</strong></td><td>Enrollments / Talk attendees</td><td>≥2% (80 talks → 1.6 enrollments)</td><td>Monthly</td></tr><tr><td><strong>Speaker evaluation</strong></td><td>Average rating (1-5)</td><td>≥4</td><td>Per event</td></tr><tr><td><strong>Cost per lead</strong></td><td>Total event cost / New leads</td><td>≤$50</td><td>Monthly</td></tr><tr><td><strong>Cost per enrollment</strong></td><td>Total event cost / Enrollments</td><td>≤$500</td><td>Monthly</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="conexiones-y-dependencias-8dac21" data-searchable aria-labelledby="head-conexiones-y-dependencias-8dac21">
+            <div class="phase-header" id="head-conexiones-y-dependencias-8dac21" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Conexiones y Dependencias</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="input-from-03337a">INPUT FROM:</h3>
+<div class="bullet-item"><strong>Proceso Comercial (Sales &amp; Marketing):</strong> Leads calificados, calendarios de evento, promo materiales, CRM datos.</div>
+<div class="bullet-item"><strong>Otros SOPs:</strong> Content creation (talks, workshops), Embajador training &amp; certification, Template design.</div>
+<h3 class="subsection-title" id="output-to-22d305">OUTPUT TO:</h3>
+<div class="bullet-item"><strong>Delivery Processes:</strong> Enrolled leads → Módulo 1 en adelante.</div>
+<div class="bullet-item"><strong>Sales:</strong> Conversion data, lead feedback, revenue pipeline updates.</div>
+<div class="bullet-item"><strong>CRM:</strong> All event data, lead progression, next-step scheduling.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ecuacin-metodologia-d6e023" data-searchable aria-labelledby="head-ecuacin-metodologia-d6e023">
+            <div class="phase-header" id="head-ecuacin-metodologia-d6e023" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ecuación MetodologIA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>(−) Tiempo (coordinación, follow-up) × (Palancas = eventos/mes, conversion %, Embajador scale) = (+) Impacto
+
+Fórmula ilustrativa:
+8 eventos/mes × 25 attendees × 10% conversion = 20 leads/mes
+20 leads × 20% Módulo-0-to-enrollment = 4 enrollments/mes
+4 × avg ticket = $20K ARR por stream de eventos</code></pre>
+<p class="key-value"><strong>La meta:</strong> Que este SOP run como máquina. Owner puede relax en ejecución repetitiva; varianza baja; predictabilidad alta.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-cumplimiento-preevento-owner-43cb60" data-searchable aria-labelledby="head-checklist-de-cumplimiento-preevento-owner-43cb60">
+            <div class="phase-header" id="head-checklist-de-cumplimiento-preevento-owner-43cb60" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Cumplimiento Pre-Evento (Owner)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-audience-prequalified-10-registros-con-intent-sign-7e393f"><input type="checkbox" id="chk-audience-prequalified-10-registros-con-intent-sign-7e393f" ><span>Audience pre-qualified: ≥10 registros con intent signal claro.</span></label>
+<label class="checklist-item" for="chk-venueplataforma-confirmada-acceso-testeado-backup--07335c"><input type="checkbox" id="chk-venueplataforma-confirmada-acceso-testeado-backup--07335c" ><span>Venue/plataforma: confirmada, acceso testeado, backup ready.</span></label>
+<label class="checklist-item" for="chk-speakerfacilitador-contenido-listo-ensayo-completa-37b266"><input type="checkbox" id="chk-speakerfacilitador-contenido-listo-ensayo-completa-37b266" ><span>Speaker/facilitador: contenido listo, ensayo completado.</span></label>
+<label class="checklist-item" for="chk-promo-email-social-distribuida-48h-antes-0e2bd0"><input type="checkbox" id="chk-promo-email-social-distribuida-48h-antes-0e2bd0" ><span>Promo: email + social distribuida ≥48h antes.</span></label>
+<label class="checklist-item" for="chk-sistema-de-registro-activo-automtico-capture-de-em-8f2b51"><input type="checkbox" id="chk-sistema-de-registro-activo-automtico-capture-de-em-8f2b51" ><span>Sistema de registro: activo, automático capture de emails.</span></label>
+<label class="checklist-item" for="chk-owner-followup-nombrado-checklist-creado-53191a"><input type="checkbox" id="chk-owner-followup-nombrado-checklist-creado-53191a" ><span>Owner follow-up: nombrado, checklist creado.</span></label>
+<label class="checklist-item" for="chk-crm-audiencia-histrica-importada-64b0da"><input type="checkbox" id="chk-crm-audiencia-histrica-importada-64b0da" ><span>CRM: audiencia histórica importada.</span></label>
+<label class="checklist-item" for="chk-cta-nico-explcito-en-cierre-next-step-identifiable-3f858a"><input type="checkbox" id="chk-cta-nico-explcito-en-cierre-next-step-identifiable-3f858a" ><span>CTA único: explícito en cierre; next step identifiable.</span></label>
+<label class="checklist-item" for="chk-mdulo-0-confirmado-como-free-infra-ready-1d054c"><input type="checkbox" id="chk-mdulo-0-confirmado-como-free-infra-ready-1d054c" ><span>Módulo 0: confirmado como FREE; infra ready.</span></label>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-cumplimiento-postevento-owner-followu-787937" data-searchable aria-labelledby="head-checklist-de-cumplimiento-postevento-owner-followu-787937">
+            <div class="phase-header" id="head-checklist-de-cumplimiento-postevento-owner-followu-787937" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Cumplimiento Post-Evento (Owner Follow-up)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-followup-email-enviado-48h-0ce046"><input type="checkbox" id="chk-followup-email-enviado-48h-0ce046" ><span>Follow-up email enviado &lt;48h.</span></label>
+<label class="checklist-item" for="chk-calls-realizados-a-todos-attendees-48h-b2b41b"><input type="checkbox" id="chk-calls-realizados-a-todos-attendees-48h-b2b41b" ><span>Calls realizados a todos attendees &lt;48h.</span></label>
+<label class="checklist-item" for="chk-crm-actualizado-24h-leads-tagged-cta-field-populat-9e1747"><input type="checkbox" id="chk-crm-actualizado-24h-leads-tagged-cta-field-populat-9e1747" ><span>CRM actualizado &lt;24h: leads tagged, CTA field populated, next event scheduled.</span></label>
+<label class="checklist-item" for="chk-nps-survey-enviado-12h-despus-4aa597"><input type="checkbox" id="chk-nps-survey-enviado-12h-despus-4aa597" ><span>NPS survey enviado 12h después.</span></label>
+<label class="checklist-item" for="chk-recordingmaterials-enviados-56bb69"><input type="checkbox" id="chk-recordingmaterials-enviados-56bb69" ><span>Recording/materials enviados.</span></label>
+<label class="checklist-item" for="chk-converted-leads-confirmacin-de-next-event-24h-d9e8ad"><input type="checkbox" id="chk-converted-leads-confirmacin-de-next-event-24h-d9e8ad" ><span>Converted leads: confirmación de next event &lt;24h.</span></label>
+<label class="checklist-item" for="chk-postmortem-meeting-si-conversin-5-12c582"><input type="checkbox" id="chk-postmortem-meeting-si-conversin-5-12c582" ><span>Post-mortem meeting si conversión &lt;5%.</span></label>
+<label class="checklist-item" for="chk-metrics-logged-en-dashboard-a6a82f"><input type="checkbox" id="chk-metrics-logged-en-dashboard-a6a82f" ><span>Metrics logged en dashboard.</span></label>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="escalacin-y-soportes-2d4aa6" data-searchable aria-labelledby="head-escalacin-y-soportes-2d4aa6">
+            <div class="phase-header" id="head-escalacin-y-soportes-2d4aa6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Escalación y Soportes</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Contactos clave:</strong></p>
+<div class="bullet-item"><strong>C-Level Owner:</strong> Director de vertical, approves evento, handles escalations.</div>
+<div class="bullet-item"><strong>Embajador Lead:</strong> Facilitador principal, executa evento, responsable de quality.</div>
+<div class="bullet-item"><strong>Tech Lead:</strong> Platform setup, troubleshooting, fallback activation.</div>
+<div class="bullet-item"><strong>Follow-up Owner:</strong> Calls, emails, CRM updates, enrollment support.</div>
+<div class="bullet-item"><strong>Sales Lead:</strong> Enrollment closing, objection handling, deal support.</div>
+<p class="key-value"><strong>Escalación:</strong></p>
+<div class="bullet-item">Si attendance &lt;10 → notify C-Level 48h antes, decide reschedule/cancel.</div>
+<div class="bullet-item">Si conversion 0% → C-Level + Owner post-mortem 72h, 1 change for next event.</div>
+<div class="bullet-item">Si tech failure → Tech Lead + Owner, activate fallback within 30min.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="versionado-y-mejora-continua-3b8986" data-searchable aria-labelledby="head-versionado-y-mejora-continua-3b8986">
+            <div class="phase-header" id="head-versionado-y-mejora-continua-3b8986" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Versionado y Mejora Continua</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Ciclo de review:</strong> Quarterly (cada 3 meses).</div>
+<div class="bullet-item"><strong>Data point:</strong> Aggregated metrics from all events del quarter.</div>
+<div class="bullet-item"><strong>Cambios permitidos:</strong> Event type design, CTA sequence, follow-up timing, conversion targets.</div>
+<div class="bullet-item"><strong>Cambios prohibidos:</strong> Módulo 0 costo (always free), 5-type taxonomy (no más tipos).</div>
+<div class="bullet-item"><strong>Dueño de updates:</strong> C-Level + Head of Delivery, con input from Embajador roster.</div>
+<hr class="divider">
+<p class="key-value"><strong>Fin del SOP. Versión 1.0. Vigencia: 2026-03-24 en adelante.</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

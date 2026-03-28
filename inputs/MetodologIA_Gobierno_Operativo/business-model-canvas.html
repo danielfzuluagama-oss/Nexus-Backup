@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Model Canvas &mdash; MetodologIA | Facilitado por Alexander Osterwalder</title>
+    <meta name="description" content="Business Model Canvas de MetodologIA. 9 bloques interconectados facilitados al estilo Alexander Osterwalder. North Star: Soberania Digital.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            primary: '#6366F1',
+                            light: '#818CF8',
+                            dark: '#4F46E5',
+                            gold: '#FFD700',
+                            'gold-dark': '#FFA000',
+                        },
+                        surface: {
+                            dark: '#0f172a',
+                            darker: '#020617',
+                            card: 'rgba(255, 255, 255, 0.03)',
+                        },
+                        bmc: {
+                            segments: '#60a5fa',
+                            value: '#a78bfa',
+                            channels: '#34d399',
+                            relationships: '#f472b6',
+                            revenue: '#facc15',
+                            resources: '#fb923c',
+                            activities: '#38bdf8',
+                            partners: '#818cf8',
+                            costs: '#f87171',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --brand-primary: #6366F1;
+            --brand-light: #818CF8;
+            --brand-dark: #4F46E5;
+            --brand-gold: #FFD700;
+            --brand-gold-dark: #FFA000;
+        }
+
+        body {
+            background-color: #020617;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .highlight-ia-premium {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .highlight-indigo {
+            background: linear-gradient(135deg, #818CF8 0%, #6366F1 50%, #4F46E5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            color: #000;
+            font-weight: 700;
+            padding: 0.75rem 1.75rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+            font-size: 0.875rem;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
+        }
+
+        .card-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        .card-glass:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .section-padding { padding: 4rem 0; }
+
+        .container-max {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
+        .anim-delay-100 { animation-delay: 0.1s; opacity: 0; }
+        .anim-delay-200 { animation-delay: 0.2s; opacity: 0; }
+        .anim-delay-300 { animation-delay: 0.3s; opacity: 0; }
+        .anim-delay-400 { animation-delay: 0.4s; opacity: 0; }
+
+        .logo-svg { width: 36px; height: 36px; flex-shrink: 0; }
+
+        /* Nav tabs */
+        .bmc-nav-btn {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        /* BMC Items */
+        .bmc-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.625rem;
+            padding: 0.625rem 0.75rem;
+            margin: 0.375rem 0;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: all 0.2s;
+            font-size: 0.8125rem;
+        }
+        .bmc-item:hover {
+            transform: translateX(4px);
+            border-color: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+        }
+        .bmc-item.highlighted {
+            box-shadow: 0 0 0 2px rgba(255,215,0,0.5);
+            background: rgba(251,191,36,0.08);
+        }
+
+        /* Priority badges */
+        .priority-badge {
+            font-size: 0.625rem;
+            font-weight: 700;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.625rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .priority-essential { background: rgba(239,68,68,0.2); color: #fca5a5; }
+        .priority-important { background: rgba(245,158,11,0.2); color: #fcd34d; }
+        .priority-nice { background: rgba(100,116,139,0.2); color: #64748b; }
+
+        /* Cross-reference badge */
+        .xref-badge {
+            font-size: 0.5625rem;
+            font-weight: 600;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.375rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(99,102,241,0.15);
+            color: #a5b4fc;
+        }
+
+        .bmc-item-connect {
+            font-size: 0.625rem;
+            color: #64748b;
+            opacity: 0;
+            transition: opacity 0.2s;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .bmc-item:hover .bmc-item-connect { opacity: 1; }
+
+        /* Facilitator box */
+        .facilitator-box {
+            background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(251,191,36,0.01));
+            border: 1px solid rgba(251,191,36,0.15);
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .facilitator-box::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            border-radius: 1rem 0 0 1rem;
+        }
+
+        /* Collapsible */
+        .collapsible-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.625rem 0;
+            color: #64748b;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            user-select: none;
+        }
+        .collapsible-trigger:hover { color: #94a3b8; }
+        .collapsible-trigger .arrow { transition: transform 0.2s; font-size: 0.625rem; }
+        .collapsible-trigger.open .arrow { transform: rotate(90deg); }
+        .collapsible-content { display: none; padding: 0.75rem 0; }
+        .collapsible-content.open { display: block; }
+
+        /* Fit matrix table */
+        .fit-matrix { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin: 1rem 0; }
+        .fit-matrix th { background: rgba(255,255,255,0.03); color: #818CF8; padding: 0.625rem; text-align: left; border: 1px solid rgba(255,255,255,0.06); font-size: 0.6875rem; }
+        .fit-matrix td { background: rgba(255,255,255,0.01); padding: 0.625rem; border: 1px solid rgba(255,255,255,0.06); color: #94a3b8; text-align: center; }
+        .fit-matrix tr:hover td { background: rgba(255,255,255,0.04); }
+        .fit-strong { color: #34d399; font-weight: 700; }
+        .fit-partial { color: #f59e0b; font-weight: 700; }
+        .fit-weak { color: #64748b; font-weight: 500; }
+
+        /* BMC Visual Grid */
+        .bmc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            grid-template-areas:
+                "partners activities value relationships segments"
+                "partners resources  value channels      segments"
+                "costs    costs      costs revenue       revenue";
+            gap: 6px;
+            min-height: 400px;
+        }
+        .bmc-cell {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 0.5rem;
+        }
+        .bmc-cell:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            transform: scale(1.02);
+        }
+        .bmc-cell-partners { grid-area: partners; border-color: rgba(129,140,248,0.3); }
+        .bmc-cell-activities { grid-area: activities; border-color: rgba(56,189,248,0.3); }
+        .bmc-cell-value { grid-area: value; border-color: rgba(167,139,250,0.3); }
+        .bmc-cell-relationships { grid-area: relationships; border-color: rgba(244,114,182,0.3); }
+        .bmc-cell-segments { grid-area: segments; border-color: rgba(96,165,250,0.3); }
+        .bmc-cell-resources { grid-area: resources; border-color: rgba(251,146,60,0.3); }
+        .bmc-cell-channels { grid-area: channels; border-color: rgba(52,211,153,0.3); }
+        .bmc-cell-costs { grid-area: costs; border-color: rgba(248,113,113,0.3); }
+        .bmc-cell-revenue { grid-area: revenue; border-color: rgba(250,204,21,0.3); }
+
+        @media (max-width: 768px) {
+            .bmc-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto;
+                grid-template-areas:
+                    "segments value"
+                    "channels relationships"
+                    "revenue revenue"
+                    "resources activities"
+                    "partners partners"
+                    "costs costs";
+                min-height: auto;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+        .scroll-indicator { animation: bounce 2s infinite; }
+
+        @media print {
+            body { background: white; color: #1a1a2e; }
+            .card-glass { background: #f8f9fa; border: 1px solid #dee2e6; }
+            nav, .scroll-indicator { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
+        <div class="container-max py-4 flex items-center justify-between">
+            <a href="#home" class="flex items-center gap-3">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+                    <defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366F1"/><stop offset="100%" stop-color="#4F46E5"/></linearGradient></defs>
+                    <rect width="36" height="36" rx="10" fill="url(#logoGrad)"/>
+                    <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                    <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+                </svg>
+                <h1 class="text-xl font-bold"><span class="text-white">Metodolog</span><span class="highlight-ia-premium">IA</span></h1>
+            </a>
+            <div class="hidden lg:flex items-center gap-1 bg-white/5 rounded-full p-1 overflow-x-auto">
+                <button onclick="showSection('overview')" class="bmc-nav-btn text-white bg-indigo-500/20" data-section="overview">Vista General</button>
+                <button onclick="showSection('segments')" class="bmc-nav-btn text-slate-400 hover:text-white" data-section="segments">Segmentos</button>
+                <button onclick="showSection('value-prop')" class="bmc-nav-btn text-slate-400 hover:text-white" data-section="value-prop">Propuesta</button>
+                <button onclick="showSection('channels-rel')" class="bmc-nav-btn text-slate-400 hover:text-white" data-section="channels-rel">Canales</button>
+                <button onclick="showSection('revenue-costs')" class="bmc-nav-btn text-slate-400 hover:text-white" data-section="revenue-costs">Ingresos</button>
+                <button onclick="showSection('resources-activities')" class="bmc-nav-btn text-slate-400 hover:text-white" data-section="resources-activities">Recursos</button>
+                <button onclick="showSection('partners')" class="bmc-nav-btn text-slate-400 hover:text-white" data-section="partners">Alianzas</button>
+                <button onclick="showSection('coherence')" class="bmc-nav-btn text-slate-400 hover:text-white" data-section="coherence">Coherencia</button>
+            </div>
+            <div class="hidden md:block">
+                <a href="https://metodologia.info" target="_blank" rel="noopener" class="btn-gold text-xs px-5 py-2.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    metodologia.info
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="home" class="relative min-h-[85vh] flex items-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-950"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-transparent to-transparent"></div>
+        </div>
+
+        <div class="container-max relative z-10">
+            <div class="flex flex-col items-center text-center max-w-4xl mx-auto">
+                <div class="fade-in-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-8 backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                    <span class="text-xs font-bold text-indigo-300 tracking-widest uppercase">Business Model Canvas &middot; 2026</span>
+                </div>
+
+                <h1 class="fade-in-up anim-delay-100 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
+                    Business Model<br>
+                    <span class="highlight-ia-premium">Canvas</span>
+                </h1>
+
+                <p class="fade-in-up anim-delay-200 text-lg md:text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl">
+                    Ejercicio facilitado al estilo <strong class="text-white">Alexander Osterwalder</strong>. Tu modelo de negocio en 9 bloques interconectados.
+                </p>
+
+                <div class="fade-in-up anim-delay-300 flex flex-wrap justify-center gap-8 mb-10">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white">9</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Bloques</div>
+                    </div>
+                    <div class="w-px h-12 bg-white/10"></div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white">7</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Segmentos</div>
+                    </div>
+                    <div class="w-px h-12 bg-white/10"></div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white">3</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Flujos de Ingreso</div>
+                    </div>
+                    <div class="w-px h-12 bg-white/10"></div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold highlight-ia-premium">&#9733;</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Soberan&iacute;a Digital</div>
+                    </div>
+                </div>
+
+                <div class="fade-in-up anim-delay-400 card-glass p-6 max-w-lg border-emerald-500/15">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl">&#11088;</span>
+                        <span class="font-bold text-emerald-400 text-sm uppercase tracking-wider">North Star</span>
+                    </div>
+                    <p class="text-white font-bold text-lg">Soberan&iacute;a Digital</p>
+                    <p class="text-slate-400 text-sm italic mt-1">&ldquo;Lo que el cliente sigue logrando sin MetodologIA&rdquo;</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator">
+            <i data-lucide="chevron-down" class="w-6 h-6 text-slate-600"></i>
+        </div>
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent"></div>
+    </section>
+
+    <!-- ═══════════════════ CONTENT SECTIONS ═══════════════════ -->
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="bmc-section section-padding">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-10">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Alexander Osterwalder</div>
+                        <div class="text-slate-500 text-xs">Facilitador &mdash; Business Model Generation</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;Un modelo de negocio describe la l&oacute;gica de c&oacute;mo una organizaci&oacute;n crea, entrega y captura valor. Empieza siempre por la derecha: &iquest;qui&eacute;n es tu cliente? Luego dise&ntilde;a c&oacute;mo le entregas valor y c&oacute;mo lo capturas. MetodologIA tiene un modelo fascinante: su North Star no es revenue &mdash; es la autonom&iacute;a del cliente. Eso transforma cada bloque del canvas.&rdquo;
+                </p>
+            </div>
+
+            <!-- Visual BMC Grid -->
+            <div class="card-glass p-6 md:p-8 mb-8">
+                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i data-lucide="layout-grid" class="w-5 h-5 text-indigo-400"></i>
+                    Business Model Canvas &mdash; Vista Interactiva
+                </h3>
+                <div class="bmc-grid">
+                    <div class="bmc-cell bmc-cell-partners" onclick="showSection('partners')">
+                        <i data-lucide="handshake" class="w-6 h-6 text-bmc-partners"></i>
+                        <span class="font-bold text-bmc-partners text-xs uppercase tracking-wider">Alianzas Clave</span>
+                        <span class="text-[11px] text-slate-500">8 partners</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-activities" onclick="showSection('resources-activities')">
+                        <i data-lucide="cog" class="w-6 h-6 text-bmc-activities"></i>
+                        <span class="font-bold text-bmc-activities text-xs uppercase tracking-wider">Actividades Clave</span>
+                        <span class="text-[11px] text-slate-500">6 actividades</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-value" onclick="showSection('value-prop')">
+                        <i data-lucide="gift" class="w-6 h-6 text-bmc-value"></i>
+                        <span class="font-bold text-bmc-value text-xs uppercase tracking-wider">Propuesta de Valor</span>
+                        <span class="text-[11px] text-slate-500">3 propuestas core</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-relationships" onclick="showSection('channels-rel')">
+                        <i data-lucide="heart" class="w-6 h-6 text-bmc-relationships"></i>
+                        <span class="font-bold text-bmc-relationships text-xs uppercase tracking-wider">Relaciones</span>
+                        <span class="text-[11px] text-slate-500">5 tipos</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-segments" onclick="showSection('segments')">
+                        <i data-lucide="users" class="w-6 h-6 text-bmc-segments"></i>
+                        <span class="font-bold text-bmc-segments text-xs uppercase tracking-wider">Segmentos</span>
+                        <span class="text-[11px] text-slate-500">4 B2C + 3 B2B</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-resources" onclick="showSection('resources-activities')">
+                        <i data-lucide="database" class="w-6 h-6 text-bmc-resources"></i>
+                        <span class="font-bold text-bmc-resources text-xs uppercase tracking-wider">Recursos Clave</span>
+                        <span class="text-[11px] text-slate-500">4 categor&iacute;as</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-channels" onclick="showSection('channels-rel')">
+                        <i data-lucide="megaphone" class="w-6 h-6 text-bmc-channels"></i>
+                        <span class="font-bold text-bmc-channels text-xs uppercase tracking-wider">Canales</span>
+                        <span class="text-[11px] text-slate-500">6 canales + 6 fases</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-costs" onclick="showSection('revenue-costs')">
+                        <i data-lucide="trending-down" class="w-6 h-6 text-bmc-costs"></i>
+                        <span class="font-bold text-bmc-costs text-xs uppercase tracking-wider">Estructura de Costos</span>
+                        <span class="text-[11px] text-slate-500">5 categor&iacute;as</span>
+                    </div>
+                    <div class="bmc-cell bmc-cell-revenue" onclick="showSection('revenue-costs')">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-bmc-revenue"></i>
+                        <span class="font-bold text-bmc-revenue text-xs uppercase tracking-wider">Flujos de Ingreso</span>
+                        <span class="text-[11px] text-slate-500">COP 200K &ndash; 35M</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="card-glass p-6 text-center">
+                    <div class="text-3xl font-bold highlight-indigo mb-1">9</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Bloques BMC</div>
+                    <div class="text-[11px] text-slate-600 mt-2">Modelo completo Osterwalder</div>
+                </div>
+                <div class="card-glass p-6 text-center">
+                    <div class="text-3xl font-bold text-bmc-segments mb-1">7</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Segmentos de Cliente</div>
+                    <div class="text-[11px] text-slate-600 mt-2">4 B2C &middot; 3 B2B</div>
+                </div>
+                <div class="card-glass p-6 text-center">
+                    <div class="text-3xl font-bold text-bmc-revenue mb-1">3</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Flujos de Ingreso</div>
+                    <div class="text-[11px] text-slate-600 mt-2">Talleres &middot; Bootcamps &middot; Elite</div>
+                </div>
+                <div class="card-glass p-6 text-center">
+                    <div class="text-3xl font-bold highlight-ia-premium mb-1">4</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Co-Fundadores</div>
+                    <div class="text-[11px] text-slate-600 mt-2">CEO &middot; CEcoO &middot; CEmO &middot; CEnO</div>
+                </div>
+            </div>
+
+            <div class="facilitator-box">
+                <p class="text-slate-300 text-sm italic leading-relaxed">
+                    &ldquo;Navega cada bloque haciendo clic en el canvas de arriba o usando las pesta&ntilde;as de navegaci&oacute;n. Recuerda: un modelo de negocio no son 9 bloques independientes. Es un sistema donde cada pieza refuerza a las dem&aacute;s. Busca las conexiones.&rdquo;
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CUSTOMER SEGMENTS -->
+    <section id="segments" class="bmc-section section-padding hidden">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Facilitador Osterwalder</div>
+                        <div class="text-slate-500 text-xs">Bloque 1 &mdash; Segmentos de Clientes</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;Siempre empieza aqu&iacute;. No puedes crear valor si no sabes para qui&eacute;n lo est&aacute;s creando. MetodologIA opera en un modelo de mercado segmentado: 4 perfiles individuales B2C y 3 segmentos empresariales B2B, cada uno con necesidades fundamentalmente distintas. Eso es estrategia, no accidente.&rdquo;
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- B2C -->
+                <div class="card-glass p-5 border-blue-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#128100;</span>
+                        <span class="font-bold text-bmc-segments text-sm">Segmentos B2C &mdash; Personas</span>
+                        <span class="text-[11px] text-slate-600 ml-auto bg-white/5 px-2 py-0.5 rounded-full">4 perfiles</span>
+                    </div>
+                    <div class="bmc-item" data-connects="vp-sovereignty"><span class="priority-badge priority-essential">P1</span><span class="flex-1 text-slate-300"><strong class="text-white">Profesional en Transici&oacute;n</strong> &mdash; Busca reinventarse ante la IA. Necesita skills pr&aacute;cticos para seguir vigente. Valora resultados r&aacute;pidos.</span><span class="bmc-item-connect">&rarr; VP</span></div>
+                    <div class="bmc-item" data-connects="vp-sovereignty"><span class="priority-badge priority-important">P2</span><span class="flex-1 text-slate-300"><strong class="text-white">Estudiante</strong> &mdash; Complementa formaci&oacute;n acad&eacute;mica con habilidades pr&aacute;cticas de IA. Sensible al precio. Alta disposici&oacute;n a aprender.</span><span class="bmc-item-connect">&rarr; VP</span></div>
+                    <div class="bmc-item" data-connects="vp-amplified"><span class="priority-badge priority-essential">P3</span><span class="flex-1 text-slate-300"><strong class="text-white">Ejecutivo C-Level</strong> &mdash; Necesita visi&oacute;n estrat&eacute;gica de IA sin detalles t&eacute;cnicos. Agenda limitada. Dispuesto a invertir si el ROI es claro.</span><span class="bmc-item-connect">&rarr; VP</span></div>
+                    <div class="bmc-item" data-connects="vp-sovereignty"><span class="priority-badge priority-nice">P4</span><span class="flex-1 text-slate-300"><strong class="text-white">Autodidacta</strong> &mdash; Ya experimenta con IA. Busca estructura y profundidad. Prefiere formato as&iacute;ncrono y auto-guiado.</span><span class="bmc-item-connect">&rarr; VP</span></div>
+
+                    <div class="collapsible-trigger mt-2" onclick="toggleCollapsible(this)"><span class="arrow">&#9654;</span> Preguntas del facilitador</div>
+                    <div class="collapsible-content">
+                        <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Cu&aacute;l de estos perfiles genera mayor lifetime value?</p>
+                        <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Hay un early adopter que valida la propuesta antes que los dem&aacute;s?</p>
+                        <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;P3 Ejecutivo puede convertirse en puente hacia segmentos B2B (E1-E3)?</p>
+                    </div>
+                </div>
+
+                <!-- B2B -->
+                <div class="card-glass p-5 border-cyan-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#127970;</span>
+                        <span class="font-bold text-cyan-400 text-sm">Segmentos B2B &mdash; Empresas</span>
+                        <span class="text-[11px] text-slate-600 ml-auto bg-white/5 px-2 py-0.5 rounded-full">3 segmentos</span>
+                    </div>
+                    <div class="bmc-item" data-connects="vp-amplified"><span class="priority-badge priority-essential">E1</span><span class="flex-1 text-slate-300"><strong class="text-white">Small Business (5-50 empleados)</strong> &mdash; Organizaciones innovadoras con caos operacional. Buscan sistematizar procesos con IA. Decisi&oacute;n r&aacute;pida, presupuesto limitado.</span><span class="bmc-item-connect">&rarr; VP</span></div>
+                    <div class="bmc-item" data-connects="vp-amplified"><span class="priority-badge priority-essential">E2</span><span class="flex-1 text-slate-300"><strong class="text-white">Enterprise (50-500 empleados)</strong> &mdash; Necesitan framework escalable de IA para ventas y operaciones. Requieren gobernanza y m&eacute;tricas de ROI.</span><span class="bmc-item-connect">&rarr; VP</span></div>
+                    <div class="bmc-item" data-connects="vp-governance"><span class="priority-badge priority-important">E3</span><span class="flex-1 text-slate-300"><strong class="text-white">Corporate (500+ empleados)</strong> &mdash; Necesitan gobernanza de IA a escala, compliance (SOX, GDPR, ISO 42001), y transferencia de capacidad a equipos internos.</span><span class="bmc-item-connect">&rarr; VP</span></div>
+
+                    <div class="collapsible-trigger mt-2" onclick="toggleCollapsible(this)"><span class="arrow">&#9654;</span> Preguntas del facilitador</div>
+                    <div class="collapsible-content">
+                        <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Hay din&aacute;micas de plataforma multi-sided entre B2C y B2B?</p>
+                        <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Los Digital Champions B2C se convierten en agentes de cambio dentro de E1-E3?</p>
+                        <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;E3 Corporate justifica un equipo dedicado o se atiende con el modelo actual?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALUE PROPOSITIONS -->
+    <section id="value-prop" class="bmc-section section-padding hidden">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Facilitador Osterwalder</div>
+                        <div class="text-slate-500 text-xs">Bloque 2 &mdash; Propuesta de Valor</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;Este es el paquete de productos y servicios que genera valor para un segmento espec&iacute;fico. MetodologIA tiene tres propuestas core que se refuerzan mutuamente: Venta Amplificada como motor, Soberan&iacute;a Digital como filosof&iacute;a, y el Est&aacute;ndar Cheque de 100 como garant&iacute;a de calidad. Es una arquitectura de valor coherente.&rdquo;
+                </p>
+            </div>
+
+            <!-- Core Value Props -->
+            <div class="card-glass p-5 mb-6 border-purple-500/10">
+                <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                    <span class="text-xl">&#127873;</span>
+                    <span class="font-bold text-bmc-value text-sm">Propuestas de Valor Core</span>
+                    <span class="text-[11px] text-slate-600 ml-auto bg-white/5 px-2 py-0.5 rounded-full">3 propuestas</span>
+                </div>
+                <div class="bmc-item" id="vp-amplified"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Venta Amplificada</strong> &mdash; Sistemas comerciales aumentados por IA. 127% de incremento en velocidad de pipeline. Framework propietario: sistemas sobre individuos.</span><span class="bmc-item-connect">&rarr; E1-E3, P3</span></div>
+                <div class="bmc-item" id="vp-sovereignty"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Soberan&iacute;a Digital / Profesional / Estrat&eacute;gica</strong> &mdash; Independencia y control. &Eacute;xito medido por lo que el cliente logra SIN MetodologIA. M&eacute;trica de autonom&iacute;a &gt; 80%.</span><span class="bmc-item-connect">&rarr; Todos</span></div>
+                <div class="bmc-item" id="vp-check100"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Est&aacute;ndar Cheque de 100</strong> &mdash; Zero fricci&oacute;n, feedback inmediato, procesos fluidos, QA garantizada. Excelencia operacional como promesa.</span><span class="bmc-item-connect">&rarr; Todos</span></div>
+            </div>
+
+            <!-- Product Tiers -->
+            <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-glass p-5 border-indigo-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#128100;</span>
+                        <span class="font-bold text-indigo-400 text-sm">Oferta B2C &mdash; Personas</span>
+                    </div>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Gratis</span><span class="flex-1 text-slate-300"><strong class="text-white">Diagn&oacute;stico Estrat&eacute;gico</strong> &mdash; 1 hora, mapa de oportunidad personalizado</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">COP 200K</span><span class="flex-1 text-slate-300"><strong class="text-white">Taller Estrateg&iacute;a Personal</strong> &mdash; 3h, roadmap personalizado. 100% acreditable a bootcamp</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 800K</span><span class="flex-1 text-slate-300"><strong class="text-white">Bootcamps (3 opciones)</strong> &mdash; Ofim&aacute;tica con IA / Ventas con IA / Amplificaci&oacute;n Profesional. 18h cada uno</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 2.4M</span><span class="flex-1 text-slate-300"><strong class="text-white">Digital Champions / Empoderamiento</strong> &mdash; 16 semanas, programa elite. Recuperaci&oacute;n de 2h diarias</span></div>
+                </div>
+                <div class="card-glass p-5 border-cyan-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#127970;</span>
+                        <span class="font-bold text-cyan-400 text-sm">Oferta B2B &mdash; Empresas</span>
+                    </div>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Gratis</span><span class="flex-1 text-slate-300"><strong class="text-white">Diagn&oacute;stico Organizacional</strong> &mdash; 1 hora, identifica ineficiencias y cuellos de botella manuales</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">COP 3M</span><span class="flex-1 text-slate-300"><strong class="text-white">Workshop Venta Amplificada</strong> &mdash; Alineaci&oacute;n estrat&eacute;gica, deep research en cuentas, resultados en 48h</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 12-18M</span><span class="flex-1 text-slate-300"><strong class="text-white">Bootcamp Gesti&oacute;n Comercial con IA</strong> &mdash; 18h+, prospecci&oacute;n inteligente, personalizaci&oacute;n masiva, certificaci&oacute;n</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 35M</span><span class="flex-1 text-slate-300"><strong class="text-white">Programa Enterprise</strong> &mdash; Transformaci&oacute;n completa, gobernanza de IA, transferencia de capacidad</span></div>
+                </div>
+            </div>
+
+            <!-- Free Tier -->
+            <div class="card-glass p-5 border-emerald-500/10">
+                <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                    <span class="text-xl">&#127381;</span>
+                    <span class="font-bold text-emerald-400 text-sm">Motor Freemium &mdash; Recursos Gratuitos</span>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="bmc-item"><span class="flex-1 text-slate-300"><strong class="text-white">18</strong> Custom GPTs para ChatGPT</span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300"><strong class="text-white">5</strong> Google Gemini Gems</span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300"><strong class="text-white">180+</strong> Prompts curados</span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300"><strong class="text-white">4</strong> Playbooks operacionales</span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300"><strong class="text-white">4</strong> E-books de IA estrat&eacute;gica</span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300">Templates <strong class="text-white">n8n</strong></span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300">Mini-apps <strong class="text-white">Google AI Studio</strong></span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300">Prototipos <strong class="text-white">Vercel v0</strong></span></div>
+                </div>
+            </div>
+
+            <div class="collapsible-trigger mt-4" onclick="toggleCollapsible(this)"><span class="arrow">&#9654;</span> Preguntas del facilitador</div>
+            <div class="collapsible-content">
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;El free tier genera suficiente conversi&oacute;n o se queda en vanity metrics?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;C&oacute;mo se relaciona la Soberan&iacute;a Digital con la retenci&oacute;n? Si el &eacute;xito es independencia, &iquest;c&oacute;mo se sostiene el revenue?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;El salto de COP 800K a COP 2.4M est&aacute; justificado por el valor percibido?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHANNELS & RELATIONSHIPS -->
+    <section id="channels-rel" class="bmc-section section-padding hidden">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Facilitador Osterwalder</div>
+                        <div class="text-slate-500 text-xs">Bloques 3 y 4 &mdash; Canales y Relaciones con Clientes</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;Los canales describen c&oacute;mo llegas a tus clientes y les entregas la propuesta de valor. Las relaciones definen qu&eacute; tipo de v&iacute;nculo estableces con cada segmento. MetodologIA tiene un funnel inteligente: consultas gratuitas los lunes como puerta de entrada, un pipeline de 6 fases (F0-F5), y 8 Momentos de Verdad que miden la experiencia.&rdquo;
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Channels -->
+                <div>
+                    <div class="card-glass p-5 mb-4 border-emerald-500/10">
+                        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                            <span class="text-xl">&#128226;</span>
+                            <span class="font-bold text-bmc-channels text-sm">Canales de Distribuci&oacute;n</span>
+                            <span class="text-[11px] text-slate-600 ml-auto bg-white/5 px-2 py-0.5 rounded-full">6 canales</span>
+                        </div>
+                        <div class="bmc-item"><span class="priority-badge priority-essential">Propio</span><span class="flex-1 text-slate-300"><strong class="text-white">metodologia.info</strong> &mdash; Sitio web principal. Hub de recursos, booking de consultas, catalogo de servicios</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-essential">Propio</span><span class="flex-1 text-slate-300"><strong class="text-white">Consultas gratuitas</strong> &mdash; Lunes 9AM-3:30PM v&iacute;a Google Meet. Motor de adquisici&oacute;n principal</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-important">Social</span><span class="flex-1 text-slate-300"><strong class="text-white">LinkedIn</strong> &mdash; Canal corporativo principal, contenido B2B, thought leadership</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-important">Social</span><span class="flex-1 text-slate-300"><strong class="text-white">Instagram</strong> &mdash; Canal B2C, contenido visual, awareness de marca</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-nice">Nuevo</span><span class="flex-1 text-slate-300"><strong class="text-white">Podcast</strong> &mdash; Lanzamiento Feb 2026. Nuevo canal de thought leadership</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-nice">Digital</span><span class="flex-1 text-slate-300"><strong class="text-white">Repositorio GitHub</strong> &mdash; Canal t&eacute;cnico, acceso a recursos y templates</span></div>
+                    </div>
+
+                    <div class="card-glass p-5 border-emerald-500/10">
+                        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                            <span class="text-xl">&#128640;</span>
+                            <span class="font-bold text-emerald-300 text-sm">Fases de Servicio (F0&ndash;F5)</span>
+                        </div>
+                        <div class="bmc-item"><span class="xref-badge">F0</span><span class="flex-1 text-slate-300"><strong class="text-white">Awareness</strong> &mdash; Contenido, redes sociales, recursos gratuitos</span></div>
+                        <div class="bmc-item"><span class="xref-badge">F1</span><span class="flex-1 text-slate-300"><strong class="text-white">Diagnosis</strong> &mdash; Consulta gratuita, mapa de oportunidad personalizado</span></div>
+                        <div class="bmc-item"><span class="xref-badge">F2</span><span class="flex-1 text-slate-300"><strong class="text-white">Design</strong> &mdash; Roadmap co-dise&ntilde;ado con KPIs del cliente</span></div>
+                        <div class="bmc-item"><span class="xref-badge">F3</span><span class="flex-1 text-slate-300"><strong class="text-white">Guided Practice</strong> &mdash; Coaching semanal, m&aacute;x 10 clientes/coach</span></div>
+                        <div class="bmc-item"><span class="xref-badge">F4</span><span class="flex-1 text-slate-300"><strong class="text-white">Autonomy Kit</strong> &mdash; Recursos as&iacute;ncronos, check-ins peri&oacute;dicos</span></div>
+                        <div class="bmc-item"><span class="xref-badge">F5</span><span class="flex-1 text-slate-300"><strong class="text-white">Advocacy</strong> &mdash; Programa Embajador, caso de &eacute;xito, referral</span></div>
+                    </div>
+                </div>
+
+                <!-- Relationships -->
+                <div>
+                    <div class="card-glass p-5 mb-4 border-pink-500/10">
+                        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                            <span class="text-xl">&#128149;</span>
+                            <span class="font-bold text-bmc-relationships text-sm">Relaciones con Clientes</span>
+                            <span class="text-[11px] text-slate-600 ml-auto bg-white/5 px-2 py-0.5 rounded-full">5 tipos</span>
+                        </div>
+                        <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Asistencia Personal Dedicada</strong> &mdash; Diagn&oacute;sticos 1:1, coaching personalizado. Ratio m&aacute;ximo 10 clientes por coach</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Co-Creaci&oacute;n</strong> &mdash; Roadmaps co-dise&ntilde;ados con KPIs propios del cliente. El cliente participa activamente</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-important">Escala</span><span class="flex-1 text-slate-300"><strong class="text-white">Self-Service</strong> &mdash; GPTs, prompts, playbooks, e-books. Autonom&iacute;a del cliente como meta</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-important">Escala</span><span class="flex-1 text-slate-300"><strong class="text-white">Automatizado</strong> &mdash; Workflows n8n, mini-apps Google AI Studio. Herramientas que funcionan sin el coach</span></div>
+                        <div class="bmc-item"><span class="priority-badge priority-nice">Comunidad</span><span class="flex-1 text-slate-300"><strong class="text-white">Comunidad de Embajadores</strong> &mdash; Programa F5, red de referidos, eventos exclusivos, badge certificado</span></div>
+                    </div>
+
+                    <div class="card-glass p-5 border-amber-500/10">
+                        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                            <span class="text-xl">&#9989;</span>
+                            <span class="font-bold text-amber-400 text-sm">8 Momentos de Verdad (MOT)</span>
+                        </div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-1</span><span class="flex-1 text-slate-300"><strong class="text-white">Relevancia</strong> &mdash; El cliente siente que el contenido habla directamente de su problema</span></div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-2</span><span class="flex-1 text-slate-300"><strong class="text-white">Confianza</strong> &mdash; El diagn&oacute;stico gratuito demuestra competencia sin pedir nada a cambio</span></div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-3</span><span class="flex-1 text-slate-300"><strong class="text-white">Compromiso</strong> &mdash; El cliente invierte por primera vez (taller COP 200K)</span></div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-4</span><span class="flex-1 text-slate-300"><strong class="text-white">Primer Resultado</strong> &mdash; Quick win tangible en las primeras semanas</span></div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-5</span><span class="flex-1 text-slate-300"><strong class="text-white">Transformaci&oacute;n</strong> &mdash; El cliente opera con autonom&iacute;a en su contexto</span></div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-6</span><span class="flex-1 text-slate-300"><strong class="text-white">Validaci&oacute;n</strong> &mdash; Autonom&iacute;a &gt; 80% certificada</span></div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-7</span><span class="flex-1 text-slate-300"><strong class="text-white">Multiplicador</strong> &mdash; El cliente ense&ntilde;a a otros, escalando impacto</span></div>
+                        <div class="bmc-item"><span class="xref-badge">MOT-8</span><span class="flex-1 text-slate-300"><strong class="text-white">Embajador</strong> &mdash; Referidos activos, caso de &eacute;xito publicado</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible-trigger mt-4" onclick="toggleCollapsible(this)"><span class="arrow">&#9654;</span> Preguntas del facilitador</div>
+            <div class="collapsible-content">
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;La consulta gratuita de lunes es escalable o se convierte en cuello de botella?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;El ratio 10:1 permite crecer sin diluir la calidad de la relaci&oacute;n?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;C&oacute;mo transiciona el cliente de relaci&oacute;n personal a self-service sin sentir abandono?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVENUE STREAMS & COST STRUCTURE -->
+    <section id="revenue-costs" class="bmc-section section-padding hidden">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Facilitador Osterwalder</div>
+                        <div class="text-slate-500 text-xs">Bloques 5 y 9 &mdash; Flujos de Ingreso y Estructura de Costos</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;&iquest;Es MetodologIA cost-driven o value-driven? Con deals enterprise de COP 35M y un free tier generoso como motor de adquisici&oacute;n, esto es claramente value-driven con un engine freemium. La pregunta estrat&eacute;gica no es cu&aacute;nto cobras, sino cu&aacute;nto valor creas antes de pedir dinero.&rdquo;
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Revenue -->
+                <div class="card-glass p-5 border-yellow-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#128176;</span>
+                        <span class="font-bold text-bmc-revenue text-sm">Flujos de Ingreso</span>
+                    </div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-2">&#128100; Escalera B2C</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Gratis</span><span class="flex-1 text-slate-300">Diagn&oacute;stico + recursos (lead gen)</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">COP 200K</span><span class="flex-1 text-slate-300">Taller Estrategia Personal (3h, acreditable)</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 800K</span><span class="flex-1 text-slate-300">Bootcamps (18h, 3 especializaciones)</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 2.4M</span><span class="flex-1 text-slate-300">Digital Champions / Empoderamiento (16 semanas)</span></div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-5">&#127970; Escalera B2B</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Gratis</span><span class="flex-1 text-slate-300">Diagn&oacute;stico organizacional (1h)</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">COP 3M</span><span class="flex-1 text-slate-300">Workshop Venta Amplificada</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 12-18M</span><span class="flex-1 text-slate-300">Bootcamp Gesti&oacute;n Comercial con IA</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">COP 35M</span><span class="flex-1 text-slate-300">Programa Enterprise completo</span></div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-5">&#9889; Modelo de Revenue</h4>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300"><strong class="text-white">Escalera progresiva</strong> &mdash; No SaaS recurrente. Cada nivel desbloquea el siguiente. Free &rarr; Taller &rarr; Bootcamp &rarr; Elite</span></div>
+                    <div class="bmc-item"><span class="flex-1 text-slate-300"><strong class="text-white">Pol&iacute;tica de precios flexible</strong> &mdash; PYMEs (&#8804;10 empleados, &#8804;3 a&ntilde;os) aplican a tarifa reducida individual</span></div>
+                </div>
+
+                <!-- Costs -->
+                <div class="card-glass p-5 border-red-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#128200;</span>
+                        <span class="font-bold text-bmc-costs text-sm">Estructura de Costos</span>
+                    </div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-2">&#128187; Tecnolog&iacute;a e Infraestructura</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Fijo</span><span class="flex-1 text-slate-300"><strong class="text-white">Suscripciones AI</strong> &mdash; OpenAI (ChatGPT Plus/Team), Google Gemini Advanced, AI Studio</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Fijo</span><span class="flex-1 text-slate-300"><strong class="text-white">Infraestructura digital</strong> &mdash; Vercel, GitHub, n8n cloud, dominio, hosting</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Variable</span><span class="flex-1 text-slate-300"><strong class="text-white">Google Meet</strong> &mdash; Tier gratuito para consultas, Workspace para equipo</span></div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-5">&#128188; Operaciones</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Fijo</span><span class="flex-1 text-slate-300"><strong class="text-white">Tiempo de fundadores</strong> &mdash; 4 co-fundadores, horas de consultor&iacute;a, coaching y desarrollo</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Variable</span><span class="flex-1 text-slate-300"><strong class="text-white">Creaci&oacute;n de contenido</strong> &mdash; 180+ prompts, GPTs, playbooks, e-books, podcast</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Variable</span><span class="flex-1 text-slate-300"><strong class="text-white">Marketing digital</strong> &mdash; LinkedIn, Instagram, producci&oacute;n de podcast</span></div>
+
+                    <div class="facilitator-box mt-4">
+                        <p class="text-slate-300 text-xs italic leading-relaxed">
+                            &ldquo;Modelo value-driven con costos fijos bajos (tech subs + founders) y costos variables que escalan con la demanda (contenido + coaching). La escalabilidad est&aacute; en el free tier digital, no en multiplicar coaches.&rdquo;
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible-trigger mt-4" onclick="toggleCollapsible(this)"><span class="arrow">&#9654;</span> Preguntas del facilitador</div>
+            <div class="collapsible-content">
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Cu&aacute;l es el break-even por programa? &iquest;Cu&aacute;ntos clientes B2C necesitas para igualar 1 deal B2B?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Los recursos gratuitos generan un CAC (costo de adquisici&oacute;n) menor que el marketing tradicional?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;El costo de tiempo de fundadores es sostenible o necesitas delegar coaching?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- KEY RESOURCES & KEY ACTIVITIES -->
+    <section id="resources-activities" class="bmc-section section-padding hidden">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Facilitador Osterwalder</div>
+                        <div class="text-slate-500 text-xs">Bloques 6 y 7 &mdash; Recursos Clave y Actividades Clave</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;Los recursos clave son los activos m&aacute;s importantes para que tu modelo funcione. Las actividades clave son las cosas m&aacute;s importantes que debes hacer. En MetodologIA, el recurso m&aacute;s valioso no es la tecnolog&iacute;a &mdash; es la metodolog&iacute;a propietaria y los 4 co-fundadores que la encarnan.&rdquo;
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Resources -->
+                <div class="card-glass p-5 border-orange-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#128161;</span>
+                        <span class="font-bold text-bmc-resources text-sm">Recursos Clave</span>
+                    </div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-2">&#129504; Intelectuales</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">18 Custom GPTs</strong> para ChatGPT &mdash; herramientas AI propietarias</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">5 Google Gemini Gems</strong> &mdash; asistentes AI multiplataforma</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">180+ Prompts curados</strong> &mdash; bibliotecas Universal, Ventas, Desarrollo</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Soporte</span><span class="flex-1 text-slate-300"><strong class="text-white">Templates n8n</strong> + mini-apps Google AI Studio + prototipos Vercel v0</span></div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-5">&#128101; Humanos</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">CEO</span><span class="flex-1 text-slate-300"><strong class="text-white">Daniel Zuluaga</strong> &mdash; Chief Efficiency Officer. Optimizaci&oacute;n de procesos y excelencia operacional</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">CEcoO</span><span class="flex-1 text-slate-300"><strong class="text-white">Germ&aacute;n Sepulveda</strong> &mdash; Chief Ecosystem Officer. Comunidades estrat&eacute;gicas y alianzas</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">CEmO</span><span class="flex-1 text-slate-300"><strong class="text-white">Javier Monta&ntilde;o</strong> &mdash; Chief Empowerment Officer. Dise&ntilde;o estrat&eacute;gico, integraci&oacute;n AI + metodolog&iacute;a</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">CEnO</span><span class="flex-1 text-slate-300"><strong class="text-white">Katherine Oquendo</strong> &mdash; Chief Enablement Officer. Ambientes habilitadores, cultura organizacional</span></div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-5">&#128736; Metodol&oacute;gicos</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Ruta de Evoluci&oacute;n Digital</strong> &mdash; 9 niveles en 6-12 meses. Fundamentar &rarr; Acelerar &rarr; Catalizar &rarr; Amplificar</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">6 Fases de Servicio</strong> (F0-F5) + <strong class="text-white">8 Momentos de Verdad</strong> (MOT-1 a MOT-8)</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Est&aacute;ndar Cheque de 100</strong> &mdash; Framework de excelencia operacional</span></div>
+                </div>
+
+                <!-- Activities -->
+                <div class="card-glass p-5 border-sky-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#9881;</span>
+                        <span class="font-bold text-bmc-activities text-sm">Actividades Clave</span>
+                    </div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-2">&#127891; Desarrollo y Entrega</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Desarrollo curricular y prompt engineering</strong> &mdash; Creaci&oacute;n continua de GPTs, prompts, playbooks</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Entrega de diagn&oacute;sticos y coaching 1:1</strong> &mdash; Consultas, workshops, bootcamps, programas elite</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Soporte</span><span class="flex-1 text-slate-300"><strong class="text-white">Mantenimiento de herramientas AI</strong> &mdash; Actualizaci&oacute;n de GPTs, templates n8n, mini-apps</span></div>
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 mt-5">&#128227; Adquisici&oacute;n y Comunidad</h4>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Consultas gratuitas de lunes</strong> &mdash; Motor principal de adquisici&oacute;n. Pipeline de conversi&oacute;n F0 &rarr; F1</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Growth</span><span class="flex-1 text-slate-300"><strong class="text-white">Content marketing</strong> &mdash; LinkedIn, Instagram, podcast. Thought leadership + awareness</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Comunidad</span><span class="flex-1 text-slate-300"><strong class="text-white">Programa Embajador</strong> &mdash; Construcci&oacute;n de comunidad F5, referral network</span></div>
+                </div>
+            </div>
+
+            <div class="collapsible-trigger mt-4" onclick="toggleCollapsible(this)"><span class="arrow">&#9654;</span> Preguntas del facilitador</div>
+            <div class="collapsible-content">
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Qu&eacute; pasa si un co-fundador sale? &iquest;La metodolog&iacute;a est&aacute; documentada o vive en las cabezas?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;El prompt engineering es una ventaja competitiva durable o f&aacute;cilmente replicable?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Hay actividades que pueden automatizarse para liberar tiempo de fundadores?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- KEY PARTNERSHIPS -->
+    <section id="partners" class="bmc-section section-padding hidden">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Facilitador Osterwalder</div>
+                        <div class="text-slate-500 text-xs">Bloque 8 &mdash; Alianzas Clave</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;&iquest;Cu&aacute;les alianzas son existenciales y cu&aacute;les optimizadoras? Las plataformas AI (OpenAI, Google) son existenciales &mdash; sin ellas el producto core no existe. n8n y Vercel son alianzas de eficiencia. La dependencia en plataformas de terceros es el mayor riesgo estrat&eacute;gico de MetodologIA.&rdquo;
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="card-glass p-5 border-indigo-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#129309;</span>
+                        <span class="font-bold text-bmc-partners text-sm">Partners Tecnol&oacute;gicos</span>
+                        <span class="text-[11px] text-slate-600 ml-auto bg-white/5 px-2 py-0.5 rounded-full">6 partners</span>
+                    </div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Existencial</span><span class="flex-1 text-slate-300"><strong class="text-white">OpenAI / ChatGPT</strong> &mdash; Plataforma core de GPTs. 18 custom GPTs construidos sobre esta API</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Existencial</span><span class="flex-1 text-slate-300"><strong class="text-white">Google Gemini / AI Studio</strong> &mdash; AI alternativa, 5 Gems, mini-apps. Diversificaci&oacute;n de plataforma</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Eficiencia</span><span class="flex-1 text-slate-300"><strong class="text-white">n8n</strong> &mdash; Plataforma de automatizaci&oacute;n de workflows. Templates para clientes</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Eficiencia</span><span class="flex-1 text-slate-300"><strong class="text-white">Vercel v0</strong> &mdash; Prototipado UI. Generaci&oacute;n r&aacute;pida de componentes</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Soporte</span><span class="flex-1 text-slate-300"><strong class="text-white">GitHub</strong> &mdash; Control de versiones, repositorio de recursos p&uacute;blicos</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-nice">Soporte</span><span class="flex-1 text-slate-300"><strong class="text-white">Google Stitch</strong> &mdash; Integraci&oacute;n de datos, prototipos</span></div>
+                </div>
+
+                <div class="card-glass p-5 border-emerald-500/10">
+                    <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                        <span class="text-xl">&#127760;</span>
+                        <span class="font-bold text-emerald-400 text-sm">Partners de Distribuci&oacute;n</span>
+                        <span class="text-[11px] text-slate-600 ml-auto bg-white/5 px-2 py-0.5 rounded-full">3 partners</span>
+                    </div>
+                    <div class="bmc-item"><span class="priority-badge priority-essential">Core</span><span class="flex-1 text-slate-300"><strong class="text-white">Google Meet</strong> &mdash; Plataforma de entrega de consultas y sesiones. Tier gratuito como ventaja</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Growth</span><span class="flex-1 text-slate-300"><strong class="text-white">LinkedIn</strong> &mdash; Canal principal B2B, thought leadership, networking profesional</span></div>
+                    <div class="bmc-item"><span class="priority-badge priority-important">Growth</span><span class="flex-1 text-slate-300"><strong class="text-white">Instagram</strong> &mdash; Canal B2C, contenido visual, awareness de marca</span></div>
+                </div>
+            </div>
+
+            <div class="collapsible-trigger mt-4" onclick="toggleCollapsible(this)"><span class="arrow">&#9654;</span> Preguntas del facilitador</div>
+            <div class="collapsible-content">
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Qu&eacute; pasa si OpenAI cambia su modelo de pricing o limita custom GPTs?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;La diversificaci&oacute;n Google Gemini es suficiente para mitigar el riesgo de plataforma?</p>
+                <p class="text-xs text-slate-400 py-1 pl-4 border-l-2 border-yellow-500/30 my-1">&iquest;Hay oportunidad de partnerships con empresas o instituciones educativas?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- COHERENCE ANALYSIS -->
+    <section id="coherence" class="bmc-section section-padding hidden">
+        <div class="container-max">
+
+            <div class="facilitator-box mb-8">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-xl flex-shrink-0">&#127919;</div>
+                    <div>
+                        <div class="font-bold text-yellow-400 text-sm">Facilitador Osterwalder</div>
+                        <div class="text-slate-500 text-xs">An&aacute;lisis de Coherencia &mdash; Cross-Block Fit</div>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm italic leading-relaxed pl-[52px]">
+                    &ldquo;Un gran modelo de negocio es un sistema donde cada bloque refuerza a los dem&aacute;s. Vamos a evaluar la coherencia entre los 9 bloques de MetodologIA. Busco tres cosas: conexiones fuertes que crear&iacute;an un foso competitivo, desconexiones que podr&iacute;an debilitar el modelo, y oportunidades de refuerzo cruzado no explotadas.&rdquo;
+                </p>
+            </div>
+
+            <!-- Coherence Score -->
+            <div class="grid sm:grid-cols-3 gap-4 mb-8">
+                <div class="card-glass p-6 text-center border-emerald-500/15">
+                    <div class="text-3xl font-bold text-emerald-400 mb-1">87%</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Coherencia General</div>
+                    <div class="text-[11px] text-slate-600 mt-2">Modelo s&oacute;lido con gaps menores</div>
+                </div>
+                <div class="card-glass p-6 text-center border-emerald-500/15">
+                    <div class="text-3xl font-bold text-emerald-400 mb-1">6</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Conexiones Fuertes</div>
+                    <div class="text-[11px] text-slate-600 mt-2">Circuitos virtuosos identificados</div>
+                </div>
+                <div class="card-glass p-6 text-center border-amber-500/15">
+                    <div class="text-3xl font-bold text-amber-400 mb-1">3</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Gaps Estrat&eacute;gicos</div>
+                    <div class="text-[11px] text-slate-600 mt-2">Oportunidades de mejora</div>
+                </div>
+            </div>
+
+            <!-- Coherence Matrix -->
+            <div class="card-glass p-5 mb-8 overflow-x-auto">
+                <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                    <i data-lucide="grid-3x3" class="w-4 h-4 text-indigo-400"></i>
+                    Matriz de Coherencia Cross-Block
+                </h3>
+                <table class="fit-matrix">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Segmentos</th>
+                            <th>Propuesta</th>
+                            <th>Canales</th>
+                            <th>Relaciones</th>
+                            <th>Ingresos</th>
+                            <th>Recursos</th>
+                            <th>Actividades</th>
+                            <th>Partners</th>
+                            <th>Costos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="text-left font-bold text-bmc-segments">Segmentos</td><td>&mdash;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-weak">&#9675;</td><td class="fit-partial">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-value">Propuesta</td><td class="fit-strong">&#9679;</td><td>&mdash;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-channels">Canales</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td>&mdash;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-relationships">Relaciones</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td>&mdash;</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-weak">&#9675;</td><td class="fit-partial">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-revenue">Ingresos</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td><td>&mdash;</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-weak">&#9675;</td><td class="fit-strong">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-resources">Recursos</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td>&mdash;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-activities">Actividades</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td><td>&mdash;</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-partners">Partners</td><td class="fit-weak">&#9675;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-weak">&#9675;</td><td class="fit-weak">&#9675;</td><td class="fit-strong">&#9679;</td><td class="fit-partial">&#9679;</td><td>&mdash;</td><td class="fit-strong">&#9679;</td></tr>
+                        <tr><td class="text-left font-bold text-bmc-costs">Costos</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-partial">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td class="fit-strong">&#9679;</td><td>&mdash;</td></tr>
+                    </tbody>
+                </table>
+                <div class="flex gap-6 mt-3 text-[11px]">
+                    <span><span class="fit-strong">&#9679;</span> Fuerte</span>
+                    <span><span class="fit-partial">&#9679;</span> Parcial</span>
+                    <span><span class="fit-weak">&#9675;</span> D&eacute;bil</span>
+                </div>
+            </div>
+
+            <!-- Strategic Observations -->
+            <div class="card-glass p-5 mb-6 border-emerald-500/10">
+                <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                    <span class="text-xl">&#128994;</span>
+                    <span class="font-bold text-emerald-400 text-sm">Circuitos Virtuosos (Conexiones Fuertes)</span>
+                </div>
+                <div class="bmc-item"><span class="priority-badge priority-essential">Loop 1</span><span class="flex-1 text-slate-300"><strong class="text-white">Free Tier &rarr; Consulta Lunes &rarr; Diagn&oacute;stico &rarr; Conversi&oacute;n</strong> &mdash; Funnel de adquisici&oacute;n gratuito que alimenta revenue sin CAC de marketing</span></div>
+                <div class="bmc-item"><span class="priority-badge priority-essential">Loop 2</span><span class="flex-1 text-slate-300"><strong class="text-white">GPTs (Recurso) &rarr; Soberan&iacute;a Digital (VP) &rarr; Autonomy Kit (Actividad)</strong> &mdash; El recurso intelectual habilita la propuesta de valor central</span></div>
+                <div class="bmc-item"><span class="priority-badge priority-essential">Loop 3</span><span class="flex-1 text-slate-300"><strong class="text-white">Coaching 1:1 &rarr; Co-Creaci&oacute;n &rarr; Digital Champion &rarr; Embajador</strong> &mdash; Relaci&oacute;n personal escala a comunidad autom&aacute;ticamente</span></div>
+                <div class="bmc-item"><span class="priority-badge priority-important">Loop 4</span><span class="flex-1 text-slate-300"><strong class="text-white">P3 Ejecutivo B2C &rarr; Champion interno &rarr; Deal B2B E1-E2</strong> &mdash; El segmento individual alimenta el segmento empresarial</span></div>
+                <div class="bmc-item"><span class="priority-badge priority-important">Loop 5</span><span class="flex-1 text-slate-300"><strong class="text-white">Ruta Digital 9 niveles &rarr; Pricing escalonado &rarr; LTV progresivo</strong> &mdash; La metodolog&iacute;a estructura la monetizaci&oacute;n natural</span></div>
+                <div class="bmc-item"><span class="priority-badge priority-important">Loop 6</span><span class="flex-1 text-slate-300"><strong class="text-white">4 Co-fundadores complementarios &rarr; CEO+CEcoO+CEmO+CEnO</strong> &mdash; Cobertura completa: eficiencia, ecosistema, empoderamiento, habilitaci&oacute;n</span></div>
+            </div>
+
+            <div class="card-glass p-5 mb-6 border-amber-500/10">
+                <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/5">
+                    <span class="text-xl">&#128992;</span>
+                    <span class="font-bold text-amber-400 text-sm">Gaps Estrat&eacute;gicos (Oportunidades de Mejora)</span>
+                </div>
+                <div class="bmc-item"><span class="priority-badge priority-essential">Gap 1</span><span class="flex-1 text-slate-300"><strong class="text-white">E3 Corporate sin modelo de relaci&oacute;n dedicado</strong> &mdash; El ratio 10:1 de coaching no escala a Corporate 500+. Necesita account management dedicado y gobernanza (SOX, GDPR, ISO 42001)</span></div>
+                <div class="bmc-item"><span class="priority-badge priority-important">Gap 2</span><span class="flex-1 text-slate-300"><strong class="text-white">Podcast (canal) desconectado de revenue</strong> &mdash; Lanzado Feb 2026, a&uacute;n sin integraci&oacute;n clara al funnel de conversi&oacute;n o partnerships de monetizaci&oacute;n</span></div>
+                <div class="bmc-item"><span class="priority-badge priority-important">Gap 3</span><span class="flex-1 text-slate-300"><strong class="text-white">Dependencia de plataformas AI de terceros</strong> &mdash; OpenAI y Google controlan el core del producto. Sin IP propia en modelos. Riesgo de cambio de pricing o restricciones</span></div>
+            </div>
+
+            <div class="facilitator-box">
+                <p class="text-slate-300 text-sm italic leading-relaxed">
+                    &ldquo;Un 87% de coherencia es un modelo s&oacute;lido. Los circuitos virtuosos 1-3 son el coraz&oacute;n del negocio y dif&iacute;ciles de replicar. Los gaps son manejables: E3 necesita un track dedicado, el podcast necesita un playbook de conversi&oacute;n, y la dependencia de plataformas se mitiga con la diversificaci&oacute;n Google+OpenAI y el IP metodol&oacute;gico (que vive en las cabezas de los fundadores, no en la API).&rdquo;
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 border-t border-white/5">
+        <div class="container-max py-12">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs><linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366F1"/><stop offset="100%" stop-color="#4F46E5"/></linearGradient></defs>
+                        <rect width="36" height="36" rx="10" fill="url(#logoGrad2)"/>
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                        <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+                    </svg>
+                    <span class="text-sm text-slate-400"><strong class="text-white">Metodolog</strong><span class="highlight-ia-premium">IA</span></span>
+                </div>
+                <div class="text-center text-slate-500 text-xs">
+                    Business Model Canvas &middot; Facilitado al estilo Alexander Osterwalder &middot; 2026
+                </div>
+                <div class="text-xs text-slate-500">
+                    contacto@metodologia.info
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('.bmc-section').forEach(s => s.classList.add('hidden'));
+            const section = document.getElementById(id);
+            if (section) section.classList.remove('hidden');
+
+            document.querySelectorAll('.bmc-nav-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-500/20', 'text-white');
+                btn.classList.add('text-slate-400');
+                if (btn.getAttribute('data-section') === id) {
+                    btn.classList.add('bg-indigo-500/20', 'text-white');
+                    btn.classList.remove('text-slate-400');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleCollapsible(trigger) {
+            trigger.classList.toggle('open');
+            const content = trigger.nextElementSibling;
+            if (content) content.classList.toggle('open');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // Hover highlighting for connections
+            document.querySelectorAll('.bmc-item[data-connects]').forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    const connects = item.getAttribute('data-connects');
+                    if (!connects) return;
+                    connects.split(',').forEach(id => {
+                        const target = document.getElementById(id.trim());
+                        if (target) target.classList.add('highlighted');
+                    });
+                });
+                item.addEventListener('mouseleave', () => {
+                    document.querySelectorAll('.bmc-item.highlighted').forEach(el => {
+                        el.classList.remove('highlighted');
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

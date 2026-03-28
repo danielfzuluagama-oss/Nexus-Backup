@@ -1,0 +1,17 @@
+---
+name: firebase-emulator-setup-meta
+type: meta
+version: 2.0.0
+description: "Meta-prompt for Firebase Emulator Setup skill routing."
+---
+
+# Firebase Emulator Setup — Meta Prompt
+
+Activate this skill when the user request matches:
+- Trigger phrases from SKILL.md description
+- Direct invocation: `/firebase-emulator-setup`
+
+## Skill Routing
+1. Load SKILL.md → read `## When to Activate` section
+2. If match → activate lead agent: `firebase-emulator-setup-lead`
+3. If orchestrated → defer to orchestrating skill

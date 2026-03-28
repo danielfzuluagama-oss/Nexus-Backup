@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Preparar Meeting — SOP — Proceso de Delivery MetodologIA">
+    <title>Preparar Meeting — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Operaciones Transversales</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Preparar Meeting — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Preparar Meeting — SOP</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">17</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('1-propsito-dec948')" aria-label="Ir a 1. Propósito">1. Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-9-42f318')" aria-label="Ir a 2. Supuestos Explícitos (9)">2. Supuestos Explícitos (9)</button>
+<button class="nav-btn" onclick="scrollToSection('3-lmites-scope-8e11b1')" aria-label="Ir a 3. Límites (Scope)">3. Límites (Scope)</button>
+<button class="nav-btn" onclick="scrollToSection('4-criterios-de-aceptacin-10-405cda')" aria-label="Ir a 4. Criterios de Aceptación (10)">4. Criterios de Aceptación (10)</button>
+<button class="nav-btn" onclick="scrollToSection('5-casos-borde-7-fcc8a0')" aria-label="Ir a 5. Casos Borde (7)">5. Casos Borde (7)</button>
+<button class="nav-btn" onclick="scrollToSection('6-decisiones-de-diseo-5-f4b961')" aria-label="Ir a 6. Decisiones de Diseño (5)">6. Decisiones de Diseño (5)</button>
+<button class="nav-btn" onclick="scrollToSection('7-antipatterns-5-cosas-que-no-hacer-0ed544')" aria-label="Ir a 7. Anti-Patterns (5 Cosas Que NO Hacer)">7. Anti-Patterns (5 Cosas Que NO Ha</button>
+<button class="nav-btn" onclick="scrollToSection('8-fallbacks-5-escenarios-de-contingencia-86b274')" aria-label="Ir a 8. Fallbacks (5 Escenarios de Contingencia)">8. Fallbacks (5 Escenarios de Conti</button>
+<button class="nav-btn" onclick="scrollToSection('9-workflows-4-tipos-de-meetings-c03907')" aria-label="Ir a 9. Workflows (4 Tipos de Meetings)">9. Workflows (4 Tipos de Meetings)</button>
+<button class="nav-btn" onclick="scrollToSection('10-research-brief-template-1c3cb7')" aria-label="Ir a 10. Research Brief Template">10. Research Brief Template</button>
+<button class="nav-btn" onclick="scrollToSection('11-checklist-premeeting-t24h-a-t0-6d261f')" aria-label="Ir a 11. Checklist Pre-Meeting (T-24h a T-0)">11. Checklist Pre-Meeting (T-24h a </button>
+<button class="nav-btn" onclick="scrollToSection('12-mtricas-de-xito-c47b3c')" aria-label="Ir a 12. Métricas de Éxito">12. Métricas de Éxito</button>
+<button class="nav-btn" onclick="scrollToSection('13-conexiones-con-otros-sops-6506e3')" aria-label="Ir a 13. Conexiones con Otros SOPs">13. Conexiones con Otros SOPs</button>
+<button class="nav-btn" onclick="scrollToSection('14-ecuacin-metodologia-aplicada-754d0e')" aria-label="Ir a 14. Ecuación MetodologIA (Aplicada)">14. Ecuación MetodologIA (Aplicada)</button>
+<button class="nav-btn" onclick="scrollToSection('15-responsabilidades-92e060')" aria-label="Ir a 15. Responsabilidades">15. Responsabilidades</button>
+<button class="nav-btn" onclick="scrollToSection('ltima-actualizacin-00a700')" aria-label="Ir a Última Actualización">Última Actualización</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vehículo</strong>: Operación Transversal (Pre-interacción)</div>
+<div class="bullet-item"><strong>Proceso padre</strong>: Operaciones Transversales</div>
+<div class="bullet-item"><strong>Frecuencia</strong>: Pre cada reunión con cliente/prospecto/aliado</div>
+<div class="bullet-item"><strong>Owner</strong>: Responsable de la reunión (C-Level, Embajador, o facilitador)</div>
+<div class="bullet-item"><strong>Última actualización</strong>: 2026-03-24</div>
+<div class="bullet-item"><strong>Versión</strong>: 1.0</div>
+<div class="bullet-item"><strong>Alcance</strong>: Global (aplica a todas las reuniones externas)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-propsito-dec948" data-searchable aria-labelledby="head-1-propsito-dec948">
+            <div class="phase-header" id="head-1-propsito-dec948" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Propósito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Estandarizar la preparación antes de <strong>CUALQUIER reunión</strong> con stakeholders externos de MetodologIA. Aplica a:</p>
+<div class="bullet-item">Meetings comerciales (discovery, propuesta, negociación, QBR)</div>
+<div class="bullet-item">Meetings de delivery (kickoff, checkpoint, cierre)</div>
+<div class="bullet-item">Meetings con aliados GTM</div>
+<div class="bullet-item">Meetings con embajadores</div>
+<div class="bullet-item">Reuniones ejecutivas y de seguimiento</div>
+<p><strong>La preparación es lo que diferencia una reunión profesional de una improvisación.</strong> Cada meeting es una oportunidad de reflejar calidad, respeto por el tiempo del cliente y pensamiento estratégico.</p>
+<h3 class="subsection-title" id="contexto-metodologia-ab0a97">Contexto MetodologIA</h3>
+<div class="bullet-item"><strong>4 C-Levels</strong>: Javier (Empowerment), Daniel (Efficiency), Germán (Ecosystem/Embajadores), Katherine (Enablement)</div>
+<div class="bullet-item"><strong>Embajadores</strong>: Conductores de meetings estratégicas</div>
+<div class="bullet-item"><strong>7 Palancas</strong>: Capital, RRPP, Redes Sociales, Multimedia, IA, Tecnología, Metodología</div>
+<div class="bullet-item"><strong>Ecuación core</strong>: ≤Tiempo × Palancas = +Impacto → (+) Dinero</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-9-42f318" data-searchable aria-labelledby="head-2-supuestos-explcitos-9-42f318">
+            <div class="phase-header" id="head-2-supuestos-explcitos-9-42f318" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. Supuestos Explícitos (9)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Todo lo que sigue asume que ANTES de iniciar preparación:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Meeting confirmada</strong> (fecha, hora, duración, zona horaria)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Objetivo claro</strong> (qué decisión/resultado esperado)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Investigación de attendees</strong> (LinkedIn, historial CRM, interacciones previas)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Agenda drafted y compartida T-24h</strong> (al menos 1 día antes)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Materiales/slides/demos listos T-24h</strong> (quality gates passed)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Setup técnico testeado</strong> (si es virtual: Zoom, Teams, conexión internet)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Sistema note-taking ready</strong> (Granola, Notion, Google Docs, etc.)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>CRM actualizado</strong> con propósito de meeting y contexto histórico</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Plan B documentado</strong> si asistente clave cancela</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-lmites-scope-8e11b1" data-searchable aria-labelledby="head-3-lmites-scope-8e11b1">
+            <div class="phase-header" id="head-3-lmites-scope-8e11b1" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 3. Límites (Scope)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Inicia</strong>: T-48 horas antes de la meeting</p>
+<p class="key-value"><strong>Termina</strong>: T-0 (inicio de la meeting)</p>
+<p class="key-value"><strong>INCLUYE</strong>:</p>
+<div class="bullet-item">Investigación de participantes</div>
+<div class="bullet-item">Validación de agenda</div>
+<div class="bullet-item">Revisión de materiales</div>
+<div class="bullet-item">Setup técnico</div>
+<div class="bullet-item">Preparación de talking points</div>
+<div class="bullet-item">Actualización de CRM</div>
+<div class="bullet-item">Backup planning</div>
+<p class="key-value"><strong>NO INCLUYE</strong>:</p>
+<div class="bullet-item">La meeting en sí (eso es ejecución)</div>
+<div class="bullet-item">Follow-up post-meeting (ver <code class="inline-code">preparar-follow-up-sop</code>)</div>
+<div class="bullet-item">Creación de contenido para presentaciones (otros SOPs)</div>
+<div class="bullet-item">Estrategia comercial de largo plazo</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-criterios-de-aceptacin-10-405cda" data-searchable aria-labelledby="head-4-criterios-de-aceptacin-10-405cda">
+            <div class="phase-header" id="head-4-criterios-de-aceptacin-10-405cda" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 4. Criterios de Aceptación (10)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Tabla de pass/fail — la meeting está lista si ALL son <span class="status-ok" aria-label="Completado">✅</span>:</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Criterio</th><th scope="col">Evidencia</th><th scope="col">Pass/Fail</th></tr></thead><tbody><tr><td>1</td><td>Research brief completado</td><td>Brief en Notion o documento compartido</td><td>☐</td></tr><tr><td>2</td><td>Agenda compartida T-24h</td><td>Email enviado, Slack confirmado</td><td>☐</td></tr><tr><td>3</td><td>Materiales/slides listos T-24h</td><td>Files en carpeta compartida</td><td>☐</td></tr><tr><td>4</td><td>Objetivo documentado (1 sentence)</td><td>En agenda y en CRM meeting record</td><td>☐</td></tr><tr><td>5</td><td>Attendees confirmados (nombres, roles)</td><td>Confirmación en invite o email</td><td>☐</td></tr><tr><td>6</td><td>Tech testeado (si es virtual)</td><td>Zoom link testeado, audio/video OK</td><td>☐</td></tr><tr><td>7</td><td>CRM pre-actualizado</td><td>Context, historial, notas de prep</td><td>☐</td></tr><tr><td>8</td><td>Backup plan documentado</td><td>En brief: qué pasa si X cancela</td><td>☐</td></tr><tr><td>9</td><td>Talking points preparados</td><td>3-5 puntos clave por sección de agenda</td><td>☐</td></tr><tr><td>10</td><td>Agenda con time-boxing</td><td>Cada sección con duración (no open-ended)</td><td>☐</td></tr></tbody></table></div>
+<p class="key-value"><strong>Regla</strong>: No se inicia meeting sin todos los checkboxes <span class="status-ok" aria-label="Completado">✅</span>.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-casos-borde-7-fcc8a0" data-searchable aria-labelledby="head-5-casos-borde-7-fcc8a0">
+            <div class="phase-header" id="head-5-casos-borde-7-fcc8a0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 5. Casos Borde (7)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Situaciones especiales y cómo manejarlas:</p>
+<h3 class="subsection-title" id="cb01-meeting-rescheduled-4h-antes-8b6845">CB-01: Meeting rescheduled &lt;4h antes</h3>
+<div class="bullet-item"><strong>Trigger</strong>: Cambio de fecha/hora confirmado en últimas 4 horas</div>
+<div class="bullet-item"><strong>Protocolo</strong>: Rapid re-prep (30 min máximo)</div>
+<div class="bullet-item">Skip investigación profunda, usar resumen previo</div>
+<div class="bullet-item">Agenda válida (no requiere re-draft)</div>
+<div class="bullet-item">Tech setup retest (10 min)</div>
+<div class="bullet-item">Confirmación a todos los attendees</div>
+<h3 class="subsection-title" id="cb02-nuevo-attendee-agregado-last-minute-45e8cb">CB-02: Nuevo attendee agregado last minute</h3>
+<div class="bullet-item"><strong>Trigger</strong>: Persona nueva incluida &lt;24h de meeting</div>
+<div class="bullet-item"><strong>Protocolo</strong>: Quick research sprint (15 min)</div>
+<div class="bullet-item">LinkedIn búsqueda rápida + CRM</div>
+<div class="bullet-item">Contextualizar a personas que conocen al attendee</div>
+<div class="bullet-item">Update talking points si rol es crítico</div>
+<h3 class="subsection-title" id="cb03-objetivo-de-meeting-cambia-dayof-ec7955">CB-03: Objetivo de meeting cambia day-of</h3>
+<div class="bullet-item"><strong>Trigger</strong>: Cliente comunica tema adicional 24h antes</div>
+<div class="bullet-item"><strong>Protocolo</strong>: Pivot agenda</div>
+<div class="bullet-item">Re-draft agenda en 30 min</div>
+<div class="bullet-item">Comunicar a team lead inmediatamente</div>
+<div class="bullet-item">Prepare talking points para nuevo tema</div>
+<div class="bullet-item">Si no hay tiempo: acknowledge y reschedule sección</div>
+<h3 class="subsection-title" id="cb04-clevel-necesita-prep-para-backtoback-meetings-73b562">CB-04: C-Level necesita prep para back-to-back meetings</h3>
+<div class="bullet-item"><strong>Trigger</strong>: 2+ meetings dentro de 2 horas</div>
+<div class="bullet-item"><strong>Protocolo</strong>: Batch prep</div>
+<div class="bullet-item">Briefing document de 1 página por meeting</div>
+<div class="bullet-item">Talking points en bullets</div>
+<div class="bullet-item">CRM context consolidado</div>
+<div class="bullet-item">30 min total prep para todas</div>
+<h3 class="subsection-title" id="cb05-meeting-con-prospect-desconocido-sin-historia-fbbbb5">CB-05: Meeting con prospect desconocido (sin historial CRM)</h3>
+<div class="bullet-item"><strong>Trigger</strong>: Cliente nuevo, ningún historial previo</div>
+<div class="bullet-item"><strong>Protocolo</strong>: Web research sprint (45 min)</div>
+<div class="bullet-item">Google, LinkedIn, website análisis</div>
+<div class="bullet-item">Crunchbase/news si es empresa</div>
+<div class="bullet-item">Competitors del prospect (para contexto)</div>
+<div class="bullet-item">Pre-populate CRM con hallazgos</div>
+<h3 class="subsection-title" id="cb06-embajador-prepara-meeting-que-requiere-presen-fb33bf">CB-06: Embajador prepara meeting que requiere presencia C-Level</h3>
+<div class="bullet-item"><strong>Trigger</strong>: Embajador designado pero C-Level es necesario</div>
+<div class="bullet-item"><strong>Protocolo</strong>: Coordination protocol</div>
+<div class="bullet-item">Embajador prepara, briefea a C-Level (30 min antes)</div>
+<div class="bullet-item">C-Level revisa research brief</div>
+<div class="bullet-item">Claridad sobre roles en meeting</div>
+<div class="bullet-item">Escalation paths definidas</div>
+<h3 class="subsection-title" id="cb07-meeting-es-followup-a-meeting-fallida-previa-6f75b5">CB-07: Meeting es follow-up a meeting fallida previa</h3>
+<div class="bullet-item"><strong>Trigger</strong>: Reunión anterior no logró objetivo, se reconvoca</div>
+<div class="bullet-item"><strong>Protocolo</strong>: Recovery prep</div>
+<div class="bullet-item">Análisis: qué salió mal (60 min reflexión)</div>
+<div class="bullet-item">Nuevos talking points enfocado en objeciones previas</div>
+<div class="bullet-item">Ajustes a estructura/duración</div>
+<div class="bullet-item">Confirmation de cambios con sponsor interno</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-decisiones-de-diseo-5-f4b961" data-searchable aria-labelledby="head-6-decisiones-de-diseo-5-f4b961">
+            <div class="phase-header" id="head-6-decisiones-de-diseo-5-f4b961" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 6. Decisiones de Diseño (5)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Por qué este SOP está diseñado así</strong>:</p>
+<h3 class="subsection-title" id="dd01-tiempo-de-inicio-t48h-no-t24h-2082ed">DD-01: Tiempo de inicio T-48h (no T-24h)</h3>
+<div class="bullet-item"><strong>Rationale</strong>: Calidad en investigación requiere tiempo. 24h es suficiente para urgentes, pero 48h permite análisis profundo de contexto.</div>
+<div class="bullet-item"><strong>Implicación</strong>: Calendarios deben bloquearse T-48h para la prep, no solo materiales finales.</div>
+<h3 class="subsection-title" id="dd02-agenda-siempre-compartida-en-avance-d6b913">DD-02: Agenda SIEMPRE compartida en avance</h3>
+<div class="bullet-item"><strong>Rationale</strong>: Sets professional tone. Cliente ve que respetamos su tiempo. Permite feedback pre-meeting.</div>
+<div class="bullet-item"><strong>Implicación</strong>: Excepto en casos urgentes (CB-01), sin sharing = no meeting.</div>
+<h3 class="subsection-title" id="dd03-research-brief-es-mandatory-no-opcional-5360ec">DD-03: Research brief es MANDATORY (no opcional)</h3>
+<div class="bullet-item"><strong>Rationale</strong>: Muestra al cliente que MetodologIA se prepara. Baja riesgo de sorpresas en meeting.</div>
+<div class="bullet-item"><strong>Implicación</strong>: Brief template obligatorio; puede ser 1 página pero debe existir.</div>
+<h3 class="subsection-title" id="dd04-crm-preupdate-es-estratgico-55c099">DD-04: CRM pre-update es estratégico</h3>
+<div class="bullet-item"><strong>Rationale</strong>: Si alguien más del equipo necesita contexto, está disponible. Reduce ramp-up para handoffs.</div>
+<div class="bullet-item"><strong>Implicación</strong>: Every meeting prep = CRM entry o actualización.</div>
+<h3 class="subsection-title" id="dd05-objetivo-en-una-sentence-8619cc">DD-05: Objetivo en UNA sentence</h3>
+<div class="bullet-item"><strong>Rationale</strong>: Fuerza claridad. Si no puedes resumir en 1 sentence, objetivo no está claro.</div>
+<div class="bullet-item"><strong>Implicación</strong>: Agenda y brief requieren este statement al inicio.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-antipatterns-5-cosas-que-no-hacer-0ed544" data-searchable aria-labelledby="head-7-antipatterns-5-cosas-que-no-hacer-0ed544">
+            <div class="phase-header" id="head-7-antipatterns-5-cosas-que-no-hacer-0ed544" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 7. Anti-Patterns (5 Cosas Que NO Hacer)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>🚫 <strong>Anti-Pattern 1: Entrar sin agenda</strong></p>
+<div class="bullet-item">Reunión sin structure = desperdicio de tiempo = baja probabilidad de cierre</div>
+<div class="bullet-item"><strong>Solución</strong>: Agenda es requisito, no nice-to-have</div>
+<p>🚫 <strong>Anti-Pattern 2: Zero research en attendees</strong></p>
+<div class="bullet-item">Sin saber qué hace, quién es, qué objetivos tiene = conversación genérica</div>
+<div class="bullet-item"><strong>Solución</strong>: Mínimo: LinkedIn + 1 email anterior (si existe)</div>
+<p>🚫 <strong>Anti-Pattern 3: Slides genéricas no customizadas</strong></p>
+<div class="bullet-item">Client siente que no es meeting &quot;para ellos&quot; sino template reutilizado</div>
+<div class="bullet-item"><strong>Solución</strong>: 10 min personalization = cliente se siente visto</div>
+<p>🚫 <strong>Anti-Pattern 4: Objetivo claro pero no documentado</strong></p>
+<div class="bullet-item">Si está en tu cabeza pero no en doc compartido, ≠ alineado</div>
+<div class="bullet-item"><strong>Solución</strong>: Objetivo en writing, visible a team</div>
+<p>🚫 <strong>Anti-Pattern 5: Sin plan B</strong></p>
+<div class="bullet-item">Key attendee cancela 5 min antes = caos</div>
+<div class="bullet-item"><strong>Solución</strong>: Siempre: &quot;Si X no asiste, hacemos Y&quot;</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-fallbacks-5-escenarios-de-contingencia-86b274" data-searchable aria-labelledby="head-8-fallbacks-5-escenarios-de-contingencia-86b274">
+            <div class="phase-header" id="head-8-fallbacks-5-escenarios-de-contingencia-86b274" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 8. Fallbacks (5 Escenarios de Contingencia)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Escenario</th><th scope="col">Fallback Plan</th></tr></thead><tbody><tr><td><strong>Research tools unavailable</strong> (CRM down)</td><td>LinkedIn búsqueda manual + email history review</td></tr><tr><td><strong>CRM completely down</strong></td><td>Google Drive doc para contextualización, email threads</td></tr><tr><td><strong>Materiales NOT ready T-24h</strong></td><td>Extend deadline a T-12h con &quot;quality flag&quot; (notifica QA)</td></tr><tr><td><strong>Key attendee cancela 12h antes</strong></td><td>Decision tree: reschedule OR proceed con sponsor backup</td></tr><tr><td><strong>Tech fails T-0</strong></td><td>Plan B: phone call con dial-in numbers compartidas T-24h</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-workflows-4-tipos-de-meetings-c03907" data-searchable aria-labelledby="head-9-workflows-4-tipos-de-meetings-c03907">
+            <div class="phase-header" id="head-9-workflows-4-tipos-de-meetings-c03907" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Workflows (4 Tipos de Meetings)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="wf01-preparar-meeting-comercial-9bf1cf">WF-01: Preparar Meeting Comercial</h3>
+<p class="key-value"><strong>Aplica a</strong>: Discovery, propuesta, negociación, QBR</p>
+<p class="key-value"><strong>Steps</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>T-48h: Confirmar attendees e investigar decisión-makers (LinkedIn + CRM)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>T-48h a T-36h: Deep research (presupuesto, competidores, pain points)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>T-36h a T-24h: Draft agenda, customize slides, prepare talking points</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>T-24h: Share agenda + materiales, update CRM with deal stage context</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>T-24h a T-12h: Gather team feedback (internals review slides)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>T-12h a T-0: Final tech test, talk-through con facilitador</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span>T-2h antes: Mindset prep (team brief, revisión de 1-pagers)</span></div>
+<p class="key-value"><strong>Deliverables</strong>: Research brief, agenda, slides, talking points, deal context en CRM</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf02-preparar-meeting-delivery-ca5ff5">WF-02: Preparar Meeting Delivery</h3>
+<p class="key-value"><strong>Aplica a</strong>: Kickoff, checkpoint, cierre</p>
+<p class="key-value"><strong>Steps</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>T-48h: Confirm scope, attendees (client + delivery team)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>T-48h a T-36h: Review proyecto context (statement of work, timeline, risks)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>T-36h a T-24h: Prepare status recap, next steps, blockers (si checkpoint), deliverables (si kickoff/cierre)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>T-24h: Share agenda, docs</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>T-12h: Delivery team alignment meeting (15 min)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>T-0: Final checks de tech (screenshare, demos)</span></div>
+<p class="key-value"><strong>Deliverables</strong>: Kickoff doc / status summary, agenda, risk log, next steps doc</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf03-preparar-meeting-aliados-gtm-d1e33f">WF-03: Preparar Meeting Aliados GTM</h3>
+<p class="key-value"><strong>Aplica a</strong>: Partnership meetings, channel partnerships, co-sell</p>
+<p class="key-value"><strong>Steps</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>T-48h: Confirm aliado team, objectives (¿expansion geográfica? ¿new product?)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>T-36h: Research aliado (website, últimas news, pain points específicos)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>T-24h: Agenda con mutual value prop (no one-sided)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>T-12h: Prepare co-sell examples, mutual customer references</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>T-0: Tech test, confirmation de decision-makers</span></div>
+<p class="key-value"><strong>Deliverables</strong>: Partnership brief, agenda, co-sell deck, mutual value doc</p>
+<hr class="divider">
+<h3 class="subsection-title" id="wf04-batch-prep-mltiples-meetings-same-day-753136">WF-04: Batch Prep (Múltiples Meetings Same Day)</h3>
+<p class="key-value"><strong>Cuando</strong>: C-Level o Embajador tiene 3+ meetings en un día</p>
+<p class="key-value"><strong>Process</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>T-48h: Map todas las meetings (contexto + objetivos)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>T-36h: Priorizar (high-value primero)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>T-24h: Prep en orden (earliest primero)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>T-12h: Consolidate briefs (1 page per meeting)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>T-4h: Talk-through de transiciones entre meetings</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>T-2h: Mental reset (5 min per meeting, objetivos + talking points)</span></div>
+<p class="key-value"><strong>Deliverables</strong>: Batch brief document (todas las meetings en 1 doc), time-blocked calendar</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-research-brief-template-1c3cb7" data-searchable aria-labelledby="head-10-research-brief-template-1c3cb7">
+            <div class="phase-header" id="head-10-research-brief-template-1c3cb7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Research Brief Template</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>[Cliente/Prospect Name] — Meeting Prep Brief</strong></p>
+<p class="key-value"><strong>Meeting Date</strong>: [date, time, timezone]</p>
+<p class="key-value"><strong>Attendees (Client)</strong>: [names, roles, reporting lines]</p>
+<p class="key-value"><strong>Attendees (MetodologIA)</strong>: [names, roles]</p>
+<p class="key-value"><strong>Objective (1 sentence)</strong>: [Qué decisión/resultado esperado]</p>
+<h3 class="subsection-title" id="a-contexto-de-la-cuenta-a4ff04">A. Contexto de la Cuenta</h3>
+<div class="bullet-item"><strong>Industria</strong>:</div>
+<div class="bullet-item"><strong>Tamaño</strong>:</div>
+<div class="bullet-item"><strong>Ubicación geográfica</strong>:</div>
+<div class="bullet-item"><strong>Historial con MetodologIA</strong>:</div>
+<h3 class="subsection-title" id="b-decisionmakers-research-f14df0">B. Decision-Makers Research</h3>
+<div class="bullet-item"><strong>Primary contact</strong>: [name, LinkedIn, background]</div>
+<div class="bullet-item"><strong>Secondary stakeholders</strong>: [names, roles, potential objections]</div>
+<div class="bullet-item"><strong>Reporting structures</strong>: [quién aprueba, quién veta]</div>
+<h3 class="subsection-title" id="c-pain-points-motivations-2e29a1">C. Pain Points &amp; Motivations</h3>
+<div class="bullet-item"><strong>Business goals</strong>:</div>
+<div class="bullet-item"><strong>Current challenges</strong>:</div>
+<div class="bullet-item"><strong>Budget cycles</strong>:</div>
+<h3 class="subsection-title" id="d-competitive-context-11c516">D. Competitive Context</h3>
+<div class="bullet-item"><strong>Known competitors</strong>:</div>
+<div class="bullet-item"><strong>Our differentiation</strong>:</div>
+<div class="bullet-item"><strong>Market trends</strong>:</div>
+<h3 class="subsection-title" id="e-talking-points-35-mximo-1b8122">E. Talking Points (3-5 máximo)</h3>
+<div class="bullet-item"><strong>Point 1</strong>:</div>
+<div class="bullet-item"><strong>Point 2</strong>:</div>
+<div class="bullet-item"><strong>Point 3</strong>:</div>
+<h3 class="subsection-title" id="f-risk-mitigation-af9d68">F. Risk &amp; Mitigation</h3>
+<div class="bullet-item"><strong>Potential objections</strong>:</div>
+<div class="bullet-item"><strong>Mitigation strategy</strong>:</div>
+<div class="bullet-item"><strong>Escalation path</strong> (si needed):</div>
+<h3 class="subsection-title" id="g-success-metrics-25879e">G. Success Metrics</h3>
+<div class="bullet-item"><strong>Meeting win = Cliente agrees to</strong>: [next step specific]</div>
+<div class="bullet-item"><strong>Follow-up action</strong>: [owner, deadline]</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-checklist-premeeting-t24h-a-t0-6d261f" data-searchable aria-labelledby="head-11-checklist-premeeting-t24h-a-t0-6d261f">
+            <div class="phase-header" id="head-11-checklist-premeeting-t24h-a-t0-6d261f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> 11. Checklist Pre-Meeting (T-24h a T-0)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>☐ Agenda finalizada y compartida (confirmar receipt)
+☐ Slides/demos testiadas en máquina que usarás
+☐ Internet speed test OK (si virtual)
+☐ Audio/video devices funcionando
+☐ Backup slides preparadas (en caso de pivots)
+☐ Contact info de todos los attendees (emails, números)
+☐ Time zone confirmado (incluyendo daylight savings)
+☐ Meeting room booked (si presencial)
+☐ Laptop battery fully charged
+☐ Granola/Notion/note-taking app open y ready
+☐ Team briefing completado (todos en la misma página)
+☐ Bathroom break/water antes de iniciar
+☐ Professional appearance checked (cámara, lighting si virtual)
+☐ CRM meeting record creado y linked
+☐ Calendar blocking removed para T-0 (si fue bloqueada)</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-mtricas-de-xito-c47b3c" data-searchable aria-labelledby="head-12-mtricas-de-xito-c47b3c">
+            <div class="phase-header" id="head-12-mtricas-de-xito-c47b3c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Métricas de Éxito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Medición</th></tr></thead><tbody><tr><td><strong>Meeting initiated on time</strong></td><td>100%</td><td>Calendar vs actual start</td></tr><tr><td><strong>Agenda shared T-24h+</strong></td><td>100%</td><td>Email timestamp review</td></tr><tr><td><strong>Research brief completado</strong></td><td>100%</td><td>Brief document exists</td></tr><tr><td><strong>Client attendance rate</strong></td><td>90%+</td><td>Attendees present vs invited</td></tr><tr><td><strong>Next step agreed in meeting</strong></td><td>85%+</td><td>CRM follow-up captured</td></tr><tr><td><strong>Team prep time</strong></td><td>&lt;2h per meeting</td><td>Timesheet review</td></tr><tr><td><strong>Reschedules due to prep</strong></td><td>&lt;5%</td><td>Calendar system</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-conexiones-con-otros-sops-6506e3" data-searchable aria-labelledby="head-13-conexiones-con-otros-sops-6506e3">
+            <div class="phase-header" id="head-13-conexiones-con-otros-sops-6506e3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Conexiones con Otros SOPs</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>preparar-follow-up-sop</strong>: Inicia post-meeting (T+0), se basa en contexto preparado aquí</div>
+<div class="bullet-item"><strong>ejecutar-meeting-sop</strong>: Ejecución real, usa output de este SOP</div>
+<div class="bullet-item"><strong>presentar-propuesta-sop</strong>: Para meetings comerciales, prepara deck específicamente</div>
+<div class="bullet-item"><strong>kickoff-delivery-sop</strong>: Para meetings de kickoff, prepara scope + timeline</div>
+<div class="bullet-item"><strong>cerrar-deal-sop</strong>: Para negociación finales, prepara comercial + legal angles</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-ecuacin-metodologia-aplicada-754d0e" data-searchable aria-labelledby="head-14-ecuacin-metodologia-aplicada-754d0e">
+            <div class="phase-header" id="head-14-ecuacin-metodologia-aplicada-754d0e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 14. Ecuación MetodologIA (Aplicada)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>≤Tiempo_prep × (Capital + RRPP + Redes + Multimedia + IA + Tech + Metodología)
+= +Impacto_meeting
+→ (+) Dinero</code></pre>
+<p class="key-value"><strong>En este SOP</strong>:</p>
+<div class="bullet-item"><strong>≤Tiempo</strong>: Max 2h prep por meeting estándar (48h window)</div>
+<div class="bullet-item"><strong>Palancas utilizadas</strong>:</div>
+<div class="bullet-item"><strong>Metodología</strong>: Este SOP es la estructura</div>
+<div class="bullet-item"><strong>Tecnología</strong>: CRM, Granola, Zoom, docs</div>
+<div class="bullet-item"><strong>IA</strong>: Research automation (si disponible)</div>
+<div class="bullet-item"><strong>Capital</strong>: Tiempo del equipo</div>
+<div class="bullet-item"><strong>RRPP</strong>: Relación histórica (CRM data)</div>
+<div class="bullet-item"><strong>+Impacto</strong>: Cliente siente que MetodologIA está prepared, profesional, serious</div>
+<div class="bullet-item"><strong>(+) Dinero</strong>: Higher close rates, faster cycle, menos re-meetings</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="15-responsabilidades-92e060" data-searchable aria-labelledby="head-15-responsabilidades-92e060">
+            <div class="phase-header" id="head-15-responsabilidades-92e060" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 15. Responsabilidades</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Responsabilidad</th></tr></thead><tbody><tr><td><strong>Meeting Owner</strong></td><td>Trigger prep, coordinar timeline, final approval</td></tr><tr><td><strong>C-Level/Facilitador</strong></td><td>Review brief, approve agenda, final talk-through</td></tr><tr><td><strong>Embajador</strong></td><td>Coordinar con C-Level, research leads si needed</td></tr><tr><td><strong>Sales/Delivery Lead</strong></td><td>Investigación profunda, materiales, CRM updates</td></tr><tr><td><strong>Admin/Ops</strong></td><td>Calendar management, tech setup, confirm attendees</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ltima-actualizacin-00a700" data-searchable aria-labelledby="head-ltima-actualizacin-00a700">
+            <div class="phase-header" id="head-ltima-actualizacin-00a700" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Última Actualización</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>2026-03-24</strong> — Versión 1.0 publicada</p>
+<p class="key-value"><strong>Próxima revisión planeada</strong>: Q2 2026 (post 10 meetings)</p>
+<hr class="divider">
+<p><strong>MetodologIA — Preparar es Ganar</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

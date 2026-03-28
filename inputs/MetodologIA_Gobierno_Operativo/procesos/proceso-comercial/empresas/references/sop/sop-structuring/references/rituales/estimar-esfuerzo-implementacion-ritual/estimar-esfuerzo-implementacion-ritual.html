@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA | PLAYBOOK_TITLE</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Montserrat:wght@400;500;600&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: hsl(225, 30%, 15%);
+            --bg-surface: hsl(225, 25%, 20%);
+            --bg-body: hsl(225, 30%, 10%);
+            --bg-elevated: hsla(225, 30%, 15%, 0.95);
+            --brand-gold: #FFD700;
+            --brand-gold-dark: #FFA000;
+            --brand-gold-glow: rgba(255, 215, 0, 0.3);
+            --text-primary: #FFFFFF;
+            --text-secondary: #E2E8F0;
+            --text-muted: hsl(215, 25%, 65%);
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Montserrat', sans-serif;
+            --font-tertiary: 'Jost', sans-serif;
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: var(--font-secondary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4 { font-family: var(--font-primary); font-weight: 700; }
+        .highlight-ia-premium {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* ═══════════════════════════════════════════
+           1. HEADER (Simplified — No B2B/B2C Toggle)
+           ═══════════════════════════════════════════ */
+        .premium-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.85);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            height: 4.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand-group { display: flex; align-items: center; }
+        .nav-logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        .nav-logo-link:hover { transform: scale(1.02); }
+        .logo-svg { filter: drop-shadow(0 0 8px var(--brand-gold-glow)); }
+        .nav-links-official { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links-official a { color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.8rem; transition: color 0.3s; }
+        .nav-links-official a:hover { color: var(--brand-gold); }
+        .nav-cta {
+            padding: 0.5rem 1.25rem;
+            background: var(--gradient-gold);
+            color: #020617;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 999px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 12px var(--brand-gold-glow);
+        }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 20px var(--brand-gold-glow); }
+
+        /* ═══════════════════════════════════════════
+           2. PLAYBOOK ONBOARDING ZONE
+           ═══════════════════════════════════════════ */
+        .playbook-onboarding {
+            max-width: 1080px;
+            margin: 6rem auto 0;
+            padding: 2rem 1.5rem 0;
+        }
+
+        /* Breadcrumb */
+        .playbook-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            font-family: var(--font-tertiary);
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .playbook-breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .playbook-breadcrumb a:hover { color: var(--brand-gold); }
+        .playbook-breadcrumb .separator { opacity: 0.4; }
+        .playbook-breadcrumb .current { color: var(--brand-gold); font-weight: 600; }
+
+        /* Document Identity */
+        .doc-identity {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .doc-identity-left { flex: 1; min-width: 280px; }
+        .doc-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.75rem;
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--brand-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 1rem;
+        }
+        .doc-badge .pulse-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--brand-gold);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+        .doc-title { font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.15; }
+        .doc-version {
+            color: var(--brand-gold);
+            font-weight: 600;
+            font-family: var(--font-tertiary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        .doc-identity-right {
+            max-width: 400px;
+            text-align: right;
+        }
+        .doc-objective {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* TL;DR Card */
+        .tldr-card {
+            background: rgba(255, 255, 255, 0.03);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .tldr-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--gradient-gold);
+            border-radius: 4px 0 0 4px;
+        }
+        .tldr-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .tldr-icon {
+            width: 2rem; height: 2rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .tldr-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--brand-gold);
+        }
+        .tldr-hook {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-family: var(--font-primary);
+        }
+        .tldr-summary {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+        .tldr-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .tldr-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: var(--font-tertiary);
+        }
+        .tldr-meta-item svg { color: var(--brand-gold); }
+
+        /* Expandable "What is this" */
+        .doc-explainer {
+            margin-bottom: 2rem;
+        }
+        .doc-explainer-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-secondary);
+            transition: all 0.3s;
+            width: 100%;
+            text-align: left;
+        }
+        .doc-explainer-toggle:hover {
+            border-color: rgba(255, 215, 0, 0.2);
+            color: var(--text-secondary);
+        }
+        .doc-explainer-toggle .chevron {
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        .doc-explainer-toggle.open .chevron { transform: rotate(180deg); }
+        .doc-explainer-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0 0 0.75rem 0.75rem;
+        }
+        .doc-explainer-content.open {
+            max-height: 300px;
+            padding: 1.25rem;
+        }
+        .doc-explainer-content p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        .doc-explainer-content strong { color: var(--text-secondary); }
+
+        /* ═══════════════════════════════════════════
+           3. MAIN CONTENT
+           ═══════════════════════════════════════════ */
+        .content-container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+        .card-premium {
+            background: rgba(255, 255, 255, 0.02);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* Glossary */
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+        .glossary-card {
+            padding: 1.5rem;
+            background: rgba(255,215,0,0.03);
+            border-radius: 1rem;
+            border-left: 3px solid var(--brand-gold);
+            border-top: 1px solid var(--border-subtle);
+            border-right: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+            cursor: default;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+        .glossary-card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Steps */
+        .step-item {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            cursor: pointer;
+            transition: background 0.3s, padding 0.3s;
+            border-radius: 0.75rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            position: relative;
+        }
+        .step-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .step-item:last-child { border-bottom: none; }
+        .step-number {
+            width: 3rem;
+            height: 3rem;
+            background: var(--gradient-gold);
+            color: var(--bg-primary);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+            font-size: 1rem;
+            transition: transform 0.3s;
+        }
+        .step-item:hover .step-number { transform: scale(1.1); }
+        .step-item.completed .step-number {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+        .step-expand-hint {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .step-item:hover .step-expand-hint { opacity: 1; }
+        .output-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.75rem;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            position: sticky;
+            top: 5rem;
+            z-index: 50;
+            max-width: 1080px;
+            margin: 0 auto 1.5rem;
+            padding: 0 1.5rem;
+        }
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 999px;
+            height: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--gradient-gold);
+            border-radius: 999px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.4rem;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            font-family: var(--font-tertiary);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* Vitamina Operativa */
+        .vitamin-card {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: rgba(255,215,0,0.05);
+            border-radius: 1.25rem;
+            border: 1px solid var(--brand-gold-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        .vitamin-card .bg-icon {
+            position: absolute;
+            right: -1rem; bottom: -1rem;
+            color: var(--brand-gold);
+            opacity: 0.05;
+        }
+
+        /* ═══════════════════════════════════════════
+           4. 100 CHECK STANDARD BADGE
+           ═══════════════════════════════════════════ */
+        .check-standard-section {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+        .check-standard {
+            background: var(--bg-elevated);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1.5rem;
+        }
+        .check-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .check-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .check-header-left .status-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #10B981;
+            animation: pulse-dot 2s infinite;
+        }
+        .check-header-left span {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-secondary);
+        }
+        .check-header-right {
+            font-size: 0.6rem;
+            color: #10B981;
+            font-family: monospace;
+            letter-spacing: -0.02em;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+        @media (max-width: 640px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .kpi-card {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 0.75rem;
+            transition: transform 0.3s;
+        }
+        .kpi-card:hover { transform: scale(1.05); }
+        .kpi-label {
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--brand-gold);
+            line-height: 1;
+            margin-bottom: 0.15rem;
+            filter: drop-shadow(0 0 12px var(--brand-gold-glow));
+            transition: transform 0.3s;
+        }
+        .kpi-card:hover .kpi-value { transform: scale(1.1); }
+        .kpi-sub {
+            font-size: 0.55rem;
+            font-family: monospace;
+            color: var(--text-muted);
+        }
+        .kpi-check-icon {
+            width: 2.5rem; height: 2.5rem;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            margin: 0 auto;
+            box-shadow: 0 0 12px var(--brand-gold-glow);
+        }
+        .check-footer {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .check-footer span {
+            font-size: 0.6rem;
+            font-family: monospace;
+            color: var(--text-muted);
+        }
+        .check-footer .status-text {
+            color: var(--brand-gold);
+            font-weight: 700;
+        }
+
+        /* ═══════════════════════════════════════════
+           5. STEP DETAIL MODAL
+           ═══════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            max-width: 640px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            font-family: var(--font-tertiary);
+        }
+        .modal-close {
+            position: absolute;
+            top: 1.25rem; right: 1.25rem;
+            background: none;
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 2rem; height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+        .modal-close:hover { border-color: var(--brand-gold); color: var(--brand-gold); }
+        .modal-step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem; height: 2.5rem;
+            background: var(--gradient-gold);
+            color: var(--bg-primary);
+            border-radius: 0.75rem;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .modal-title { font-size: 1.5rem; margin-bottom: 1rem; }
+        .modal-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .modal-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--brand-gold);
+            margin-bottom: 0.5rem;
+        }
+        .modal-output-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .modal-output-box p { color: #10B981; font-weight: 600; font-size: 0.85rem; }
+        .modal-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+        .modal-nav button {
+            background: none;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .modal-nav button:hover { border-color: var(--brand-gold); color: var(--brand-gold); }
+        .modal-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* ═══════════════════════════════════════════
+           6. GLOSSARY TOOLTIPS (inline)
+           ═══════════════════════════════════════════ */
+        .glossary-term {
+            color: var(--brand-gold);
+            border-bottom: 1px dashed rgba(255, 215, 0, 0.3);
+            cursor: help;
+            position: relative;
+        }
+        .glossary-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-primary);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            max-width: 280px;
+            white-space: normal;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        .glossary-term:hover .glossary-tooltip { display: block; }
+
+        /* ═══════════════════════════════════════════
+           7. FOOTER
+           ═══════════════════════════════════════════ */
+        .site-footer { background: #020617; padding: 5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 6rem; position: relative; overflow: hidden; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; margin-bottom: 4rem; text-align: left; }
+        .footer-brand { grid-column: span 2; }
+        .footer-quote { font-style: italic; color: var(--text-muted); margin: 1.5rem 0; font-size: 1rem; line-height: 1.5; max-width: 400px; }
+        .footer-links h4 { color: white; margin-bottom: 1.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--brand-gold); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .badge-premium { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; background: rgba(255,215,0,0.05); border: 1px solid var(--brand-gold-glow); border-radius: 1rem; position: relative; animation: pulse-glow 3s infinite; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 5px rgba(255,215,0,0.1); } 50% { box-shadow: 0 0 20px rgba(255,215,0,0.2); } 100% { box-shadow: 0 0 5px rgba(255,215,0,0.1); } }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .doc-identity { flex-direction: column; }
+            .doc-identity-right { text-align: left; max-width: 100%; }
+            .doc-title { font-size: 1.75rem; }
+            .card-premium { padding: 1.5rem; }
+            .footer-brand { grid-column: span 1; }
+            .tldr-meta { flex-direction: column; gap: 0.75rem; }
+        }
+
+        /* Refactored Utility Classes */
+        .brand-title { font-size: 1.15rem; font-weight: 800; margin: 0; }
+        .icon-brand-gold { color: var(--brand-gold); }
+        .section-title-glossary { font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .section-title-steps { font-size: 1.25rem; margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .steps-hint { margin-left: auto; font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+        .vitamin-header { color: var(--brand-gold); margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        .vitamin-text { font-size: 1.1rem; font-style: italic; color: var(--text-secondary); line-height: 1.5; position: relative; z-index: 2; }
+        .check-icon-wrapper { display: flex; align-items: center; justify-content: center; height: 2.5rem; margin-bottom: 0.15rem; }
+        .footer-logo-link { margin-bottom: 1.5rem; }
+        .footer-brand-title { font-size: 1.5rem; color: white; margin: 0; }
+        .footer-powered-text { color: var(--brand-gold); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+        .btn-mark-complete { background: rgba(16,185,129,0.1); color: #10B981; border-color: rgba(16,185,129,0.2); }
+
+        /* JS Injected Classes */
+        .js-term { color: var(--brand-gold); display: block; margin-bottom: 0.25rem; }
+        .js-def { font-size: 0.85rem; color: var(--text-secondary); }
+        .js-step-wrapper { flex: 1; }
+        .js-step-title { font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .js-step-desc { font-size: 0.9rem; color: var(--text-muted); }
+    
+        /* Extra Utilty Classes for Inline Replacements */
+        .brand-title { font-size: 1.15rem; font-weight: 800; margin: 0; }
+        .icon-brand-gold { color: var(--brand-gold); }
+        .section-title-mod { font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .section-title-steps { font-size: 1.25rem; margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .step-expand-hint-mod { margin-left: auto; font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+        .vitamin-title { color: var(--brand-gold); margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        .vitamin-text { font-size: 1.1rem; font-style: italic; color: var(--text-secondary); line-height: 1.5; position: relative; z-index: 2; }
+        .kpi-icon-container { display:flex; align-items:center; justify-content:center; height:2.5rem; margin-bottom:0.15rem; }
+        .footer-logo-link { margin-bottom: 1.5rem; }
+        .footer-brand-title { font-size: 1.5rem; color: white; margin: 0; }
+        .footer-copyright-text { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+        .footer-powered-text { color: var(--brand-gold); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+        .modal-btn-complete { background: rgba(16,185,129,0.1); color: #10B981; border-color: rgba(16,185,129,0.2); }
+        .glossary-term-title { color: var(--brand-gold); display: block; margin-bottom: 0.25rem; }
+        .glossary-term-desc { font-size: 0.85rem; color: var(--text-secondary); }
+        .step-item-content { flex: 1; }
+        .step-item-title { font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .step-item-desc { font-size: 0.9rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════
+         HEADER (Simplified)
+         ═══════════════════════════════════════ -->
+    <header class="premium-nav">
+        <div class="nav-container">
+            <div class="brand-group">
+                <a href="https://metodologia.info" class="nav-logo-link" title="Ir al sitio oficial">
+                    <svg width="34" height="34" viewBox="0 0 36 36" fill="none" class="logo-svg">
+                        <rect width="36" height="36" rx="10" fill="#0A122A"/>
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                        <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+                    </svg>
+                    <h1 class="brand-title">Metodolog<span class="highlight-ia-premium">IA</span></h1>
+                </a>
+            </div>
+            <div class="nav-links-official">
+                <a href="https://metodologia.info/recursos/index.html">Recursos</a>
+                <a href="https://metodologia.info/contacto/index.html">Contacto</a>
+            </div>
+            <a href="https://metodologia.info/contacto/index.html" class="nav-cta" title="Solicitar Auditoría de IA">Auditoría IA</a>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════
+         PLAYBOOK ONBOARDING ZONE
+         ═══════════════════════════════════════ -->
+    <section class="playbook-onboarding">
+        <!-- Breadcrumb -->
+        <nav class="playbook-breadcrumb" aria-label="Breadcrumb" id="breadcrumb-nav"></nav>
+
+        <!-- Document Identity -->
+        <div class="doc-identity">
+            <div class="doc-identity-left">
+                <div class="doc-badge">
+                    <span class="pulse-dot"></span>
+                    <span id="doc-type-badge">Playbook Operativo</span>
+                </div>
+                <h2 class="doc-title" id="ritual-title">PLAYBOOK_TITLE</h2>
+                <p class="doc-version" id="ritual-version">v2.1.0 | Moat Certified</p>
+            </div>
+            <div class="doc-identity-right">
+                <p class="doc-objective" id="ritual-objective">PLAYBOOK_OBJECTIVE</p>
+            </div>
+        </div>
+
+        <!-- TL;DR Card -->
+        <div class="tldr-card" id="tldr-card">
+            <div class="tldr-header">
+                <div class="tldr-icon">🎯</div>
+                <span class="tldr-label">TL;DR</span>
+            </div>
+            <p class="tldr-hook" id="tldr-hook">HOOK_QUESTION</p>
+            <p class="tldr-summary" id="tldr-summary">SUMMARY_TEXT</p>
+            <div class="tldr-meta">
+                <div class="tldr-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="tldr-time">~30 min</span>
+                </div>
+                <div class="tldr-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                    <span id="tldr-output">Main Output</span>
+                </div>
+                <div class="tldr-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span id="tldr-phase">SOP Phase</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- What is this Document -->
+        <div class="doc-explainer">
+            <button class="doc-explainer-toggle" onclick="toggleExplainer()" id="explainer-toggle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                ¿Qué es este documento?
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="doc-explainer-content" id="explainer-content">
+                <p><strong>Este es un Playbook Operativo</strong> — una guía paso a paso diseñada para ejecutar un ritual específico del proceso comercial con la máxima precisión.</p>
+                <p>Puedes usarlo de dos formas: <strong>lectura lineal</strong> (seguir cada paso en orden) o <strong>referencia rápida</strong> (saltar directamente al paso que necesites haciendo clic).</p>
+                <p>Forma parte de la cadena: <strong>Proceso → SOP → Ritual</strong>, donde cada nivel aumenta la especificidad operativa.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Tracker -->
+    <div class="progress-tracker">
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+        <div class="progress-label">
+            <span id="progress-text">0 de 10 pasos completados</span>
+            <span id="progress-pct">0%</span>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════════════════ -->
+    <main class="content-container">
+        <div class="card-premium">
+            <h3 class="section-title-glossary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-brand-gold"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0.5-5"/><path d="M8 7h6"/><path d="M8 11h8"/></svg>
+                Glosario de Conceptos
+            </h3>
+            <div class="glossary-grid" id="glossary-container"></div>
+
+            <h3 class="section-title-steps">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-brand-gold"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+                Paso a Paso
+                <span class="steps-hint">Haz clic en un paso para ver detalles</span>
+            </h3>
+            <div id="steps-container"></div>
+
+            <!-- Vitamina Operativa -->
+            <div class="vitamin-card">
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bg-icon"><path d="m13 2-2 10h8L7 22l2-10H1L13 2z"/></svg>
+                <h4 class="vitamin-header">Vitamina Operativa</h4>
+                <p id="ritual-vitamin" class="vitamin-text">VITAMIN_TEXT</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ═══════════════════════════════════════
+         100 CHECK STANDARD BADGE
+         ═══════════════════════════════════════ -->
+    <section class="check-standard-section">
+        <div class="check-standard">
+            <div class="check-header">
+                <div class="check-header-left">
+                    <span class="status-dot"></span>
+                    <span>The <span class="highlight-ia-premium">100 Check</span> Standard</span>
+                </div>
+                <span class="check-header-right">DATA LIVE ●</span>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Time to<br>Value</div>
+                    <div class="kpi-value">1</div>
+                    <div class="kpi-sub">Prompt</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Delay of<br>Feedback</div>
+                    <div class="kpi-value">0</div>
+                    <div class="kpi-sub">Immediate</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Friction<br>Level</div>
+                    <div class="kpi-value">0</div>
+                    <div class="kpi-sub">Seamless</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Quality<br>Assurance</div>
+                    <div class="check-icon-wrapper">
+                        <div class="kpi-check-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-gold-dark)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                    </div>
+                    <div class="kpi-sub">Entrusted</div>
+                </div>
+            </div>
+            <div class="check-footer">
+                <span>SYS: METODOLOGIA_V2026</span>
+                <span class="status-text">STATUS: OPTIMIZED</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════ -->
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="https://metodologia.info" class="nav-logo-link footer-logo-link">
+                    <svg width="34" height="34" viewBox="0 0 36 36" fill="none" class="logo-svg">
+                        <rect width="36" height="36" rx="10" fill="#1E293B"/>
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                    </svg>
+                    <h2 class="footer-brand-title">Metodolog<span class="highlight-ia-premium">IA</span></h2>
+                </a>
+                <p class="footer-quote">"La excelencia no se compra, se diseña. Se cocrea y se comparte."</p>
+            </div>
+            <div class="footer-links">
+                <h4>Ecosistema</h4>
+                <ul>
+                    <li><a href="https://metodologia.info/recursos/index.html">Recursos</a></li>
+                    <li><a href="https://metodologia.info/servicios/index.html">Servicios</a></li>
+                    <li><a href="https://metodologia.info/proyectos/index.html">Proyectos</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="https://metodologia.info/legal/terminos.html">Términos</a></li>
+                    <li><a href="https://metodologia.info/legal/privacidad.html">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-copyright-text">© 2026 MetodologIA Playbook. Todos los derechos reservados.</p>
+            <div class="badge-premium">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span class="footer-powered-text">Success as a Service | Powered by Pristino Agent</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════
+         STEP DETAIL MODAL
+         ═══════════════════════════════════════ -->
+    <div class="modal-overlay" id="step-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div class="modal-step-num" id="modal-step-num">1</div>
+            <h3 class="modal-title" id="modal-title">Step Title</h3>
+            <p class="modal-desc" id="modal-desc">Step description with full details.</p>
+            <div class="modal-section-label">Output Esperado</div>
+            <div class="modal-output-box">
+                <p id="modal-output">Output specification</p>
+            </div>
+            <div class="modal-nav">
+                <button onclick="navModal(-1)" id="modal-prev">← Anterior</button>
+                <button onclick="markStepComplete()" id="modal-complete" class="btn-mark-complete">✓ Marcar Completo</button>
+                <button onclick="navModal(1)" id="modal-next">Siguiente →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         JAVASCRIPT ENGINE
+         ═══════════════════════════════════════ -->
+    <script>
+        // ═══ PLAYBOOK CONFIG (populated per-ritual) ═══
+        const config = /*PLAYBOOK_DATA*/{
+  "$schema": "../../../../templates/playbook-ritual-schema.json",
+  "meta": {
+    "id": "estimar-esfuerzo-implementacion-ritual",
+    "segment": "empresas-b2b",
+    "sop": "sop-structuring",
+    "version": "V4.5 (HIGH-DENSITY)",
+    "standard": "Moat Certified",
+    "lastUpdated": "2026-02-16"
+  },
+  "playbook": {
+    "title": "Estimar Esfuerzo de Implementación",
+    "subtitle": "The Estimation Ritual",
+    "docType": "Playbook Operativo",
+    "sopPhase": "Structuring",
+    "breadcrumb": [
+      "MetodologIA",
+      "Proceso Comercial",
+      "SOP Structuring",
+      "Estimar Esfuerzo de Implementación"
+    ],
+    "tldr": {
+      "hook": "Define la pregunta crítica que este ritual resuelve.",
+      "summary": "Resumen ejecutivo de 3 líneas sobre el propósito y resultado esperado.",
+      "time": "~30 min",
+      "mainOutput": "Profitability sign-off"
+    },
+    "objective": "Calcular con precisión quirúrgica el tiempo, costo y recursos necesarios para ejecutar la solución."
+  },
+  "glossary": [
+    {
+      "term": "WBS (Work Breakdown Structure)",
+      "definition": "Desglose jerárquico de tareas atómicas para evitar estimaciones vagas."
+    },
+    {
+      "term": "Risk Buffer",
+      "definition": "Colchón financiero/temporal aplicado según la incertidumbre técnica."
+    },
+    {
+      "term": "Ruta Crítica",
+      "definition": "La secuencia de tareas que determina la duración mínima del proyecto."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Desglose de Trabajo (WBS)",
+      "desc": "Segmentar en bloques de 8h.",
+      "output": "Task Breakdown"
+    },
+    {
+      "title": "Estimación por Roles",
+      "desc": "Asignar perfiles (Snr vs Jnr).",
+      "output": "Resource Plan"
+    },
+    {
+      "title": "Cálculo de Gestión (PM)",
+      "desc": "Añadir 15-20% de peso.",
+      "output": "Management Overhead"
+    },
+    {
+      "title": "Factor de Contingencia",
+      "desc": "Aplicar Buffer de riesgo.",
+      "output": "Risk-Adjusted Cost"
+    },
+    {
+      "title": "Costos de Infraestructura",
+      "desc": "Licencias y consumos.",
+      "output": "Infrastructure CAPEX"
+    },
+    {
+      "title": "Costos de Viáticos (Si aplica)",
+      "desc": "Despliegues físicos.",
+      "output": "Logistic Table"
+    },
+    {
+      "title": "Revisión de Históricos",
+      "desc": "Comparar con proyectos similares.",
+      "output": "Benchmark Audit"
+    },
+    {
+      "title": "Análisis de Ruta Crítica",
+      "desc": "Detectar cuellos de botella.",
+      "output": "Critical Path Map"
+    },
+    {
+      "title": "Verificación de Disponibilidad",
+      "desc": "Chequeo de agenda de gente.",
+      "output": "Allocation Table"
+    },
+    {
+      "title": "Aprobación de Operaciones",
+      "desc": "Firma del COO.",
+      "output": "Profitability sign-off"
+    }
+  ],
+  "vitamin": "La rentabilidad se gana en la estimación, no en la ejecución. Estima para el peor caso, pero opera para el mejor.",
+  "standard": "Atomic Step 10/10 | Logic: Precision Economics"
+}/*END_PLAYBOOK_DATA*/;
+
+        // ═══ STORAGE KEY ═══
+        const STORAGE_KEY = `playbook_progress_${window.location.pathname}`;
+
+        // ═══ STATE ═══
+        let currentModalIndex = -1;
+        let completedSteps = new Set();
+
+        // ═══ INIT ═══
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            renderBreadcrumb();
+            renderIdentity();
+            renderTldr();
+            renderGlossary();
+            renderSteps();
+            updateProgress();
+        });
+
+        // ═══ RENDER FUNCTIONS ═══
+        function renderBreadcrumb() {
+            const nav = document.getElementById('breadcrumb-nav');
+            const crumbs = config.playbook.breadcrumb;
+            nav.innerHTML = crumbs.map((c, i) => {
+                const isLast = i === crumbs.length - 1;
+                const sep = i < crumbs.length - 1 ? '<span class="separator">›</span>' : '';
+                return isLast 
+                    ? `<span class="current">${c}</span>` 
+                    : `<a href="#">${c}</a>${sep}`;
+            }).join('');
+        }
+
+        function renderIdentity() {
+            document.getElementById('ritual-title').textContent = config.title;
+            document.getElementById('ritual-version').textContent = config.version;
+            document.getElementById('ritual-objective').textContent = config.objective;
+            document.getElementById('ritual-vitamin').textContent = config.vitamin;
+            document.getElementById('doc-type-badge').textContent = config.playbook.docType;
+        }
+
+        function renderTldr() {
+            document.getElementById('tldr-hook').textContent = config.playbook.tldr.hook;
+            document.getElementById('tldr-summary').textContent = config.playbook.tldr.summary;
+            document.getElementById('tldr-time').textContent = config.playbook.tldr.time;
+            document.getElementById('tldr-output').textContent = config.playbook.tldr.mainOutput;
+            document.getElementById('tldr-phase').textContent = config.playbook.sopPhase;
+        }
+
+        function renderGlossary() {
+            const container = document.getElementById('glossary-container');
+            config.glossary.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glossary-card';
+                card.innerHTML = `
+                    <strong class="js-term">${item.term}</strong>
+                    <p class="js-def">${item.definition}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('steps-container');
+            config.steps.forEach((step, index) => {
+                const item = document.createElement('div');
+                item.className = `step-item${completedSteps.has(index) ? ' completed' : ''}`;
+                item.onclick = () => openModal(index);
+                item.innerHTML = `
+                    <div class="step-number">${completedSteps.has(index) ? '✓' : index + 1}</div>
+                    <div class="js-step-wrapper">
+                        <h4 class="js-step-title">${step.title}</h4>
+                        <p class="js-step-desc">${step.desc}</p>
+                        <div class="output-tag">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                            Output: ${step.output}
+                        </div>
+                    </div>
+                    <span class="step-expand-hint">Clic para detalles →</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // ═══ MODAL ═══
+        function openModal(index) {
+            currentModalIndex = index;
+            const step = config.steps[index];
+            document.getElementById('modal-step-num').textContent = index + 1;
+            document.getElementById('modal-title').textContent = step.title;
+            document.getElementById('modal-desc').textContent = step.desc;
+            document.getElementById('modal-output').textContent = step.output;
+            document.getElementById('modal-prev').disabled = index === 0;
+            document.getElementById('modal-next').disabled = index === config.steps.length - 1;
+            document.getElementById('modal-complete').textContent = completedSteps.has(index) ? '↩ Desmarcar' : '✓ Marcar Completo';
+            document.getElementById('step-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('step-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function navModal(dir) {
+            const newIndex = currentModalIndex + dir;
+            if (newIndex >= 0 && newIndex < config.steps.length) {
+                openModal(newIndex);
+            }
+        }
+
+        function markStepComplete() {
+            if (completedSteps.has(currentModalIndex)) {
+                completedSteps.delete(currentModalIndex);
+            } else {
+                completedSteps.add(currentModalIndex);
+            }
+            saveProgress();
+            // Re-render steps
+            document.getElementById('steps-container').innerHTML = '';
+            renderSteps();
+            updateProgress();
+            // Update modal button
+            document.getElementById('modal-complete').textContent = completedSteps.has(currentModalIndex) ? '↩ Desmarcar' : '✓ Marcar Completo';
+        }
+
+        // Click outside modal to close
+        document.getElementById('step-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) closeModal();
+        });
+
+        // Escape key closes modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ═══ PROGRESS ═══
+        function updateProgress() {
+            const total = config.steps.length;
+            const done = completedSteps.size;
+            const pct = Math.round((done / total) * 100);
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = `${done} de ${total} pasos completados`;
+            document.getElementById('progress-pct').textContent = pct + '%';
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify([...completedSteps]));
+            } catch(e) { /* localStorage unavailable */ }
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    completedSteps = new Set(JSON.parse(saved));
+                }
+            } catch(e) { /* ignore */ }
+        }
+
+        // ═══ EXPANDABLE ═══
+        function toggleExplainer() {
+            const toggle = document.getElementById('explainer-toggle');
+            const content = document.getElementById('explainer-content');
+            toggle.classList.toggle('open');
+            content.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

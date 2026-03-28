@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Gestionar Éxito B2B — Proceso de Delivery MetodologIA">
+    <title>SOP: Gestionar Éxito B2B — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Empresas B2B</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Gestionar Éxito B2B</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Gestionar Éxito B2B</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">6</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">15</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-propsito-dec948')" aria-label="Ir a 1. Propósito">1. Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-del-sop-642290')" aria-label="Ir a 2. Supuestos Explícitos del SOP">2. Supuestos Explícitos del SOP</button>
+<button class="nav-btn" onclick="scrollToSection('3-lmites-del-sop-03cd2f')" aria-label="Ir a 3. Límites del SOP">3. Límites del SOP</button>
+<button class="nav-btn" onclick="scrollToSection('4-fase-1-onboarding-corporativo-semanas-14-postlau-821f44')" aria-label="Ir a 4. Fase 1: Onboarding Corporativo (Semanas 1-4 Post-Launch)">4. Fase 1: Onboarding Corporativo (</button>
+<button class="nav-btn" onclick="scrollToSection('5-fase-2-monitoreo-de-adopcin-semanas-424-7c4f17')" aria-label="Ir a 5. Fase 2: Monitoreo de Adopción (Semanas 4-24)">5. Fase 2: Monitoreo de Adopción (S</button>
+<button class="nav-btn" onclick="scrollToSection('6-fase-3-qbrs-quarterly-business-reviews-7072f7')" aria-label="Ir a 6. Fase 3: QBRs (Quarterly Business Reviews)">6. Fase 3: QBRs (Quarterly Business</button>
+<button class="nav-btn" onclick="scrollToSection('7-fase-4-identificacin-de-expansinupsell-456a23')" aria-label="Ir a 7. Fase 4: Identificación de Expansión/Upsell">7. Fase 4: Identificación de Expans</button>
+<button class="nav-btn" onclick="scrollToSection('8-casos-borde-de-success-management-54f8cb')" aria-label="Ir a 8. Casos Borde de Success Management">8. Casos Borde de Success Managemen</button>
+<button class="nav-btn" onclick="scrollToSection('9-antipatterns-de-success-management-610ec8')" aria-label="Ir a 9. Anti-Patterns de Success Management">9. Anti-Patterns de Success Managem</button>
+<button class="nav-btn" onclick="scrollToSection('10-decisiones-de-diseo-del-sop-f30b85')" aria-label="Ir a 10. Decisiones de Diseño del SOP">10. Decisiones de Diseño del SOP</button>
+<button class="nav-btn" onclick="scrollToSection('11-fallbacks-operativos-2f5cd3')" aria-label="Ir a 11. Fallbacks Operativos">11. Fallbacks Operativos</button>
+<button class="nav-btn" onclick="scrollToSection('12-mtricas-de-success-management-58633c')" aria-label="Ir a 12. Métricas de Success Management">12. Métricas de Success Management</button>
+<button class="nav-btn" onclick="scrollToSection('13-responsabilidades-23d806')" aria-label="Ir a 13. Responsabilidades">13. Responsabilidades</button>
+<button class="nav-btn" onclick="scrollToSection('14-crossreferences-2569c6')" aria-label="Ir a 14. Cross-references">14. Cross-references</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-propsito-dec948" data-searchable aria-labelledby="head-1-propsito-dec948">
+            <div class="phase-header" id="head-1-propsito-dec948" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Propósito</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Proceso de SUCCESS MANAGEMENT: post-venta systematic para asegurar que cliente obtiene valor esperado, está satisfecho, y es candidato para expansión/recompra.</p>
+<p class="key-value"><strong>Incluye:</strong></p>
+<div class="bullet-item">Onboarding corporativo (primeras 4 semanas)</div>
+<div class="bullet-item">Monitoreo de adopción técnica (semanas 4-24)</div>
+<div class="bullet-item">Preparación y ejecución de QBRs (business reviews)</div>
+<div class="bullet-item">Identificación de expansión/upsell opportunities</div>
+<div class="bullet-item">Gate R-01: Feedback a Venta sobre recompra potential</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-del-sop-642290" data-searchable aria-labelledby="head-2-supuestos-explcitos-del-sop-642290">
+            <div class="phase-header" id="head-2-supuestos-explcitos-del-sop-642290" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. Supuestos Explícitos del SOP</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">#</th><th scope="col">Supuesto</th><th scope="col">Validación</th></tr></thead><tbody><tr><td>S1</td><td>Success Manager está assigned pre-launch</td><td>Coordinar con Delivery Manager antes de kickoff</td></tr><tr><td>S2</td><td>Cliente está motivated a adoptar solución (no fue &quot;vendida contra su will&quot;)</td><td>Si cliente es reluctant, flag en Delivery Manager</td></tr><tr><td>S3</td><td>Team Sofka está disponible para support post-launch</td><td>Presupuestar 4 weeks de support post-launch</td></tr><tr><td>S4</td><td>Cliente tiene champions internos (users que &quot;will champion&quot; solución)</td><td>Identificar en onboarding</td></tr><tr><td>S5</td><td>Métricas de éxito fueron definidas en proposal (success criteria)</td><td>Si no, definir en onboarding con cliente</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-lmites-del-sop-03cd2f" data-searchable aria-labelledby="head-3-lmites-del-sop-03cd2f">
+            <div class="phase-header" id="head-3-lmites-del-sop-03cd2f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 3. Límites del SOP</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="lmites-explcitos-s-hacemos-esto-304617">Límites Explícitos (SÍ hacemos esto)</h3>
+<p>✓ Onboarding corporativo (training, documentation)</p>
+<p>✓ Monitoreo de adopción</p>
+<p>✓ QBRs (quarterly business reviews)</p>
+<p>✓ Identificación de expansión/upsell</p>
+<p>✓ Feedback a Venta (Gate R-01) para recompra</p>
+<p>✓ Soporte técnico post-launch (4 weeks)</p>
+<h3 class="subsection-title" id="lmites-explcitos-no-hacemos-esto-f8dfb9">Límites Explícitos (NO hacemos esto)</h3>
+<p>✗ Mantenimiento operativo a perpetuidad (es customer support, no sales success)</p>
+<p>✗ Desarrollo de features nuevas (es roadmap, no success management)</p>
+<p>✗ Reparación de bugs sistémicos (es warranty, no success management)</p>
+<p>✗ Hosting/Infrastructure management (es operations, no success)</p>
+<p>✗ Resolución de conflictos empresa-Sofka (es Legal/Escalations, no success)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-fase-1-onboarding-corporativo-semanas-14-postlau-821f44" data-searchable aria-labelledby="head-4-fase-1-onboarding-corporativo-semanas-14-postlau-821f44">
+            <div class="phase-header" id="head-4-fase-1-onboarding-corporativo-semanas-14-postlau-821f44" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Fase 1: Onboarding Corporativo (Semanas 1-4 Post-Launch)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="paso-41-coordinacin-de-onboarding-da-1-40d21d">Paso 4.1: Coordinación de Onboarding (Día 1)</h3>
+<p class="key-value"><strong>Actividad:</strong> Success Manager coordina con cliente para onboarding plan.</p>
+<p class="key-value"><strong>Componentes de onboarding:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Executive Kickoff (Day 1, 1 hour)</strong></span></div>
+<div class="bullet-item">Sponsor CxO + Delivery Manager + Success Manager</div>
+<div class="bullet-item">Confirmación de timeline, expectations, support model</div>
+<div class="bullet-item">Q&amp;A sobre solución y rollout</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Technical Kickoff (Day 2-3, 2 hours)</strong></span></div>
+<div class="bullet-item">IT Manager + Sofka architects</div>
+<div class="bullet-item">Setup técnico, accesos, data migration, integraciones</div>
+<div class="bullet-item">Q&amp;A técnicos</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>User Training (Week 1-2, 2-3 days)</strong></span></div>
+<div class="bullet-item">Training sessions by role (admins, power users, regular users)</div>
+<div class="bullet-item">Hands-on practice in test environment</div>
+<div class="bullet-item">Training materials (manuals, videos, quick-start guides)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Data Migration &amp; Setup (Week 1-3)</strong></span></div>
+<div class="bullet-item">Migrar data histórica</div>
+<div class="bullet-item">Setup inicial (users, roles, configurations)</div>
+<div class="bullet-item">Validation de data integrity</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Go-Live Support (Week 4)</strong></span></div>
+<div class="bullet-item">24/7 support during launch (critical issues)</div>
+<div class="bullet-item">Issue tracking and resolution</div>
+<div class="bullet-item">User escalations</div>
+<p class="key-value"><strong>Checklist:</strong></p>
+<div class="bullet-item">¿Kickoff ejecutivo completado? → SÍ / NO</div>
+<div class="bullet-item">¿Kickoff técnico completado? → SÍ / NO</div>
+<div class="bullet-item">¿Training sessions ejecutadas? → SÍ / NO</div>
+<div class="bullet-item">¿Data migration completada y validada? → SÍ / NO</div>
+<div class="bullet-item">¿Go-live ejecutada sin critical issues? → SÍ / NO</div>
+<h3 class="subsection-title" id="paso-42-definir-success-criteria-da-23-0ab1a4">Paso 4.2: Definir Success Criteria (Día 2-3)</h3>
+<p class="key-value"><strong>Actividad:</strong> Alinear con cliente sobre qué significa &quot;éxito&quot; en primeros 3 meses.</p>
+<p class="key-value"><strong>Ejemplo de success criteria:</strong></p>
+<div class="bullet-item">&quot;System is live and stable (99% uptime) by [date]&quot;</div>
+<div class="bullet-item">&quot;All users trained and confident using system by [date]&quot;</div>
+<div class="bullet-item">&quot;Team is independent (no need for Sofka support for day-to-day issues) by [week 12]&quot;</div>
+<div class="bullet-item">&quot;Initial benefits realized (% cost reduction, or days saved) by [date]&quot;</div>
+<div class="bullet-item">&quot;[Specific business outcome] achieved by [date]&quot;</div>
+<p class="key-value"><strong>Documentación:</strong></p>
+<div class="bullet-item">Email a cliente: &quot;Here&#x27;s our understanding of success criteria for your implementation. Please confirm these align with your expectations.&quot;</div>
+<div class="bullet-item">Registrar en CRM: &quot;Success criteria: [list]&quot;</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-fase-2-monitoreo-de-adopcin-semanas-424-7c4f17" data-searchable aria-labelledby="head-5-fase-2-monitoreo-de-adopcin-semanas-424-7c4f17">
+            <div class="phase-header" id="head-5-fase-2-monitoreo-de-adopcin-semanas-424-7c4f17" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Fase 2: Monitoreo de Adopción (Semanas 4-24)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="paso-51-weekly-checkins-semanas-18-postlaunch-8278cd">Paso 5.1: Weekly Check-ins (Semanas 1-8 Post-Launch)</h3>
+<p class="key-value"><strong>Actividad:</strong> Success Manager hace weekly calls con cliente (main user contact).</p>
+<p class="key-value"><strong>Agenda:</strong></p>
+<div class="bullet-item">How is adoption going?</div>
+<div class="bullet-item">Any issues or blockers?</div>
+<div class="bullet-item">Training effectiveness feedback?</div>
+<div class="bullet-item">Anything we can improve?</div>
+<p class="key-value"><strong>Registro:</strong></p>
+<div class="bullet-item">Email summary post-call a cliente y equipo interna</div>
+<div class="bullet-item">Escalación automática si hay critical issues</div>
+<div class="bullet-item">Update CRM con adoption status</div>
+<p class="key-value"><strong>Frequency:</strong> Weekly primeras 8 semanas. Luego bi-weekly (semanas 8-24).</p>
+<h3 class="subsection-title" id="paso-52-adopcin-metrics-weeks-424-3094d9">Paso 5.2: Adopción Metrics (Weeks 4-24)</h3>
+<p class="key-value"><strong>Actividad:</strong> Track metrics de adopción para entender si cliente está getting value.</p>
+<p class="key-value"><strong>Métricas típicas (varían según solución):</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>USAGE METRICS:
+- % de users activos (logins, transactions)
+- Horas/semana de system usage
+- Número de workflows completados
+
+BUSINESS METRICS:
+- % de costo reducido vs baseline (si objetivo era cost reduction)
+- Horas ahorradas/semana vs baseline
+- Nuevos ingresos generados (si aplicable)
+
+SUPPORT METRICS:
+- Número de support tickets
+- Tiempo promedio de resolución
+- % de issues resueltos por cliente (self-service)</code></pre>
+<p class="key-value"><strong>Monthly report a cliente:</strong></p>
+<blockquote class="quote-block" role="note">&quot;Month 2 adoption summary: 85% of users logging in weekly, completing avg 50 workflows/week. Cost reduction trending at 22% vs target of 25% (on track for Q3 targets). 12 support tickets, avg resolution time 4 hours. Overall adoption is strong.&quot;</blockquote>
+<h3 class="subsection-title" id="paso-53-intervencin-si-adopcin-es-lenta-weeks-424-7e8758">Paso 5.3: Intervención si Adopción es Lenta (Weeks 4-24)</h3>
+<p class="key-value"><strong>Escenario:</strong> Usage metrics muestran baja adopción (ej: &lt;50% users activos).</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Diagnóstico (call con client): &quot;¿Por qué usage está bajo? ¿Training fue insuficiente? ¿Hay resistencia cultural?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Intervención:</span></div>
+<div class="bullet-item">Si training insuficiente: schedule refresher training</div>
+<div class="bullet-item">Si resistencia cultural: facilitar change management session (CxO reaffirms importance)</div>
+<div class="bullet-item">Si usability issue: flag to product team, consider workaround</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Seguimiento: 2-week check-in post-intervention</span></div>
+<p class="key-value"><strong>Escalation:</strong> Si adopción no mejora en 4 semanas post-intervention, escalar a Delivery Manager.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-fase-3-qbrs-quarterly-business-reviews-7072f7" data-searchable aria-labelledby="head-6-fase-3-qbrs-quarterly-business-reviews-7072f7">
+            <div class="phase-header" id="head-6-fase-3-qbrs-quarterly-business-reviews-7072f7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Fase 3: QBRs (Quarterly Business Reviews)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="paso-61-preparacin-de-qbr-semana-11-23-35-etc-post-79269e">Paso 6.1: Preparación de QBR (Semana 11, 23, 35, etc. Post-Launch)</h3>
+<p class="key-value"><strong>Actividad:</strong> Success Manager prepara QBR presentation para cliente (45-60 min).</p>
+<p class="key-value"><strong>Agenda de QBR:</strong></p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>SLIDE 1: EXECUTIVE SUMMARY
+- Implementation status: Complete/on-track
+- Adoption status: [% users, usage metrics]
+- Business value realized: [% cost reduction, hours saved, etc.]
+- Customer satisfaction: [NPS, sentiment]
+
+SLIDE 2: ADOPTION &amp; USAGE
+- User adoption curve (% of users engaged over time)
+- Usage patterns by department/role
+- Key user feedback
+
+SLIDE 3: BUSINESS VALUE REALIZATION
+- Target vs Actual: Cost reduction, time saved, revenue, etc.
+- Gap analysis: If not on track, why? Mitigation plan?
+- Forecasted Q4 value
+
+SLIDE 4: SUPPORT &amp; ISSUES
+- Summary of issues encountered and resolutions
+- Outstanding items (bugs, enhancements)
+- SLA compliance (% of issues resolved on-time)
+
+SLIDE 5: LEARNINGS &amp; IMPROVEMENTS
+- What went well
+- What could be improved (process, training, product)
+- Recommendations for optimization
+
+SLIDE 6: EXPANSION OPPORTUNITIES
+- [See next section: Identifying Expansion/Upsell]
+- Potential modules/features that could add value
+- Timeline and investment for expansion
+
+SLIDE 7: ROADMAP &amp; NEXT STEPS
+- Q4 priorities
+- Support model evolution (reducing support as client becomes independent)
+- Decision timeline for expansions</code></pre>
+<p class="key-value"><strong>Preparation checklist:</strong></p>
+<div class="bullet-item">¿Adopción metrics están actualizados? → SÍ / NO</div>
+<div class="bullet-item">¿Business value está cuantificado? → SÍ / NO</div>
+<div class="bullet-item">¿Issues y resolutions están documentadas? → SÍ / NO</div>
+<div class="bullet-item">¿Expansion opportunities están identificadas? → SÍ / NO</div>
+<h3 class="subsection-title" id="paso-62-ejecutar-qbr-semanas-12-24-36-e6d60f">Paso 6.2: Ejecutar QBR (Semanas 12, 24, 36)</h3>
+<p class="key-value"><strong>Actividad:</strong> Presentar QBR a sponsor CxO + key stakeholders.</p>
+<p class="key-value"><strong>Participants:</strong></p>
+<div class="bullet-item">Sponsor CxO (confirmar commitment para expansion)</div>
+<div class="bullet-item">Success Manager (Success ownership)</div>
+<div class="bullet-item">Delivery Manager (si changes to support model)</div>
+<div class="bullet-item">Key user (representative of adopters)</div>
+<p class="key-value"><strong>Estructura:</strong></p>
+<div class="bullet-item">10 min: Executive summary</div>
+<div class="bullet-item">15 min: Adoption &amp; value realization</div>
+<div class="bullet-item">10 min: Issues &amp; improvements</div>
+<div class="bullet-item">15 min: Expansion opportunities (deep-dive)</div>
+<div class="bullet-item">10 min: Next steps &amp; decision making</div>
+<p class="key-value"><strong>Post-QBR:</strong></p>
+<div class="bullet-item">Email recap + slides a cliente</div>
+<div class="bullet-item">Action items documented (ours and theirs)</div>
+<div class="bullet-item">Expansion decision timeline: &quot;We recommend deciding by [date] to start [target start]&quot;</div>
+<div class="bullet-item">Registrar feedback en CRM: &quot;Client sentiment: [positive/neutral/concerned]&quot;</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-fase-4-identificacin-de-expansinupsell-456a23" data-searchable aria-labelledby="head-7-fase-4-identificacin-de-expansinupsell-456a23">
+            <div class="phase-header" id="head-7-fase-4-identificacin-de-expansinupsell-456a23" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Fase 4: Identificación de Expansión/Upsell</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="paso-71-mapear-expansion-opportunities-ongoing-5d7999">Paso 7.1: Mapear Expansion Opportunities (Ongoing)</h3>
+<p class="key-value"><strong>Actividad:</strong> Success Manager identifica continuamente oportunidades de expansión.</p>
+<p class="key-value"><strong>Tipos de expansión:</strong></p>
+<p><strong>1. Module/Feature Expansion (Same problem area, broader scope)</strong></p>
+<div class="bullet-item">Cliente implementó Phase 1 (cost reduction), Phase 2 (risk management) sería natural next</div>
+<div class="bullet-item">Ej: Implementaron inventory management, ahora adding demand planning</div>
+<p><strong>2. Vertical Expansion (Same solution, new department)</strong></p>
+<div class="bullet-item">Cliente implementó solución en Finance, Sales dept también podría beneficiarse</div>
+<div class="bullet-item">Ej: ERP live en Finance (manufacturing), Operations (supply chain) sería next user</div>
+<p><strong>3. Adjacent Product Expansion (Different problem area)</strong></p>
+<div class="bullet-item">Cliente problema fue implemented, ahora tiene different pain area Sofka puede resolver</div>
+<div class="bullet-item">Ej: Implementaron analytics para data visibility, ahora necesitan automation</div>
+<p class="key-value"><strong>Discovery process:</strong></p>
+<div class="bullet-item">En adopción monitoring: Pregunta &quot;¿Otros areas donde similar problema existe?&quot;</div>
+<div class="bullet-item">En QBRs: Incluir slide sobre opportunities (ver paso anterior)</div>
+<div class="bullet-item">En support interactions: Flag si user menciona &quot;It would be great if we could also...&quot;</div>
+<p class="key-value"><strong>Documentación:</strong></p>
+<div class="bullet-item">Oportunidad identificada → registro en CRM como &quot;Expansion Opportunity&quot;</div>
+<div class="bullet-item">Tamaño estimado: &quot;Phase 2 would be $X investment, $Y annual benefit&quot;</div>
+<div class="bullet-item">Timeline: &quot;Ideal timing would be Q2 2027 después que team está fully trained&quot;</div>
+<h3 class="subsection-title" id="paso-72-preparar-expansion-sales-process-2bb8e7">Paso 7.2: Preparar Expansion Sales Process</h3>
+<p class="key-value"><strong>Escenario:</strong> Expansion opportunity está identificada, cliente está interesado.</p>
+<p class="key-value"><strong>Proceso:</strong></p>
+<div class="bullet-item">Gate R-01: Feedback a Sales team que cliente es candidate para recompra</div>
+<div class="bullet-item">Sales Manager: Asignar Sales Executive a expansion opportunity</div>
+<div class="bullet-item">Sales Executive: Ejecutar mini-discovery con new department/area</div>
+<div class="bullet-item">Replicar workflow estándar (Discovery → Structuring → Close)</div>
+<p class="key-value"><strong>Timing:</strong></p>
+<div class="bullet-item">Típicamente expansión ocurre 6-12 meses post-initial launch</div>
+<div class="bullet-item">Cuando cliente está &quot;comfortable&quot; con solución inicial</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-casos-borde-de-success-management-54f8cb" data-searchable aria-labelledby="head-8-casos-borde-de-success-management-54f8cb">
+            <div class="phase-header" id="head-8-casos-borde-de-success-management-54f8cb" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 8. Casos Borde de Success Management</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-borde-1-cliente-est-muy-unhappy-nps-410-7e8949">Caso Borde 1: Cliente está muy unhappy (NPS &lt;4/10)</h3>
+<p class="key-value"><strong>Escenario:</strong> QBR feedback muestra cliente frustrated con solución.</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Diagnóstico 1:1 con CxO: &quot;¿Cuál es el issue?&quot; (escalate if needed)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Root cause analysis: Problema técnico? Expectativas no met? Process issue?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Remediation plan:</span></div>
+<div class="bullet-item">Si problema técnico: roadmap fix con timeline</div>
+<div class="bullet-item">Si expectativas: reframe success criteria (set realistic goals)</div>
+<div class="bullet-item">Si process: propose change management support</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Recovery plan: &quot;Here&#x27;s what we&#x27;ll do to fix this. Timeline. Accountability.&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Follow-up en 4 weeks para verificar mejora</span></div>
+<p class="key-value"><strong>Escalation:</strong> Si customer NPS &lt;3/10 y no mejora, escalate a Delivery Director / VP.</p>
+<h3 class="subsection-title" id="caso-borde-2-adopcin-est-stuck-usuarios-no-lo-usan-fc38f9">Caso Borde 2: Adopción está stuck (usuarios no lo usan, vuelven a proceso viejo)</h3>
+<p class="key-value"><strong>Escenario:</strong> 3 months post-launch, pero users siguen usando legacy system.</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Diagnóstico: &quot;¿Por qué no están using la nueva solución?&quot; (change management issue, UX issue, training issue?)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Intervención:</span></div>
+<div class="bullet-item">Si training issue: Refresher training intensivo</div>
+<div class="bullet-item">Si UX issue: Procesar como product feedback, propose workarounds</div>
+<div class="bullet-item">Si change management: CxO necesita &quot;mandate&quot; (ej: &quot;Legacy system shuts down 2027-Q2&quot;)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Roadmap: &quot;If adoption improves, we can proceed with expansion. If not, we need to address this.&quot;</span></div>
+<p class="key-value"><strong>Fallback:</strong> Si adoption no mejora, expansion NO procede until primary solution is adopted.</p>
+<h3 class="subsection-title" id="caso-borde-3-cliente-quiere-descuento-en-renewal-o-8d0c7d">Caso Borde 3: Cliente quiere descuento en renewal o expansion</h3>
+<p class="key-value"><strong>Escenario:</strong> QBR presenta expansion opportunity, cliente dice &quot;Interesado, pero queremos 20% descuento en precio total (original + expansion).&quot;</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Validar: ¿Descuento es dealbreaker para cliente? ¿Sin descuento = no sale?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Escalate a Sales Manager + Finance: &quot;Qué margen tenemos? ¿Podemos absorber descuento?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Options:</span></div>
+<div class="bullet-item">Aceptar 10-15% descuento si margen permite</div>
+<div class="bullet-item">Proponer &quot;bundle pricing&quot; (original + expansion cheaper together than separately)</div>
+<div class="bullet-item">Proponer staged approach (expansion Q1 at normal price, renewal negotiation at Q1)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Decisión: No hacer unilateral descuentos. Finance + Sales Manager approval.</span></div>
+<h3 class="subsection-title" id="caso-borde-4-customer-says-were-going-to-use-compe-fb85d9">Caso Borde 4: Customer says &quot;We&#x27;re going to use competitor for Phase 2&quot;</h3>
+<p class="key-value"><strong>Escenario:</strong> Expansion identified, but client says &quot;Vendor X has better tool for this module.&quot;</p>
+<p class="key-value"><strong>Acción:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>No defensiveness. Pregunta: &quot;¿Qué capabilities tiene vendor X que no tenemos?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Análisis: ¿Es verdad? ¿Podríamos cubrir con our product o partner integration?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Options:</span></div>
+<div class="bullet-item">Si podemos cubrir: Presentar propuesta alternativa con partnership model</div>
+<div class="bullet-item">Si no podemos cubrir: Gracefully concede. &quot;Excellent. We can help coordinate handoff/integration.&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Salvage: &quot;Even if Phase 2 is with [vendor], would you consider us for [other expansion area]?&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Learning: Feedback a product team sobre capabilities gap</span></div>
+<p class="key-value"><strong>Fallback:</strong> No todos expansions son nuestras. Better para cliente usar best-of-breed, even si es competencia.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-antipatterns-de-success-management-610ec8" data-searchable aria-labelledby="head-9-antipatterns-de-success-management-610ec8">
+            <div class="phase-header" id="head-9-antipatterns-de-success-management-610ec8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 9. Anti-Patterns de Success Management</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap1-no-onboarding-throw-over-wall-to-support-45b307">AP1: &quot;No onboarding, throw over wall to support&quot;</h3>
+<p class="key-value"><strong>Anti-pattern:</strong> Post-launch, support team debe entrenar users porque no hay onboarding.</p>
+<p class="key-value"><strong>Qué hacer:</strong> Robust onboarding (training, documentation, 4-week support) es non-negotiable.</p>
+<h3 class="subsection-title" id="ap2-success-manager-desaparece-despus-de-month-2-f1864b">AP2: &quot;Success Manager desaparece después de month 2&quot;</h3>
+<p class="key-value"><strong>Anti-pattern:</strong> Success Manager engaged primeros 8 weeks, luego &quot;client is mature now.&quot;</p>
+<p class="key-value"><strong>Qué hacer:</strong> Continuous engagement (check-ins, QBRs) durante 12+ months.</p>
+<h3 class="subsection-title" id="ap3-qbr-es-heres-what-we-delivered-no-business-foc-4cb566">AP3: &quot;QBR es &quot;here&#x27;s what we delivered,&quot; no business focus&quot;</h3>
+<p class="key-value"><strong>Anti-pattern:</strong> QBR presented como &quot;we built X, client should be happy.&quot;</p>
+<p class="key-value"><strong>Qué hacer:</strong> QBR must focus on business value: ROI, adoption, satisfaction, expansion.</p>
+<h3 class="subsection-title" id="ap4-no-expansion-planning-43df7e">AP4: &quot;No expansion planning&quot;</h3>
+<p class="key-value"><strong>Anti-pattern:</strong> Success Manager doesn&#x27;t pro-actively identify expansion.</p>
+<p class="key-value"><strong>Qué hacer:</strong> Expansion planning es parte de success management role.</p>
+<h3 class="subsection-title" id="ap5-churn-because-of-poor-support-50c4a0">AP5: &quot;Churn because of poor support&quot;</h3>
+<p class="key-value"><strong>Anti-pattern:</strong> Customer unhappy post-launch, support is slow/unresponsive.</p>
+<p class="key-value"><strong>Qué hacer:</strong> 4-week post-launch support must be robust (24/7 for critical issues).</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-decisiones-de-diseo-del-sop-f30b85" data-searchable aria-labelledby="head-10-decisiones-de-diseo-del-sop-f30b85">
+            <div class="phase-header" id="head-10-decisiones-de-diseo-del-sop-f30b85" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 10. Decisiones de Diseño del SOP</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="dd1-por-qu-4-weeks-de-postlaunch-support-no-indefi-57b1a6">DD1: ¿Por qué 4 weeks de post-launch support, no indefinido?</h3>
+<p class="key-value"><strong>Justificación:</strong> 4 weeks es tiempo típico para stabilize solución. Luego client debe ser &quot;independent.&quot;</p>
+<p class="key-value"><strong>Alternativa:</strong> Indefinite support → Support costs unsustainable.</p>
+<p class="key-value"><strong>Validación:</strong> Con structured 4-week support, 80% de clientes son independent month 2. Sin structured support, 40% requiere support ongoing.</p>
+<h3 class="subsection-title" id="dd2-por-qu-qbrs-son-quarterly-no-monthly-o-annual-6c167f">DD2: ¿Por qué QBRs son quarterly, no monthly o annual?</h3>
+<p class="key-value"><strong>Justificación:</strong> Monthly es overkill (not enough data to show trends). Annual es demasiado long (issues can go unaddressed).</p>
+<p class="key-value"><strong>Validación:</strong> Quarterly is industry standard para business reviews post-implementation.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-fallbacks-operativos-2f5cd3" data-searchable aria-labelledby="head-11-fallbacks-operativos-2f5cd3">
+            <div class="phase-header" id="head-11-fallbacks-operativos-2f5cd3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 11. Fallbacks Operativos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fb1-customer-unreachable-para-onboarding-8a2e95">FB1: Customer unreachable para onboarding</h3>
+<p class="key-value"><strong>Plan A:</strong> Email con agenda + call link, request confirmation 48h before.</p>
+<p class="key-value"><strong>Plan B:</strong> Si no responde, call CxO directly: &quot;We&#x27;re ready to launch. Can you unblock your team&#x27;s availability?&quot;</p>
+<p class="key-value"><strong>Fallback:</strong> Si cliente cancela kickoff múltiples veces, descalificar launch (project risk).</p>
+<h3 class="subsection-title" id="fb2-adopcin-muy-baja-20-of-users-despus-de-4-seman-2078e1">FB2: Adopción muy baja (20% of users) después de 4 semanas</h3>
+<p class="key-value"><strong>Plan A:</strong> Root cause analysis call con customer.</p>
+<p class="key-value"><strong>Plan B:</strong> Intensify: Refresher training, executive mandate, process changes.</p>
+<p class="key-value"><strong>Plan C:</strong> Si no mejora en 4 semanas post-intervention, escalate.</p>
+<p class="key-value"><strong>Fallback:</strong> Si adopción queda stuck &lt;30%, expansion NO procede.</p>
+<h3 class="subsection-title" id="fb3-support-tickets-piling-up-sla-breaches-a24c0e">FB3: Support tickets piling up (SLA breaches)</h3>
+<p class="key-value"><strong>Plan A:</strong> Triage: Critical vs non-critical. Resolve critical first.</p>
+<p class="key-value"><strong>Plan B:</strong> Escalate to Delivery Manager: Need more support resources.</p>
+<p class="key-value"><strong>Plan C:</strong> Communicate transparently a customer: &quot;We&#x27;re at capacity, here&#x27;s timeline for resolution.&quot;</p>
+<p class="key-value"><strong>Fallback:</strong> Never let SLA breaches go unaddressed. Risks customer satisfaction + expansion.</p>
+<h3 class="subsection-title" id="fb4-customer-nps-410-13cb2f">FB4: Customer NPS &lt;4/10</h3>
+<p class="key-value"><strong>Plan A:</strong> Escalate immediately to Delivery Director.</p>
+<p class="key-value"><strong>Plan B:</strong> Diagnostic call con CxO to understand root cause.</p>
+<p class="key-value"><strong>Plan C:</strong> Remediation plan with timeline + accountability.</p>
+<p class="key-value"><strong>Plan D:</strong> Follow-up in 2 weeks. If still low, executive intervention required.</p>
+<p class="key-value"><strong>Fallback:</strong> At this NPS, expansion is not possible. Focus on recovery.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-mtricas-de-success-management-58633c" data-searchable aria-labelledby="head-12-mtricas-de-success-management-58633c">
+            <div class="phase-header" id="head-12-mtricas-de-success-management-58633c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. Métricas de Success Management</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Acción</th></tr></thead><tbody><tr><td>Onboarding completion</td><td>100%</td><td>Critical for success</td></tr><tr><td>User adoption (% active)</td><td>&gt;70% by month 3</td><td>Si &lt;50%, intervene</td></tr><tr><td>System uptime/SLA compliance</td><td>&gt;99%</td><td>Si &lt;95%, escalate</td></tr><tr><td>Support ticket SLA</td><td>95% on-time resolution</td><td>Si &lt;80%, bottleneck</td></tr><tr><td>Customer NPS (post-implementation)</td><td>&gt;7/10</td><td>Si &lt;4, major concern</td></tr><tr><td>Expansion identified</td><td>50-80% of customers</td><td>Success metric</td></tr><tr><td>Time to identify expansion</td><td>3-6 months</td><td>Too early = premature; Too late = lost opportunity</td></tr><tr><td>Expansion close rate</td><td>40-60% of identified opportunities</td><td>From expansion ID to signed</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-responsabilidades-23d806" data-searchable aria-labelledby="head-13-responsabilidades-23d806">
+            <div class="phase-header" id="head-13-responsabilidades-23d806" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Responsabilidades</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Role</th><th scope="col">Responsabilidad</th></tr></thead><tbody><tr><td>Success Manager</td><td>Onboarding, adoption monitoring, QBRs, expansion identification</td></tr><tr><td>Delivery Manager</td><td>Technical support (4 weeks post-launch), infrastructure, issue resolution</td></tr><tr><td>Sales Executive</td><td>Expansion sales (once identified and client interested)</td></tr><tr><td>Customer (Sponsor CxO)</td><td>Allocate time for training, mandate adoption, participation in QBRs</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-crossreferences-2569c6" data-searchable aria-labelledby="head-14-crossreferences-2569c6">
+            <div class="phase-header" id="head-14-crossreferences-2569c6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 14. Cross-references</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>← Delivery Process:</strong> Handoff from Delivery to Success post-launch</div>
+<div class="bullet-item"><strong>← Sales Process (Gate R-01):</strong> Feedback from Success to Sales about expansion/recompra opportunities</div>
+<div class="bullet-item"><strong>→ Sales Process (if expansion):</strong> Expansion opportunities transition to Sales for new contract</div>
+<hr class="divider">
+<p class="key-value"><strong>Dueño:</strong> Success Manager / Delivery Manager</p>
+<p class="key-value"><strong>Próxima revisión:</strong> 2026-06-24</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

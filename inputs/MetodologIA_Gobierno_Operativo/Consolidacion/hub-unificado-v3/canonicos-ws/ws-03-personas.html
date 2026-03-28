@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Workshop WS-03 — Second Brain (PKM) — Proceso de Delivery MetodologIA">
+    <title>Workshop WS-03 — Second Brain (PKM) — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Ws</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Workshop WS-03 — Second Brain (PKM)</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Workshop WS-03 — Second Brain (PKM)</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: WS-03-PERSONAS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-personas-7d8819')" aria-label="Ir a Documento Canónico | Segmento: PERSONAS">Documento Canónico | Segmento: PERS</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-y-alcance-e4c27b')" aria-label="Ir a 2. Definición y Alcance">2. Definición y Alcance</button>
+<button class="nav-btn" onclick="scrollToSection('3-audiencia-especfica-del-segmento-282ba3')" aria-label="Ir a 3. Audiencia Específica del Segmento">3. Audiencia Específica del Segment</button>
+<button class="nav-btn" onclick="scrollToSection('4-propuesta-de-valor-diferenciada-d182a2')" aria-label="Ir a 4. Propuesta de Valor Diferenciada">4. Propuesta de Valor Diferenciada</button>
+<button class="nav-btn" onclick="scrollToSection('5-estructura-y-contenido-d27a5a')" aria-label="Ir a 5. Estructura y Contenido">5. Estructura y Contenido</button>
+<button class="nav-btn" onclick="scrollToSection('6-entregables-por-participante-c94751')" aria-label="Ir a 6. Entregables por Participante">6. Entregables por Participante</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-comercial-4c8ca0')" aria-label="Ir a 7. Modelo Comercial">7. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('8-canal-de-venta-y-distribucin-03ca9c')" aria-label="Ir a 8. Canal de Venta y Distribución">8. Canal de Venta y Distribución</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-y-logstica-09ab96')" aria-label="Ir a 9. Operación y Logística">9. Operación y Logística</button>
+<button class="nav-btn" onclick="scrollToSection('10-puente-educativo-upgrade-path-ce8265')" aria-label="Ir a 10. Puente Educativo (Upgrade Path)">10. Puente Educativo (Upgrade Path)</button>
+<button class="nav-btn" onclick="scrollToSection('11-soporte-postworkshop-b143c3')" aria-label="Ir a 11. Soporte Post-Workshop">11. Soporte Post-Workshop</button>
+<button class="nav-btn" onclick="scrollToSection('12-kpis-del-segmento-5392f8')" aria-label="Ir a 12. KPIs del Segmento">12. KPIs del Segmento</button>
+<button class="nav-btn" onclick="scrollToSection('13-trminos-y-condiciones-ac1498')" aria-label="Ir a 13. Términos y Condiciones">13. Términos y Condiciones</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-personas-7d8819" data-searchable aria-labelledby="head-documento-cannico-segmento-personas-7d8819">
+            <div class="phase-header" id="head-documento-cannico-segmento-personas-7d8819" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: PERSONAS</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> WS-03-PERSONAS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Personas (B2C — Individuos)</p>
+<p class="key-value"><strong>Precio canónico:</strong> COP 200,000</p>
+<p class="key-value"><strong>Duración:</strong> 3 horas</p>
+<p class="key-value"><strong>Modalidad:</strong> Virtual sincrónico (default) | Presencial (a solicitud)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td><strong>Objetivo</strong></td><td>Diseñar un sistema Personal Knowledge Management (PKM) escalable y funcional</td></tr><tr><td><strong>Público</strong></td><td>Profesionales, investigadores, estudiantes, creadores de contenido</td></tr><tr><td><strong>Formato</strong></td><td>1 sesión virtual sincrónica de 3 horas (máx. 25 participantes)</td></tr><tr><td><strong>Entregable principal</strong></td><td>PKM Architecture Diagram + Setup Checklist personalizado</td></tr><tr><td><strong>Precio</strong></td><td>COP 200,000 por participante</td></tr><tr><td><strong>Promesa</strong></td><td>&quot;Deja de perder ideas. Construye tu segundo cerebro&quot;</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-y-alcance-e4c27b" data-searchable aria-labelledby="head-2-definicin-y-alcance-e4c27b">
+            <div class="phase-header" id="head-2-definicin-y-alcance-e4c27b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición y Alcance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>WS-03 es un <strong>taller de arquitectura del conocimiento personal</strong> que enseña cómo:</p>
+<div class="bullet-item">Diseñar una estructura PKM (inputs, procesamiento, almacenamiento, output)</div>
+<div class="bullet-item">Elegir herramientas según workflow (Obsidian, Notion, Roam, OneNote)</div>
+<div class="bullet-item">Implementar captura sin fricción (clipping, notas rápidas, IA integration)</div>
+<div class="bullet-item">Crear taxonomía y links semánticos (No es &quot;carpetas&quot; sino &quot;redes de conocimiento&quot;)</div>
+<div class="bullet-item">Hacer operativa la información (convertir notas en acciones/outputs)</div>
+<p class="key-value"><strong>Diferencia clave:</strong> No es &quot;cómo usar Notion&quot;. Es &quot;cómo diseñar tu sistema de pensamiento&quot; y luego implementarlo en la herramienta que elijas.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-audiencia-especfica-del-segmento-282ba3" data-searchable aria-labelledby="head-3-audiencia-especfica-del-segmento-282ba3">
+            <div class="phase-header" id="head-3-audiencia-especfica-del-segmento-282ba3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Audiencia Específica del Segmento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="perfil-primario-a39942">Perfil primario</h3>
+<div class="bullet-item">Profesionales que acumulan información sin sistema (notas sueltas, emails, screenshots)</div>
+<div class="bullet-item">Investigadores, académicos, writers, consultores</div>
+<div class="bullet-item">Emprendedores que necesitan documentar decisiones y aprendizajes</div>
+<div class="bullet-item">Personas en rol de conocimiento (análisis, estrategia, educación)</div>
+<h3 class="subsection-title" id="dolornecesidad-ee32d7">Dolor/necesidad</h3>
+<div class="bullet-item">&quot;Tengo tanta información pero no encuentro nada&quot;</div>
+<div class="bullet-item">&quot;Pierdo ideas buenos por no tener dónde capturarlas rápido&quot;</div>
+<div class="bullet-item">&quot;Quiero conectar puntos y crear síntesis que ayuden a mi trabajo&quot;</div>
+<div class="bullet-item">&quot;Mi Notion/Obsidian está caótico, no sé cómo empezar de nuevo&quot;</div>
+<h3 class="subsection-title" id="nivel-de-preparacin-7de1d8">Nivel de preparación</h3>
+<div class="bullet-item">Sin requerimiento técnico previo</div>
+<div class="bullet-item">Acceso a laptop y herramienta PKM (gratuita como Notion, Obsidian básico)</div>
+<div class="bullet-item">Disposición a analizar propio flujo de información</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-propuesta-de-valor-diferenciada-d182a2" data-searchable aria-labelledby="head-4-propuesta-de-valor-diferenciada-d182a2">
+            <div class="phase-header" id="head-4-propuesta-de-valor-diferenciada-d182a2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Propuesta de Valor Diferenciada</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Para el segmento PERSONAS:</strong></p>
+<div class="bullet-item">Enfoque agnóstico de herramientas (funciona con cualquier plataforma)</div>
+<div class="bullet-item">Metodología probada (PARA, MOC, Atomic notes)</div>
+<div class="bullet-item">Personalización: cada uno diseña su propia arquitectura</div>
+<div class="bullet-item">Integración con IA (cómo usar ChatGPT para síntesis, resúmenes)</div>
+<div class="bullet-item">Plan práctico de 30 días para puesta en marcha</div>
+<div class="bullet-item">Comunidad de users PKM con compartición de templates</div>
+<p class="key-value"><strong>Diferenciador vs. otras opciones:</strong></p>
+<div class="bullet-item">Basado en arquitectura, no en &quot;tips and tricks&quot;</div>
+<div class="bullet-item">Incluye cómo capturar SIN usar herramientas complejas primero</div>
+<div class="bullet-item">Conexión con productividad personal (GTD) y flow de trabajo</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-estructura-y-contenido-d27a5a" data-searchable aria-labelledby="head-5-estructura-y-contenido-d27a5a">
+            <div class="phase-header" id="head-5-estructura-y-contenido-d27a5a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Estructura y Contenido</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="segmento-1-principios-y-arquitectura-pkm-45-min-a385b8">Segmento 1: Principios y Arquitectura PKM (45 min)</h3>
+<div class="bullet-item">¿Qué es PKM? (vs. general note-taking)</div>
+<div class="bullet-item">Ciclo ICOR: Inputs → Capture → Organize → Retrieve</div>
+<div class="bullet-item">Principios: sin fricción, escalabilidad, serendipidad</div>
+<div class="bullet-item">Cuatro capas: Captura | Procesamiento | Síntesis | Salida</div>
+<div class="bullet-item">Anti-patrón: &quot;la carpeta perfecta&quot; (no existe)</div>
+<div class="bullet-item">Demo: PKM mal diseñado vs. bien diseñado</div>
+<h3 class="subsection-title" id="segmento-2-diseo-tu-arquitectura-50-min-3e3692">Segmento 2: Diseño Tu Arquitectura (50 min)</h3>
+<div class="bullet-item">Análisis: &quot;¿Cuál es tu flujo de información hoy?&quot;</div>
+<div class="bullet-item">Elección de herramienta (matriz: complejidad vs. poder)</div>
+<div class="bullet-item">Taxonomía semántica: tags, MOCs, relaciones</div>
+<div class="bullet-item">Sistema de captura: clipping, templates, triggers</div>
+<div class="bullet-item">Ejercicio: Dibuja tu arquitectura (en Miro, en papel)</div>
+<div class="bullet-item">Integración IA: automatización de síntesis y etiquetado</div>
+<h3 class="subsection-title" id="segmento-3-plan-de-implementacin-35-min-3837ec">Segmento 3: Plan de Implementación (35 min)</h3>
+<div class="bullet-item">Architecture Diagram: documentación visual</div>
+<div class="bullet-item">Setup Checklist: paso a paso, 30 días</div>
+<div class="bullet-item">Herramientas complementarias (Zapier, IFTTT, extensiones)</div>
+<div class="bullet-item">Errores comunes (y cómo evitarlos)</div>
+<div class="bullet-item">Sesión Q&amp;A: &quot;¿Qué hago con mi caos actual?&quot;</div>
+<h3 class="subsection-title" id="breaks-y-qa-integrado-c2b9c1">Breaks y Q&amp;A integrado</h3>
+<div class="bullet-item">Pausa a los 50 min</div>
+<div class="bullet-item">Espacio final para dudas arquitectónicas</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-entregables-por-participante-c94751" data-searchable aria-labelledby="head-6-entregables-por-participante-c94751">
+            <div class="phase-header" id="head-6-entregables-por-participante-c94751" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Entregables por Participante</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>PKM Architecture Diagram (Visual personalizado)</strong></span></div>
+<div class="bullet-item">Formato: Figma o Miro (editable, compartible)</div>
+<div class="bullet-item">Incluye: Inputs | Capture layer | Processing | Storage | Output</div>
+<div class="bullet-item">Con notas de tu contexto específico</div>
+<div class="bullet-item">Exportable como PDF o imagen</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Setup Checklist (30 días paso a paso)</strong></span></div>
+<div class="bullet-item">Semana 1: Limpieza y análisis (export datos actuales)</div>
+<div class="bullet-item">Semana 2: Diseño de estructura (carpetas, tags, templates)</div>
+<div class="bullet-item">Semana 3: Implementación herramientas (conectar Zapier, extensiones, IA)</div>
+<div class="bullet-item">Semana 4: Operación y refinamiento</div>
+<div class="bullet-item">Checklist diario: 10 minutos de mantenimiento</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Guía: &quot;PKM Templates para tu rol&quot;</strong></span></div>
+<div class="bullet-item">3-5 templates de notas (según rol: ejecutivo, escritor, investigador, etc.)</div>
+<div class="bullet-item">Formula de captura quick (smartphone + desktop)</div>
+<div class="bullet-item">Ejemplos de MOCs (Map of Contents)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Acceso 60 días a comunidad WhatsApp + Notion</strong></span></div>
+<div class="bullet-item">Canal #second-brain con compartición de arquitecturas</div>
+<div class="bullet-item">Sesión mensual async: &quot;Muestra tu PKM&quot; (peer feedback)</div>
+<div class="bullet-item">Biblioteca de templates de la comunidad</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Bonus: Integración IA checklist</strong></span></div>
+<div class="bullet-item">Cómo usar ChatGPT para síntesis automática de notas</div>
+<div class="bullet-item">Prompts para etiquetar y relacionar</div>
+<div class="bullet-item">Tools: Zapier + IA para automatización</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-comercial-4c8ca0" data-searchable aria-labelledby="head-7-modelo-comercial-4c8ca0">
+            <div class="phase-header" id="head-7-modelo-comercial-4c8ca0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Componente</th><th scope="col">Especificación</th></tr></thead><tbody><tr><td><strong>Precio público</strong></td><td>COP 200,000</td></tr><tr><td><strong>Costo de entrega (est.)</strong></td><td>32% del precio (diseño arquitectura, plantillas, comunidad async)</td></tr><tr><td><strong>Margen esperado</strong></td><td>68%</td></tr><tr><td><strong>Descuentos aplicables</strong></td><td>Ninguno a nivel PERSONAS</td></tr><tr><td><strong>Referral comisión</strong></td><td>10% (embajadores)</td></tr><tr><td><strong>Política de reembolso</strong></td><td>7 días, antes de participar</td></tr><tr><td><strong>Add-on opcional</strong></td><td>Sesión 1x1 arquitectura avanzada (COP 80,000, 1h)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-canal-de-venta-y-distribucin-03ca9c" data-searchable aria-labelledby="head-8-canal-de-venta-y-distribucin-03ca9c">
+            <div class="phase-header" id="head-8-canal-de-venta-y-distribucin-03ca9c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Canal de Venta y Distribución</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="canales-prioritarios-b26329">Canales prioritarios</h3>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Website MetodologIA</strong> + SEO para &quot;second brain Colombia&quot;</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>LinkedIn</strong> (orientado a ejecutivos, consultores, writers)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Twitter/X</strong> (comunidad de PKM hispanohablante)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Referral embajadores</strong> (comunidades de productivity)</span></div>
+<h3 class="subsection-title" id="copywriting-b2c-df4592">Copywriting B2C</h3>
+<div class="bullet-item">&quot;El caos mental no es culpa tuya: es falta de arquitectura&quot;</div>
+<div class="bullet-item">&quot;Captura, conecta, crea: tu segundo cerebro en 30 días&quot;</div>
+<div class="bullet-item">Testimonio: &quot;Pasé de Notion desorden a sistema que ahorro 5h/semana&quot;</div>
+<h3 class="subsection-title" id="calendario-pblico-2a0785">Calendario público</h3>
+<div class="bullet-item">Mínimo 2 fechas/mes</div>
+<div class="bullet-item">Horario flexible: 7-10pm o sábado 10am-1pm</div>
+<div class="bullet-item">Inscripción hasta 48h antes</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-y-logstica-09ab96" data-searchable aria-labelledby="head-9-operacin-y-logstica-09ab96">
+            <div class="phase-header" id="head-9-operacin-y-logstica-09ab96" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación y Logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="facilitador-2afd1c">Facilitador</h3>
+<div class="bullet-item">MetodologIA Certified + experiencia PKM documentada</div>
+<div class="bullet-item">Portfolio visible: 3+ arquitecturas operativas</div>
+<div class="bullet-item">Conocimiento de herramientas: Notion, Obsidian, Roam, OneNote (mínimo 2)</div>
+<div class="bullet-item">Capacitación: 2h prep + sesión + follow-up comunitario</div>
+<div class="bullet-item">Duración dedicada: 2.5h prep + 3h sesión = 5.5h</div>
+<h3 class="subsection-title" id="plataforma-cd56c8">Plataforma</h3>
+<div class="bullet-item">Zoom (default)</div>
+<div class="bullet-item">Sala virtual con:</div>
+<div class="bullet-item">Figma o Miro compartido (para diagramas)</div>
+<div class="bullet-item">Pantalla mostrando 2 PKMs en vivo (antes/después)</div>
+<div class="bullet-item">Breakout rooms (2-3 personas, para diseño colaborativo)</div>
+<div class="bullet-item">Chat activo para enlaces y recursos</div>
+<h3 class="subsection-title" id="materiales-entregados-900277">Materiales entregados</h3>
+<div class="bullet-item">Slide deck: 25-30 slides (principios + ejemplos)</div>
+<div class="bullet-item">Template Architecture Diagram (Figma + PNG)</div>
+<div class="bullet-item">Setup Checklist (Notion + PDF)</div>
+<div class="bullet-item">Guía de templates por rol</div>
+<div class="bullet-item">Bonus: Prompts IA para PKM</div>
+<h3 class="subsection-title" id="timing-d3b69e">Timing</h3>
+<div class="bullet-item">Confirmación 48h antes</div>
+<div class="bullet-item">Preguntas iniciales: &quot;¿Qué herramienta usas ahora? ¿Cuál es tu mayor dolor?&quot;</div>
+<div class="bullet-item">Envío materiales 24h antes</div>
+<div class="bullet-item">Sesión 100% sincrónica, facilitador activo en diseño</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-puente-educativo-upgrade-path-ce8265" data-searchable aria-labelledby="head-10-puente-educativo-upgrade-path-ce8265">
+            <div class="phase-header" id="head-10-puente-educativo-upgrade-path-ce8265" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Puente Educativo (Upgrade Path)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Objetivo:</strong> De WS-03 → Bootcamp Trabajar Amplificado (100% puente)</p>
+<h3 class="subsection-title" id="trigger-de-conversin-d76b03">Trigger de conversión</h3>
+<div class="bullet-item">Módulo Bootcamp: &quot;Operación del Conocimiento&quot; (PKM + Segunda Cerebro IA)</div>
+<div class="bullet-item">Email +2 días: &quot;Escalando tu PKM para negocios&quot;</div>
+<div class="bullet-item">Comunidad: casos de uso de egresados (síntesis, portfolio, publicación)</div>
+<h3 class="subsection-title" id="oferta-puente-e5347b">Oferta puente</h3>
+<div class="bullet-item">Descuento 5% para egresados WS-03 (7 días post-workshop)</div>
+<div class="bullet-item">Sesión 1x1 gratis en Bootcamp (arquitectura avanzada)</div>
+<div class="bullet-item">Grupo exclusivo con otros PKM-users</div>
+<h3 class="subsection-title" id="bootcamp-destino-2c2e9c">Bootcamp destino</h3>
+<div class="bullet-item">Trabajar Amplificado: 8 semanas, 200 horas</div>
+<div class="bullet-item">Precio: COP 2,800,000</div>
+<div class="bullet-item">Incluye: certificación, portfolio, job placement</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-soporte-postworkshop-b143c3" data-searchable aria-labelledby="head-11-soporte-postworkshop-b143c3">
+            <div class="phase-header" id="head-11-soporte-postworkshop-b143c3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Soporte Post-Workshop</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="primer-nivel-comunidad-whatsapp-notion-3e3216">Primer nivel: Comunidad (WhatsApp + Notion)</h3>
+<div class="bullet-item">60 días acceso a canal #second-brain</div>
+<div class="bullet-item">Sesión mensual async: &quot;Feedback tu arquitectura&quot; (peer review)</div>
+<div class="bullet-item">Biblioteca de 20+ templates (colaborativa, actualizada)</div>
+<div class="bullet-item">Respuesta facilitador: 48h máximo</div>
+<h3 class="subsection-title" id="segundo-nivel-email-soporte-bc32e4">Segundo nivel: Email soporte</h3>
+<div class="bullet-item">soporte@metodologia.co</div>
+<div class="bullet-item">Dudas sobre arquitectura general: máximo 48h</div>
+<div class="bullet-item">Limitado a 2 consultas post-período</div>
+<h3 class="subsection-title" id="tercer-nivel-sesin-1x1-opcional-04d71a">Tercer nivel: Sesión 1x1 opcional</h3>
+<div class="bullet-item">COP 80,000 / 1 hora</div>
+<div class="bullet-item">&quot;Optimizar arquitectura&quot; (facilitador especializado)</div>
+<div class="bullet-item">Revisión Setup Checklist + ajustes</div>
+<div class="bullet-item">Agendamiento vía Calendly</div>
+<h3 class="subsection-title" id="extensin-recursos-digitales-f64730">Extensión: Recursos digitales</h3>
+<div class="bullet-item">Acceso 90 días a biblioteca de templates</div>
+<div class="bullet-item">Grabación de sesión (60 días)</div>
+<div class="bullet-item">Notificaciones de nuevas arquitecturas en comunidad</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-kpis-del-segmento-5392f8" data-searchable aria-labelledby="head-12-kpis-del-segmento-5392f8">
+            <div class="phase-header" id="head-12-kpis-del-segmento-5392f8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. KPIs del Segmento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">KPI</th><th scope="col">Meta</th><th scope="col">Frecuencia</th></tr></thead><tbody><tr><td><strong>Tasa de asistencia</strong></td><td>≥92%</td><td>Por cohort</td></tr><tr><td><strong>NPS</strong></td><td>≥8.5/10</td><td>Post-encuesta</td></tr><tr><td><strong>Completitud Setup (semana 1)</strong></td><td>≥75% empezó implementación</td><td>+7 días</td></tr><tr><td><strong>PKM operativo (30 días)</strong></td><td>≥65% reporta sistema funcional</td><td>Encuesta +30d</td></tr><tr><td><strong>Engagement comunitario (60 días)</strong></td><td>≥70% participó en feedback peer</td><td>Post-período</td></tr><tr><td><strong>Tasa de conversión → Bootcamp</strong></td><td>≥16%</td><td>Mensual</td></tr><tr><td><strong>Satisfacción con Architecture</strong></td><td>≥82% &quot;clara y útil&quot;</td><td>Encuesta +30d</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-trminos-y-condiciones-ac1498" data-searchable aria-labelledby="head-13-trminos-y-condiciones-ac1498">
+            <div class="phase-header" id="head-13-trminos-y-condiciones-ac1498" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Términos y Condiciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="inscripcin-y-pago-c09cd6">Inscripción y pago</h3>
+<div class="bullet-item">Inscripción válida tras pago confirmado (100% adelantado)</div>
+<div class="bullet-item">Métodos: Wompi, transferencia, tarjeta</div>
+<div class="bullet-item">Recibo + invoice automático</div>
+<h3 class="subsection-title" id="requisitos-previos-c97b09">Requisitos previos</h3>
+<div class="bullet-item">Acceso a laptop (no es opcional para sesión)</div>
+<div class="bullet-item">Herramienta PKM básica (Notion free, Obsidian, OneNote)</div>
+<div class="bullet-item">Disposición a reflexionar sobre propio workflow</div>
+<h3 class="subsection-title" id="reembolso-c801b2">Reembolso</h3>
+<div class="bullet-item">7 días desde inscripción, sin preguntas</div>
+<div class="bullet-item">Después de 7 días: 50% (si no ha asistido)</div>
+<div class="bullet-item">Sin reembolso post-asistencia</div>
+<h3 class="subsection-title" id="reglas-de-participacin-3e0737">Reglas de participación</h3>
+<div class="bullet-item">Cámara encendida mínimo 75% de sesión</div>
+<div class="bullet-item">Participación activa en ejercicio de diseño</div>
+<div class="bullet-item">Respeto por código de conducta MetodologIA</div>
+<h3 class="subsection-title" id="propiedad-intelectual-55f5c9">Propiedad intelectual</h3>
+<div class="bullet-item">Architecture Diagram: propiedad del participante</div>
+<div class="bullet-item">Setup Checklist: uso personal</div>
+<div class="bullet-item">Templates compartidas en comunidad: CC-BY (atribución)</div>
+<div class="bullet-item">Derecho a usar ejemplos (anónimo): requiere consentimiento</div>
+<h3 class="subsection-title" id="limitaciones-de-responsabilidad-aacc90">Limitaciones de responsabilidad</h3>
+<div class="bullet-item">MetodologIA no garantiza que PKM resulte en productividad específica</div>
+<div class="bullet-item">Implementación exitosa depende de disciplina del usuario</div>
+<div class="bullet-item">No es asesoría técnica ni soporte herramienta-específico (ese es trabajo del proveedor)</div>
+<h3 class="subsection-title" id="vigencia-y-actualizaciones-11ef55">Vigencia y actualizaciones</h3>
+<div class="bullet-item">Documento válido desde 2026-03-24</div>
+<div class="bullet-item">Revisión semestral según evolución herramientas PKM</div>
+<div class="bullet-item">Cambios comunicados 30 días antes</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA - Customer Journeys B2C</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Montserrat:wght@400;500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-secondary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-tertiary: 'Jost', 'Futura', 'Trebuchet MS', Arial, sans-serif;
+            --bg-primary: hsl(220, 34%, 18%);
+            --bg-surface: hsl(220, 30%, 23%);
+            --bg-body: hsl(222, 29%, 12%);
+            --bg-elevated: hsla(220, 34%, 18%, 0.8);
+            --bg-hover: hsla(220, 30%, 23%, 0.9);
+            --text-primary: #FFFFFF;
+            --text-secondary: #e2e8f0;
+            --text-muted: #cbd5e1;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.15);
+            --brand-gold: hsl(51, 100%, 50%);
+            --brand-gold-dark: hsl(45, 100%, 50%);
+            --brand-cyan: hsl(189, 94%, 53%);
+            --brand-emerald: hsl(158, 64%, 52%);
+            --brand-purple: hsl(271, 91%, 76%);
+            --brand-blue: hsl(221, 83%, 72%);
+            --brand-red: #ef4444;
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+            --shadow-glow-gold: 0 0 30px rgba(255, 240, 51, 0.15);
+            --persona-p1-color: #93c5fd;
+            --persona-p2-color: hsl(25, 100%, 50%);
+            --persona-p3-color: var(--brand-gold);
+            --persona-p4-color: var(--brand-purple);
+            --brand-purple-text: hsl(271, 91%, 76%);
+            --brand-blue-text: hsl(221, 83%, 72%);
+            --brand-indigo-text: #a5b4fc;
+            --brand-gold-glow: hsla(51, 100%, 50%, 0.12);
+            --brand-cyan-glow: hsla(189, 94%, 53%, 0.12);
+            --shadow-glow-cyan: 0 0 30px rgba(34, 211, 238, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-secondary);
+            font-family: var(--font-secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-primary);
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        h1 { font-size: 3rem; font-weight: 900; line-height: 1.2; }
+        h2 { font-size: 2rem; margin-top: 2rem; margin-bottom: 1rem; }
+        h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+
+        .highlight-ia-premium {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .card-glass {
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+        }
+
+        .card-glass:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-default);
+            box-shadow: var(--shadow-glow-gold);
+            transform: translateY(-4px);
+        }
+
+        .nav-cta-glow {
+            background: var(--gradient-gold);
+            color: #000;
+            font-weight: 700;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        .nav-cta-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 240, 51, 0.15);
+        }
+
+        .premium-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: hsla(220, 34%, 18%, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: var(--font-primary);
+            color: var(--text-primary);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .persona-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.4rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .persona-tab.active {
+            background: var(--gradient-gold);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .persona-tab.inactive:hover {
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+        }
+
+        main {
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--brand-blue-text);
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 48rem;
+            margin: 0 auto 3rem;
+        }
+
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .persona-card {
+            cursor: pointer;
+        }
+
+        .avatar-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .persona-p1 { background: linear-gradient(135deg, var(--persona-p1-color) 0%, #1e40af 100%); }
+        .persona-p2 { background: linear-gradient(135deg, var(--persona-p2-color) 0%, #b45309 100%); }
+        .persona-p3 { background: linear-gradient(135deg, var(--persona-p3-color) 0%, #a16207 100%); }
+        .persona-p4 { background: linear-gradient(135deg, var(--persona-p4-color) 0%, #7c3aed 100%); }
+
+        .persona-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .persona-card .subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .persona-card .meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .persona-card .trigger {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .accent-p1 { color: var(--persona-p1-color); }
+        .accent-p2 { color: var(--persona-p2-color); }
+        .accent-p3 { color: var(--persona-p3-color); }
+        .accent-p4 { color: var(--brand-purple-text); }
+
+        .border-p1 { border-color: var(--persona-p1-color); }
+        .border-p2 { border-color: var(--persona-p2-color); }
+        .border-p3 { border-color: var(--persona-p3-color); }
+        .border-p4 { border-color: var(--persona-p4-color); }
+
+        .bg-p1 { background: rgba(59, 130, 246, 0.1); }
+        .bg-p2 { background: rgba(255, 140, 0, 0.1); }
+        .bg-p3 { background: rgba(255, 215, 0, 0.1); }
+        .bg-p4 { background: rgba(168, 85, 247, 0.1); }
+
+        .emotion-curve {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 1rem;
+            height: 120px;
+            padding: 1.5rem 0;
+        }
+
+        .emotion-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .emotion-item svg {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 0.5rem;
+        }
+
+        .emotion-item span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .journey-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .timeline-phase {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-phase:hover {
+            transform: translateY(-4px);
+        }
+
+        .timeline-phase h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .timeline-phase .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .timeline-phase strong {
+            color: var(--text-primary);
+            display: block;
+            margin-top: 0.75rem;
+        }
+
+        .amplification-ladder {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .ladder-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.875rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .ladder-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .ladder-icon {
+            flex-shrink: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .ladder-icon i {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .ladder-content {
+            flex: 1;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+        }
+
+        .ladder-content strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .ladder-content small {
+            display: block;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .ladder-content em {
+            color: var(--text-secondary);
+            font-style: normal;
+            font-weight: 500;
+            display: inline;
+        }
+
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 1024px) {
+            .two-col-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+
+        .revenue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .revenue-item:last-child {
+            border-bottom: none;
+        }
+
+        .revenue-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .revenue-value {
+            text-align: right;
+        }
+
+        .revenue-value strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .revenue-value small {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .anti-pattern {
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            background: rgba(249, 115, 22, 0.05);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .anti-pattern p {
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .anti-pattern p strong {
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .anti-pattern small {
+            display: block;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .win-scenario {
+            border-left: 4px solid var(--brand-emerald);
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 0.5rem;
+            padding: 2rem;
+        }
+
+        .loss-scenario {
+            border-left: 4px solid var(--brand-red);
+            background: rgba(239, 68, 68, 0.05);
+            border-radius: 0.5rem;
+            padding: 2rem;
+        }
+
+        .win-scenario h3, .loss-scenario h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+        }
+
+        .win-scenario ul, .loss-scenario ul {
+            list-style: none;
+        }
+
+        .win-scenario li, .loss-scenario li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .win-scenario svg, .loss-scenario svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .disqualification-box {
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .disqualification-box h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .disqualification-box ul {
+            list-style: none;
+        }
+
+        .disqualification-box li {
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-default);
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th {
+            background: var(--bg-surface);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--brand-gold);
+            border-bottom: 1px solid var(--border-default);
+            font-family: var(--font-primary);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        tr:hover {
+            background: var(--bg-elevated);
+        }
+
+        .hidden-section {
+            display: none;
+        }
+
+        .visible-section {
+            display: block;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .profile-header .avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .profile-info h2 {
+            margin-top: 0;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .profile-info .quote {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        .comparativa-matrix {
+            margin: 2rem 0;
+        }
+
+        .footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-subtle);
+            padding: 3rem 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer-content p {
+            margin: 0.5rem 0;
+        }
+
+        .badge-p1 { background: rgba(59, 130, 246, 0.15); color: var(--persona-p1-color); }
+        .badge-p2 { background: rgba(255, 140, 0, 0.15); color: var(--persona-p2-color); }
+        .badge-p3 { background: rgba(255, 215, 0, 0.15); color: var(--persona-p3-color); }
+        .badge-p4 { background: rgba(168, 85, 247, 0.15); color: var(--persona-p4-color); }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PREMIUM NAVIGATION -->
+    <nav class="premium-nav">
+        <div class="nav-container">
+            <div class="logo-group">
+                <svg class="logo-svg" viewBox="0 0 36 36" fill="none">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0A122A"/>
+                            <stop offset="100%" stop-color="#13315C"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="36" height="36" rx="10" fill="url(#logoGrad)"/>
+                    <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                    <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+                </svg>
+                <span class="logo-text">MetodologIA</span>
+            </div>
+
+            <div class="nav-tabs">
+                <button class="persona-tab active" onclick="switchPersona('all')">Overview</button>
+                <button class="persona-tab inactive" onclick="switchPersona('p1')">P1 Andrea</button>
+                <button class="persona-tab inactive" onclick="switchPersona('p2')">P2 Santiago</button>
+                <button class="persona-tab inactive" onclick="switchPersona('p3')">P3 Carlos</button>
+                <button class="persona-tab inactive" onclick="switchPersona('p4')">P4 Marta</button>
+                <button class="persona-tab inactive" onclick="switchPersona('comp')">Comparativa</button>
+            </div>
+
+            <button class="nav-cta-glow">Solicitar Demo</button>
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- HERO / OVERVIEW SECTION -->
+        <section id="overview" class="visible-section">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <div class="hero-badge">Customer Journeys B2C · 4 Personas · v3.0</div>
+                <h1 class="hero-title">Cada persona, <span class="highlight-ia-premium">un viaje único</span></h1>
+                <p class="hero-subtitle">
+                    4 arquetipos, 4 caminos diferenciados hacia la soberanía digital. Estrategia, experiencia y revenue optimizados para cada segmento.
+                </p>
+            </div>
+
+            <!-- PERSONAS GRID -->
+            <div class="personas-grid">
+                <!-- P1: Andrea -->
+                <div class="card-glass persona-card" onclick="switchPersona('p1')">
+                    <div class="avatar-placeholder persona-p1"><i data-lucide="briefcase"></i></div>
+                    <h3>Andrea</h3>
+                    <p class="subtitle">34 años · Marketing Manager</p>
+                    <p class="meta">$800k COP · LinkedIn</p>
+                    <p class="trigger accent-p1">→ Competencia laboral</p>
+                </div>
+
+                <!-- P2: Santiago -->
+                <div class="card-glass persona-card" onclick="switchPersona('p2')">
+                    <div class="avatar-placeholder persona-p2"><i data-lucide="graduation-cap"></i></div>
+                    <h3>Santiago</h3>
+                    <p class="subtitle">22 años · Estudiante Admin</p>
+                    <p class="meta">$0-$200k COP · IG/TikTok</p>
+                    <p class="trigger accent-p2">→ FOMO académico</p>
+                </div>
+
+                <!-- P3: Carlos -->
+                <div class="card-glass persona-card" onclick="switchPersona('p3')">
+                    <div class="avatar-placeholder persona-p3"><i data-lucide="user-cog"></i></div>
+                    <h3>Carlos</h3>
+                    <p class="subtitle">48 años · VP Comercial</p>
+                    <p class="meta">$2.4M COP · Referrals</p>
+                    <p class="trigger accent-p3">→ Presión board</p>
+                </div>
+
+                <!-- P4: Marta -->
+                <div class="card-glass persona-card" onclick="switchPersona('p4')">
+                    <div class="avatar-placeholder persona-p4"><i data-lucide="book-open"></i></div>
+                    <h3>Marta</h3>
+                    <p class="subtitle">52 años · Contadora</p>
+                    <p class="meta">$0-$800k COP · FB/WhatsApp</p>
+                    <p class="trigger accent-p4">→ Brecha generacional</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- P1: ANDREA -->
+        <section id="p1" class="hidden-section">
+            <div class="profile-header">
+                <div class="avatar-placeholder persona-p1"><i data-lucide="briefcase"></i></div>
+                <div class="profile-info">
+                    <h2>Andrea</h2>
+                    <p class="subtitle">34 años · Marketing Manager en empresa mediana</p>
+                    <p class="quote">"Mis juniors usan ChatGPT mejor que yo. Necesito recuperar control."</p>
+                </div>
+            </div>
+
+            <!-- EMOTION CURVE -->
+            <div class="card-glass" style="margin-bottom: 2rem;">
+                <h3>Curva Emocional</h3>
+                <div class="emotion-curve">
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #94a3b8;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999"/></svg>
+                        <span>Ansiedad</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--persona-p1-color);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <span>Revelación</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #a5b4fc;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Esperanza</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Aha!</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-emerald);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Confianza</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-gold);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <span>Orgullo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOURNEY TIMELINE -->
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Journey Timeline (F0-F5)</h3>
+            <div class="journey-timeline">
+                <div class="timeline-phase bg-p1 border-p1">
+                    <h4 class="accent-p1">F0: Awareness</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Ve colega promovido por "liderar IA"<br>
+                        <strong>Emoción:</strong> Ansiedad + urgencia<br>
+                        <strong>Touchpoint:</strong> Post LinkedIn MetodologIA<br>
+                        <strong>Barrera:</strong> Information overload<br>
+                        <strong>Desbloqueo:</strong> CTA urgente: "5 min para saber qué pierdes"
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p1 border-p1">
+                    <h4 class="accent-p1">F1: Diagnóstico</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Diagnóstico personalizado 1:1<br>
+                        <strong>Emoción:</strong> Revelación de brechas<br>
+                        <strong>Touchpoint:</strong> Video diagnóstico<br>
+                        <strong>Barrera:</strong> "¿Otro curso genérico?"<br>
+                        <strong>Desbloqueo:</strong> Ejemplo real de alguien en su rol
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p1 border-p1">
+                    <h4 class="accent-p1">F2: Diseño</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Ruta personalizada entregada<br>
+                        <strong>Emoción:</strong> Esperanza de progreso<br>
+                        <strong>Touchpoint:</strong> Sesión de diseño síncrona<br>
+                        <strong>Barrera:</strong> Precio vs. ingreso + tiempo<br>
+                        <strong>Desbloqueo:</strong> Pago fraccionado + horarios noche/sábado
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p1 border-p1">
+                    <h4 class="accent-p1">F3: Práctica</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Semana 3: primer prompt funcional<br>
+                        <strong>Emoción:</strong> Aha! moment (3h ahorradas)<br>
+                        <strong>Touchpoint:</strong> Bootcamp grupal intensivo<br>
+                        <strong>Barrera:</strong> Frustración si no hay resultados<br>
+                        <strong>Desbloqueo:</strong> Wins rápidos cada semana + soporte WhatsApp
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p1 border-p1">
+                    <h4 class="accent-p1">F4: Autonomía</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Opera GPTs sin supervisión<br>
+                        <strong>Emoción:</strong> Confianza práctica<br>
+                        <strong>Touchpoint:</strong> Email con check-in mensual<br>
+                        <strong>Barrera:</strong> Inercia organizacional<br>
+                        <strong>Desbloqueo:</strong> Check-in mensual + nuevos templates
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p1 border-p1">
+                    <h4 class="accent-p1">F5: Amplificación (MOT-5 a MOT-8)</h4>
+                    <div class="amplification-ladder">
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="shield-check"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-5 "Puedo Sostenible"</strong><br>
+                                <small>Mantiene resultados sin apoyo (Autonomía > 80% · 30d+)<br>
+                                <em>Trigger:</em> Opera GPTs sin supervisión durante 30+ días<br>
+                                <em>Desbloqueo:</em> Check-in mensual + nuevos templates</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="trending-up"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-6 "Puedo Escalable"</strong><br>
+                                <small>Replica a más procesos/equipos (Expansión ≥ 2 áreas)<br>
+                                <em>Trigger:</em> Implementa IA en marketing + ventas<br>
+                                <em>Desbloqueo:</em> Templates reutilizables + webinar interno</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="users"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-7 "Puedo enseñar a otros"</strong><br>
+                                <small>Transfiere competencia (≥ 1 persona capacitada)<br>
+                                <em>Trigger:</em> Entrena a colega o reportero<br>
+                                <em>Desbloqueo:</em> Certificación interna + badge "Mentor IA"</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="megaphone"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-8 "Puedo ser embajador"</strong><br>
+                                <small>Evangeliza, refiere, crea comunidad (Referral > 25%)<br>
+                                <em>Trigger:</em> Publica en LinkedIn sobre transformación<br>
+                                <em>Desbloqueo:</em> Testimonial script + mentoría de pares en comunidad</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVENUE & ANTI-PATTERNS -->
+            <div class="two-col-grid">
+                <div class="card-glass">
+                    <h3 class="accent-p1">Revenue Model P1</h3>
+                    <div style="space-y: 1rem;">
+                        <div class="revenue-item">
+                            <span class="revenue-label">Ticket inicial</span>
+                            <div class="revenue-value"><strong>$200k-$800k</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">LTV estimado</span>
+                            <div class="revenue-value"><strong>$1.2M-$1.8M</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Upsell primario</span>
+                            <div class="revenue-value"><strong>$800k-$1.2M</strong><small>60 días post-F4</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Cross-sell</span>
+                            <div class="revenue-value"><strong>$600k/año</strong><small>Mentoría VIP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Referral value</span>
+                            <div class="revenue-value"><strong>1.5-2</strong><small>referidos/cliente</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass">
+                    <h3 class="accent-p1">Anti-Patrones (Evitar)</h3>
+                    <div class="anti-pattern">
+                        <p><strong>Contenido genérico</strong></p>
+                        <small>Quiere especialización en su rol (marketing)</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Espera sin feedback</strong></p>
+                        <small>Necesita validación rápida o abandona</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Ignorar contexto corporativo</strong></p>
+                        <small>Barreras incluyen políticas empresariales</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Jargon técnico</strong></p>
+                        <small>Habla en ROI profesional, no arquitectura IA</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WIN/LOSS -->
+            <div class="two-col-grid">
+                <div class="win-scenario">
+                    <h3>Escenario de Éxito (Win)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Implementa 2+ GPTs personalizados en workflow</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Ahorro verificable de 5+ horas/semana</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Presenta resultados a su equipo y enseña</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Refiere 1+ colega en 90 días</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Se inscribe en bootcamp avanzado o mentoría</li>
+                    </ul>
+                </div>
+
+                <div class="loss-scenario">
+                    <h3>Escenario de Fracaso (Loss)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Abandona en semana 2 (sin resultados/tiempo)</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Aprende teoría pero no aplica en contexto</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Competidor interno desplaza la motivación</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Cambio de rol/empresa sin continuidad</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- DISQUALIFICATION -->
+            <div class="disqualification-box">
+                <h3>Criterios de Disqualificación P1</h3>
+                <ul>
+                    <li>Ya tiene muy avanzado uso de IA (buscas básicos, no transformación)</li>
+                    <li>Trabaja en organización estructuralmente resistente al cambio</li>
+                    <li>No tiene intención de usar IA en su rol (curiosidad teórica solamente)</li>
+                    <li>Prefiere modelo 100% online asincrónico (requiere interacción síncrona)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- P2: SANTIAGO -->
+        <section id="p2" class="hidden-section">
+            <div class="profile-header">
+                <div class="avatar-placeholder persona-p2"><i data-lucide="graduation-cap"></i></div>
+                <div class="profile-info">
+                    <h2>Santiago</h2>
+                    <p class="subtitle">22 años · Estudiante de Administración, 7º semestre</p>
+                    <p class="quote">"Todos hablan de IA pero la universidad no lo enseña. Tengo FOMO académico."</p>
+                </div>
+            </div>
+
+            <!-- EMOTION CURVE -->
+            <div class="card-glass" style="margin-bottom: 2rem;">
+                <h3>Curva Emocional</h3>
+                <div class="emotion-curve">
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #94a3b8;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>FOMO</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--persona-p2-color);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5.36 0a3.5 3.5 0 11-7 0 3.5 3.5 0 017 0z"/></svg>
+                        <span>Revelación</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #a5b4fc;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Ansiedad/Precio</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Euforia</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-emerald);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Confianza</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-gold);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657L13.414 16.242a8 8 0 10-11.656 0l4.243 2.415m5.168 0l3.4 3.4"/></svg>
+                        <span>Influencer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOURNEY TIMELINE -->
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Journey Timeline (F0-F5)</h3>
+            <div class="journey-timeline">
+                <div class="timeline-phase bg-p2 border-p2">
+                    <h4 class="accent-p2">F0: Awareness</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Compañero entregó trabajo con IA y sacó mejor nota<br>
+                        <strong>Emoción:</strong> FOMO + curiosidad<br>
+                        <strong>Touchpoint:</strong> Reel/TikTok antes vs. después<br>
+                        <strong>Barrera:</strong> Desconfianza en "otro curso"<br>
+                        <strong>Desbloqueo:</strong> Prueba social de pares (reviews)
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p2 border-p2">
+                    <h4 class="accent-p2">F1: Diagnóstico</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Quiz gamificado de 5 min revela 8h/semana<br>
+                        <strong>Emoción:</strong> Revelación divertida<br>
+                        <strong>Touchpoint:</strong> Auto-quiz digital (zero friction)<br>
+                        <strong>Barrera:</strong> Presupuesto limitado<br>
+                        <strong>Desbloqueo:</strong> Resultado tangible sin crear cuenta
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p2 border-p2">
+                    <h4 class="accent-p2">F2: Diseño</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Mini-ruta de 3 skills en 3 semanas<br>
+                        <strong>Emoción:</strong> Ansiedad por precio<br>
+                        <strong>Touchpoint:</strong> Programa grupal económico<br>
+                        <strong>Barrera:</strong> PRECIO — $800k prohibitivo<br>
+                        <strong>Desbloqueo:</strong> Becas, cuotas, versión grupal económica
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p2 border-p2">
+                    <h4 class="accent-p2">F3: Práctica</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Entrega trabajo con IA, obtiene mejor nota<br>
+                        <strong>Emoción:</strong> Euforia de resultados<br>
+                        <strong>Touchpoint:</strong> Bootcamp intensivo 3 semanas<br>
+                        <strong>Barrera:</strong> "Ya aprendí" demasiado rápido<br>
+                        <strong>Desbloqueo:</strong> Wins rápidos + comunidad de pares activa
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p2 border-p2">
+                    <h4 class="accent-p2">F4: Autonomía</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Usa IA sistemáticamente en TODOS sus cursos<br>
+                        <strong>Emoción:</strong> Cool/seguro<br>
+                        <strong>Touchpoint:</strong> Templates de prompts por tarea<br>
+                        <strong>Barrera:</strong> Solo usa IA para "hacer trampa"<br>
+                        <strong>Desbloqueo:</strong> Guías por tipo de tarea académica
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p2 border-p2">
+                    <h4 class="accent-p2">F5: Amplificación (MOT-5 a MOT-8)</h4>
+                    <div class="amplification-ladder">
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="shield-check"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-5 "Puedo Sostenible"</strong><br>
+                                <small>Mantiene resultados sin apoyo (Autonomía > 80% · 30d+)<br>
+                                <em>Trigger:</em> Usa IA sistemáticamente en TODOS sus cursos<br>
+                                <em>Desbloqueo:</em> Templates de prompts por tarea académica</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="trending-up"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-6 "Puedo Escalable"</strong><br>
+                                <small>Replica a más procesos/equipos (Expansión ≥ 2 áreas)<br>
+                                <em>Trigger:</em> Aplica IA a trabajos, estudios y proyectos personales<br>
+                                <em>Desbloqueo:</em> Guías por tipo de tarea (académica, profesional, personal)</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="users"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-7 "Puedo enseñar a otros"</strong><br>
+                                <small>Transfiere competencia (≥ 1 persona capacitada)<br>
+                                <em>Trigger:</em> Enseña a compañeros; se vuelve "el de IA"<br>
+                                <em>Desbloqueo:</em> Embajador = crédito académico extra</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="megaphone"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-8 "Puedo ser embajador"</strong><br>
+                                <small>Evangeliza, refiere, crea comunidad (Referral > 25%)<br>
+                                <em>Trigger:</em> Influencer de campus: refiere activamente a amigos<br>
+                                <em>Desbloqueo:</em> Descuento grupal (3 amigos = 50%) + referral bonus</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVENUE & ANTI-PATTERNS -->
+            <div class="two-col-grid">
+                <div class="card-glass">
+                    <h3 class="accent-p2">Revenue Model P2</h3>
+                    <div style="space-y: 1rem;">
+                        <div class="revenue-item">
+                            <span class="revenue-label">Ticket inicial</span>
+                            <div class="revenue-value"><strong>$200k-$800k</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">LTV estimado</span>
+                            <div class="revenue-value"><strong>$800k-$2.4M</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Referral value</span>
+                            <div class="revenue-value"><strong>2-3</strong><small>amigos/cliente</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Conversión (beca)</span>
+                            <div class="revenue-value"><strong>30%</strong><small>cuando hay opción económica</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Embajador value</span>
+                            <div class="revenue-value"><strong>8-12</strong><small>estudiantes/año</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass">
+                    <h3 class="accent-p2">Anti-Patrones (Evitar)</h3>
+                    <div class="anti-pattern">
+                        <p><strong>Subestimar presupuesto</strong></p>
+                        <small>$800k es un mes de gastos para sus padres</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Asumir que "aprendió de una vez"</strong></p>
+                        <small>Necesita refuerzo: nuevos cursos, nuevas herramientas</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Excluir la comunidad de pares</strong></p>
+                        <small>Sus amigos son su mejor marketing y soporte</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Mezclar "aprendizaje real" con "shortcuts"</strong></p>
+                        <small>Necesita orientación ética explícita</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WIN/LOSS -->
+            <div class="two-col-grid">
+                <div class="win-scenario">
+                    <h3>Escenario de Éxito (Win)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Implementa IA en 3+ cursos durante el semestre</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Mejora verificable en notas (1-2 puntos)</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Refiere a 3+ compañeros activamente</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Se convierte en embajador universitario</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Transita a P1 profesional al entrar al trabajo</li>
+                    </ul>
+                </div>
+
+                <div class="loss-scenario">
+                    <h3>Escenario de Fracaso (Loss)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> No compra por presupuesto (sin opciones económicas)</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Abandona en semana 1 por "ya aprendí" o "YouTube es gratis"</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Usa IA solo para hacer trampa, descubierto</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Campus bloquea acceso a plataforma IA</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- DISQUALIFICATION -->
+            <div class="disqualification-box">
+                <h3>Criterios de Disqualificación P2</h3>
+                <ul>
+                    <li>Su universidad prohíbe explícitamente uso de IA en trabajos</li>
+                    <li>Tiene acceso a programas IA premium gratis de su institución</li>
+                    <li>No tiene intención de trabajar (solo curiosidad = baja conversion)</li>
+                    <li>Busca "shortcuts" solamente, no "herramientas profesionales"</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- P3: CARLOS -->
+        <section id="p3" class="hidden-section">
+            <div class="profile-header">
+                <div class="avatar-placeholder persona-p3"><i data-lucide="user-cog"></i></div>
+                <div class="profile-info">
+                    <h2>Carlos</h2>
+                    <p class="subtitle">48 años · VP Comercial de empresa de 150 empleados</p>
+                    <p class="quote">"El CEO me dijo que 'necesitamos una estrategia de IA'. ¿Por dónde empiezo?"</p>
+                </div>
+            </div>
+
+            <!-- EMOTION CURVE -->
+            <div class="card-glass" style="margin-bottom: 2rem;">
+                <h3>Curva Emocional</h3>
+                <div class="emotion-curve">
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f87171;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Presión</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--persona-p3-color);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5.36 0a3.5 3.5 0 11-7 0 3.5 3.5 0 017 0z"/></svg>
+                        <span>Análisis</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #a5b4fc;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Inversión</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Aprobación</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-emerald);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Liderazgo</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-gold);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                        <span>Referente</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOURNEY TIMELINE -->
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Journey Timeline (F0-F5)</h3>
+            <div class="journey-timeline">
+                <div class="timeline-phase bg-p3 border-p3">
+                    <h4 class="accent-p3">F0: Awareness</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Board meeting: todos hablan de IA, él no articula<br>
+                        <strong>Emoción:</strong> Presión + ego<br>
+                        <strong>Touchpoint:</strong> Referral de otro ejecutivo<br>
+                        <strong>Barrera:</strong> Desconfianza en "educación" vs. "consultoría"<br>
+                        <strong>Desbloqueo:</strong> Lenguaje ejecutivo: competencia, ROI, board-ready
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p3 border-p3">
+                    <h4 class="accent-p3">F1: Diagnóstico</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Framework de madurez IA confidencial (1h video)<br>
+                        <strong>Emoción:</strong> Análisis profundo<br>
+                        <strong>Touchpoint:</strong> Sesión confidencial VIP (NDA)<br>
+                        <strong>Barrera:</strong> Tiempo (agenda apretada)<br>
+                        <strong>Desbloqueo:</strong> Framework sectorial que muestre competitors
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p3 border-p3">
+                    <h4 class="accent-p3">F2: Diseño</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Roadmap ejecutivo + business case board-ready<br>
+                        <strong>Emoción:</strong> Inversión reflexiva<br>
+                        <strong>Touchpoint:</strong> Propuesta con ROI y timeline<br>
+                        <strong>Barrera:</strong> Presupuesto + percepción de tiempo vs. valor<br>
+                        <strong>Desbloqueo:</strong> Formato ejecutivo sin homework
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p3 border-p3">
+                    <h4 class="accent-p3">F3: Práctica</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Coaching 1:1 exclusivo (8 sesiones)<br>
+                        <strong>Emoción:</strong> Aprobación del CEO<br>
+                        <strong>Touchpoint:</strong> Sesiones 45 min, flexible<br>
+                        <strong>Barrera:</strong> Cancelaciones por agenda<br>
+                        <strong>Desbloqueo:</strong> Accountability partner + métricas visibles
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p3 border-p3">
+                    <h4 class="accent-p3">F4: Autonomía</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Lidera conversación de IA con propiedad<br>
+                        <strong>Emoción:</strong> Líder IA reconocido<br>
+                        <strong>Touchpoint:</strong> Email async + red de ejecutivos<br>
+                        <strong>Barrera:</strong> Se estanca en "saber" sin "implementar"<br>
+                        <strong>Desbloqueo:</strong> Transición a contrato B2B (E2/E3)
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p3 border-p3">
+                    <h4 class="accent-p3">F5: Amplificación (MOT-5 a MOT-8)</h4>
+                    <div class="amplification-ladder">
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="shield-check"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-5 "Puedo Sostenible"</strong><br>
+                                <small>Mantiene resultados sin apoyo (Autonomía > 80% · 30d+)<br>
+                                <em>Trigger:</em> Lidera conversación de IA con propiedad en reuniones<br>
+                                <em>Desbloqueo:</em> Email async + red de ejecutivos privada</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="trending-up"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-6 "Puedo Escalable"</strong><br>
+                                <small>Replica a más procesos/equipos (Expansión ≥ 2 áreas)<br>
+                                <em>Trigger:</em> Implementa IA en 2+ departamentos (operaciones, finanzas)<br>
+                                <em>Desbloqueo:</em> Plantillas estratégicas reutilizables + playbooks</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="users"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-7 "Puedo enseñar a otros"</strong><br>
+                                <small>Transfiere competencia (≥ 1 persona capacitada)<br>
+                                <em>Trigger:</em> Entrena a otros ejecutivos; se vuelve coach interno<br>
+                                <em>Desbloqueo:</em> Programa "Líderes IA" certificado internamente</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="megaphone"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-8 "Puedo ser embajador"</strong><br>
+                                <small>Evangeliza, refiere, crea comunidad (Referral > 25%)<br>
+                                <em>Trigger:</em> Recomienda en círculos C-level; keynotes en eventos<br>
+                                <em>Desbloqueo:</em> Caso de éxito publicado + alianza estratégica + speaking</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVENUE & ANTI-PATTERNS -->
+            <div class="two-col-grid">
+                <div class="card-glass">
+                    <h3 class="accent-p3">Revenue Model P3</h3>
+                    <div style="space-y: 1rem;">
+                        <div class="revenue-item">
+                            <span class="revenue-label">Ticket inicial</span>
+                            <div class="revenue-value"><strong>$800k-$2.4M</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">LTV estimado</span>
+                            <div class="revenue-value"><strong>$4M-$12M</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Upsell primario</span>
+                            <div class="revenue-value"><strong>$10M-$50M+</strong><small>Contrato B2B</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Acompañamiento anual</span>
+                            <div class="revenue-value"><strong>$600k-$1.2M</strong><small>para 50%</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Referral value</span>
+                            <div class="revenue-value"><strong>2-3</strong><small>ejecutivos/cliente</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass">
+                    <h3 class="accent-p3">Anti-Patrones (Evitar)</h3>
+                    <div class="anti-pattern">
+                        <p><strong>Tratarlo como alumno</strong></p>
+                        <small>Requiere lenguaje ejecutivo (ROI, competitive advantage)</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Obligar grupo</strong></p>
+                        <small>Requiere coaching 1:1 exclusivo; lo grupal se percibe como "educación de masas"</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Dar "homework"</strong></p>
+                        <small>Su tiempo es escaso; formato async, no sincrónico</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>Jargon técnico</strong></p>
+                        <small>Le interesa qué hace IA por su empresa, no cómo funciona</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WIN/LOSS -->
+            <div class="two-col-grid">
+                <div class="win-scenario">
+                    <h3>Escenario de Éxito (Win)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Desarrolla y presenta estrategia IA aprobada por CEO/board</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Refiere a 1-2 ejecutivos pares en 90 días</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Lleva su empresa a firma como cliente B2B</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Se convierte en aliado estratégico</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Invitado a hablar en evento o publicar sobre IA</li>
+                    </ul>
+                </div>
+
+                <div class="loss-scenario">
+                    <h3>Escenario de Fracaso (Loss)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Inicia pero cancela por presión de agenda</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Aprende pero no obtiene aprobación del CEO</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Cambio de rol/empresa hace aprendizaje obsoleto</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Competidor directo ofrece solución IA nativa</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- DISQUALIFICATION -->
+            <div class="disqualification-box">
+                <h3>Criterios de Disqualificación P3</h3>
+                <ul>
+                    <li>No tiene presupuesto ni apoyo del CEO (no hay urgencia real)</li>
+                    <li>Es muy técnico en pensamiento (busca implementación, no estrategia)</li>
+                    <li>Cambia frecuentemente de rol o empresa (continuidad en riesgo)</li>
+                    <li>Está en startup temprano sin junta directiva (no hay presión de board)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- P4: MARTA -->
+        <section id="p4" class="hidden-section">
+            <div class="profile-header">
+                <div class="avatar-placeholder persona-p4"><i data-lucide="book-open"></i></div>
+                <div class="profile-info">
+                    <h2>Marta</h2>
+                    <p class="subtitle">52 años · Contadora independiente</p>
+                    <p class="quote">"Mis hijos usan ChatGPT. El mundo cambió y no me enteré."</p>
+                </div>
+            </div>
+
+            <!-- EMOTION CURVE -->
+            <div class="card-glass" style="margin-bottom: 2rem;">
+                <h3>Curva Emocional</h3>
+                <div class="emotion-curve">
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #94a3b8;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10a4 4 0 118 0 4 4 0 01-8 0m0 0a9 9 0 1118 0 9 9 0 01-18 0z"/></svg>
+                        <span>Inseguridad</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--persona-p4-color);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Desmitificación</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f87171;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Miedo</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Sorpresa</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-emerald);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Orgullo</span>
+                    </div>
+                    <div class="emotion-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--brand-gold);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                        <span>Evangelista</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOURNEY TIMELINE -->
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Journey Timeline (F0-F5)</h3>
+            <div class="journey-timeline">
+                <div class="timeline-phase bg-p4 border-p4">
+                    <h4 class="accent-p4">F0: Awareness</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Hijo muestra ChatGPT; ella no entiende<br>
+                        <strong>Emoción:</strong> Inseguridad + determinación<br>
+                        <strong>Touchpoint:</strong> Referral de amiga que tomó curso<br>
+                        <strong>Barrera:</strong> Miedo tecnológico generalizado<br>
+                        <strong>Desbloqueo:</strong> Testimonios de gente de su edad
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p4 border-p4">
+                    <h4 class="accent-p4">F1: Diagnóstico</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Cuestionario simple + llamada de 30 min<br>
+                        <strong>Emoción:</strong> Seguridad + desmitificación<br>
+                        <strong>Touchpoint:</strong> Llamada amigable sin jargon técnico<br>
+                        <strong>Barrera:</strong> Inseguridad: "Yo ya estoy vieja para esto"<br>
+                        <strong>Desbloqueo:</strong> Desmitificación: "Ya usas IA sin saberlo"
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p4 border-p4">
+                    <h4 class="accent-p4">F2: Diseño</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Mini-ruta: 3 skills en 4 semanas<br>
+                        <strong>Emoción:</strong> Miedo al dinero + vergüenza<br>
+                        <strong>Touchpoint:</strong> Grupo pequeño de pares similares<br>
+                        <strong>Barrera:</strong> Precio + vergüenza de preguntar<br>
+                        <strong>Desbloqueo:</strong> Grupo pequeño + ritmo pausado
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p4 border-p4">
+                    <h4 class="accent-p4">F3: Práctica</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Bootcamp grupal pequeño (max 8)<br>
+                        <strong>Emoción:</strong> Sorpresa de capacidad real<br>
+                        <strong>Touchpoint:</strong> Bootcamp con ritmo pausado + soporte<br>
+                        <strong>Barrera:</strong> Frustración si se siente "tonta"<br>
+                        <strong>Desbloqueo:</strong> Checklist semanal + soporte WhatsApp 1:1
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p4 border-p4">
+                    <h4 class="accent-p4">F4: Autonomía</h4>
+                    <div class="text-sm">
+                        <strong>Trigger:</strong> Usa IA para 3+ tareas cotidianas<br>
+                        <strong>Emoción:</strong> Orgullo de logro<br>
+                        <strong>Touchpoint:</strong> Guías impresas/PDF + videos paso-a-paso<br>
+                        <strong>Barrera:</strong> Tendencia a regresa a métodos manuales<br>
+                        <strong>Desbloqueo:</strong> Recordatorios gentiles + guías impresas
+                    </div>
+                </div>
+
+                <div class="timeline-phase bg-p4 border-p4">
+                    <h4 class="accent-p4">F5: Amplificación (MOT-5 a MOT-8)</h4>
+                    <div class="amplification-ladder">
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="shield-check"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-5 "Puedo Sostenible"</strong><br>
+                                <small>Mantiene resultados sin apoyo (Autonomía > 80% · 30d+)<br>
+                                <em>Trigger:</em> Usa IA para 3+ tareas cotidianas sin asistencia<br>
+                                <em>Desbloqueo:</em> Recordatorios gentiles + guías impresas/PDF</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="trending-up"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-6 "Puedo Escalable"</strong><br>
+                                <small>Replica a más procesos/equipos (Expansión ≥ 2 áreas)<br>
+                                <em>Trigger:</em> Aplica IA a nuevas tareas (cartas, presupuestos, búsqueda)<br>
+                                <em>Desbloqueo:</em> Biblioteca de guías ilustradas por caso de uso</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="users"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-7 "Puedo enseñar a otros"</strong><br>
+                                <small>Transfiere competencia (≥ 1 persona capacitada)<br>
+                                <em>Trigger:</em> Enseña a amiga o familiar; "ya sé qué hacer"<br>
+                                <em>Desbloqueo:</em> Videos paso-a-paso que pueda compartir + grupo WhatsApp</small>
+                            </div>
+                        </div>
+                        <div class="ladder-item">
+                            <div class="ladder-icon"><i data-lucide="megaphone"></i></div>
+                            <div class="ladder-content">
+                                <strong>MOT-8 "Puedo ser embajador"</strong><br>
+                                <small>Evangeliza, refiere, crea comunidad (Referral > 25%)<br>
+                                <em>Trigger:</em> Cuenta a TODOS — familia, amigos, colegas<br>
+                                <em>Desbloqueo:</em> Éxito visible de amigas como proof + boca a boca WhatsApp</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVENUE & ANTI-PATTERNS -->
+            <div class="two-col-grid">
+                <div class="card-glass">
+                    <h3 class="accent-p4">Revenue Model P4</h3>
+                    <div style="space-y: 1rem;">
+                        <div class="revenue-item">
+                            <span class="revenue-label">Ticket inicial</span>
+                            <div class="revenue-value"><strong>$200k-$800k</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">LTV estimado</span>
+                            <div class="revenue-value"><strong>$2M-$4M</strong><small>COP</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Referral value</span>
+                            <div class="revenue-value"><strong>3-5</strong><small>referidos/cliente</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Renewal rate</span>
+                            <div class="revenue-value"><strong>60%</strong><small>en soporte Year 2</small></div>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="revenue-label">Cross-sell</span>
+                            <div class="revenue-value"><strong>40%</strong><small>segundo bootcamp</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass">
+                    <h3 class="accent-p4">Anti-Patrones (Evitar)</h3>
+                    <div class="anti-pattern">
+                        <p><strong>NUNCA usar jargon técnico</strong></p>
+                        <small>"Machine learning", "modelo", "token" — palabras prohibidas</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>NUNCA hacer que se sienta "tonta"</strong></p>
+                        <small>Necesita validación constante y paciencia infinita</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>NUNCA mezclar con adultos más jóvenes</strong></p>
+                        <small>Dinámicas de grupo dejan a P4 inseguro</small>
+                    </div>
+                    <div class="anti-pattern">
+                        <p><strong>NUNCA ignorar barreras emocionales</strong></p>
+                        <small>El 60% del trabajo es psicológico, no técnico</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WIN/LOSS -->
+            <div class="two-col-grid">
+                <div class="win-scenario">
+                    <h3>Escenario de Éxito (Win)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Implementa IA en 3+ procesos cotidianos</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Ahorro de 8+ horas/semana en tareas manuales</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Refiere a 3-5 amigas en 6 meses</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Mantiene activa en comunidad de pares</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Se inscribe en soporte mensual o segundo bootcamp</li>
+                    </ul>
+                </div>
+
+                <div class="loss-scenario">
+                    <h3>Escenario de Fracaso (Loss)</h3>
+                    <ul>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Abandona en semana 2 por frustración</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Aprende pero no logra implementar; vuelve a métodos viejos</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> Grupo incluía gente muy joven; se sintió aislada</li>
+                        <li><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> No logró conectar con compañeros; comunidad no funcionó</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- DISQUALIFICATION -->
+            <div class="disqualification-box">
+                <h3>Criterios de Disqualificación P4</h3>
+                <ul>
+                    <li>Ya tiene acceso a programas gratis en su universidad/institución</li>
+                    <li>Está en negación activa sobre tecnología (quiere "no tocar")</li>
+                    <li>Tiene acceso limitado a internet/computadora en hogar</li>
+                    <li>Tiene problemas de audición o visión no compensados</li>
+                    <li>Busca "hacker" rápido, no aprendizaje real</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- COMPARATIVA SECTION -->
+        <section id="comp" class="hidden-section">
+            <h2 style="text-align: center; margin-bottom: 3rem;">Matriz Consolidada de Conversiones B2C</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dimensión</th>
+                            <th><span class="badge badge-p1">P1 Profesional</span></th>
+                            <th><span class="badge badge-p2">P2 Estudiante</span></th>
+                            <th><span class="badge badge-p3">P3 Ejecutivo</span></th>
+                            <th><span class="badge badge-p4">P4 Autodidacta</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Edad típica</strong></td>
+                            <td>28-45</td>
+                            <td>18-26</td>
+                            <td>35-55</td>
+                            <td>30-60</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trigger Principal</strong></td>
+                            <td>Competencia laboral</td>
+                            <td>FOMO académico</td>
+                            <td>Presión board</td>
+                            <td>Brecha generacional</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Emoción dominante</strong></td>
+                            <td>Ansiedad</td>
+                            <td>FOMO</td>
+                            <td>Presión + ego</td>
+                            <td>Inseguridad</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Canal entrada</strong></td>
+                            <td>LinkedIn</td>
+                            <td>IG/TikTok</td>
+                            <td>Referral ejecutivo</td>
+                            <td>Facebook/WhatsApp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Producto estrella</strong></td>
+                            <td>Bootcamp IA ($800k)</td>
+                            <td>Grupal economía ($200k-$800k)</td>
+                            <td>Liderazgo ($2.4M)</td>
+                            <td>Ofimatica ($800k)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Barrera principal</strong></td>
+                            <td>Tiempo + precio</td>
+                            <td>Presupuesto</td>
+                            <td>Agenda apretada</td>
+                            <td>Miedo + vergüenza</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Aha! Moment típico</strong></td>
+                            <td>Semana 3: 3h/semana ahorradas</td>
+                            <td>Semana 2: mejor nota</td>
+                            <td>Sesión 4: board aprueba</td>
+                            <td>Semana 2: documento automatizado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LTV estimado</strong></td>
+                            <td>$1.2M-$1.8M</td>
+                            <td>$800k-$2.4M</td>
+                            <td>$4M-$12M</td>
+                            <td>$2M-$4M</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Referral value</strong></td>
+                            <td>1.5-2/cliente</td>
+                            <td>2-3/cliente</td>
+                            <td>2-3 ejecutivos</td>
+                            <td>3-5/cliente</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Risk of Churn</strong></td>
+                            <td><span class="badge" style="background: rgba(239, 68, 68, 0.15); color: var(--brand-red);">ALTO</span></td>
+                            <td><span class="badge" style="background: rgba(249, 115, 22, 0.15); color: var(--persona-p2-color);">MEDIO</span></td>
+                            <td><span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--brand-emerald);">BAJO</span></td>
+                            <td><span class="badge" style="background: rgba(249, 115, 22, 0.15); color: var(--persona-p2-color);">MEDIO-ALTO</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 style="text-align: center; margin: 3rem 0 1.5rem;">Matriz de Cross-Sell B2C</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Origen (Persona + Programa)</th>
+                            <th>Cross-Sell Primario</th>
+                            <th>Ticket</th>
+                            <th>Timing</th>
+                            <th>Conversión esperada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>P1 → Bootcamp IA</strong></td>
+                            <td>Bootcamp Ventas o Liderazgo</td>
+                            <td>$800k-$1.2M</td>
+                            <td>60-90 días post-F4</td>
+                            <td>40-50%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P1 → Bootcamp IA</strong></td>
+                            <td>Mentoría VIP anual</td>
+                            <td>$600k/año</td>
+                            <td>30 días post-F4</td>
+                            <td>25-30%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P2 → Bootcamp grupal</strong></td>
+                            <td>Embajador universitario</td>
+                            <td>$0 (equity)</td>
+                            <td>Durante o post-programa</td>
+                            <td>10-15%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P2 → Bootcamp grupal</strong></td>
+                            <td>Bootcamp avanzado (post-grad)</td>
+                            <td>$800k</td>
+                            <td>6-12 meses post-F5</td>
+                            <td>30-40%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P3 → Liderazgo</strong></td>
+                            <td>Contrato B2B empresarial (E2/E3)</td>
+                            <td>$10M-$50M</td>
+                            <td>90-180 días post-F4</td>
+                            <td>50-60%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P3 → Liderazgo</strong></td>
+                            <td>Mentoría ejecutiva anual</td>
+                            <td>$1.2M/año</td>
+                            <td>30 días post-F4</td>
+                            <td>40-50%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P4 → Bootcamp Ofimatica</strong></td>
+                            <td>Bootcamp especializado</td>
+                            <td>$800k</td>
+                            <td>60-120 días post-F4</td>
+                            <td>20-30%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>P4 → Bootcamp Ofimatica</strong></td>
+                            <td>Soporte mensual (30 min grupal)</td>
+                            <td>$150k/mes</td>
+                            <td>14 días post-F4</td>
+                            <td>45-55%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p><strong>MetodologIA · Customer Journeys B2C v3.0</strong></p>
+            <p>4 Arquetipos | 6 Fases (F0-F5) | Revenue Model Diferenciado | Estrategia de Conversión Optimizada</p>
+            <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted);">Documento confidencial. Actualizado: 2026-03-24</p>
+        </div>
+    </footer>
+
+    <script>
+        function switchPersona(persona) {
+            // Hide all sections
+            const sections = ['overview', 'p1', 'p2', 'p3', 'p4', 'comp'];
+            sections.forEach(sec => {
+                const el = document.getElementById(sec);
+                if (el) {
+                    el.classList.remove('visible-section');
+                    el.classList.add('hidden-section');
+                }
+            });
+
+            // Show selected section
+            const selected = document.getElementById(persona);
+            if (selected) {
+                selected.classList.remove('hidden-section');
+                selected.classList.add('visible-section');
+            }
+
+            // Update nav tabs
+            document.querySelectorAll('.persona-tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.classList.add('inactive');
+            });
+            event.target.classList.remove('inactive');
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize Lucide icons
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

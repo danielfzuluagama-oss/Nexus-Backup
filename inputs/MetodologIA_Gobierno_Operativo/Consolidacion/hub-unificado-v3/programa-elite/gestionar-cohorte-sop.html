@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Gestionar Cohorte — SOP — Proceso de Delivery MetodologIA">
+    <title>Gestionar Cohorte — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Programa Elite</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Gestionar Cohorte — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Gestionar Cohorte — SOP</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">12</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">4</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-supuestos-ef2247')" aria-label="Ir a 1. Supuestos">1. Supuestos</button>
+<button class="nav-btn" onclick="scrollToSection('2-lmites-585686')" aria-label="Ir a 2. Límites">2. Límites</button>
+<button class="nav-btn" onclick="scrollToSection('3-criterios-binarios-gates-809a28')" aria-label="Ir a 3. Criterios Binarios (Gates)">3. Criterios Binarios (Gates)</button>
+<button class="nav-btn" onclick="scrollToSection('4-casos-borde-57-47d53d')" aria-label="Ir a 4. Casos Borde (5-7)">4. Casos Borde (5-7)</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-0f7d5a')" aria-label="Ir a 5. Decisiones de Diseño">5. Decisiones de Diseño</button>
+<button class="nav-btn" onclick="scrollToSection('6-antipatterns-ff2cdd')" aria-label="Ir a 6. Anti-Patterns">6. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('7-fallbacks-3035d9')" aria-label="Ir a 7. Fallbacks">7. Fallbacks</button>
+<button class="nav-btn" onclick="scrollToSection('ejecucin-operativa-las-5-fases-2a8342')" aria-label="Ir a Ejecución Operativa: Las 5 Fases">Ejecución Operativa: Las 5 Fases</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-de-xito-9519c5')" aria-label="Ir a Métricas de Éxito">Métricas de Éxito</button>
+<button class="nav-btn" onclick="scrollToSection('integraciones-adcece')" aria-label="Ir a Integraciones">Integraciones</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-de-inicio-de-cohorte-aa697f')" aria-label="Ir a Checklist de Inicio de Cohorte">Checklist de Inicio de Cohorte</button>
+<button class="nav-btn" onclick="scrollToSection('documentos-relacionados-c15e25')" aria-label="Ir a Documentos Relacionados">Documentos Relacionados</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-supuestos-ef2247" data-searchable aria-labelledby="head-1-supuestos-ef2247">
+            <div class="phase-header" id="head-1-supuestos-ef2247" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 1. Supuestos</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Máxima capacidad</strong>: Un coordinador puede gestionar máx 3 cohortes simultáneas sin degradación de calidad.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Estabilidad de facilitadores</strong>: 1 facilitador asignado por cohorte durante las 16 semanas, responsable de continuidad pedagógica.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Disponibilidad de canales</strong>: 3 franjas horarias distintas disponibles (mañana, tarde, noche) para acomodar participantes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Pago confirmado pre-formación</strong>: Comercial B2C/B2B entrega solo matriculados con pago verificado (no leads &quot;a convencer&quot;).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Acceso a IA</strong>: Todos los participantes tienen acceso a ChatGPT, Claude u herramienta equivalente desde Sem 1.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Transferencia de comunidad</strong>: Post-programa, existe un mecanismo de onboarding a Comunidad de Embajadores operativo.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-lmites-585686" data-searchable aria-labelledby="head-2-lmites-585686">
+            <div class="phase-header" id="head-2-lmites-585686" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 2. Límites</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Máximo participantes por cohorte</strong>: 10 (por debajo de 5, las dinámicas de grupo no funcionan; por arriba de 10, el facilitador no puede dar atención personalizada).</div>
+<div class="bullet-item"><strong>Duración fija</strong>: 16 semanas de programa = 13 ciclos semanales + onboarding + consolidación. No se acorta ni se alarga sin impacto pedagógico documentado.</div>
+<div class="bullet-item"><strong>Responsabilidad del coordinador</strong>: Gestiona matrícula, asignación de facilitador, configuración de canales, monitoreo de checkpoints, escalaciones. NO es responsable de contenido pedagógico (eso es del facilitador).</div>
+<div class="bullet-item"><strong>Responsabilidad del facilitador</strong>: Ejecuta sesiones, evalúa entregables, apoya participantes en su viaje. NO es responsable de aspectos administrativos (confirmación de pago, acceso a plataformas, etc.).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-criterios-binarios-gates-809a28" data-searchable aria-labelledby="head-3-criterios-binarios-gates-809a28">
+            <div class="phase-header" id="head-3-criterios-binarios-gates-809a28" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 3. Criterios Binarios (Gates)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Gate</th><th scope="col">Momento</th><th scope="col">Definición</th><th scope="col">Pass</th><th scope="col">Fail</th></tr></thead><tbody><tr><td><strong>G-READY</strong></td><td>Fin Sem 2</td><td>100% participantes tienen herramientas instaladas, acceso a repositorio, documentación onboarding leída, 1ª sesión asistida.</td><td>Avanzar a transformación</td><td>Soporte intenso Sem 3; re-evaluación</td></tr><tr><td><strong>G-M04</strong></td><td>Fin Sem 6</td><td>≥70% con M04 completado según facilitar-ciclo-semanal-sop.</td><td>Continuar ritmo normal</td><td>Conversación 1:1 con rezagados; plan de recuperación</td></tr><tr><td><strong>G-M08</strong></td><td>Fin Sem 10</td><td>≥70% con M08 completado. Retención ≥80%.</td><td>Continuar hacia consolidación</td><td>Análisis de causas de deserción; potencial cancelación de cohorte si &lt;60%</td></tr><tr><td><strong>G-M12</strong></td><td>Fin Sem 14</td><td>≥70% con M12 completado. Primer borrador de entregables visibles.</td><td>Proceder a evaluación final</td><td>Sprint de 2 semanas para completar brechas</td></tr><tr><td><strong>G-CERT</strong></td><td>Sem 16 ó buffer</td><td>≥5/5 criterios de aprobación cumplidos per evaluar-criterios-aprobacion-sop.md.</td><td>Certificación + Embajador</td><td>Buffer 3 meses ó NO CERTIFICADO</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-casos-borde-57-47d53d" data-searchable aria-labelledby="head-4-casos-borde-57-47d53d">
+            <div class="phase-header" id="head-4-casos-borde-57-47d53d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 4. Casos Borde (5-7)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Deserción &gt;30% en primeras 4 semanas</strong>: Activar protocolo de retención: contacto personal del coordinador, diagnóstico de barreras (tiempo, comprensión, tecnología), oferta de sesión de recuperación. Si &gt;50% deserción en Sem 4, opción de cancelar cohorte y reembolsar participantes restantes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Participante que paga pero no asiste</strong>: Después de 2 ausencias consecutivas sin aviso, coordinador hace contacto dentro de 48h. Máx 3 ausencias permitidas en 16 semanas. Después de la 3ª, conversación sobre continuidad. Si abandona después de Sem 4, no hay reembolso; se registra como &quot;participación incompleta&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Empresa compra cohorte corporativa con requerimientos especiales</strong> (ej. solo tarde, contenido customizado, invitados externos): Coordinador + Responsable Comercial B2B negocian scope adicional. Si requerimientos exceden 20% del programa, se pacta como Proyecto Custom, no como cohorte estándar. Si son &lt;20%, se integran al flujo normal.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Participante pide reembolso después de Sem 4</strong>: Política: reembolso solo hasta fin Sem 2 (100% menos 15% de gestión). Post-Sem 2, no hay reembolso; se ofrece crédito para próxima cohorte o acceso a Comunidad de Embajadores (bonus).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Participante con discapacidad que requiere adaptaciones</strong> (ej. visual, auditiva, motriz): Coordinador + facilitador diseñan ajustes en colaboración con participante: subtítulos, materiales en Braille/audio, tiempos extendidos, herramientas alternativas. No exenta de criterios de aprobación, pero sí se adapta la forma de demostración.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Cohorte no alcanza mínimo de 5 personas</strong>: Si antes de Sem 1 hay &lt;5 matriculados, Comercial + Coordinador deciden: (a) cancelar y reembolsar, (b) fusionar con otra cohorte compatible de mismo ciclo, (c) ofrecer programa a distancia asincrónico con mentoría reducida (menor COP).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Conflicto entre participantes o con facilitador</strong>: Coordinador facilita mediación en Sem 1-2 (antes de establecerse dinámicas). Si no se resuelve, ofrecer cambio de facilitador (si hay otro disponible) o, en último caso, rescisión con reembolso prorrateo.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-0f7d5a" data-searchable aria-labelledby="head-5-decisiones-de-diseo-0f7d5a">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-0f7d5a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5. Decisiones de Diseño</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>Ciclo de 16 semanas fijo</strong>: Fue calibrado pedagógicamente. Menos de 16 semanas comprime entregables; más de 16 dilata y reduce momentum. Los 3 meses de buffer post-Sem 16 están diseñados como &quot;consolidación asincrónica&quot;, no como extensión del programa activo.</div>
+<div class="bullet-item"><strong>3 cohortes máximo por coordinador</strong>: Evita fragmentación atencional. Cada cohorte requiere ~8h/semana de coordinación (revisar checkpoints, contactos, escalaciones). 3 cohortes = 24h; 4 cohortes = 32h (insostenible).</div>
+<div class="bullet-item"><strong>Facilitador dedicado por cohorte</strong>: Continuidad pedagógica requiere que el mismo facilitador ejecute las 13 sesiones semanales. Cambio de facilitador mid-programa degrada aprendizaje.</div>
+<div class="bullet-item"><strong>Pago full pre-Sem 1</strong>: No se admiten planes de pago. Justificación: reduce fricción administrativa, señaliza compromiso del participante, alinea incentivos (participante invirtió, está motivado a completar).</div>
+<div class="bullet-item"><strong>Gate binario (no numérico)</strong>: Cada gate es pass/fail, no una nota. Reduce ambigüedad, acelera decisiones, comunica claramente expectativas.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-antipatterns-ff2cdd" data-searchable aria-labelledby="head-6-antipatterns-ff2cdd">
+            <div class="phase-header" id="head-6-antipatterns-ff2cdd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 6. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>&quot;La cohorte fantasma&quot;</strong>: Coordinador no monitorea entre sesiones. Se entера de problemas (deserción, tecnología rota) solo cuando revienta en checkpoint. *Cura*: Dashboard semanal de checklist por participante (asistencia, entregables, engagement).</div>
+<div class="bullet-item"><strong>&quot;El facilitador favorito&quot;</strong>: Algunos facilitadores reciben todas las cohortes &quot;buenas&quot; (participantes motivados); otros quedan con cohortes &quot;difíciles&quot;. Genera inequidad de experiencias. *Cura*: Asignación aleatoria, rotación trimestral de facilitadores por cohorte.</div>
+<div class="bullet-item"><strong>&quot;Graduar a todos&quot;</strong>: Presión de mantener altas tasas de certificación lleva a flexibilizar criterios. Se certifican participantes con &lt;5/5 criterios. *Cura*: G-CERT es binario y inviolable. Certificación sin cumplimiento daña reputación de MetodologIA.</div>
+<div class="bullet-item"><strong>&quot;El reembolso infinito&quot;</strong>: Participante en Sem 12 pide devolución de dinero. Coordinador accede para &quot;mantener contento&quot;. Establece precedente de incumplimiento de política. *Cura*: Política escrita en contrato, comunicada en Sem 1, no es negociable post-Sem 2.</div>
+<div class="bullet-item"><strong>&quot;La cohorte sin cohesión&quot;</strong>: Participantes trabajan en silo, no hay interacción. Pierde valor de grupo. *Cura*: Facilitar 1-2 mini-proyectos colaborativos (ej. Sem 7: todos aportan 1 prompt al repositorio común; alguien lo adapta).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-fallbacks-3035d9" data-searchable aria-labelledby="head-7-fallbacks-3035d9">
+            <div class="phase-header" id="head-7-fallbacks-3035d9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 7. Fallbacks</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Si el coordinador enferma/renuncia mid-cohorte</strong>: Identificar coordinador backup pre-asignado. Handoff de documentación en &lt;48h. Backup asume toda responsabilidad administrativa. Facilitador continúa sin cambios.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Si el facilitador enferma/se desvincula</strong>: Coordinador comunica cambio a participantes en &lt;24h. Nuevo facilitador hace sesión &quot;catch-up&quot; en &lt;3 días. Se mantiene ritmo; no se extienden deadlines de entregables.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Si cohorte pierde &gt;50% en Sem 4</strong>: Evaluación de causa. Si es &quot;competencia laboral&quot; (participantes aceptaron trabajos), no hay culpa del programa. Ofrecer crédito para próxima cohorte. Si es &quot;pedagogía pobre&quot; o &quot;facilitador malo&quot;, remover facilitador, repensar diseño, relanzar con ajustes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Si no hay buffer asincrónico disponible (ej. todos los facilitadores ocupados Sem 17+)</strong>: Ofrecer mentoría de Embajadores (1-1, premium) o acceso a Clínica IA virtual grabada (async). No se cancela buffer; se adapta el modelo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Si participante no puede asistir a sesión live pero tiene buena justificación</strong>: Facilitador graba sesión, participante ve grabación en &lt;48h, hace entregables en plazo original. Máx 2 sesiones asincrónicas por cohorte para no degradar interacción.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ejecucin-operativa-las-5-fases-2a8342" data-searchable aria-labelledby="head-ejecucin-operativa-las-5-fases-2a8342">
+            <div class="phase-header" id="head-ejecucin-operativa-las-5-fases-2a8342" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ejecución Operativa: Las 5 Fases</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fase-1-formacin-t30-a-t0-presem-1-1fd2b7">Fase 1: FORMACIÓN (T-30 a T-0, Pre-Sem 1)</h3>
+<p class="key-value"><strong>Entrada</strong>: Matriculados de Comercial B2C (H-02) o B2B (H-03), con pago confirmado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Verificación de pago</strong>: Coordinador confirma con Comercial que pago está acreditado. Si hay retraso, comunicar a participante con fecha límite (T-7 como máximo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Formación del grupo</strong>: Coordinador agrupa participantes en cohorte. Define franja horaria (T-30 si es posible, T-7 como máximo).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Asignación de facilitador</strong>: Coordinador asigna 1 facilitador ya capacitado y disponible para toda la duración. Comunicar a facilitador, briefing de participantes, temas pendientes.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Configuración de canales</strong>: Crear repositorio del programa (Google Drive, Notion, GitHub según plataforma elegida). Crear canal de WhatsApp o Slack para comunicaciones rápidas. Agregar participantes, facilitador, coordinador.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Envío de materiales de pre-onboarding</strong>: Email con: bienvenida, calendario 16 semanas, acceso a repositorio, guía de herramientas a descargar, Sem 1 agenda.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Confirmación de asistencia Sem 1</strong>: WhatsApp confirm a todos 2 días antes de Sem 1. Si alguien no confirma, contacto personal.</span></div>
+<p class="key-value"><strong>Salida</strong>: Cohorte formada, facilitador asignado, canales operativos, participantes listos para Sem 1.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-2-onboarding-sem-12-543431">Fase 2: ONBOARDING (Sem 1-2)</h3>
+<p class="key-value"><strong>Entrada</strong>: Cohorte formada, facilitador asignado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Ejecución de Módulo 0 + Nivelación</strong>: Facilitador ejecuta Módulo 0 &quot;De Ocupado a Productivo&quot; en Sem 1, usando facilitar-masterclass-sop.md. Sem 2: nivelación de herramientas (asegurarse que todos pueden usar IA básico).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Recolección de expectativas</strong>: Facilitador entrevista a cada participante (15 min 1-1 en Sem 1-2). ¿Qué espera del programa? ¿Qué barreras anticipan? ¿Contexto laboral/personal?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Check de acceso</strong>: Coordinador verifica que 100% tiene acceso a repositorio, herramientas, canales. Troubleshoot en &lt;24h si hay problema.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Primer entregable</strong>: Participante escribe &quot;Mi situación de partida en 200 palabras&quot;. Se sube al repositorio. Facilitador da feedback rápido.</span></div>
+<p class="key-value"><strong>Gate G-READY</strong> (Fin Sem 2): ¿100% con herramientas, acceso, documentación onboarding leída, 1ª sesión asistida?</p>
+<div class="bullet-item"><strong>Pass</strong>: Avanzar a transformación.</div>
+<div class="bullet-item"><strong>Fail</strong>: Soporte intenso Sem 3 (sesión extra 1-1, troubleshooting). Re-evaluación fin Sem 3.</div>
+<p class="key-value"><strong>Salida</strong>: Participantes onboardeados, herramientas funcionales, primer entregable en repositorio.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-3-transformacin-sem-315-c21780">Fase 3: TRANSFORMACIÓN (Sem 3-15)</h3>
+<p class="key-value"><strong>Entrada</strong>: Cohorte pasó G-READY.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Ciclos semanales</strong>: Facilitador ejecuta ciclo semanal M-01 a M-13 usando operar-ciclo-semanal-sop.md. Cada ciclo: sesión live (2h), entregable, feedback, repositorio actualizado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Monitoreo continuo</strong>: Coordinador revisa cada viernes (post-sesión): asistencia, entregables ontime, retención. Dashboar simple: ✓ completó, ⏳ en progreso, ✗ rezagado.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Checkpoint G-M04</strong> (Fin Sem 6): ¿≥70% con M04 completado? Si no, conversaciones 1-1 con rezagados la Sem 7.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Checkpoint G-M08</strong> (Fin Sem 10): ¿≥70% con M08 completado? ¿Retención ≥80%? Si retención cae, protocolo de retención activado (contacto personal, diagnóstico, oferta de ajustes).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Checkpoint G-M12</strong> (Fin Sem 14): ¿≥70% con M12 completado? ¿Primer borrador de entregables finales visibles?</span></div>
+<p class="key-value"><strong>Salida</strong>: 13 ciclos completados, entregables progresivos en repositorio, participantes listos para evaluación final.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-4-consolidacin-sem-16-35b446">Fase 4: CONSOLIDACIÓN (Sem 16)</h3>
+<p class="key-value"><strong>Entrada</strong>: Transformación completada, participantes con entregables en repositorio.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Evaluación de entregables</strong>: Facilitador + Coordinador ejecutan evaluar-criterios-aprobacion-sop.md. Cada participante evaluado contra 5 criterios.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Comunicación de resultados</strong>: Facilitador comunica resultados en &lt;48h post-evaluación (Sem 16). Claro, directo: &quot;Cumpliste 5/5, eres certificado&quot; o &quot;Tienes 4/5, entras a buffer&quot;.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Certificación y reconocimiento</strong>: Participantes con 5/5 reciben diploma (PDF) + reconocimiento en comunidad (mención en boletín Embajadores). Foto grupal de graduados.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Activación de Embajadores</strong>: Participantes certificados invitados a sesión &quot;Embajadores 101&quot; (1h, facilitador o coordinador). Se explica rol, beneficios, expectativas.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Cierre administrativo</strong>: Coordinador cierra cohorte en registros, archiva documentación, genera R-03 (caso de éxito) para Comercial.</span></div>
+<p class="key-value"><strong>Gate G-CERT</strong> (Sem 16 ó buffer): ¿≥5/5 criterios cumplidos?</p>
+<div class="bullet-item"><strong>Pass</strong>: Certificación, Embajador.</div>
+<div class="bullet-item"><strong>Fail</strong>: Buffer 3 meses activado.</div>
+<p class="key-value"><strong>Salida</strong>: Certificaciones emitidas, Embajadores identificados, documentación cerrada.</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-5-postprograma-sem-17-ad16b9">Fase 5: POST-PROGRAMA (Sem 17+)</h3>
+<p class="key-value"><strong>Entrada</strong>: Certificación completada o buffer iniciado.</p>
+<p class="key-value"><strong>Actividades</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Transferencia a Comunidad de Embajadores</strong>: Coordinador ejecuta onboarding-comunidad-embajadores-sop.md. Agregar certificados al grupo exclusivo, presentar otros embajadores, compartir recursos y oportunidades.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Buffer asincrónico</strong> (si aplica): Participantes en buffer acceden a canal de WhatsApp dedicado (async). Reciben 2 sesiones de Clínica IA (mensuales, sin obligación de asistencia). Pueden hacer preguntas, compartir dudas. Facilitador responde en &lt;48h.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Casos de éxito</strong>: Coordinador entrevista a certificados para generar R-03 (1-2 casos con foto, testimonio, impacto cuantificado). Enviar a Comercial para nurturing de referencias.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Feedback de programa</strong>: Encuesta corta: ¿Qué funcionó? ¿Qué no? ¿Cómo mejoramos? Retroalimentación a Diseño Curricular.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Re-evaluación de buffer</strong> (Sem 16 + 12 semanas): Participantes en buffer tienen hasta Sem 28 para completar criterios faltantes. Re-evaluación. Si cumple → certificación. Si no → NO CERTIFICADO con reconocimiento de participación.</span></div>
+<p class="key-value"><strong>Salida</strong>: Embajadores activos en comunidad, casos de éxito documentados, aprendizajes retroalimentados, cohorte archivada.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-de-xito-9519c5" data-searchable aria-labelledby="head-mtricas-de-xito-9519c5">
+            <div class="phase-header" id="head-mtricas-de-xito-9519c5" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métricas de Éxito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Frecuencia</th><th scope="col">Propósito</th></tr></thead><tbody><tr><td><strong>Retención</strong></td><td>≥80% (fin Sem 16)</td><td>Mensual</td><td>Señal de salud pedagógica</td></tr><tr><td><strong>NPS (Net Promoter Score)</strong></td><td>≥9/10 (post-Sem 16)</td><td>Post-programa</td><td>Satisfacción y recomendación</td></tr><tr><td><strong>Certificación Sem 16</strong></td><td>≥70% de la cohorte</td><td>Post-evaluación</td><td>Cumplimiento de criterios</td></tr><tr><td><strong>Certificación final</strong> (con buffer)</td><td>≥85%</td><td>Post-Sem 28</td><td>Éxito a largo plazo</td></tr><tr><td><strong>Tiempo promedio a certificación</strong></td><td>≤16 semanas + 4 semanas buffer</td><td>Post-certificación</td><td>Eficiencia</td></tr><tr><td><strong>Embajadores activos 6 meses post</strong></td><td>≥60% de certificados</td><td>6 meses post</td><td>Sostenibilidad de comunidad</td></tr><tr><td><strong>Casos de éxito generados</strong></td><td>≥1 por cohorte</td><td>Post-programa</td><td>Material comercial</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="integraciones-adcece" data-searchable aria-labelledby="head-integraciones-adcece">
+            <div class="phase-header" id="head-integraciones-adcece" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Integraciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Upstream</strong>:</p>
+<div class="bullet-item"><strong>Comercial B2C (H-02)</strong>: Entrega matriculados, pago confirmado. Coordinador verifica. R-02 (leads no convertidos de Módulo 0) van de vuelta a B2C para nurturing.</div>
+<div class="bullet-item"><strong>Comercial B2B (H-03)</strong>: Entrega cohortes corporativas. Coordinador negocia requerimientos especiales si aplica.</div>
+<p class="key-value"><strong>Downstream</strong>:</p>
+<div class="bullet-item"><strong>operar-ciclo-semanal-sop.md</strong>: Facilitador ejecuta ciclos M-01 a M-13 dentro de la gestión de cohorte.</div>
+<div class="bullet-item"><strong>evaluar-criterios-aprobacion-sop.md</strong>: Coordinador + facilitador usan este SOP en Sem 16 para certificar.</div>
+<div class="bullet-item"><strong>onboarding-comunidad-embajadores-sop.md</strong>: Coordinador transfiere certificados a este SOP post-Sem 16.</div>
+<p class="key-value"><strong>Cross-functional</strong>:</p>
+<div class="bullet-item"><strong>R-03 (Egresado certificado)</strong>: Vuelve a Comercial como caso de éxito para nurturing, referencias, testimonios.</div>
+<div class="bullet-item"><strong>Diseño Curricular</strong>: Feedback mensual de checkpoints alimenta retroalimentación pedagógica.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-de-inicio-de-cohorte-aa697f" data-searchable aria-labelledby="head-checklist-de-inicio-de-cohorte-aa697f">
+            <div class="phase-header" id="head-checklist-de-inicio-de-cohorte-aa697f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> Checklist de Inicio de Cohorte</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <label class="checklist-item" for="chk-pago-de-todos-los-participantes-confirmado-con-com-bc7e6c"><input type="checkbox" id="chk-pago-de-todos-los-participantes-confirmado-con-com-bc7e6c" ><span>Pago de todos los participantes confirmado con Comercial</span></label>
+<label class="checklist-item" for="chk-facilitador-asignado-calendario-compartido-7d725e"><input type="checkbox" id="chk-facilitador-asignado-calendario-compartido-7d725e" ><span>Facilitador asignado, calendario compartido</span></label>
+<label class="checklist-item" for="chk-repositorio-creado-acceso-asignado-a-todos-74bebe"><input type="checkbox" id="chk-repositorio-creado-acceso-asignado-a-todos-74bebe" ><span>Repositorio creado, acceso asignado a todos</span></label>
+<label class="checklist-item" for="chk-canal-de-whatsappslack-creado-7d14fb"><input type="checkbox" id="chk-canal-de-whatsappslack-creado-7d14fb" ><span>Canal de WhatsApp/Slack creado</span></label>
+<label class="checklist-item" for="chk-email-de-bienvenida-preonboarding-enviado-dd9848"><input type="checkbox" id="chk-email-de-bienvenida-preonboarding-enviado-dd9848" ><span>Email de bienvenida pre-onboarding enviado</span></label>
+<label class="checklist-item" for="chk-confirmacin-de-asistencia-sem-1-en-48h-459581"><input type="checkbox" id="chk-confirmacin-de-asistencia-sem-1-en-48h-459581" ><span>Confirmación de asistencia Sem 1 en &lt;48h</span></label>
+<label class="checklist-item" for="chk-materiales-de-onboarding-listos-f111c7"><input type="checkbox" id="chk-materiales-de-onboarding-listos-f111c7" ><span>Materiales de onboarding listos</span></label>
+<label class="checklist-item" for="chk-dashboard-de-monitoreo-inicializado-3b04e9"><input type="checkbox" id="chk-dashboard-de-monitoreo-inicializado-3b04e9" ><span>Dashboard de monitoreo inicializado</span></label>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documentos-relacionados-c15e25" data-searchable aria-labelledby="head-documentos-relacionados-c15e25">
+            <div class="phase-header" id="head-documentos-relacionados-c15e25" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documentos Relacionados</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">facilitar-masterclass-sop.md (Módulo 0)</div>
+<div class="bullet-item">operar-ciclo-semanal-sop.md (Ciclos M-01 a M-13)</div>
+<div class="bullet-item">evaluar-criterios-aprobacion-sop.md (Gate G-CERT)</div>
+<div class="bullet-item">onboarding-comunidad-embajadores-sop.md (Post-certificación)</div>
+<div class="bullet-item">H-02, H-03 (Handoffs de Comercial)</div>
+<div class="bullet-item">R-02, R-03 (Reportes a Comercial)</div>
+<hr class="divider">
+<p class="key-value"><strong>Versión</strong>: 1.0 | <strong>Fecha</strong>: 2026-03-24 | <strong>Estado</strong>: Publicado</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

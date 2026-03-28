@@ -1,0 +1,30 @@
+# ===========================================================================
+# Shared Defaults — inherited by all skill.yaml files unless overridden.
+# Loaded by ecosystem loader; skill-level values take precedence.
+# ===========================================================================
+
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses"
+
+defaultRaci:
+  accountable: pristino-orchestrator
+  consulted: null
+  informed: logger
+
+defaultToolUsage:
+  - get_current_time
+
+defaultFailureHandling:
+  - "Log error with context (agent, step, input hash)"
+  - "Attempt recovery per step.recoveryAction"
+  - "If recovery fails, return partial result with [error] marker"
+  - "Escalate to orchestrator if 3+ consecutive failures"
+
+defaultObservabilityEvents:
+  - "workflow.started"
+  - "step.completed"
+  - "step.failed"
+  - "workflow.completed"
+  - "workflow.timeout"

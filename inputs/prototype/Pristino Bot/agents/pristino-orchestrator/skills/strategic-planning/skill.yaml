@@ -1,0 +1,153 @@
+# =============================================================================
+# Skill: strategic-planning
+# Agent: pristino-orchestrator
+# Purpose: Advanced Product Management & Strategic Planning (APU Motor)
+# =============================================================================
+
+id: strategic-planning
+name: APU - Strategic Planning Motor
+purpose: >
+  Expert-level Product Management and Strategic Planning engine. Generates OKRs, Strategy 
+  Maps, Risk Matrices, and Project Decompositions validated against the APU PM Rubric 
+  (Clarity ≥9, Feasibility ≥9, Alignment ≥9, Measurability ≥9).
+businessValue: >
+  Directly impacts organizational alignment and vision execution. Converts abstract 
+  strategic intent into measurable, actionable artifacts in hours instead of weeks.
+  Guarantees 9.6/10+ quality on every strategic artifact via the APU PM Rubric.
+triggerTypes:
+  - okrs_generation
+  - risk_analysis
+  - project_planning
+  - strategy_design
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "context: string (Company stage, industry, team size, specific constraints)"
+  - "objective: string (e.g., 'crear OKRs Q1', 'analizar riesgos proyecto X', 'roadmap semestral')"
+
+outputs:
+  - "strategicArtifact: text (OKRs, Roadmap, Risk Matrix, Strategy Map, or WBS)"
+
+assumptions:
+  - "User provides organizational context (stage, industry, team). Without context, strategic artifacts are generic and less valuable."
+  - "OKRs follow the standard structure: 3 Objectives (qualitative, inspiring), 3–5 Key Results each (quantitative, SMART)."
+  - "Default planning horizon: Quarterly (OKRs) or Annual (Strategy Maps). User can override."
+  - "Financial data is user-provided. The skill NEVER hallucinates specific revenue, cost, or budget figures."
+
+limits:
+  - "Cannot access market data, competitor intelligence, or financial databases. Analysis is framework-based, not data-driven."
+  - "Cannot guarantee strategic outcomes. Frameworks structure thinking; execution determines results."
+  - "Cannot replace board-level strategic decision-making. Output is input for decision-makers, not the decision itself."
+  - "Maximum project decomposition depth: WBS Level 3. Sub-Level 3 indicates the project needs work package definition, not further decomposition."
+
+# ── APU Core Modules ──
+modules:
+  strategicPlanning:
+    description: "Frameworks for vision setting, goal alignment, and strategic positioning."
+    primitives: [SPL_SWOT, SPL_PESTEL, SPL_STRATEGY_MAP, SPL_OKR, SPL_KPI, SPL_IMPACT_MAP]
+    frameworks:
+      balanced_scorecard:
+        perspectives: ["Financial", "Customer", "Internal Process", "Learning & Growth"]
+        constraint: "Every strategic objective maps to exactly one perspective. Unbalanced maps trigger rebalancing."
+      okrs:
+        structure: "Objective (inspiring, qualitative) + 3–5 Key Results (SMART, numeric)."
+        anti_patterns:
+          - "KR as a task ('Launch product') vs. true KR ('Achieve 1,000 activations')."
+          - "Vanity metrics ('10K page views') vs. impact metrics ('500 qualified leads')."
+        grading: "70% achievement = healthy stretch. 100% = target was too easy. <40% = misaligned."
+      north_star:
+        metric_selection: "The single metric that best captures the value your product delivers to customers."
+        supporting_frameworks: ["HEART (Google)", "AARRR (Pirate Metrics)", "NSM Input Framework"]
+
+  riskManagement:
+    description: "Identification, assessment, and mitigation of project and organizational risks."
+    primitives: [RSK_IDENTIFY, RSK_ASSESS, RSK_MITIGATE, RSK_MONITOR, RSK_PRIORITIZE]
+    frameworks:
+      fmea:
+        description: "Failure Mode and Effects Analysis."
+        scoring: "RPN = Severity (1–10) × Occurrence (1–10) × Detection (1–10). RPN >200 = critical."
+        action: "Prioritize mitigation by RPN score. Re-score after mitigation to verify reduction."
+      risk_matrix:
+        dimensions: "5×5 Probability (Rare → Almost Certain) × Impact (Negligible → Catastrophic)"
+        threshold: "Red zone (P≥4, I≥4) requires immediate mitigation plan with owner and deadline."
+      bow_tie:
+        description: "Visual model connecting threats → event → consequences with prevention and recovery barriers."
+        use_case: "Critical failure points where both prevention AND recovery must be planned."
+
+  projectDecomposition:
+    description: "Functional breakdown of complex projects into estimable, trackable work units."
+    primitives: [FUN_DECOMPOSE, FUN_ESTIMATE, FUN_DEPENDENCY, FUN_PRIORITIZE]
+    frameworks:
+      wbs:
+        levels: "Level 1 (Deliverables) → Level 2 (Work Packages) → Level 3 (Activities)"
+        constraint: "Level 3 items are estimable (2–5 person-days). If not estimable, decompose further or gather requirements."
+      user_story_mapping:
+        description: "Arrange user stories along the user journey to discover gaps and prioritize releases."
+        output: "Backbone (activities) × Walking Skeleton (minimum viable journey) × Release slices."
+      prioritization:
+        methods: ["MoSCoW (Must/Should/Could/Won't)", "RICE (Reach × Impact × Confidence / Effort)", "ICE (Impact × Confidence × Ease)"]
+        default: "RICE for feature prioritization. MoSCoW for scope negotiation."
+
+# ── Strategic Planning Workflows ──
+workflows:
+  W06_Strategic_Planning:
+    phases:
+      1: "Context Analysis: SWOT (internal) + PESTEL (external). Identify top 3 opportunities and top 3 threats."
+      2: "Strategy Map Creation: BSC 4-perspective map with cause-effect links between objectives."
+      3: "OKR Generation: 3 Objectives (inspiring), 3–5 KRs each (SMART, numeric). Anti-pattern validation."
+      4: "KPI Definition: Leading and lagging indicators for each KR. North Star Metric selection."
+      5: "Rubric Validation: Score against PM Rubric (Clarity ≥9, Feasibility ≥9, Alignment ≥9, Measurability ≥9)."
+
+  W07_Risk_Aware_Planning:
+    phases:
+      1: "Risk Identification: Brainstorm across 4 categories (Strategic, Operational, Financial, Technical)."
+      2: "Risk Assessment: FMEA scoring (Severity × Occurrence × Detection) or 5×5 Matrix."
+      3: "Mitigation Strategy: Assign response type (Avoid, Reduce, Transfer, Accept) per risk."
+      4: "Contingency Planning: For red-zone risks, define Owner + Trigger + Response + Budget."
+
+  W08_Project_Decomposition:
+    phases:
+      1: "Top-Down Decomposition: WBS Levels 1–3."
+      2: "Complexity & Time Estimation: T-Shirt sizing (S/M/L/XL) or Fibonacci Story Points."
+      3: "Dependency Graphing: Identify critical path and parallel streams."
+      4: "Prioritization: Apply RICE or MoSCoW based on context."
+
+edge_cases:
+  - scenario: "User requests OKRs but has no defined company strategy or mission."
+    handling: "Start 2 levels up: facilitate mission/vision clarification first. OKRs without strategy are disconnected metrics."
+  - scenario: "All risks score low on the risk matrix."
+    handling: "Challenge the assessment. Low-risk projects are rare. Ask: 'What would happen if your #1 assumption is wrong?'"
+  - scenario: "User wants to decompose a project with >50 work packages."
+    handling: "Split into sub-projects or program-level structure. A single WBS with >50 items is unmanageable."
+  - scenario: "OKR Key Results are written as tasks ('Launch feature X')."
+    handling: "Rewrite as outcomes ('Feature X achieves 500 weekly active users'). Explain the anti-pattern."
+
+trade_offs:
+  - decision: "Framework-driven planning over freeform brainstorming."
+    justification: "Frameworks (BSC, SWOT, FMEA) encode decades of management research. Freeform planning misses blind spots."
+  - decision: "SMART Key Results over aspirational Key Results."
+    justification: "Unmeasurable KRs cannot be evaluated. '70% achievement = healthy stretch' requires a measurable denominator."
+  - decision: "WBS Level 3 maximum over deeper decomposition."
+    justification: "Below Level 3, decomposition becomes micro-management. Level 3 items should be estimable by the executing team."
+
+wowCriteria:
+  - "Applying all 4 BSC perspectives when making a Strategy Map, with cause-effect arrows between objectives."
+  - "Highlighting critical path and parallel streams during project decomposition."
+  - "Enforcing SMART criteria aggressively on all KRs, rewriting anti-patterns on sight."
+
+safeCriteria:
+  - "Strategic output is subjective and context-dependent. Never guarantee specific financial outcomes."
+  - "Always clarify assumptions using 5-Whys or 7-So-Whats before committing to a strategic direction."
+  - "FMEA scores and Risk Matrix placements are estimates, not certainties. State confidence level."
+
+evaluation:
+  acceptance_criteria:
+    - "OKRs pass SMART validation: each KR is Specific, Measurable, Achievable, Relevant, Time-bound."
+    - "Strategy Maps include all 4 BSC perspectives with cause-effect linkages."
+    - "Risk assessments use quantified scoring (FMEA RPN or 5×5 Matrix), not qualitative labels alone."
+    - "WBS decomposes to Level 3 with estimable work packages."
+    - "PM Rubric scores ≥9/10 on Clarity, Feasibility, Alignment, and Measurability."
+  success_metrics:
+    - "100% of KRs pass SMART validation (zero task-disguised KRs)."
+    - "≥95% of Strategy Maps include all 4 BSC perspectives."
+    - "100% of red-zone risks have assigned owners and mitigation plans."

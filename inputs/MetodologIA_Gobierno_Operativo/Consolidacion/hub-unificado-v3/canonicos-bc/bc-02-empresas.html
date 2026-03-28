@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="Bootcamp BC-02 — Sales with AI (B2B Prospecting) — Proceso de Delivery MetodologIA">
+    <title>Bootcamp BC-02 — Sales with AI (B2B Prospecting) — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Canonicos Bc</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Bootcamp BC-02 — Sales with AI (B2B Prospecting)</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Bootcamp BC-02 — Sales with AI (B2B Prospecting)</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Código: BC-02-EMPRESAS | Versión: 1.0 | Fecha: 2026-03-24</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('documento-cannico-segmento-empresas-b2b-5820a3')" aria-label="Ir a Documento Canónico | Segmento: EMPRESAS (B2B)">Documento Canónico | Segmento: EMPR</button>
+<button class="nav-btn" onclick="scrollToSection('1-ficha-rpida-a9b17d')" aria-label="Ir a 1. Ficha Rápida">1. Ficha Rápida</button>
+<button class="nav-btn" onclick="scrollToSection('2-definicin-y-alcance-e4c27b')" aria-label="Ir a 2. Definición y Alcance">2. Definición y Alcance</button>
+<button class="nav-btn" onclick="scrollToSection('3-audiencia-del-segmento-c7ffd4')" aria-label="Ir a 3. Audiencia del Segmento">3. Audiencia del Segmento</button>
+<button class="nav-btn" onclick="scrollToSection('4-propuesta-de-valor-diferenciada-d182a2')" aria-label="Ir a 4. Propuesta de Valor Diferenciada">4. Propuesta de Valor Diferenciada</button>
+<button class="nav-btn" onclick="scrollToSection('5-arquitectura-curricular-3-semanas-40b51a')" aria-label="Ir a 5. Arquitectura Curricular (3 semanas)">5. Arquitectura Curricular (3 seman</button>
+<button class="nav-btn" onclick="scrollToSection('6-proyecto-capstone-eaac4e')" aria-label="Ir a 6. Proyecto Capstone">6. Proyecto Capstone</button>
+<button class="nav-btn" onclick="scrollToSection('7-modelo-comercial-4c8ca0')" aria-label="Ir a 7. Modelo Comercial">7. Modelo Comercial</button>
+<button class="nav-btn" onclick="scrollToSection('8-canal-de-venta-b4c772')" aria-label="Ir a 8. Canal de Venta">8. Canal de Venta</button>
+<button class="nav-btn" onclick="scrollToSection('9-operacin-y-logstica-09ab96')" aria-label="Ir a 9. Operación y Logística">9. Operación y Logística</button>
+<button class="nav-btn" onclick="scrollToSection('10-puente-educativo-upgrade-path-ce8265')" aria-label="Ir a 10. Puente Educativo (Upgrade Path)">10. Puente Educativo (Upgrade Path)</button>
+<button class="nav-btn" onclick="scrollToSection('11-soporte-y-alumni-d426bd')" aria-label="Ir a 11. Soporte y Alumni">11. Soporte y Alumni</button>
+<button class="nav-btn" onclick="scrollToSection('12-kpis-del-segmento-5392f8')" aria-label="Ir a 12. KPIs del Segmento">12. KPIs del Segmento</button>
+<button class="nav-btn" onclick="scrollToSection('13-trminos-y-condiciones-ac1498')" aria-label="Ir a 13. Términos y Condiciones">13. Términos y Condiciones</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="documento-cannico-segmento-empresas-b2b-5820a3" data-searchable aria-labelledby="head-documento-cannico-segmento-empresas-b2b-5820a3">
+            <div class="phase-header" id="head-documento-cannico-segmento-empresas-b2b-5820a3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Documento Canónico | Segmento: EMPRESAS (B2B)</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p class="key-value"><strong>Código:</strong> BC-02-EMPRESAS | <strong>Versión:</strong> 1.0 | <strong>Fecha:</strong> 2026-03-24</p>
+<p class="key-value"><strong>Segmento:</strong> Sales teams (SDR, AE, Account Managers), SaaS, servicios, empresas de crecimiento acelerado</p>
+<p class="key-value"><strong>Precio canónico:</strong> COP 18,000,000</p>
+<p class="key-value"><strong>Duración:</strong> 3 semanas (40-50 horas)</p>
+<p class="key-value"><strong>Modalidad:</strong> Virtual sincrónico + CRM integration custom</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-ficha-rpida-a9b17d" data-searchable aria-labelledby="head-1-ficha-rpida-a9b17d">
+            <div class="phase-header" id="head-1-ficha-rpida-a9b17d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Ficha Rápida</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Detalle</th></tr></thead><tbody><tr><td>Público objetivo</td><td>Equipos de ventas 8-20 personas (SDR, AE, Sales managers)</td></tr><tr><td>Modelo</td><td>Cohorte cerrada, integración con CRM actual + sales stack cliente</td></tr><tr><td>Horario</td><td>Negociable (turno único para equipo completo)</td></tr><tr><td>Facilitador</td><td>1 sales expert dedicado + 1 CRM specialist</td></tr><tr><td>Deliverables</td><td>Bootcamp + CRM optimization + Sales AI playbook + 90d adoption tracking</td></tr><tr><td>Resultado esperado</td><td>40-50% incremento en pipeline qualified + 25-35% aumento en conversion rate</td></tr><tr><td>SLA</td><td>SOW, 50% anticipo, neto 30</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-definicin-y-alcance-e4c27b" data-searchable aria-labelledby="head-2-definicin-y-alcance-e4c27b">
+            <div class="phase-header" id="head-2-definicin-y-alcance-e4c27b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 2. Definición y Alcance</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>El Bootcamp BC-02 EMPRESAS capacita equipos comerciales en prospecting, outreach y cierre AI-powered, con customización profunda a CRM, target ICP y sales process cliente. Metodología 10/20/70: 10% MetodologIA, 20% VP Sales/director cliente, 70% facilitador sales expert.</p>
+<p class="key-value"><strong>Alcance específico:</strong></p>
+<div class="bullet-item">Optimization de sales stack actual (CRM + email + LinkedIn + AI tools)</div>
+<div class="bullet-item">Prospecting AI playbook customizado a ICP/product empresa</div>
+<div class="bullet-item">Email + LinkedIn sequence generation (100+ templates personalizados)</div>
+<div class="bullet-item">CRM automation (lead scoring, follow-up cadences, forecast accuracy)</div>
+<div class="bullet-item">Sales coaching en cierre y objection handling</div>
+<div class="bullet-item">Pipeline analysis + conversion rate improvement</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-audiencia-del-segmento-c7ffd4" data-searchable aria-labelledby="head-3-audiencia-del-segmento-c7ffd4">
+            <div class="phase-header" id="head-3-audiencia-del-segmento-c7ffd4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Audiencia del Segmento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Perfil de empresa:</strong></p>
+<div class="bullet-item">Sector: SaaS, Tech, Servicios profesionales, Fintech (preferentes)</div>
+<div class="bullet-item">Tamaño: 50-300 personas (equipo sales 8-20)</div>
+<div class="bullet-item">Madurez: Growth-stage o scale-up (búsqueda activa optimización ingresos)</div>
+<div class="bullet-item">Budget: COP 15-25M para iniciativas de sales efficiency</div>
+<p class="key-value"><strong>Stakeholders:</strong></p>
+<div class="bullet-item"><strong>Sponsor:</strong> VP Sales, Director Comercial o CRO</div>
+<div class="bullet-item"><strong>Facilitador interno:</strong> Sales manager responsable de equipo</div>
+<div class="bullet-item"><strong>Participantes:</strong> SDRs, AEs, Account managers (8-20 personas)</div>
+<div class="bullet-item"><strong>Champion técnico:</strong> 1-2 personas para mantener automations</div>
+<p class="key-value"><strong>Motivación:</strong></p>
+<div class="bullet-item">Aumentar pipeline (leads calificados) 40%+</div>
+<div class="bullet-item">Reducir ciclo de venta (AI insights aceleran decisiones)</div>
+<div class="bullet-item">Mejorar tasas de conversión (personalization + objection handling)</div>
+<div class="bullet-item">Retener talento (equipo más productivo = satisfacción)</div>
+<div class="bullet-item">Predecir revenue con mayor exactitud (forecast accuracy)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-propuesta-de-valor-diferenciada-d182a2" data-searchable aria-labelledby="head-4-propuesta-de-valor-diferenciada-d182a2">
+            <div class="phase-header" id="head-4-propuesta-de-valor-diferenciada-d182a2" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Propuesta de Valor Diferenciada</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Para la empresa:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Pipeline multiplicado:</strong> 40-50% más leads calificados en 90 días post-bootcamp</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Conversion mejorada:</strong> 25-35% aumento en conversion rate (email, meeting-to-deal)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Velocidad:</strong> Ciclo de venta 25-30% más corto (AI-accelerated research + decision-making)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Retención de talento:</strong> Sales team más productivo = satisfacción, menos rotación</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>ROI medible:</strong> COP 18M recapitalizados en 3-4 meses (aumento de pipeline ARR)</span></div>
+<p class="key-value"><strong>Ventaja vs. alternatives:</strong></p>
+<div class="bullet-item">Mejor que contratar 2-3 SDRs (COP 30-40M/año) → resultado en 3 semanas</div>
+<div class="bullet-item">Mejor que consulting genérico → implementación real en procesos cliente</div>
+<div class="bullet-item">Mejor que tool-only approach → cambio de mentalidad + skills + tecnología</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-arquitectura-curricular-3-semanas-40b51a" data-searchable aria-labelledby="head-5-arquitectura-curricular-3-semanas-40b51a">
+            <div class="phase-header" id="head-5-arquitectura-curricular-3-semanas-40b51a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Arquitectura Curricular (3 semanas)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="semana-1-sales-strategy-ai-fundamentals-aplicados-5670ab">Semana 1: Sales Strategy + AI Fundamentals Aplicados</h3>
+<div class="bullet-item"><strong>Lunes:</strong> Kickoff + sales strategy workshop | ICP redefinición con AI insights | Competitive intelligence</div>
+<div class="bullet-item"><strong>Miércoles:</strong> LinkedIn mastery (team): Search, messaging, content strategy | Lead research acceleration</div>
+<div class="bullet-item"><strong>Viernes:</strong> Email + copywriting frameworks | Subject lines testing | Objection handling AI-assisted</div>
+<h3 class="subsection-title" id="semana-2-crm-automation-conversion-techniques-c48a06">Semana 2: CRM + Automation + Conversion Techniques</h3>
+<div class="bullet-item"><strong>Lunes:</strong> CRM optimization (custom fields, pipeline stages) | Lead scoring implementation</div>
+<div class="bullet-item"><strong>Miércoles:</strong> Sales sequences + cadences | Email automation + timing optimization | Sales engagement platforms integration</div>
+<div class="bullet-item"><strong>Viernes:</strong> Demo + pitch frameworks | Proposal generation automation | Deal closing strategies</div>
+<h3 class="subsection-title" id="semana-3-implementacin-coaching-y-escalabilidad-23adb9">Semana 3: Implementación, Coaching y Escalabilidad</h3>
+<div class="bullet-item"><strong>Lunes:</strong> Sales playbook workshop (team-written) | Role-play y coaching de cierre</div>
+<div class="bullet-item"><strong>Miércoles:</strong> Pipeline analysis + forecast accuracy | KPI dashboarding | Sales metrics deep-dive</div>
+<div class="bullet-item"><strong>Viernes:</strong> Demo ejecutivo + business impact review | Plan de adopción 90d | Roadmap futuro</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-proyecto-capstone-eaac4e" data-searchable aria-labelledby="head-6-proyecto-capstone-eaac4e">
+            <div class="phase-header" id="head-6-proyecto-capstone-eaac4e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. Proyecto Capstone</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Tipo:</strong> Team sales campaign + CRM implementation</p>
+<p class="key-value"><strong>Requerimiento:</strong></p>
+<p>Ejecutar campaign de prospecting real generando 50+ leads calificados nuevos, integrado en CRM con AI automations, con documentación de:</p>
+<div class="bullet-item">Lead source diversificado (LinkedIn, email, referral)</div>
+<div class="bullet-item">Conversion metrics (meetings booked, proposals, closes)</div>
+<div class="bullet-item">CRM automations (lead scoring, cadences, forecasting)</div>
+<div class="bullet-item">ROI documentado (revenue generated vs. tiempo invertido)</div>
+<p class="key-value"><strong>Ejemplo:</strong> &quot;Generar 50 leads calificados en vertiente SME financiero, integrados en Pipedrive con scoring AI + email cadences automatizadas. Meta: 10 meetings, 3 proposals, 1-2 deals cerrados = COP 50-100M ARR.&quot;</p>
+<p class="key-value"><strong>Entregables:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Lead list (50+) con scoring, contacto, notas personalizadas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Email + LinkedIn sequences (automations en CRM)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Sales playbook (cómo replicar el proceso) + training de sucesor</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Dashboard de KPIs (pipeline generation, conversion, forecast)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>ROI report: Horas invertidas vs. revenue generado</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-modelo-comercial-4c8ca0" data-searchable aria-labelledby="head-7-modelo-comercial-4c8ca0">
+            <div class="phase-header" id="head-7-modelo-comercial-4c8ca0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Modelo Comercial</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Precio:</strong> COP 18,000,000 (cohorte 8-20 personas)</p>
+<p class="key-value"><strong>Desglose:</strong></p>
+<div class="bullet-item">Sales strategy + AI fundamentals (33%): COP 6M</div>
+<div class="bullet-item">CRM optimization + automations (33%): COP 6M</div>
+<div class="bullet-item">Bootcamp + coaching (34%): COP 6M</div>
+<p class="key-value"><strong>Condiciones de pago:</strong></p>
+<div class="bullet-item">50% anticipo (COP 9M) al firmar SOW</div>
+<div class="bullet-item">50% neto 30 (COP 9M) tras Semana 1 completada</div>
+<p class="key-value"><strong>Opcionales:</strong></p>
+<div class="bullet-item">Executive sales coaching (1:1 VP Sales, 10 sesiones): +COP 3M</div>
+<div class="bullet-item">Advanced pipeline analytics + forecasting: +COP 2.5M</div>
+<div class="bullet-item">Extended support (180 días): +COP 3M</div>
+<p class="key-value"><strong>Margen bruto:</strong> ~COP 8M (44% - implementación incluida)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-canal-de-venta-b4c772" data-searchable aria-labelledby="head-8-canal-de-venta-b4c772">
+            <div class="phase-header" id="head-8-canal-de-venta-b4c772" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Canal de Venta</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Estrategia de ABM:</strong></p>
+<div class="bullet-item">Target: 20-30 empresas SaaS/Tech/Fintech medianas</div>
+<div class="bullet-item">Decision maker: VP Sales / CRO (outreach 1:1)</div>
+<div class="bullet-item">Proof point: &quot;Aumento en pipeline 40-50% = COP 50-100M ARR incrementales en 90d&quot;</div>
+<p class="key-value"><strong>Materiales:</strong></p>
+<div class="bullet-item">Case study: Before/after (empresa similar)</div>
+<div class="bullet-item">Pipeline calculator: Input current metrics → output projected after-bootcamp</div>
+<div class="bullet-item">Sales sheet: Metodología 10/20/70, ROI math, SLA</div>
+<p class="key-value"><strong>SLA venta:</strong></p>
+<div class="bullet-item">Prospecting → Discovery (45min) → Proposal → Close = 30-60 días</div>
+<div class="bullet-item">Conversión opportunity to close: 35-45%</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-operacin-y-logstica-09ab96" data-searchable aria-labelledby="head-9-operacin-y-logstica-09ab96">
+            <div class="phase-header" id="head-9-operacin-y-logstica-09ab96" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Operación y Logística</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Infraestructura:</strong></p>
+<div class="bullet-item">Plataforma: Zoom (sesiones) + Slack (comunicación diaria)</div>
+<div class="bullet-item">CRM: Acceso sandbox + integración con sistema cliente (Pipedrive, HubSpot, Salesforce)</div>
+<div class="bullet-item">Sales stack: LinkedIn Sales Navigator (demo), ChatGPT Plus (acceso sponsor), email tools (integración)</div>
+<p class="key-value"><strong>Pre-bootcamp:</strong></p>
+<div class="bullet-item">Kickoff (2h): VP Sales, team lead, MetodologIA, CRO (si aplica)</div>
+<div class="bullet-item">Sales strategy workshop (4h): ICP definition, target segmentation, competitive analysis</div>
+<div class="bullet-item">CRM audit (8h): Current state, gaps, optimization plan</div>
+<p class="key-value"><strong>Durante bootcamp:</strong></p>
+<div class="bullet-item">3 sesiones semanales (4-5h): Teórico aplicado (25%) + práctico con leads reales (75%)</div>
+<div class="bullet-item">Sesiones 1:1 (4 x 45min): Deal coaching, troubleshooting, skill development</div>
+<div class="bullet-item">Tareas asincrónicas: Prospecting live, email drafts, peer feedback, CRM setup</div>
+<p class="key-value"><strong>Post-bootcamp:</strong></p>
+<div class="bullet-item">Sales coaching: Sesión semanal (primeras 4 semanas), luego bisemanal (8 semanas)</div>
+<div class="bullet-item">Adoption tracking: Dashboard de KPIs, check-ins quincenales, escalation process</div>
+<div class="bullet-item">Support SLA: &lt;24h response, &lt;1 semana para customizations</div>
+<p class="key-value"><strong>Recursos MetodologIA:</strong></p>
+<div class="bullet-item">1 sales expert facilitador (80% dedicación)</div>
+<div class="bullet-item">1 CRM specialist (40% dedicación)</div>
+<div class="bullet-item">1 project manager (100% dedicación)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-puente-educativo-upgrade-path-ce8265" data-searchable aria-labelledby="head-10-puente-educativo-upgrade-path-ce8265">
+            <div class="phase-header" id="head-10-puente-educativo-upgrade-path-ce8265" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Puente Educativo (Upgrade Path)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Opciones post-BC-02:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Sales Ops + Analytics (6 semanas):</strong></span></div>
+<div class="bullet-item">Sales ops best practices, forecasting accuracy</div>
+<div class="bullet-item">Pipeline analytics, win/loss analysis</div>
+<div class="bullet-item">Revenue intelligence tools</div>
+<div class="bullet-item">Precio: COP 8M</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Account Executive Mastery (8 semanas):</strong></span></div>
+<div class="bullet-item">Deal closing frameworks, negotiation, pricing psychology</div>
+<div class="bullet-item">Enterprise sales patterns</div>
+<div class="bullet-item">Precio: COP 9M</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Sales Leadership Program (3 meses):</strong></span></div>
+<div class="bullet-item">Coaching skills, team development, culture</div>
+<div class="bullet-item">Sales hiring + retention</div>
+<div class="bullet-item">Precio: COP 12M (para VP Sales / sales managers)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-soporte-y-alumni-d426bd" data-searchable aria-labelledby="head-11-soporte-y-alumni-d426bd">
+            <div class="phase-header" id="head-11-soporte-y-alumni-d426bd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Soporte y Alumni</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Durante bootcamp:</strong></p>
+<div class="bullet-item">Sales expert facilitador: 100% dedicado a sesiones + soporte async</div>
+<div class="bullet-item">CRM specialist: On-call para troubleshooting técnico</div>
+<div class="bullet-item">Project manager: Coordinación, communication hub</div>
+<p class="key-value"><strong>Post-bootcamp (90 días):</strong></p>
+<div class="bullet-item">Sales coaching semanal (4 semanas), luego bisemanal</div>
+<div class="bullet-item">Office hours: 2 sesiones mensuales para Q&amp;A</div>
+<div class="bullet-item">Metrics dashboard: Real-time tracking de adoption, pipeline, conversion</div>
+<div class="bullet-item">Champions support: Hotline para issues técnicas CRM</div>
+<p class="key-value"><strong>Perpetuo:</strong></p>
+<div class="bullet-item">Invitación a annual sales summit (networking, best practices)</div>
+<div class="bullet-item">Upgrade pricing: 20% descuento en Sales Ops, AE Mastery, Leadership</div>
+<div class="bullet-item">Access a sales insights portal: Trending strategies, tool updates</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-kpis-del-segmento-5392f8" data-searchable aria-labelledby="head-12-kpis-del-segmento-5392f8">
+            <div class="phase-header" id="head-12-kpis-del-segmento-5392f8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 12. KPIs del Segmento</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Negocio:</strong></p>
+<div class="bullet-item">Deal size: COP 18M</div>
+<div class="bullet-item">Cycle sales: 45-60 días</div>
+<div class="bullet-item">Close rate: 35-45%</div>
+<div class="bullet-item">Expansion: 50% de clientes BC-02 contratan extended support / advanced programs</div>
+<p class="key-value"><strong>Ejecución:</strong></p>
+<div class="bullet-item">On-time: &gt; 95%</div>
+<div class="bullet-item">Scope adherence: &gt; 90%</div>
+<div class="bullet-item">Resource utilization: 70-80%</div>
+<p class="key-value"><strong>Cliente:</strong></p>
+<div class="bullet-item">NPS bootcamp: &gt; 8.5/10</div>
+<div class="bullet-item">Sponsor satisfaction: 9/10 (ROI claro)</div>
+<div class="bullet-item">Adopción de playbooks (30d): &gt; 85% of sales team using daily</div>
+<p class="key-value"><strong>Impacto sales:</strong></p>
+<div class="bullet-item">Pipeline generado (post-bootcamp, 90d): +40-50% leads calificados</div>
+<div class="bullet-item">Conversion rate improvement: +25-35%</div>
+<div class="bullet-item">Ciclo de venta: -25-30% (más rápido cierre)</div>
+<div class="bullet-item">Revenue impact (90d): COP 50-100M ARR incremental (típicamente)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-trminos-y-condiciones-ac1498" data-searchable aria-labelledby="head-13-trminos-y-condiciones-ac1498">
+            <div class="phase-header" id="head-13-trminos-y-condiciones-ac1498" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Términos y Condiciones</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Alcance y cambios:</strong></p>
+<div class="bullet-item">Bootcamp estándar para equipo sales de 8-20 personas</div>
+<div class="bullet-item">CRM customization: Incluido (current stack optimization)</div>
+<div class="bullet-item">Changes en scope: Negociados como addendums (ej: Salesforce custom dev)</div>
+<p class="key-value"><strong>Timeline:</strong></p>
+<div class="bullet-item">Mínimo 25 días hábiles desde SOW firma (para diagnosis y strategy workshop)</div>
+<div class="bullet-item">Aplazamiento: Máximo 30 días sin penalidad</div>
+<p class="key-value"><strong>Cancelación:</strong></p>
+<div class="bullet-item">Pre-inicio: 75% reembolsable</div>
+<div class="bullet-item">En Semana 1: 50% reembolsable</div>
+<div class="bullet-item">Post-Semana 1: No reembolsable (crédito para services futuros)</div>
+<p class="key-value"><strong>Responsabilidades cliente:</strong></p>
+<div class="bullet-item">Disponibilidad de equipo (asistencia ≥85%)</div>
+<div class="bullet-item">Acceso a CRM con permisos administrativos</div>
+<div class="bullet-item">Datos de leads para prospecting practice (real o synthetic)</div>
+<div class="bullet-item">Sponsor commitment (VP Sales debe atender kickoff + cierre)</div>
+<p class="key-value"><strong>Responsabilidades MetodologIA:</strong></p>
+<div class="bullet-item">Bootcamp completado en 3 semanas (como se programó)</div>
+<div class="bullet-item">Sales playbook documentado y transferido</div>
+<div class="bullet-item">CRM automations implementadas y testeadas</div>
+<div class="bullet-item">90 días de adoption support (SLA &lt;24h)</div>
+<p class="key-value"><strong>IP y propriedad:</strong></p>
+<div class="bullet-item">Sales playbooks custom: Propiedad del cliente</div>
+<div class="bullet-item">CRM automations: Propiedad cliente (hosted en tenant cliente)</div>
+<div class="bullet-item">Metodología: Propiedad MetodologIA (puede usar anonimizado en case studies)</div>
+<p class="key-value"><strong>Performance guarantees:</strong></p>
+<div class="bullet-item">Best-effort para pipeline generation (no garantizado)</div>
+<div class="bullet-item">Conversión depende de product quality, market timing, buyer readiness</div>
+<div class="bullet-item">MetodologIA garantiza: Skills transfer, tools setup, coaching quality</div>
+<p class="key-value"><strong>Confidencialidad:</strong></p>
+<div class="bullet-item">Información de cliente (prospects, strategy, metrics): Confidencial</div>
+<div class="bullet-item">Case study anonimizado: Permitido con aprobación VP Sales</div>
+<div class="bullet-item">Datos de leads: Destruidos post-bootcamp (no retained)</div>
+<p class="key-value"><strong>SLA técnico:</strong></p>
+<div class="bullet-item">Sesiones síncronas: 99% uptime</div>
+<div class="bullet-item">CRM support: &lt;24h response</div>
+<div class="bullet-item">Customizations: &lt;1 semana</div>
+<div class="bullet-item">Escalation: Weekly check-in con VP Sales</div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

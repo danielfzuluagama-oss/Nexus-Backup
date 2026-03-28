@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP: Signal Processing & Scouting B2B | MetodologIA</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Montserrat:wght@400;500;600&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Branding Stewardship v5.2 tokens */
+            --bg-primary: hsl(225, 30%, 15%);
+            --bg-surface: hsl(225, 25%, 20%);
+            --bg-body: hsl(225, 30%, 10%);
+            --brand-gold: #FFD700;
+            --brand-gold-dark: #FFA000;
+            --brand-gold-glow: rgba(255, 215, 0, 0.3);
+            --text-primary: #FFFFFF;
+            --text-secondary: #E2E8F0;
+            --text-muted: hsl(215, 25%, 65%);
+            --border-subtle: rgba(255, 255, 255, 0.05);
+
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Montserrat', sans-serif;
+            --font-tertiary: 'Jost', sans-serif;
+            
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: var(--font-secondary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 { font-family: var(--font-primary); font-weight: 700; }
+        .highlight-ia-premium {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Standardized Header v1.2.0 */
+        .premium-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.85);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            height: 4.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        .nav-logo-link:hover { transform: scale(1.02); }
+        .logo-svg { filter: drop-shadow(0 0 8px var(--brand-gold-glow)); }
+
+        .segment-switcher { 
+            display: none; 
+            gap: 0.5rem; 
+            padding: 0.3rem; 
+            background: rgba(255, 255, 255, 0.04); 
+            border: 1px solid var(--border-subtle); 
+            border-radius: 9999px; 
+        }
+        @media (min-width: 1024px) { .segment-switcher { display: flex; } }
+        
+        .segment-btn { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            padding: 0.5rem 1rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+        }
+        .segment-btn:hover { background: rgba(255, 215, 0, 0.1); color: var(--brand-gold); }
+
+        .nav-links-official { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links-official a { color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.8rem; transition: color 0.3s; }
+        .nav-links-official a:hover { color: var(--brand-gold); }
+
+        .site-footer { background: #020617; padding: 5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 6rem; position: relative; overflow: hidden; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; margin-bottom: 4rem; text-align: left; }
+        .footer-brand { grid-column: span 2; }
+        .footer-quote { font-style: italic; color: var(--text-muted); margin: 1.5rem 0; font-size: 1rem; line-height: 1.5; max-width: 400px; }
+        .footer-links h4 { color: white; margin-bottom: 1.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--brand-gold); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .badge-premium { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; background: rgba(255,215,0,0.05); border: 1px solid var(--brand-gold-glow); border-radius: 1rem; position: relative; animation: pulse-glow 3s infinite; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 5px rgba(255,215,0,0.1); } 50% { box-shadow: 0 0 20px rgba(255,215,0,0.2); } 100% { box-shadow: 0 0 5px rgba(255,215,0,0.1); } }
+
+        /* Refactored Utility Classes */
+        .brand-title { font-size: 1.15rem; margin: 0; font-weight: 800; }
+        .segment-switcher-wrapper { display: flex; }
+        .segment-btn-b2b { background: var(--gradient-gold); color: #020617; box-shadow: 0 2px 8px var(--brand-gold-glow); padding: 0.4rem 0.8rem; border-radius: 999px; text-decoration: none; font-size: 0.7rem; font-weight: 700; }
+        .segment-btn-b2c { padding: 0.4rem 0.8rem; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.7rem; font-weight: 700; }
+        .nav-cta-btn { background: var(--gradient-gold); color: #020617; padding: 0.6rem 1.2rem; border-radius: 0.75rem; text-decoration: none; font-weight: 700; font-size: 0.8rem; box-shadow: 0 4px 15px var(--brand-gold-glow); }
+        .hero-sop-custom { padding: 9rem 2rem 4rem; text-align: center; background: radial-gradient(circle at center, rgba(255,215,0,0.03) 0%, transparent 70%); }
+        .hero-title-lg { font-size: clamp(2.5rem, 6vw, 3.5rem); margin-bottom: 1rem; line-height: 1.1; }
+        .hero-desc { font-size: 1.2rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto; opacity: 0.8; }
+        .main-no-margin { margin-top: 0; }
+        .icon-brand-gold { color: var(--brand-gold); }
+        .section-dod { margin-top: 4rem; padding: 2rem; background: rgba(255, 215, 0, 0.03); border-radius: 1rem; border: 1px solid rgba(255, 215, 0, 0.1); }
+        .dod-title { color: var(--brand-gold); margin-bottom: 1rem; }
+        .dod-list { list-style: none; font-size: 0.9rem; color: var(--text-secondary); }
+        .dod-item { margin-bottom: 0.5rem; }
+        .dod-icon { color: var(--brand-gold); margin-right: 0.5rem; }
+        .footer-logo-link { margin-bottom: 1.5rem; }
+        .footer-brand-title { font-size: 1.5rem; color: white; margin: 0; }
+        .footer-powered-text { color: var(--brand-gold); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+    
+        /* Extra Utilty Classes for Inline Replacements */
+        .brand-title { font-size: 1.15rem; font-weight: 800; margin: 0; }
+        .icon-brand-gold { color: var(--brand-gold); }
+        .section-title-mod { font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .section-title-steps { font-size: 1.25rem; margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .step-expand-hint-mod { margin-left: auto; font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+        .vitamin-title { color: var(--brand-gold); margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        .vitamin-text { font-size: 1.1rem; font-style: italic; color: var(--text-secondary); line-height: 1.5; position: relative; z-index: 2; }
+        .kpi-icon-container { display:flex; align-items:center; justify-content:center; height:2.5rem; margin-bottom:0.15rem; }
+        .footer-logo-link { margin-bottom: 1.5rem; }
+        .footer-brand-title { font-size: 1.5rem; color: white; margin: 0; }
+        .footer-copyright-text { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+        .footer-powered-text { color: var(--brand-gold); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+        .modal-btn-complete { background: rgba(16,185,129,0.1); color: #10B981; border-color: rgba(16,185,129,0.2); }
+        .glossary-term-title { color: var(--brand-gold); display: block; margin-bottom: 0.25rem; }
+        .glossary-term-desc { font-size: 0.85rem; color: var(--text-secondary); }
+        .step-item-content { flex: 1; }
+        .step-item-title { font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .step-item-desc { font-size: 0.9rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+    <header class="premium-nav">
+        <div class="nav-container">
+            <div class="brand-group">
+                <a href="https://metodologia.info" class="nav-logo-link" title="Ir al sitio oficial">
+                    <svg width="34" height="34" viewBox="0 0 36 36" fill="none" class="logo-svg">
+                        <rect width="36" height="36" rx="10" fill="#0A122A"/>
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                        <circle cx="18" cy="8" r="2" fill="#FFD700"/>
+                    </svg>
+                    <h1 class="brand-title">Metodolog<span class="highlight-ia-premium">IA</span></h1>
+                </a>
+            </div>
+
+            <div class="nav-links-official">
+                <a href="https://metodologia.info/recursos/index.html">Recursos</a>
+                <a href="https://metodologia.info/contacto/index.html">Contacto</a>
+                <div class="segment-switcher segment-switcher-wrapper">
+                    <a href="../../../../vender-empresas-b2b-proceso.html" class="segment-btn active segment-btn-b2b" title="Activar modo B2B">B2B</a>
+                    <a href="../../../../onboarding-personas-b2c.html" class="segment-btn segment-btn-b2c" title="Activar modo B2C">B2C</a>
+                </div>
+            </div>
+
+            <a href="https://metodologia.info/contacto/index.html" class="nav-cta nav-cta-btn">Auditoría IA</a>
+        </div>
+    </header>
+
+    <section class="hero-sop hero-sop-custom">
+        <span class="version-badge">Sovereign Edition v2.1.0</span>
+        <h1 class="hero-title-lg">Signal Processing & Scouting <span class="highlight-ia-premium">B2B</span></h1>
+        <p class="hero-desc">
+            Convertir "Ruido de Mercado" en "Conversaciones Contextualizadas" mediante el algoritmo de puntería avanzada.
+        </p>
+    </section>
+
+    <main class="main-content main-no-margin">
+
+        <section>
+            <h2 class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-brand-gold"><path d="m13 2-2 10h8L7 22l2-10H1L13 2z"/></svg>
+                El Algoritmo: Signal-to-Conversation
+            </h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Paso</th>
+                            <th>Acción Soberana</th>
+                            <th>Herramienta</th>
+                            <th>Criterio de Éxito</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>01. Scan</b></td>
+                            <td>Detectar la Señal (Trigger Event).</td>
+                            <td>LinkedIn + Alerts</td>
+                            <td>¿Algo cambió en el prospecto?</td>
+                        </tr>
+                        <tr>
+                            <td><b>02. Decode</b></td>
+                            <td>Traducir la Señal a "Dolor Implícito".</td>
+                            <td>NotebookLM</td>
+                            <td>Hipótesis: "Si X cambió, Y duele".</td>
+                        </tr>
+                        <tr>
+                            <td><b>03. Map</b></td>
+                            <td>Filtrar el Comité de Compra.</td>
+                            <td>LinkedIn + The Org</td>
+                            <td>Mapa de 3-5 Stakeholders.</td>
+                        </tr>
+                        <tr>
+                            <td><b>04. Context</b></td>
+                            <td>Generar el Dossier de Inteligencia.</td>
+                            <td>IA (Deep Analysis)</td>
+                            <td>One-Pager listo para el AE.</td>
+                        </tr>
+                        <tr>
+                            <td><b>05. Activate</b></td>
+                            <td>Redactar el Mensaje Soberano.</td>
+                            <td>Email / DM</td>
+                            <td>Conversación iniciada.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-brand-gold"><path d="m21 17-9-7-9 7V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z"/><path d="m3 17 9-7 9 7"/></svg>
+                Rituales de Ejecución
+            </h2>
+            <div class="rituals-grid">
+                <a href="./references/rituales/mapear-stakeholders-b2b-ritual/mapear-stakeholders-b2b-ritual.html" class="ritual-card">
+                    <div>
+                        <h3>Mapear Stakeholders B2B</h3>
+                        <p>Revela el Comité de Compras y la red de influencia interna.</p>
+                    </div>
+                    <span class="ritual-link">Ver Ritual <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+                </a>
+                <a href="./references/rituales/enriquecer-cuenta-con-ia-ritual/enriquecer-cuenta-con-ia-ritual.html" class="ritual-card">
+                    <div>
+                        <h3>Enriquecer Cuenta con IA</h3>
+                        <p>Detección de señales financieras, tecnológicas y noticias.</p>
+                    </div>
+                    <span class="ritual-link">Ver Ritual <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+                </a>
+                <a href="./references/rituales/calificar-oportunidad-b2b-ritual/calificar-oportunidad-b2b-ritual.html" class="ritual-card">
+                    <div>
+                        <h3>Calificar Oportunidad B2B</h3>
+                        <p>Validación de ICP, dolor activo y scoring de cuenta.</p>
+                    </div>
+                    <span class="ritual-link">Ver Ritual <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+                </a>
+                <a href="./references/rituales/agendar-discovery-b2b-ritual/agendar-discovery-b2b-ritual.html" class="ritual-card">
+                    <div>
+                        <h3>Agendar Discovery B2B</h3>
+                        <p>Conversión de señal en reunión mediante hipótesis de valor.</p>
+                    </div>
+                    <span class="ritual-link">Ver Ritual <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+                </a>
+            </div>
+        </section>
+
+        <section class="section-dod">
+            <h4 class="dod-title">Definition of Done (DoD)</h4>
+            <ul class="dod-list">
+                <li class="dod-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="dod-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> La señal investigada es verificable mediante link.</li>
+                <li class="dod-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="dod-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> El mapa de stakeholders tiene al menos 3 perfiles clave.</li>
+                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="dod-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> El mensaje de activación no usa lenguaje "plantilla".</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="https://metodologia.info" class="nav-logo-link footer-logo-link">
+                    <svg width="34" height="34" viewBox="0 0 36 36" fill="none" class="logo-svg">
+                        <rect width="36" height="36" rx="10" fill="#1E293B"/>
+                        <path d="M10 12h3v12h-3V12zm6 0h3v8h-3v-8zm0 10h3v2h-3v-2zm6-10h3v6h-3v-6zm0 8h3v4h-3v-4z" fill="white"/>
+                    </svg>
+                    <h2 class="footer-brand-title">Metodolog<span class="highlight-ia-premium">IA</span></h2>
+                </a>
+                <p class="footer-quote">"La excelencia no se compra, se diseña. Se cocrea y se comparte."</p>
+            </div>
+            <div class="footer-links">
+                <h4>Ecosistema</h4>
+                <ul>
+                    <li><a href="https://metodologia.info/recursos/index.html">Recursos</a></li>
+                    <li><a href="https://metodologia.info/servicios/index.html">Servicios</a></li>
+                    <li><a href="https://metodologia.info/proyectos/index.html">Proyectos</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="https://metodologia.info/legal/terminos.html">Términos</a></li>
+                    <li><a href="https://metodologia.info/legal/privacidad.html">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-copyright-text">© 2026 MetodologIA Playbook. Todos los derechos reservados.</p>
+            <div class="badge-premium">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span class="footer-powered-text">Success as a Service | Powered by Pristino Agent</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

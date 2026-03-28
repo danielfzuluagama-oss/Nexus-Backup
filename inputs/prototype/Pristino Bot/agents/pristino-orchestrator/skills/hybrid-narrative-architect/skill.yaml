@@ -1,0 +1,120 @@
+id: "hybrid-narrative-architect"
+name: "Hybrid Narrative Architect (v1.0-GAMMA)"
+version: "1.0.0"
+description: "Bidirectional content metamorphosis engine (Copy ↔ Storytelling). Ensures Message-Tone-Evidence consistency via the Coherence Matrix when translating persuasive text into spoken scripts and vice versa."
+owner: "agent_orchestrator"
+category: "cognitive-operation"
+
+business_value: |
+  Enables unified messaging deployments where audiences encounter perfectly orchestrated 
+  communication regardless of medium (written vs. spoken). Eliminates the 30%+ message 
+  degradation that occurs when manually adapting copy to speech or speech to copy.
+
+triggers:
+  - keywords: ["copy and storytelling", "copy to speech", "story to copy", "hybrid narrative", "adaptar copy", "matriz de coherencia", "guion desde copy"]
+  - context_patterns:
+      - pattern: "(?i)(copy|texto).*(guion|pitch|hablar|charla)"
+      - pattern: "(?i)(charla|pitch|script).*(copy|landing|email)"
+
+dependencies:
+  skills:
+    - "prompt-engineer"           # For structuring metamorphosis prompts.
+    - "hybrid-content-architect"  # For campaigns requiring both slides and copy alongside narrative.
+
+assumptions:
+  - "Source material (copy or spoken script) exists and is provided by the user. Empty inputs trigger clarification."
+  - "The core message must survive the metamorphosis intact. If adaptation would distort the message, the skill warns before proceeding."
+  - "Default output includes both the adapted content AND the Coherence Matrix analysis. User can request adaptation-only."
+  - "Spoken scripts include performance cues ([PAUSE], [EMPHASIS], [LOWER VOICE]). Written copy does not."
+
+limits:
+  - "Cannot produce audio files or recordings. Output is text-based spoken scripts with performance annotations."
+  - "Cannot assess actual spoken delivery quality (tone of voice, pacing). Optimization is structural, not performative."
+  - "Cannot handle visual content adaptation. Strictly Text ↔ Speech. Visual elements route to presentation-architect."
+  - "Maximum source length: ~5,000 words per adaptation cycle. Longer content should be chunked."
+
+capabilities:
+  orchestration:
+    bidirectional_metamorphosis:
+      copy_to_story: "Transforms written persuasive structures (PAS, AIDA) into spoken-word narratives with hooks, pauses, and emotional arcs."
+      story_to_copy: "Reverse-engineers spoken delivery into scannable, conversion-optimized persuasive copy."
+    coherence_matrix:
+      description: "The core validator ensuring cross-medium consistency."
+      dimensions:
+        tono_personalidad: "Tonal synchrony between written material and planned spoken prosody."
+        gran_idea_rtb: "The core promise and its evidence (Reasons to Believe) exist and resonate in both mediums."
+        ctas_alineados: "Conversion friction is equivalent: the verbal transition feels as natural as clicking a CTA button."
+    unified_messaging:
+      description: "Designs the overarching narrative architecture that both mediums share before any adaptation begins."
+
+  analysis:
+    reverse_engineering: "Deconstructs spoken delivery patterns (pacing, repetition, emphasis) into persuasive copy structure."
+    distillation: "Compresses long-form copy into high-impact spoken bullet points without losing strategic intent."
+
+workflows:
+  - id: "wflow_coherence_matrix"
+    name: "La Matriz de Coherencia (Core Validator)"
+    steps:
+      - "1. Tono y Personalidad: Verify tonal synchrony between written material and spoken prosody."
+      - "2. Gran Idea y RTB: Confirm the core promise and its evidence exist in both mediums."
+      - "3. CTAs Alineados: Ensure conversion friction is equivalent across mediums."
+
+  - id: "wflow_hybrid_copy_to_story"
+    name: "Copy → Storytelling"
+    steps:
+      - "1. Análisis de Conversión: Deconstruct hooks, arguments, and persuasive structures from the copy."
+      - "2. Adaptación Verbal: Translate complex structures into short, breathable, impactful phrases with [PAUSE] and [EMPHASIS] markers."
+      - "3. Performance Cues: Add pacing annotations, vocal tone directions, and strategic repetition markers."
+      - "4. Validación de Matriz: Pass the resulting script through the Coherence Matrix against the original copy."
+
+  - id: "wflow_hybrid_story_to_copy"
+    name: "Storytelling → Copy"
+    steps:
+      - "1. Transcripción y Esencia: Analyze the spoken narrative. Extract emotional and rational peaks."
+      - "2. Estructuración Persuasiva: Assemble spoken arguments into copy frameworks (PAS, AIDA, Rule of ONE)."
+      - "3. Optimización para Lectura: Replace filler words and speaking patterns with scannable formatting, headers, and native CTAs."
+      - "4. Validación de Matriz: Run Coherence Matrix check against the original spoken script."
+
+  - id: "wflow_hybrid_integrated"
+    name: "Simultaneous Integrated Generation"
+    steps:
+      - "1. Brief Unificado: Establish Avatar, Angle, and Offer for both mediums."
+      - "2. Bifurcación Táctica: Develop written artifact and spoken script in parallel under the same narrative thread."
+      - "3. Revisión Cruzada: Cross-reference both assets. Ensure iterative feedback strengthens both."
+      - "4. Coherence Matrix: Final validation across all 3 dimensions."
+
+edge_cases:
+  - scenario: "Source copy is extremely technical (APIs, code references) and must become a spoken pitch."
+    handling: "Strip technical jargon. Replace with metaphors and outcome-focused language. Flag irreplaceable technical terms for the user's decision."
+  - scenario: "Source spoken script has no clear structure (stream-of-consciousness recording)."
+    handling: "Apply narrative extraction first: identify 1–3 core messages. Discard tangents. Structure around the extracted messages."
+  - scenario: "User requests only one direction (e.g., Copy → Story) but the Coherence Matrix reveals the original copy has fundamental issues."
+    handling: "Report the issues found. Offer to fix the source copy first, then adapt. Never adapt known-broken content silently."
+  - scenario: "Spoken script contains culturally-specific humor or idioms that don't translate to written copy."
+    handling: "Flag the untranslatable elements. Propose functionally equivalent written alternatives that achieve the same emotional effect."
+
+trade_offs:
+  - decision: "Mandatory Coherence Matrix validation over faster output."
+    justification: "Message drift between mediums is the #1 failure mode of cross-channel campaigns. The 3-dimension check prevents it."
+  - decision: "Performance cues in spoken scripts ([PAUSE], [EMPHASIS]) over clean prose."
+    justification: "Spoken scripts without delivery annotations are just text. The cues are what differentiate a script from a document."
+  - decision: "Bridge-focused output (transformation between mediums) over standalone content creation."
+    justification: "Standalone copy belongs in conversion-copywriter. Standalone storytelling belongs in verbal-storyteller. This skill exists specifically for the bridge."
+
+constraints:
+  - "NEVER operate solely as a copywriter or solely as a storyteller if the prompt demands hybrid functionality."
+  - "ALWAYS output the Coherence Matrix analysis when translating between mediums."
+  - "NEVER insert visual placeholders ([Imagen Aquí]). This skill focuses exclusively on Text and Speech."
+  - "NEVER adapt content that fails the Coherence Matrix without surfacing the failure to the user."
+  - "ALWAYS include performance cues ([PAUSE], [EMPHASIS], [LOWER VOICE]) in spoken script outputs."
+
+evaluation:
+  acceptance_criteria:
+    - "Core message retained with 100% fidelity across both mediums."
+    - "Zero meta-discourse in final output ('Aquí tienes la adaptación...' forbidden)."
+    - "Spoken scripts include performance cues (pauses, inflection mapping, emphasis markers)."
+    - "Coherence Matrix passes all 3 dimensions (Tone, Gran Idea/RTB, CTAs)."
+  success_metrics:
+    - "100% of adaptations include Coherence Matrix validation."
+    - "≥95% of adaptations achieve message fidelity across mediums."
+    - "Zero outputs without performance cues in spoken script deliverables."

@@ -4,22 +4,255 @@ import { runAgent, type AgentDeps } from "./agent.js";
 import { formatForTelegram, splitMessageHtml, stripHtml } from "./format.js";
 import { transcribeAudio } from "./audio.js";
 import { sanitizeInput } from "./security.js";
+import { getOperationalKnowledgeAccessor } from "./knowledge/accessor.js";
+import type { OnboardingPack, ProcessModule } from "./knowledge/operational-kb.js";
 
 /**
  * TELEGRAM GATEWAY — Multimodal ingress/egress and agent orchestration.
  *
  * Responsibilities: whitelist auth, media routing (audio/photo/document/animation),
- * agent timeout protection (60s hard limit), and HTML fallback on Telegram parse errors.
+ * agent timeout protection (env-configurable hard limit), and HTML fallback on Telegram parse errors.
  *
  * Trade-offs:
  * - Telegram's HTML parser rejects unbalanced tags; fallback to stripHtml() recovers delivery
  *   at the cost of formatting. This is preferable to message loss.
  * - agentDeps.ecosystem is resolved lazily via runtime.ecosystem getter so that ecosystem
  *   initialized after bot creation (in index.ts) is still available at message time.
- * - The 60s timeout is aggressive for complex multi-tool chains but necessary for Cloud Run's
- *   request deadline. Long tasks should be decomposed into sub-agent steps.
+ * - The timeout defaults to 120s and can be tuned via AGENT_TIMEOUT_MS. Long tasks should still
+ *   be decomposed into faster operational or sub-agent steps whenever possible.
  */
-const AGENT_TIMEOUT_MS = 60_000;
+const DEFAULT_AGENT_TIMEOUT_MS = 120_000;
+const MIN_AGENT_TIMEOUT_MS = 15_000;
+const OPERATIONAL_FAST_PATH_KEYWORDS = [
+  "proceso",
+  "process",
+  "onboarding",
+  "onboard",
+  "workflow",
+  "playbook",
+  "fase",
+  "fases",
+  "gate",
+  "gates",
+  "asset",
+  "assets",
+  "sop",
+  "sops",
+  "riesgo",
+  "riesgos",
+  "risk",
+  "risks",
+  "rol",
+  "roles",
+  "owner",
+  "owners",
+  "responsable",
+  "responsables",
+  "entrada",
+  "entradas",
+  "salida",
+  "salidas",
+  "entregable",
+  "deliverable",
+  "presales",
+];
+const OPERATIONAL_ONBOARDING_KEYWORDS = [
+  "onboarding",
+  "onboard",
+  "induccion",
+  "induction",
+  "nuevo integrante",
+  "resumen",
+  "summary",
+];
+
+function getAgentTimeoutMs(): number {
+  const raw = Number(process.env.AGENT_TIMEOUT_MS);
+  if (Number.isFinite(raw) && raw >= MIN_AGENT_TIMEOUT_MS) {
+    return Math.floor(raw);
+  }
+  return DEFAULT_AGENT_TIMEOUT_MS;
+}
+
+function normalizeForMatching(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s/-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function includesAnyKeyword(haystack: string, keywords: string[]): boolean {
+  return keywords.some((keyword) => haystack.includes(keyword));
+}
+
+function detectProcessMention(
+  normalizedMessage: string,
+  modules: ProcessModule[],
+): ProcessModule | null {
+  let bestModule: ProcessModule | null = null;
+  let bestScore = 0;
+
+  for (const module of modules) {
+    const candidates = [
+      module.processId,
+      module.processName,
+      ...module.variants,
+      ...module.relatedProcesses,
+    ];
+
+    for (const candidate of candidates) {
+      const normalizedCandidate = normalizeForMatching(candidate);
+      if (!normalizedCandidate) continue;
+
+      let score = 0;
+      if (normalizedMessage.includes(normalizedCandidate)) {
+        score = 100 + normalizedCandidate.length;
+      } else {
+        const tokens = normalizedCandidate
+          .split(" ")
+          .map((token) => token.trim())
+          .filter((token) => token.length >= 3);
+
+        if (tokens.length > 0 && tokens.every((token) => normalizedMessage.includes(token))) {
+          score = tokens.length * 10 + normalizedCandidate.length;
+        }
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestModule = module;
+      }
+    }
+  }
+
+  return bestModule;
+}
+
+function inferAudienceRole(normalizedMessage: string): string {
+  if (normalizedMessage.includes("cliente")) return "cliente";
+  if (normalizedMessage.includes("implementador")) return "implementador";
+  if (normalizedMessage.includes("pm")) return "pm";
+  if (normalizedMessage.includes("ae")) return "ae";
+  if (normalizedMessage.includes("lider")) return "lider";
+  return "nuevo integrante";
+}
+
+function buildOperationalRisks(module: ProcessModule): string[] {
+  const risks: string[] = [];
+
+  if (module.status === "needs_attention") {
+    risks.push("La documentacion del proceso sigue incompleta y requiere atencion antes de operar con autonomia.");
+  }
+  if (module.gates.length > 0) {
+    risks.push("Saltar gates rompe la trazabilidad del proceso y puede invalidar el siguiente handoff.");
+  }
+  if (module.assets.length > 0) {
+    risks.push("Usar assets desactualizados o incompletos puede deteriorar la calidad del entregable.");
+  }
+  if (module.sops.length > 0) {
+    risks.push("Ejecutar sin SOP vigente aumenta el riesgo de desviaciones y retrabajo.");
+  }
+
+  if (risks.length === 0) {
+    risks.push("Validar owner, evidencia y criterio de cierre antes de avanzar al siguiente hito.");
+  }
+
+  return risks.slice(0, 3);
+}
+
+function formatOnboardingFastPathReply(
+  module: ProcessModule,
+  pack: OnboardingPack,
+): string {
+  const riskText = buildOperationalRisks(module).join(" | ");
+  const assetText =
+    pack.essentialAssets.length > 0
+      ? pack.essentialAssets.join(" | ")
+      : module.assets.length > 0
+        ? module.assets.slice(0, 6).join(" | ")
+        : "No detecte assets esenciales explicitados en el modulo.";
+  const sopText =
+    pack.essentialSops.length > 0
+      ? pack.essentialSops.join(" | ")
+      : module.sops.length > 0
+        ? module.sops.slice(0, 6).join(" | ")
+        : "No detecte SOPs esenciales explicitados en el modulo.";
+  const ownerText =
+    module.owners.length > 0 ? module.owners.join(" | ") : "Owners no definidos en la fuente operativa.";
+
+  return [
+    `Respuesta directa del KB operativo para ${module.processName}.`,
+    `Objetivo: ${pack.summary}`,
+    module.phases.length > 0
+      ? `Fases clave: ${module.phases.join(" | ")}`
+      : `Walkthrough recomendado: ${pack.walkthrough.join(" | ")}`,
+    `Roles u owners: ${ownerText}`,
+    `Entradas y salidas operativas mas visibles: ${assetText}`,
+    `Gates y SOPs clave: ${[...module.gates.slice(0, 4), ...pack.essentialSops.slice(0, 4)].join(" | ") || sopText}`,
+    `Riesgos clave: ${riskText}`,
+    `Preguntas de arranque: ${pack.firstQuestions.slice(0, 3).join(" | ")}`,
+  ].join("\n");
+}
+
+function formatModuleFastPathReply(module: ProcessModule): string {
+  return [
+    `Respuesta directa del KB operativo para ${module.processName}.`,
+    `Resumen: ${module.summary}`,
+    module.phases.length > 0 ? `Fases: ${module.phases.join(" | ")}` : "Fases: no detectadas en el modulo.",
+    module.owners.length > 0 ? `Owners: ${module.owners.join(" | ")}` : "Owners: no definidos en fuente.",
+    module.gates.length > 0 ? `Gates: ${module.gates.join(" | ")}` : "Gates: no detectados.",
+    module.assets.length > 0 ? `Assets clave: ${module.assets.slice(0, 6).join(" | ")}` : "Assets clave: no detectados.",
+    module.sops.length > 0 ? `SOPs clave: ${module.sops.slice(0, 6).join(" | ")}` : "SOPs clave: no detectados.",
+    `Riesgos clave: ${buildOperationalRisks(module).join(" | ")}`,
+  ].join("\n");
+}
+
+async function tryOperationalFastPath(
+  text: string,
+  log: AgentRuntime["logger"],
+): Promise<string | null> {
+  const normalizedMessage = normalizeForMatching(text);
+  if (!normalizedMessage) return null;
+  if (!includesAnyKeyword(normalizedMessage, OPERATIONAL_FAST_PATH_KEYWORDS)) {
+    return null;
+  }
+
+  try {
+    const kb = await getOperationalKnowledgeAccessor();
+    const modules = await kb.listProcesses();
+    const module = detectProcessMention(normalizedMessage, modules);
+
+    if (!module) {
+      return null;
+    }
+
+    if (includesAnyKeyword(normalizedMessage, OPERATIONAL_ONBOARDING_KEYWORDS)) {
+      const audienceRole = inferAudienceRole(normalizedMessage);
+      const pack = await kb.createOnboardingPack(module.processId, audienceRole, text);
+      if (pack) {
+        log.info("Operational fast path resolved", {
+          processId: module.processId,
+          mode: "onboarding",
+        });
+        return formatOnboardingFastPathReply(module, pack);
+      }
+    }
+
+    log.info("Operational fast path resolved", {
+      processId: module.processId,
+      mode: "module",
+    });
+    return formatModuleFastPathReply(module);
+  } catch (error) {
+    log.warn("Operational fast path skipped after lookup failure", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return null;
+  }
+}
 
 /**
  * Instantiates a Grammy Bot mapped to a specific AgentRuntime. 
@@ -187,14 +420,24 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
     // --- TIMEOUT PROTECTION CIRCUIT BREAKER ---
     // Forces the promise to resolve internally if the LLM/Agent gets stuck processing tools
     log.info("Running agent cognition...", { userId, textLength: text.length });
+    const cognitionTask = (async () => {
+      const directResponse = !hasMedia ? await tryOperationalFastPath(text, log) : null;
+      if (directResponse) {
+        return directResponse;
+      }
+
+      return runAgent(getAgentDeps(), userId, text);
+    })();
+
+    const timeoutMs = getAgentTimeoutMs();
     const result = await Promise.race([
-      runAgent(getAgentDeps(), userId, text),
+      cognitionTask,
       new Promise<string>((_, reject) =>
-        setTimeout(() => reject(new Error("Agent timeout")), AGENT_TIMEOUT_MS)
+        setTimeout(() => reject(new Error("Agent timeout")), timeoutMs)
       ),
     ]).catch((err) => {
       log.error("Message handling failed or timed out", { userId, error: err.message || err });
-      return "Lo siento, la solicitud tardó demasiado en procesarse (Timeout 60s). Por favor intenta de nuevo.";
+      return `Lo siento, la solicitud tardó demasiado en procesarse (Timeout ${Math.floor(timeoutMs / 1000)}s). Por favor intenta de nuevo.`;
     });
 
     log.info("Agent cognition complete", { userId, resultLength: result.length });

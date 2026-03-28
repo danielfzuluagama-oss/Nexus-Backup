@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Auditar Ecosistema de Aliados — Proceso de Delivery MetodologIA">
+    <title>SOP: Auditar Ecosistema de Aliados — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Aliados Comercial</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Auditar Ecosistema de Aliados</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Auditar Ecosistema de Aliados</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">14</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-propsito-dec948')" aria-label="Ir a 1. Propósito">1. Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-637d08')" aria-label="Ir a 2. Supuestos Explícitos">2. Supuestos Explícitos</button>
+<button class="nav-btn" onclick="scrollToSection('3-mbito-a3bb02')" aria-label="Ir a 3. Ámbito">3. Ámbito</button>
+<button class="nav-btn" onclick="scrollToSection('4-cadencia-y-timing-6f2f39')" aria-label="Ir a 4. Cadencia y Timing">4. Cadencia y Timing</button>
+<button class="nav-btn" onclick="scrollToSection('5-data-collection-phase-b7729c')" aria-label="Ir a 5. Data Collection Phase">5. Data Collection Phase</button>
+<button class="nav-btn" onclick="scrollToSection('6-4d-scoring-rbrica-935419')" aria-label="Ir a 6. 4D Scoring Rúbrica">6. 4D Scoring Rúbrica</button>
+<button class="nav-btn" onclick="scrollToSection('7-root-cause-analysis-0f2e5f')" aria-label="Ir a 7. Root Cause Analysis">7. Root Cause Analysis</button>
+<button class="nav-btn" onclick="scrollToSection('8-stakeholder-interviews-206204')" aria-label="Ir a 8. Stakeholder Interviews">8. Stakeholder Interviews</button>
+<button class="nav-btn" onclick="scrollToSection('9-renewal-decision-17e040')" aria-label="Ir a 9. Renewal Decision">9. Renewal Decision</button>
+<button class="nav-btn" onclick="scrollToSection('10-casos-borde-cf7a02')" aria-label="Ir a 10. Casos Borde">10. Casos Borde</button>
+<button class="nav-btn" onclick="scrollToSection('11-criterios-de-aceptacin-binarios-834500')" aria-label="Ir a 11. Criterios de Aceptación Binarios">11. Criterios de Aceptación Binario</button>
+<button class="nav-btn" onclick="scrollToSection('12-antipatterns-d0b1aa')" aria-label="Ir a 12. Anti-Patterns">12. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('13-dashboard-reporting-2a1f80')" aria-label="Ir a 13. Dashboard &amp; Reporting">13. Dashboard &amp; Reporting</button>
+<button class="nav-btn" onclick="scrollToSection('14-referencias-0ab634')" aria-label="Ir a 14. Referencias">14. Referencias</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-propsito-dec948" data-searchable aria-labelledby="head-1-propsito-dec948">
+            <div class="phase-header" id="head-1-propsito-dec948" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Propósito</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Evaluar semiestralmente la salud, desempeño y viabilidad de cada aliado en el ecosistema MetodologIA, identificando desviaciones temprano e interviniendo para optimizar o exit partnerships de manera ordenada.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-637d08" data-searchable aria-labelledby="head-2-supuestos-explcitos-637d08">
+            <div class="phase-header" id="head-2-supuestos-explcitos-637d08" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. Supuestos Explícitos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Auditoría es diagnóstica, no punitiva</strong>: El goal es entender qué está funcionando/no funcionando y arreglarlo, no castigar underperformers.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>4D evaluation (Comercial, Operacional, Relacional, Financiero) predice viabilidad</strong>: Mismo framework que evaluar-fit aplica a ongoing audit; aliados con score &lt;60% tienen probabilidad &gt;70% de exit en 12 meses.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Semestrales permite intervention temprana</strong>: Trimestral es over-monitoring; anual es demasiado lento. 6 meses = sufficient data (3-6 deals) + intervention window antes next review.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Metrics son lagging indicators</strong>: NPS baja, ARR trending down, quality issues son síntomas de problemas más profundos (team churn, market shift, capability gap). Audit must investigate root cause.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Renewal es binary decision</strong>: ≥80% all dimensions = auto-renew; &lt;60% = exit negotiation; 60-80% = 90-day improvement plan con clear milestones.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Ecosystem health es finito</strong>: Capacity constraints (Delivery support, VP Ventas time, commercial bandwidth) mean that under-performing aliados should exit para liberar recursos.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-mbito-a3bb02" data-searchable aria-labelledby="head-3-mbito-a3bb02">
+            <div class="phase-header" id="head-3-mbito-a3bb02" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Ámbito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="incluido-debba4">Incluido</h3>
+<div class="bullet-item">Recolección de metrics por aliado (ARR, pipeline, conversión, NPS, etc)</div>
+<div class="bullet-item">4D scoring (Commercial, Operational, Relational, Financial)</div>
+<div class="bullet-item">Root cause analysis para desviaciones</div>
+<div class="bullet-item">Stakeholder interviews (customer, aliado leadership, MetodologIA team)</div>
+<div class="bullet-item">Renewal recommendation (Auto-Renew / Improvement Plan / Exit)</div>
+<div class="bullet-item">Communication a aliado + decision</div>
+<h3 class="subsection-title" id="excluido-fdce89">Excluido</h3>
+<div class="bullet-item">Ongoing coaching (that&#x27;s VP Aliados job post-audit)</div>
+<div class="bullet-item">Renegotiation de términos (separate contract process)</div>
+<div class="bullet-item">Marketing/brand co-development</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-cadencia-y-timing-6f2f39" data-searchable aria-labelledby="head-4-cadencia-y-timing-6f2f39">
+            <div class="phase-header" id="head-4-cadencia-y-timing-6f2f39" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Cadencia y Timing</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Audit cycles</strong>:</p>
+<div class="bullet-item"><strong>H1 Audit</strong>: May-June (reviews performance Jan-Jun)</div>
+<div class="bullet-item"><strong>H2 Audit</strong>: Nov-Dec (reviews performance Jul-Dec)</div>
+<p class="key-value"><strong>Preparación</strong> (3 weeks before audit window):</p>
+<div class="bullet-item">Wk 1: Data collection from all systems (CRM, finance, support, etc)</div>
+<div class="bullet-item">Wk 2: Root cause analysis for red flags</div>
+<div class="bullet-item">Wk 3: Stakeholder interviews + scoring drafts</div>
+<p class="key-value"><strong>Execution</strong> (2 weeks):</p>
+<div class="bullet-item">Wk 1: Final scoring + recommendation drafts</div>
+<div class="bullet-item">Wk 2: Execution round (communication to aliados)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-data-collection-phase-b7729c" data-searchable aria-labelledby="head-5-data-collection-phase-b7729c">
+            <div class="phase-header" id="head-5-data-collection-phase-b7729c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Data Collection Phase</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="51-comercial-metrics-4e779c">5.1 Comercial Metrics</h3>
+<p class="key-value"><strong>Source</strong>: CRM, Sales forecasting system</p>
+<p class="key-value"><strong>Metrics</strong>:</p>
+<div class="bullet-item"><strong>ARR</strong>: Annual recurring revenue generated through aliado (sales + expected renewals)</div>
+<div class="bullet-item">Target vs actual: Is aliado on track to &gt;$500K in 24 months? (yes=green, no=red)</div>
+<div class="bullet-item"><strong>Pipeline</strong>: Current qualified pipeline attributed to aliado ($)</div>
+<div class="bullet-item">Health: ≥3x ARR target = healthy</div>
+<div class="bullet-item"><strong>Conversion rate</strong>: % of opportunities identified by aliado that close</div>
+<div class="bullet-item">Benchmark: 35-45% (industry-standard for partner channel)</div>
+<div class="bullet-item">Red flag: &lt;25%</div>
+<div class="bullet-item"><strong>Deal velocity</strong>: Average time from identification to close</div>
+<div class="bullet-item">Benchmark: 60-90 days (depends on vertical; longer = risk)</div>
+<div class="bullet-item"><strong>Referral quality</strong>: % of aliado-referred customers that have retention/expansion</div>
+<div class="bullet-item">Metric: &gt;90% retention, &gt;30% expansion in year 2 (indicates good fit)</div>
+<div class="bullet-item"><strong>Geographic/vertical concentration</strong>: Is aliado diversified or single-customer risk?</div>
+<p class="key-value"><strong>Data collection</strong>:</p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>For each opportunity attributed to aliado:
+  - Customer name, size, vertical, geography
+  - Deal value, date closed
+  - Customer status (active/churned/expanded)
+  - NPS score (if available)</code></pre>
+<hr class="divider">
+<h3 class="subsection-title" id="52-operacional-metrics-0bfa69">5.2 Operacional Metrics</h3>
+<p class="key-value"><strong>Source</strong>: Delivery system, support tickets, project management</p>
+<p class="key-value"><strong>Metrics</strong>:</p>
+<div class="bullet-item"><strong>Delivery quality</strong>: NPS of customers delivered by/with aliado</div>
+<div class="bullet-item">Target: &gt;50 (same as MetodologIA direct)</div>
+<div class="bullet-item">Red flag: &lt;40</div>
+<div class="bullet-item"><strong>Defect rate</strong>: % of customer complaints, quality issues, rework required</div>
+<div class="bullet-item">Target: &lt;5%</div>
+<div class="bullet-item">Red flag: &gt;10%</div>
+<div class="bullet-item"><strong>Milestone adherence</strong>: % of projects that hit timeline milestones</div>
+<div class="bullet-item">Target: &gt;85%</div>
+<div class="bullet-item">Red flag: &lt;70%</div>
+<div class="bullet-item"><strong>SLA compliance</strong>: Does aliado meet documented SLAs (response time, escalation)?</div>
+<div class="bullet-item">Target: 95%+ compliance</div>
+<div class="bullet-item">Red flag: &lt;80%</div>
+<div class="bullet-item"><strong>Team stability</strong>: Any key departures? Turnover? Growth in team?</div>
+<div class="bullet-item">Red flag: &gt;25% churn in last 6 months</div>
+<div class="bullet-item"><strong>Certification status</strong>: Is aliado still certified? Any recertification needed?</div>
+<p class="key-value"><strong>Data collection</strong>:</p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>For each customer project with aliado involvement:
+  - Delivery phase 1/2/3/4 (kickoff/execution/enablement/handoff)
+  - Milestone dates (planned vs actual)
+  - Customer NPS (post-delivery survey)
+  - Issues/escalations logged
+  - Aliado resource hours invested</code></pre>
+<hr class="divider">
+<h3 class="subsection-title" id="53-relacional-metrics-f40af3">5.3 Relacional Metrics</h3>
+<p class="key-value"><strong>Source</strong>: Executive stakeholder interviews, communication logs</p>
+<p class="key-value"><strong>Metrics</strong>:</p>
+<div class="bullet-item"><strong>Engagement level</strong>: Frequency of communication, participation in reviews, strategic alignment</div>
+<div class="bullet-item">Green: Weekly touchpoints, attends reviews, proactive problem-solving</div>
+<div class="bullet-item">Red: &lt;monthly touchpoints, missed reviews, reactive only</div>
+<div class="bullet-item"><strong>Conflicts/disputes</strong>: Any unresolved conflicts, contract violations, or relational issues?</div>
+<div class="bullet-item">Green: None or quickly resolved</div>
+<div class="bullet-item">Red: Recurring conflicts, legal involvement</div>
+<div class="bullet-item"><strong>Growth mindset</strong>: Is aliado investing in team/capability growth or staying static?</div>
+<div class="bullet-item">Green: Hiring, training, expanding service offerings</div>
+<div class="bullet-item">Red: Flat or declining team</div>
+<div class="bullet-item"><strong>MetodologIA knowledge</strong>: Is aliado demonstrating mastery of methodology in customers?</div>
+<div class="bullet-item">Green: Case studies show innovation/adaptation of MetodologIA</div>
+<div class="bullet-item">Red: Cookie-cutter approach, not customizing for customer</div>
+<p class="key-value"><strong>Data collection</strong>:</p>
+<div class="bullet-item">Executive stakeholder survey (Aliado CEO, MetodologIA VP Ventas, Account managers)</div>
+<div class="bullet-item">Rating (1-5): Engagement, trustworthiness, problem-solving, growth mindset</div>
+<div class="bullet-item">Open-ended: What&#x27;s going well? What&#x27;s biggest challenge?</div>
+<hr class="divider">
+<h3 class="subsection-title" id="54-financiera-metrics-e850b6">5.4 Financiera Metrics</h3>
+<p class="key-value"><strong>Source</strong>: Finance system, invoice records</p>
+<p class="key-value"><strong>Metrics</strong>:</p>
+<div class="bullet-item"><strong>Margin/Commission paid vs budgeted</strong>:</div>
+<div class="bullet-item">Is aliado earning within expected range? (e.g., 25-30% of deal value)</div>
+<div class="bullet-item">Red flag: Aliado requesting price exceptions / margin pressure</div>
+<div class="bullet-item"><strong>Payment compliance</strong>: Does aliado pay MetodologIA on time? (if reseller model)</div>
+<div class="bullet-item">Green: 100% on-time</div>
+<div class="bullet-item">Red: Late payments, disputes</div>
+<div class="bullet-item"><strong>Model viability</strong>: Original model assumptions still valid?</div>
+<div class="bullet-item">Revisit: Sales cycle, conversion rate, deal size assumptions</div>
+<div class="bullet-item">If deltas &gt;20%: Escalate for renegotiation discussion</div>
+<div class="bullet-item"><strong>ARR contribution to MetodologIA</strong>: What % of total company ARR comes from this aliado?</div>
+<div class="bullet-item">Green: &gt;2% of total (material partner)</div>
+<div class="bullet-item">Red: &lt;0.5% (marginal partner, consider exit)</div>
+<div class="bullet-item"><strong>Cash flow sustainability</strong>: Is aliado profitable on partnership, or struggling?</div>
+<div class="bullet-item">Indirect signal: Asking for advance payments, discounts, etc.</div>
+<p class="key-value"><strong>Data collection</strong>:</p>
+<div class="bullet-item">Aliado: Quarterly financials (if available/shared)</div>
+<div class="bullet-item">Revenue, margin, team costs, profitability trend</div>
+<div class="bullet-item">MetodologIA: Commission paid out, % of ARR</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-4d-scoring-rbrica-935419" data-searchable aria-labelledby="head-6-4d-scoring-rbrica-935419">
+            <div class="phase-header" id="head-6-4d-scoring-rbrica-935419" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 6. 4D Scoring Rúbrica</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Scoring template</strong> (Same as Fit Evaluation, adapted for ongoing audit):</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Dimensión</th><th scope="col">Sub-metric</th><th scope="col">0-2</th><th scope="col">3-4</th><th scope="col">5-6</th><th scope="col">7-8</th><th scope="col">9-10</th><th scope="col">Score</th></tr></thead><tbody><tr><td><strong>Comercial</strong> (25%)</td><td>ARR vs target</td><td>&lt;$100K</td><td>$100-250K</td><td>$250-500K</td><td>$500K-1M</td><td>&gt;$1M</td><td>___</td></tr><tr><td></td><td>Pipeline health</td><td>&lt;1x target</td><td>1-2x</td><td>2-3x</td><td>3-4x</td><td>&gt;4x</td><td>___</td></tr><tr><td></td><td>Conversion rate</td><td>&lt;20%</td><td>20-30%</td><td>30-40%</td><td>40-50%</td><td>&gt;50%</td><td>___</td></tr><tr><td></td><td>Customer quality (NPS)</td><td>&lt;30</td><td>30-40</td><td>40-50</td><td>50-60</td><td>&gt;60</td><td>___</td></tr><tr><td><strong>Operacional</strong> (25%)</td><td>Delivery quality (NPS)</td><td>&lt;40</td><td>40-50</td><td>50-60</td><td>60-70</td><td>&gt;70</td><td>___</td></tr><tr><td></td><td>Defect rate</td><td>&gt;15%</td><td>10-15%</td><td>5-10%</td><td>2-5%</td><td>&lt;2%</td><td>___</td></tr><tr><td></td><td>Timeline adherence</td><td>&lt;70%</td><td>70-80%</td><td>80-85%</td><td>85-95%</td><td>&gt;95%</td><td>___</td></tr><tr><td></td><td>SLA compliance</td><td>&lt;70%</td><td>70-80%</td><td>80-90%</td><td>90-95%</td><td>&gt;95%</td><td>___</td></tr><tr><td><strong>Relacional</strong> (25%)</td><td>Engagement/execution</td><td>Very low</td><td>Low</td><td>Medium</td><td>High</td><td>Very high</td><td>___</td></tr><tr><td></td><td>Conflict resolution</td><td>Unresolved</td><td>Slow</td><td>Moderate</td><td>Responsive</td><td>Proactive</td><td>___</td></tr><tr><td></td><td>Growth mindset</td><td>Stagnant</td><td>Minimal</td><td>Some investment</td><td>Active growth</td><td>Aggressive growth</td><td>___</td></tr><tr><td></td><td>MetodologIA mastery</td><td>Learning</td><td>Basic</td><td>Competent</td><td>Mastery</td><td>Thought leader</td><td>___</td></tr><tr><td><strong>Financiera</strong> (25%)</td><td>Margin model viability</td><td>Not viable</td><td>Marginal</td><td>Adequate</td><td>Strong</td><td>Excellent</td><td>___</td></tr><tr><td></td><td>ARR contribution</td><td>&lt;0.5%</td><td>0.5-1%</td><td>1-2%</td><td>2-3%</td><td>&gt;3%</td><td>___</td></tr><tr><td></td><td>Payment compliance</td><td>Late/disputes</td><td>Occasional late</td><td>On-time</td><td>Proactive</td><td>N/A</td><td>___</td></tr><tr><td></td><td>Profitability trend</td><td>Declining</td><td>Flat</td><td>Slightly up</td><td>Growing</td><td>Strong growth</td><td>___</td></tr></tbody></table></div>
+<p class="key-value"><strong>Final Score Calculation</strong>:</p>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Total Score = (Comercial Avg × 0.25) + (Operacional Avg × 0.25) + (Relacional Avg × 0.25) + (Financiera Avg × 0.25)</code></pre>
+<p class="key-value"><strong>Scoring scale</strong> (0-10):</p>
+<div class="bullet-item"><strong>8.0-10.0</strong>: Excellent (Auto-Renew)</div>
+<div class="bullet-item"><strong>7.0-7.9</strong>: Strong (Auto-Renew with condition)</div>
+<div class="bullet-item"><strong>6.0-6.9</strong>: Adequate (Improvement Plan required)</div>
+<div class="bullet-item"><strong>5.0-5.9</strong>: Concerning (Improvement Plan + close monitoring)</div>
+<div class="bullet-item"><strong>&lt;5.0</strong>: Critical (Exit discussion)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-root-cause-analysis-0f2e5f" data-searchable aria-labelledby="head-7-root-cause-analysis-0f2e5f">
+            <div class="phase-header" id="head-7-root-cause-analysis-0f2e5f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 7. Root Cause Analysis</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>For any red flag score (dimension &lt;6.0), conduct root cause analysis:</p>
+<p class="key-value"><strong>Investigation template</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>What&#x27;s the gap?</strong> (e.g., ARR $200K vs $500K target)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Why?</strong> (potential causes)</span></div>
+<div class="bullet-item">Market: TAM smaller than expected? Competition?</div>
+<div class="bullet-item">Capability: Aliado can&#x27;t sell/deliver MetodologIA effectively?</div>
+<div class="bullet-item">Execution: Poor pipeline management, lost deals?</div>
+<div class="bullet-item">Alignment: Aliado prioritizing other partners?</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Evidence</strong>: Customer feedback, aliado interviews, metrics trends</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Corrective action</strong>: What needs to happen to improve?</span></div>
+<div class="bullet-item">Scenario A: Coaching/capability building (6-12 weeks)</div>
+<div class="bullet-item">Scenario B: Market shift accepted; reset targets</div>
+<div class="bullet-item">Scenario C: Exit (partner not viable)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-stakeholder-interviews-206204" data-searchable aria-labelledby="head-8-stakeholder-interviews-206204">
+            <div class="phase-header" id="head-8-stakeholder-interviews-206204" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 8. Stakeholder Interviews</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Interview aliado leadership</strong> (30-45 min):</p>
+<div class="bullet-item">How is partnership going from your perspective?</div>
+<div class="bullet-item">What&#x27;s working well? What&#x27;s challenging?</div>
+<div class="bullet-item">Are you on track to ARR targets? Why/why not?</div>
+<div class="bullet-item">Any capability gaps or resources needed?</div>
+<div class="bullet-item">Long-term strategy: Do you want to continue growing with MetodologIA?</div>
+<p class="key-value"><strong>Interview MetodologIA account team</strong> (for aliado customers):</p>
+<div class="bullet-item">How is customer satisfaction? NPS trend?</div>
+<div class="bullet-item">Any quality issues? Escalations?</div>
+<div class="bullet-item">Is aliado collaborative, responsive?</div>
+<div class="bullet-item">Would you recommend expanding this partnership?</div>
+<p class="key-value"><strong>Interview customer references</strong> (2-3 customers delivered by/with aliado):</p>
+<div class="bullet-item">How was delivery experience? NPS?</div>
+<div class="bullet-item">Would you recommend aliado to others?</div>
+<div class="bullet-item">Any concerns or issues?</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-renewal-decision-17e040" data-searchable aria-labelledby="head-9-renewal-decision-17e040">
+            <div class="phase-header" id="head-9-renewal-decision-17e040" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 9. Renewal Decision</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="decision-matrix-1ed239">Decision Matrix</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Score</th><th scope="col">Recommendation</th><th scope="col">Action</th></tr></thead><tbody><tr><td>≥8.0</td><td>Auto-Renew</td><td>Extend contract for another 12 months; no changes</td></tr><tr><td>7.0-7.9</td><td>Renew with conditions</td><td>Extend contract; document 1-2 specific KPI improvements required in next review</td></tr><tr><td>6.0-6.9</td><td>Conditional Renewal</td><td>Issue 90-day improvement plan; specific milestones; reassess at end of 90 days</td></tr><tr><td>5.0-5.9</td><td>Improvement Plan + Monitoring</td><td>90-day plan; weekly check-ins; escalation if not improving</td></tr><tr><td>&lt;5.0</td><td>Exit Discussion</td><td>Schedule formal conversation; develop transition/exit plan; 30-90 day wind-down</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="improvement-plan-for-scores-6069-cb78f8">Improvement Plan (for scores 6.0-6.9)</h3>
+<p class="key-value"><strong>Template</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Current state</strong>: What&#x27;s the gap? (e.g., &quot;ARR at $250K, target $500K&quot;)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Root cause</strong>: Why? (e.g., &quot;Limited sales capacity, poor lead qualification&quot;)</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Milestones</strong> (90 days):</span></div>
+<div class="bullet-item">Milestone 1 (30 days): Hire 1 FTE sales rep</div>
+<div class="bullet-item">Milestone 2 (60 days): 10+ qualified pipeline opportunities</div>
+<div class="bullet-item">Milestone 3 (90 days): $100K closed (on track to $500K ARR by 24mo)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Support from MetodologIA</strong>: Co-selling support? Training? Other resources?</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Re-eval criteria</strong>: How will we know if improvement plan is working?</span></div>
+<p class="key-value"><strong>Checkpoints</strong>: Weekly check-in (VP Aliados + Aliado leadership); 30/60/90 day assessments</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-casos-borde-cf7a02" data-searchable aria-labelledby="head-10-casos-borde-cf7a02">
+            <div class="phase-header" id="head-10-casos-borde-cf7a02" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 10. Casos Borde</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-1-aliado-has-strong-commercial-metrics-but-po-2bc6ed">Caso 1: Aliado has strong commercial metrics but poor operational quality</h3>
+<p class="key-value"><strong>Escenario</strong>: $800K ARR, high pipeline, but customer NPS = 35</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Comercial: 8/10 (strong)</div>
+<div class="bullet-item">Operacional: 4/10 (poor)</div>
+<div class="bullet-item">Total ~6.0 = Conditional Renewal</div>
+<div class="bullet-item">Improvement plan: Quality audit, retraining, 1 supervised customer project</div>
+<h3 class="subsection-title" id="caso-2-aliado-scores-high-but-is-pivoting-away-fro-386220">Caso 2: Aliado scores high but is pivot&#x27;ing away from MetodologIA vertical</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner success, but CEO says &quot;we&#x27;re now focusing on AI products, not consulting&quot;</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Relacional: 3/10 (misaligned)</div>
+<div class="bullet-item">Whole assessment: ~5.0 = Exit discussion</div>
+<div class="bullet-item">Option: Accept pivot, move to &quot;dormant&quot; status with option to reactivate</div>
+<h3 class="subsection-title" id="caso-3-external-market-shock-recession-impacts-ali-89f643">Caso 3: External market shock (recession) impacts aliado ARR</h3>
+<p class="key-value"><strong>Escenario</strong>: Aliado was on track but customer base downsizing; ARR dropped 30% in 6 months</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Acknowledge market headwind; don&#x27;t penalize for external factors</div>
+<div class="bullet-item">Adjust ARR expectations for this cycle (reset target to $350K)</div>
+<div class="bullet-item">Monitor for recovery; if still down in H2, discuss exit</div>
+<h3 class="subsection-title" id="caso-4-aliado-flags-compliancelegal-issue-midaudit-b8e8fd">Caso 4: Aliado flags compliance/legal issue mid-audit</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner discloses that a customer discovery revealed ethical/legal concern</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Immediate legal review</div>
+<div class="bullet-item">Pause renewal decision pending investigation</div>
+<div class="bullet-item">If serious: Escalate to CEO; may trigger early exit</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-criterios-de-aceptacin-binarios-834500" data-searchable aria-labelledby="head-11-criterios-de-aceptacin-binarios-834500">
+            <div class="phase-header" id="head-11-criterios-de-aceptacin-binarios-834500" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 11. Criterios de Aceptación Binarios</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Hito</th><th scope="col">Evidencia</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>Data collected</td><td>Metrics from all 4 dimensions documented</td><td>VP Aliados + Finance</td></tr><tr><td>4D scored</td><td>Rúbrica completed with all sub-scores</td><td>VP Aliados</td></tr><tr><td>Root cause analysis (if needed)</td><td>Written analysis for any red flag</td><td>VP Aliados</td></tr><tr><td>Stakeholder interviews</td><td>Notes from aliado + internal + customer (3+)</td><td>VP Aliados</td></tr><tr><td>Final decision made</td><td>Score ≥6.0 or improvement plan approved</td><td>VP Aliados + VP Ventas</td></tr><tr><td>Aliado communicated</td><td>Verbal/written notification of decision</td><td>VP Aliados</td></tr><tr><td>Contract renewal or exit</td><td>Renewed or exit agreement signed</td><td>Legal</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="12-antipatterns-d0b1aa" data-searchable aria-labelledby="head-12-antipatterns-d0b1aa">
+            <div class="phase-header" id="head-12-antipatterns-d0b1aa" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 12. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap1-audit-is-blaming-session-560685">AP1: &quot;Audit is blaming session&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Aliado sees audit as punishment, not helpful diagnostic</p>
+<p class="key-value"><strong>Prevention</strong>: Lead with &quot;How can we help you succeed?&quot; not &quot;Why are you failing?&quot;</p>
+<h3 class="subsection-title" id="ap2-metrics-are-cherrypicked-5941b3">AP2: &quot;Metrics are cherry-picked&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Only showing favorable metrics to justify renewal</p>
+<p class="key-value"><strong>Prevention</strong>: Use complete 4D framework; transparent about red flags</p>
+<h3 class="subsection-title" id="ap3-no-followup-after-audit-653ccf">AP3: &quot;No follow-up after audit&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Issuing improvement plan but not checking progress</p>
+<p class="key-value"><strong>Prevention</strong>: Weekly check-ins; document progress; escalate if slipping</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="13-dashboard-reporting-2a1f80" data-searchable aria-labelledby="head-13-dashboard-reporting-2a1f80">
+            <div class="phase-header" id="head-13-dashboard-reporting-2a1f80" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 13. Dashboard &amp; Reporting</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>H1/H2 Audit Report</strong> (shared with leadership):</p>
+<div class="bullet-item">Summary of all aliados (score, recommendation, ARR)</div>
+<div class="bullet-item">Ecosystem health (total ARR from partners, growth rate)</div>
+<div class="bullet-item">Renewal rate (% renewed vs exited)</div>
+<div class="bullet-item">Key risks/improvements needed</div>
+<p class="key-value"><strong>Individual aliado audit</strong> (shared with partner):</p>
+<div class="bullet-item">4D scores + narrative</div>
+<div class="bullet-item">Strengths + opportunities</div>
+<div class="bullet-item">Improvement plan (if applicable)</div>
+<div class="bullet-item">Next review date</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="14-referencias-0ab634" data-searchable aria-labelledby="head-14-referencias-0ab634">
+            <div class="phase-header" id="head-14-referencias-0ab634" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 14. Referencias</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Process: <code class="inline-code">gestionar-aliados-gtm-proceso.md</code></div>
+<div class="bullet-item">SOP: <code class="inline-code">evaluar-fit-aliado-sop.md</code></div>
+<div class="bullet-item">SOP: <code class="inline-code">ejecutar-coselling-sop.md</code></div>
+<div class="bullet-item">Tool: Airtable &quot;Aliados Audit&quot; template</div>
+<hr class="divider">
+<p class="key-value"><strong>Aprobado por</strong>: VP Aliados + Controller | <strong>Próxima revisión</strong>: Q2 2026 | <strong>Próximo audit</strong>: Q2 2026 (H1)</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

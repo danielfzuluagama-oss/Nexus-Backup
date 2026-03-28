@@ -261,6 +261,18 @@ export async function enforceExcellenceLoop(
 }
 
 const TELEGRAM_MAX_LENGTH = 4096;
+const TELEGRAM_HTML_ENTITY_PATTERN = /&(?!#\d+;|#x[\da-fA-F]+;|[a-zA-Z][a-zA-Z0-9]+;)/g;
+
+function escapeTelegramHtml(text: string): string {
+  return text
+    .replace(TELEGRAM_HTML_ENTITY_PATTERN, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function escapeTelegramAttribute(text: string): string {
+  return escapeTelegramHtml(text).replace(/"/g, "&quot;");
+}
 
 /**
  * HARD ENTRUST ENFORCEMENT LAYER
@@ -318,7 +330,7 @@ function enforceHardEntrust(text: string): string {
 class TelegramRenderer extends Renderer {
   heading(token: import("marked").Tokens.Heading): string {
     // Hard Entrust: headings rendered as plain text with newline separation
-    const text = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+    const text = token.tokens ? this.parser.parseInline(token.tokens) : escapeTelegramHtml(token.text);
     return `\n${text}\n`;
   }
 
@@ -334,19 +346,20 @@ class TelegramRenderer extends Renderer {
 
   del(token: import("marked").Tokens.Del): string {
     // Use parseInline to correctly render nested inline tokens (marked v17+)
-    const inner = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+    const inner = token.tokens ? this.parser.parseInline(token.tokens) : escapeTelegramHtml(token.text);
     return `<s>${inner}</s>`;
   }
 
   codespan({ text }: import("marked").Tokens.Codespan): string {
-    return `<code>${text}</code>`;
+    return `<code>${escapeTelegramHtml(text)}</code>`;
   }
 
   code({ text, lang }: import("marked").Tokens.Code): string {
+    const escapedText = escapeTelegramHtml(text);
     if (lang) {
-      return `<pre><code class="language-${lang}">${text}</code></pre>\n`;
+      return `<pre><code class="language-${escapeTelegramAttribute(lang)}">${escapedText}</code></pre>\n`;
     }
-    return `<pre><code>${text}</code></pre>\n`;
+    return `<pre><code>${escapedText}</code></pre>\n`;
   }
 
   blockquote(token: import("marked").Tokens.Blockquote): string {
@@ -356,8 +369,8 @@ class TelegramRenderer extends Renderer {
   }
 
   link(token: import("marked").Tokens.Link): string {
-    const inner = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
-    return `<a href="${token.href}">${inner}</a>`;
+    const inner = token.tokens ? this.parser.parseInline(token.tokens) : escapeTelegramHtml(token.text);
+    return `<a href="${escapeTelegramAttribute(token.href)}">${inner}</a>`;
   }
 
   list(token: import("marked").Tokens.List): string {
@@ -387,7 +400,19 @@ class TelegramRenderer extends Renderer {
 
   image({ href, text }: import("marked").Tokens.Image): string {
     // Images inside text are best rendered as links in Telegram
-    return `<a href="${href}">[Imagen: ${text}]</a>`;
+    return `<a href="${escapeTelegramAttribute(href)}">[Imagen: ${escapeTelegramHtml(text)}]</a>`;
+  }
+
+  html({ text }: import("marked").Tokens.HTML | import("marked").Tokens.Tag): string {
+    return escapeTelegramHtml(text);
+  }
+
+  text(token: import("marked").Tokens.Text | import("marked").Tokens.Escape): string {
+    return escapeTelegramHtml(token.text);
+  }
+
+  br(_token: import("marked").Tokens.Br): string {
+    return "\n";
   }
 
   // Unsupported elements fallback

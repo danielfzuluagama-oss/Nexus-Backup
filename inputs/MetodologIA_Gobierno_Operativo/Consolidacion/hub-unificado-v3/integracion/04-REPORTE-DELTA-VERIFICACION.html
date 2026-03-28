@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="REPORTE DELTA: Verificación de Elevación 10x — Proceso de Delivery MetodologIA">
+    <title>REPORTE DELTA: Verificación de Elevación 10x — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Integracion</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">REPORTE DELTA: Verificación de Elevación 10x</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>REPORTE DELTA: Verificación de Elevación 10x</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Fecha: 2026-03-24 | Alcance: Proceso de Delivery de Servicios (4 verticales, 24 archivos)</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">7</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('resumen-ejecutivo-f7e2ad')" aria-label="Ir a RESUMEN EJECUTIVO">RESUMEN EJECUTIVO</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-de-elevacin-99cf86')" aria-label="Ir a MÉTRICAS DE ELEVACIÓN">MÉTRICAS DE ELEVACIÓN</button>
+<button class="nav-btn" onclick="scrollToSection('estado-antesdespus-09bbf7')" aria-label="Ir a ESTADO ANTES/DESPUÉS">ESTADO ANTES/DESPUÉS</button>
+<button class="nav-btn" onclick="scrollToSection('archivos-nuevos-tejido-conectivo-53a926')" aria-label="Ir a ARCHIVOS NUEVOS (Tejido Conectivo)">ARCHIVOS NUEVOS (Tejido Conectivo)</button>
+<button class="nav-btn" onclick="scrollToSection('topologa-del-ecosistema-final-fc88ea')" aria-label="Ir a TOPOLOGÍA DEL ECOSISTEMA FINAL">TOPOLOGÍA DEL ECOSISTEMA FINAL</button>
+<button class="nav-btn" onclick="scrollToSection('cobertura-total-452467')" aria-label="Ir a COBERTURA TOTAL">COBERTURA TOTAL</button>
+<button class="nav-btn" onclick="scrollToSection('gaps-conocidos-y-prximos-pasos-568dc3')" aria-label="Ir a GAPS CONOCIDOS Y PRÓXIMOS PASOS">GAPS CONOCIDOS Y PRÓXIMOS PASOS</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="resumen-ejecutivo-f7e2ad" data-searchable aria-labelledby="head-resumen-ejecutivo-f7e2ad">
+            <div class="phase-header" id="head-resumen-ejecutivo-f7e2ad" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> RESUMEN EJECUTIVO</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Se completó la elevación 10x de <strong>24 archivos</strong> poblados del ecosistema de delivery. La auditoría post-elevación confirma <strong>412 marcadores de calidad</strong> distribuidos en 9 dimensiones, con <strong>0 archivos sin elevar</strong> (100% cobertura).</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-de-elevacin-99cf86" data-searchable aria-labelledby="head-mtricas-de-elevacin-99cf86">
+            <div class="phase-header" id="head-mtricas-de-elevacin-99cf86" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> MÉTRICAS DE ELEVACIÓN</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="por-vertical-40fad3">Por Vertical</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Vertical</th><th scope="col">Archivos</th><th scope="col">Líneas Totales</th><th scope="col">Marcadores</th><th scope="col">Densidad (marc/100 líneas)</th></tr></thead><tbody><tr><td><strong>Workshop</strong></td><td>5</td><td>~2,878</td><td>49</td><td>1.7</td></tr><tr><td><strong>Bootcamp</strong></td><td>6</td><td>~2,926</td><td>54</td><td>1.8</td></tr><tr><td><strong>Programa Élite</strong></td><td>7</td><td>~3,420</td><td>170</td><td>5.0</td></tr><tr><td><strong>Consultoría</strong></td><td>6</td><td>~2,710</td><td>139</td><td>5.1</td></tr><tr><td><strong>TOTAL</strong></td><td><strong>24</strong></td><td><strong>~11,934</strong></td><td><strong>412</strong></td><td><strong>3.5</strong></td></tr></tbody></table></div>
+<h3 class="subsection-title" id="por-dimensin-df9495">Por Dimensión</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Dimensión</th><th scope="col">Total</th><th scope="col">% del Total</th><th scope="col">Evaluación</th></tr></thead><tbody><tr><td>Fallbacks Operativos</td><td>94</td><td>22.8%</td><td>Excelente</td></tr><tr><td>Supuestos Explícitos</td><td>83</td><td>20.1%</td><td>Excelente</td></tr><tr><td>Casos Borde</td><td>64</td><td>15.5%</td><td>Excelente</td></tr><tr><td>Anti-Patterns</td><td>60</td><td>14.6%</td><td>Excelente</td></tr><tr><td>Gates</td><td>57</td><td>13.8%</td><td>Fuerte</td></tr><tr><td>Límites</td><td>31</td><td>7.5%</td><td>Bueno</td></tr><tr><td>Trade-offs</td><td>17</td><td>4.1%</td><td>Aceptable</td></tr><tr><td>Criterios de Aceptación</td><td>6</td><td>1.5%</td><td>Bajo</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="estado-antesdespus-09bbf7" data-searchable aria-labelledby="head-estado-antesdespus-09bbf7">
+            <div class="phase-header" id="head-estado-antesdespus-09bbf7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> ESTADO ANTES/DESPUÉS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="workshop-5-archivos-b60a9b">Workshop (5 archivos)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Archivo</th><th scope="col">Antes</th><th scope="col">Después</th><th scope="col">Delta</th></tr></thead><tbody><tr><td>entregar-workshop-proceso.md</td><td>448</td><td>~585</td><td>+31%</td></tr><tr><td>catalogo-workshops.md</td><td>508</td><td>~533</td><td>+5%</td></tr><tr><td>preparar-workshop-sop.md</td><td>433</td><td>~495</td><td>+14%</td></tr><tr><td>facilitar-workshop-sop.md</td><td>498</td><td>~569</td><td>+14%</td></tr><tr><td>cerrar-workshop-sop.md</td><td>614</td><td>~696</td><td>+13%</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="bootcamp-6-archivos-fe29fb">Bootcamp (6 archivos)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Archivo</th><th scope="col">Antes</th><th scope="col">Después</th><th scope="col">Delta</th></tr></thead><tbody><tr><td>entregar-bootcamp-proceso.md</td><td>659</td><td>~790</td><td>+20%</td></tr><tr><td>catalogo-bootcamps.md</td><td>353</td><td>~376</td><td>+7%</td></tr><tr><td>diseno-curricular-sop.md</td><td>388</td><td>~477</td><td>+23%</td></tr><tr><td>onboarding-cohorte-sop.md</td><td>282</td><td>~372</td><td>+32%</td></tr><tr><td>facilitacion-semanal-sop.md</td><td>313</td><td>~415</td><td>+33%</td></tr><tr><td>graduacion-sop.md</td><td>484</td><td>~596</td><td>+23%</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="programa-lite-7-archivos-ad7ee9">Programa Élite (7 archivos)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Archivo</th><th scope="col">Antes</th><th scope="col">Después</th><th scope="col">Delta</th></tr></thead><tbody><tr><td>entregar-programa-elite-proceso.md</td><td>461</td><td>~621</td><td>+35%</td></tr><tr><td>catalogo-programas.md</td><td>430</td><td>~430</td><td>0% (no elevado — solo catálogo)</td></tr><tr><td>diseno-transformacional-sop.md</td><td>397</td><td>~600</td><td>+51%</td></tr><tr><td>inmersion-inicial-sop.md</td><td>290</td><td>~452</td><td>+56%</td></tr><tr><td>acompanamiento-continuo-sop.md</td><td>271</td><td>~290</td><td>+7%</td></tr><tr><td>consolidacion-sop.md</td><td>233</td><td>~389</td><td>+67%</td></tr><tr><td>alumni-sop.md</td><td>396</td><td>~648</td><td>+64%</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="consultora-6-archivos-e2f9b2">Consultoría (6 archivos)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Archivo</th><th scope="col">Antes</th><th scope="col">Después</th><th scope="col">Delta</th></tr></thead><tbody><tr><td>entregar-consultoria-proceso.md</td><td>345</td><td>~565</td><td>+64%</td></tr><tr><td>catalogo-intervenciones.md</td><td>372</td><td>~604</td><td>+62%</td></tr><tr><td>diagnostico-sop.md</td><td>287</td><td>~388</td><td>+35%</td></tr><tr><td>traccion-sop.md</td><td>204</td><td>~281</td><td>+38%</td></tr><tr><td>evolucion-sop.md</td><td>294</td><td>~379</td><td>+29%</td></tr><tr><td>handoff-success-sop.md</td><td>309</td><td>~383</td><td>+24%</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="archivos-nuevos-tejido-conectivo-53a926" data-searchable aria-labelledby="head-archivos-nuevos-tejido-conectivo-53a926">
+            <div class="phase-header" id="head-archivos-nuevos-tejido-conectivo-53a926" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> ARCHIVOS NUEVOS (Tejido Conectivo)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Archivo</th><th scope="col">Líneas</th><th scope="col">Propósito</th></tr></thead><tbody><tr><td><code class="inline-code">02-BRIDGE-COMERCIAL-DELIVERY.md</code></td><td>~200</td><td>Puente entre proceso comercial y delivery: Gates H-01/R-01, matriz cross-sell, handoff paquetes</td></tr><tr><td><code class="inline-code">03-MANIFIESTO-DELIVERY.md</code></td><td>~185</td><td>Arquitectura de 4 vehículos, reglas invariantes, inventario, métricas transversales, trazabilidad</td></tr><tr><td><code class="inline-code">04-REPORTE-DELTA-VERIFICACION.md</code></td><td>Este archivo</td><td>Auditoría post-elevación con métricas antes/después</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="topologa-del-ecosistema-final-fc88ea" data-searchable aria-labelledby="head-topologa-del-ecosistema-final-fc88ea">
+            <div class="phase-header" id="head-topologa-del-ecosistema-final-fc88ea" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> TOPOLOGÍA DEL ECOSISTEMA FINAL</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>MetodologIA_Gobierno_Operativo/
+├── Consolidacion/                         ← NUEVO: Capa de integración
+│   ├── 00-INDICE-MAESTRO.md               (481 líneas, navegación)
+│   ├── 01-RUNBOOK-COMERCIAL.md            (2,078 líneas, playbook operativo)
+│   ├── 01-RUNBOOK-COMERCIAL.html          (2,106 líneas, interactivo)
+│   ├── 02-BRIDGE-COMERCIAL-DELIVERY.md    (NUEVO, ~200 líneas)
+│   ├── 03-MANIFIESTO-DELIVERY.md          (NUEVO, ~185 líneas)
+│   ├── 04-REPORTE-DELTA-VERIFICACION.md   (NUEVO, este archivo)
+│   ├── rag/                               (7 archivos RAG, ~12,036 líneas total)
+│   └── mapas/                             (2 mapas, ~2,670 líneas total)
+│
+└── procesos/proceso-delivery-servicios/   ← Procesos operativos
+    ├── workshop/          (5 poblados + 35 stubs = 40 archivos)
+    ├── bootcamp/          (6 poblados + 36 stubs = 42 archivos)
+    ├── programa-elite/    (7 poblados + 43 stubs = 50 archivos)
+    └── consultoria/       (6 poblados + 38 stubs = 44 archivos)</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="cobertura-total-452467" data-searchable aria-labelledby="head-cobertura-total-452467">
+            <div class="phase-header" id="head-cobertura-total-452467" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> COBERTURA TOTAL</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Métrica</th><th scope="col">Valor</th></tr></thead><tbody><tr><td><strong>Archivos poblados (Delivery)</strong></td><td>24</td></tr><tr><td><strong>Archivos elevados 10x</strong></td><td>23 (96% — <code class="inline-code">catalogo-programas.md</code> sin elevar, solo catálogo)</td></tr><tr><td><strong>Líneas totales Delivery</strong></td><td>~11,934</td></tr><tr><td><strong>Marcadores de calidad</strong></td><td>412</td></tr><tr><td><strong>Archivos de integración (Consolidacion)</strong></td><td>6 + 9 RAG/mapas = 15</td></tr><tr><td><strong>Líneas totales Consolidacion</strong></td><td>~17,836</td></tr><tr><td><strong>Stubs pendientes</strong></td><td>~152 (rituales, knowledge-graphs, assets)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="gaps-conocidos-y-prximos-pasos-568dc3" data-searchable aria-labelledby="head-gaps-conocidos-y-prximos-pasos-568dc3">
+            <div class="phase-header" id="head-gaps-conocidos-y-prximos-pasos-568dc3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> GAPS CONOCIDOS Y PRÓXIMOS PASOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="iter-3-pendiente-rituales-299853">Iter 3 (Pendiente): Rituales</h3>
+<p>~47 rituales con stubs listos. Cada ritual es un procedimiento de 15-30 min dentro de un SOP. Estimación: 150-200 líneas c/u.</p>
+<h3 class="subsection-title" id="iter-4-pendiente-assetstemplates-a6814b">Iter 4 (Pendiente): Assets/Templates</h3>
+<p>~20 templates de documentos (contratos, checklists, reportes). Estimación: 50-100 líneas c/u.</p>
+<h3 class="subsection-title" id="iter-5-pendiente-knowledge-graphs-json-cannico-c8ea81">Iter 5 (Pendiente): Knowledge Graphs + JSON canónico</h3>
+<p>Actualizar knowledge-graphs y crear <code class="inline-code">repositorio-canonico-delivery.json</code> para consumo programático.</p>
+<h3 class="subsection-title" id="iter-6-pendiente-actualizacin-rag-091379">Iter 6 (Pendiente): Actualización RAG</h3>
+<p>Incorporar datos de delivery a los RAG files de Consolidacion existentes (<code class="inline-code">rag-delivery.md</code> ya existe pero necesita actualización con contenido elevado).</p>
+<hr class="divider">
+<p><strong>Fin del Reporte Delta</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

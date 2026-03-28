@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetodologIA - Análisis Estratégico de Cadenas de Valor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Montserrat', sans-serif;
+            --font-tertiary: 'Jost', sans-serif;
+            --bg-body: hsl(222, 29%, 12%);
+            --bg-primary: hsl(220, 34%, 18%);
+            --bg-surface: hsl(220, 30%, 23%);
+            --bg-elevated: hsla(220, 34%, 18%, 0.8);
+            --text-primary: #FFFFFF;
+            --text-secondary: #e2e8f0;
+            --text-muted: #cbd5e1;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.15);
+            --brand-gold: hsl(51, 100%, 50%);
+            --brand-gold-dark: hsl(45, 100%, 50%);
+            --brand-gold-glow: hsla(51, 100%, 50%, 0.12);
+            --brand-cyan: hsl(189, 94%, 53%);
+            --brand-emerald: hsl(158, 64%, 52%);
+            --brand-purple-text: hsl(271, 91%, 76%);
+            --brand-blue-text: hsl(221, 83%, 72%);
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+            --shadow-glow-gold: 0 0 30px rgba(255, 240, 51, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-secondary);
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-default);
+            padding: 1.2rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: var(--font-secondary);
+            font-weight: 700;
+            font-size: 1.4rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .nav-tabs li {
+            position: relative;
+        }
+
+        .nav-tabs button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: var(--font-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-tabs button:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-tabs button.active {
+            color: var(--brand-gold);
+        }
+
+        .nav-tabs button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-gold);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Headers */
+        h1 {
+            font-family: var(--font-secondary);
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h2 {
+            font-family: var(--font-secondary);
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--brand-gold);
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-family: var(--font-primary);
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .section-intro {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Glass Cards */
+        .card-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-glass:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-subtle);
+            transform: translateY(-2px);
+        }
+
+        /* Value Stream Mapping */
+        .vsm-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        .vsm-diagram {
+            display: flex;
+            gap: 0.5rem;
+            min-width: 1200px;
+            align-items: flex-end;
+            padding: 2rem 0;
+        }
+
+        .vsm-phase {
+            flex: 1;
+            min-width: 140px;
+            background: rgba(51, 180, 213, 0.15);
+            border: 1px solid var(--brand-cyan);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .vsm-phase.bottleneck {
+            background: rgba(255, 68, 68, 0.15);
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .vsm-phase h4 {
+            font-size: 0.85rem;
+            color: var(--brand-cyan);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .vsm-phase.bottleneck h4 {
+            color: #ff6b6b;
+        }
+
+        .vsm-metric {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0.4rem 0;
+            line-height: 1.4;
+        }
+
+        .vsm-metric strong {
+            color: var(--text-secondary);
+        }
+
+        .vsm-arrow {
+            flex: 0.3;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .data-table thead {
+            background: rgba(255, 240, 51, 0.08);
+            border-bottom: 2px solid var(--brand-gold);
+        }
+
+        .data-table th {
+            color: var(--text-primary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-family: var(--font-secondary);
+        }
+
+        .data-table td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .metric-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(158, 113, 183, 0.2);
+            border: 1px solid var(--brand-purple-text);
+            border-radius: 20px;
+            color: var(--brand-purple-text);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .metric-badge.constraint {
+            background: rgba(255, 68, 68, 0.2);
+            border-color: #ff6b6b;
+            color: #ff9999;
+        }
+
+        /* Porter Value Chain */
+        .value-chain-wrapper {
+            margin: 2rem 0;
+        }
+
+        .activity-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .activity-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: 1.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-gold);
+        }
+
+        .activity-card.support::before {
+            background: linear-gradient(135deg, var(--brand-cyan) 0%, var(--brand-emerald) 100%);
+        }
+
+        .activity-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .activity-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .margin-badge {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            background: rgba(255, 240, 51, 0.15);
+            border: 1px solid rgba(255, 240, 51, 0.4);
+            border-radius: 6px;
+            color: var(--brand-gold);
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: var(--font-secondary);
+        }
+
+        /* Margin Analysis Chart */
+        .margin-chart {
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .stacked-bar {
+            display: flex;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .bar-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: flex 0.3s ease;
+        }
+
+        .segment-primary {
+            background: linear-gradient(135deg, rgba(51, 180, 213, 0.6), rgba(98, 180, 220, 0.6));
+        }
+
+        .segment-support {
+            background: linear-gradient(135deg, rgba(158, 113, 183, 0.6), rgba(180, 135, 200, 0.6));
+        }
+
+        .segment-margin {
+            background: linear-gradient(135deg, rgba(255, 240, 51, 0.5), rgba(255, 200, 87, 0.5));
+        }
+
+        .margin-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        /* Supply Chain Matrix */
+        .risk-matrix {
+            margin: 2rem 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .risk-quadrant {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .risk-quadrant h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            font-family: var(--font-secondary);
+        }
+
+        .risk-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 2px solid var(--brand-gold);
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .risk-quadrant.high-high {
+            border-top: 2px solid #ff6b6b;
+            border-left: 2px solid #ff6b6b;
+        }
+
+        .risk-quadrant.high-high .risk-item {
+            border-left-color: #ff9999;
+        }
+
+        .risk-quadrant.high-low {
+            border-top: 2px solid #ffd93d;
+            border-right: 2px solid #ffd93d;
+        }
+
+        .risk-quadrant.low-high {
+            border-bottom: 2px solid #ff6b6b;
+            border-left: 2px solid #ff6b6b;
+        }
+
+        .risk-quadrant.low-low {
+            border-bottom: 2px solid #6bcf7f;
+            border-right: 2px solid #6bcf7f;
+        }
+
+        /* Collapsible Sections */
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .collapsible-header:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .collapsible-header i {
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-content {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding-left: 1rem;
+        }
+
+        .collapsible-content.collapsed {
+            max-height: 0;
+        }
+
+        /* Icons */
+        svg[data-lucide] {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+        }
+
+        .icon-lg {
+            width: 32px;
+            height: 32px;
+            stroke-width: 1.5;
+        }
+
+        /* Utility Classes */
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .text-gold {
+            color: var(--brand-gold);
+        }
+
+        .text-cyan {
+            color: var(--brand-cyan);
+        }
+
+        .mt-3 { margin-top: 3rem; }
+        .mb-2 { margin-bottom: 2rem; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .activity-group {
+                grid-template-columns: 1fr;
+            }
+
+            .vsm-diagram {
+                min-width: 100%;
+            }
+
+            .risk-matrix {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">MetodologIA</div>
+            <ul class="nav-tabs">
+                <li>
+                    <button class="nav-btn active" data-tab="vsm">
+                        <i data-lucide="flow"></i> Flujos de Valor
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-btn" data-tab="porter">
+                        <i data-lucide="link"></i> Cadena de Valor
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-btn" data-tab="supply">
+                        <i data-lucide="package"></i> Cadena de Suministro
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <!-- TAB 1: Flujos de Valor (Value Stream Mapping) -->
+        <div id="vsm" class="tab-content active">
+            <h1><i data-lucide="flow" class="icon-lg"></i> Flujos de Valor - Value Stream Mapping</h1>
+            <p class="section-intro">Análisis Lean de flujo end-to-end: desde captación hasta advocacy. Identificación de cuellos de botella, tiempos de espera y oportunidades de mejora.</p>
+
+            <div class="card-glass">
+                <h2>Mapa de Flujo de Valor - MetodologIA</h2>
+                <p class="text-muted mb-2">Seis fases de transformación del cliente, con métricas de tiempo, valor añadido y recursos:</p>
+
+                <div class="vsm-container">
+                    <div class="vsm-diagram">
+                        <div class="vsm-phase">
+                            <h4>F0: Awareness</h4>
+                            <div class="vsm-metric"><strong>PT:</strong> 2h/lead</div>
+                            <div class="vsm-metric"><strong>LT:</strong> 1-4 sem</div>
+                            <div class="vsm-metric"><strong>WT:</strong> 95%</div>
+                            <div class="vsm-metric"><strong>VA:</strong> 5%</div>
+                            <div class="vsm-metric"><strong>FTE:</strong> 0.5</div>
+                        </div>
+                        <div class="vsm-arrow">→</div>
+                        <div class="vsm-phase">
+                            <h4>F1: Diagnóstico</h4>
+                            <div class="vsm-metric"><strong>PT:</strong> 3h</div>
+                            <div class="vsm-metric"><strong>LT:</strong> 1-2 sem</div>
+                            <div class="vsm-metric"><strong>WT:</strong> 70%</div>
+                            <div class="vsm-metric"><strong>VA:</strong> 30%</div>
+                            <div class="vsm-metric"><strong>FTE:</strong> 0.3</div>
+                        </div>
+                        <div class="vsm-arrow">→</div>
+                        <div class="vsm-phase">
+                            <h4>F2: Diseño</h4>
+                            <div class="vsm-metric"><strong>PT:</strong> 4h</div>
+                            <div class="vsm-metric"><strong>LT:</strong> 1-3 sem</div>
+                            <div class="vsm-metric"><strong>WT:</strong> 75%</div>
+                            <div class="vsm-metric"><strong>VA:</strong> 25%</div>
+                            <div class="vsm-metric"><strong>FTE:</strong> 0.5</div>
+                        </div>
+                        <div class="vsm-arrow">→</div>
+                        <div class="vsm-phase bottleneck">
+                            <h4>F3: Práctica <i data-lucide="alert-triangle" style="color: var(--brand-gold); width: 18px; height: 18px; vertical-align: middle;"></i></h4>
+                            <div class="vsm-metric"><strong>PT:</strong> 40-200h</div>
+                            <div class="vsm-metric"><strong>LT:</strong> 4-20 sem</div>
+                            <div class="vsm-metric"><strong>WT:</strong> 20%</div>
+                            <div class="vsm-metric"><strong>VA:</strong> 80%</div>
+                            <div class="vsm-metric"><strong>FTE:</strong> 1.0</div>
+                            <span class="metric-badge constraint">CUELLO BOTELLA</span>
+                        </div>
+                        <div class="vsm-arrow">→</div>
+                        <div class="vsm-phase">
+                            <h4>F4: Autonomía</h4>
+                            <div class="vsm-metric"><strong>PT:</strong> 4h</div>
+                            <div class="vsm-metric"><strong>LT:</strong> 6-8 sem</div>
+                            <div class="vsm-metric"><strong>WT:</strong> 90%</div>
+                            <div class="vsm-metric"><strong>VA:</strong> 10%</div>
+                            <div class="vsm-metric"><strong>FTE:</strong> 0.2</div>
+                        </div>
+                        <div class="vsm-arrow">→</div>
+                        <div class="vsm-phase">
+                            <h4>F5: Advocacy</h4>
+                            <div class="vsm-metric"><strong>PT:</strong> 2h</div>
+                            <div class="vsm-metric"><strong>LT:</strong> 3-6 m</div>
+                            <div class="vsm-metric"><strong>WT:</strong> 95%</div>
+                            <div class="vsm-metric"><strong>VA:</strong> 5%</div>
+                            <div class="vsm-metric"><strong>FTE:</strong> 0.2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass">
+                <h2>Métricas Consolidadas</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Fase</th>
+                            <th>PT (horas)</th>
+                            <th>LT (semanas)</th>
+                            <th>WT (espera %)</th>
+                            <th>Valor Añadido %</th>
+                            <th>FTE</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>F0 Awareness</strong></td>
+                            <td>2</td>
+                            <td>1-4</td>
+                            <td>95%</td>
+                            <td>5%</td>
+                            <td>0.5</td>
+                            <td><span class="metric-badge">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>F1 Diagnóstico</strong></td>
+                            <td>3</td>
+                            <td>1-2</td>
+                            <td>70%</td>
+                            <td>30%</td>
+                            <td>0.3</td>
+                            <td><span class="metric-badge">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>F2 Diseño</strong></td>
+                            <td>4</td>
+                            <td>1-3</td>
+                            <td>75%</td>
+                            <td>25%</td>
+                            <td>0.5</td>
+                            <td><span class="metric-badge">Normal</span></td>
+                        </tr>
+                        <tr style="background: rgba(255, 68, 68, 0.1);">
+                            <td><strong>F3 Práctica</strong></td>
+                            <td>40-200</td>
+                            <td>4-20</td>
+                            <td>20%</td>
+                            <td>80%</td>
+                            <td>1.0</td>
+                            <td><span class="metric-badge constraint">CUELLO BOTELLA</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>F4 Autonomía</strong></td>
+                            <td>4</td>
+                            <td>6-8</td>
+                            <td>90%</td>
+                            <td>10%</td>
+                            <td>0.2</td>
+                            <td><span class="metric-badge">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>F5 Advocacy</strong></td>
+                            <td>2</td>
+                            <td>3-6</td>
+                            <td>95%</td>
+                            <td>5%</td>
+                            <td>0.2</td>
+                            <td><span class="metric-badge">Normal</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 2rem;">
+                    <h3>Indicadores Clave</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="card-glass" style="background: rgba(51, 180, 213, 0.1); border-color: rgba(51, 180, 213, 0.3);">
+                            <div style="color: var(--brand-cyan); font-weight: 700; font-size: 1.3rem;">15-52 sem</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">Lead Time Total (F0→F5)</div>
+                        </div>
+                        <div class="card-glass" style="background: rgba(158, 113, 183, 0.1); border-color: rgba(158, 113, 183, 0.3);">
+                            <div style="color: var(--brand-purple-text); font-weight: 700; font-size: 1.3rem;">~55-215h</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">Process Time Total</div>
+                        </div>
+                        <div class="card-glass" style="background: rgba(255, 200, 87, 0.1); border-color: rgba(255, 200, 87, 0.3);">
+                            <div style="color: var(--brand-gold); font-weight: 700; font-size: 1.3rem;">8-12%</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">PCE (Process Cycle Efficiency)</div>
+                        </div>
+                        <div class="card-glass" style="background: rgba(98, 180, 220, 0.1); border-color: rgba(98, 180, 220, 0.3);">
+                            <div style="color: var(--brand-blue-text); font-weight: 700; font-size: 1.3rem;">10/coach</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">Límite de WIP (Clientes en F3)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <i data-lucide="trash-2"></i>
+                    <span>7 Desperdicios Lean - Identificación y Oportunidades</span>
+                </div>
+                <div class="collapsible-content">
+                    <div style="padding: 1.5rem 0;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div class="card-glass">
+                                <h4 style="color: var(--brand-cyan);">1. Esperas (Waiting)</h4>
+                                <p>Cliente espera entre F0-F1 (lead nurture), F1-F2 (decisión), F4-F5 (pasivo). <strong>Oportunidad:</strong> Automatizar nurture, decisiones rápidas.</p>
+                            </div>
+                            <div class="card-glass">
+                                <h4 style="color: var(--brand-cyan);">2. Sobreprocesamiento</h4>
+                                <p>Baseline Report excesivamente detallado para P2. <strong>Oportunidad:</strong> Tiered reports por segmento.</p>
+                            </div>
+                            <div class="card-glass">
+                                <h4 style="color: var(--brand-cyan);">3. Inventario (WIP)</h4>
+                                <p>Leads en F0 no convirtiendo = desperdicio. <strong>Oportunidad:</strong> Quality gate en F0→F1.</p>
+                            </div>
+                            <div class="card-glass">
+                                <h4 style="color: var(--brand-cyan);">4. Defectos</h4>
+                                <p>Dropouts en F3 (15-30% sin gates). <strong>Oportunidad:</strong> QG1-QG3 gates, early intervention.</p>
+                            </div>
+                            <div class="card-glass">
+                                <h4 style="color: var(--brand-cyan);">5. Movimiento (Motion)</h4>
+                                <p>Coach context-switching entre clientes. <strong>Oportunidad:</strong> Bloquear tiempo, cohortes sincronizadas.</p>
+                            </div>
+                            <div class="card-glass">
+                                <h4 style="color: var(--brand-cyan);">6. Transporte (Transport)</h4>
+                                <p>Delays entre fases (SLA violations). <strong>Oportunidad:</strong> Pipelines automáticas, handoff protocols.</p>
+                            </div>
+                            <div class="card-glass">
+                                <h4 style="color: var(--brand-cyan);">7. Sobreproducción</h4>
+                                <p>Content creado pero no consumido. <strong>Oportunidad:</strong> Pull model, content personalizado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Cadena de Valor (Porter Value Chain) -->
+        <div id="porter" class="tab-content">
+            <h1><i data-lucide="link" class="icon-lg"></i> Cadena de Valor - Modelo Porter Adaptado</h1>
+            <p class="section-intro">Análisis de actividades primarias y de soporte para la generación de valor. Márgenes por actividad, cadena completa F0→F5.</p>
+
+            <div class="card-glass">
+                <h2>Actividades Primarias - Flujo de Valor (Izquierda a Derecha)</h2>
+                <p class="text-muted mb-2">Cinco actividades primarias que generan valor directo para el cliente:</p>
+
+                <div class="activity-group">
+                    <div class="activity-card">
+                        <h4>1. Inbound Logistics</h4>
+                        <p><strong>Captación de Insumos</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>Lead generation (ads, content, referrals)</li>
+                            <li>Coach recruitment & certification</li>
+                            <li>Content sourcing (cases, frameworks)</li>
+                            <li>Tech procurement (LMS, CRM, GPT APIs)</li>
+                        </ul>
+                        <div class="margin-badge" style="margin-top: 0.8rem;">-15% margen</div>
+                    </div>
+
+                    <div class="activity-card">
+                        <h4>2. Operations</h4>
+                        <p><strong>Producción del Servicio</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>F1 Diagnóstico (delivery)</li>
+                            <li>F2 Diseño (co-creation)</li>
+                            <li>F3 Práctica (ejecución) ← CORE</li>
+                            <li>Quality gates (QG1-QG3)</li>
+                        </ul>
+                        <div class="margin-badge" style="margin-top: 0.8rem;">60-70% margen</div>
+                    </div>
+
+                    <div class="activity-card">
+                        <h4>3. Outbound Logistics</h4>
+                        <p><strong>Entrega y Transferencia</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>F4 Autonomy Kit delivery</li>
+                            <li>Knowledge transfer docs</li>
+                            <li>Platform provisioning</li>
+                            <li>Credentials/certificates</li>
+                        </ul>
+                        <div class="margin-badge" style="margin-top: 0.8rem;">Alto valor, bajo costo</div>
+                    </div>
+
+                    <div class="activity-card">
+                        <h4>4. Marketing & Sales</h4>
+                        <p><strong>Comercialización</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>B2C: LinkedIn, IG, TikTok, email</li>
+                            <li>B2B: Outbound SDR, inbound mkt</li>
+                            <li>GTM: Partner enablement</li>
+                            <li>Pricing strategy (WTP-based)</li>
+                        </ul>
+                        <div class="margin-badge" style="margin-top: 0.8rem;">20-25% inversión</div>
+                    </div>
+
+                    <div class="activity-card">
+                        <h4>5. Service</h4>
+                        <p><strong>Servicio Post-Venta</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>F4 monthly check-ins</li>
+                            <li>F5 advocacy activation</li>
+                            <li>Referral program mgt</li>
+                            <li>Community & upsell</li>
+                        </ul>
+                        <div class="margin-badge" style="margin-top: 0.8rem;">25% leads sin CAC</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass">
+                <h2>Actividades de Soporte - Infraestructura Horizontal</h2>
+                <p class="text-muted mb-2">Cuatro pilares de soporte que habilitan las actividades primarias:</p>
+
+                <div class="activity-group">
+                    <div class="activity-card support">
+                        <h4>A. Firm Infrastructure</h4>
+                        <p><strong>Gobernanza Empresarial</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>4 CEO model (E3: Ecosystem, Efficiency, Empowerment, Enablement)</li>
+                            <li>Weekly all-hands + monthly strategic review</li>
+                            <li>ADR-lite decision log</li>
+                            <li>Financial planning & margin tracking</li>
+                        </ul>
+                    </div>
+
+                    <div class="activity-card support">
+                        <h4>B. HR Management</h4>
+                        <p><strong>Gestión de Talento</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>Coach certification (7 levels)</li>
+                            <li>Ambassador network (50-200 certified)</li>
+                            <li>Performance management (100-Check Standard)</li>
+                            <li>Compensation: 10-20-70 model</li>
+                        </ul>
+                    </div>
+
+                    <div class="activity-card support">
+                        <h4>C. Technology Dev</h4>
+                        <p><strong>Desarrollo Tecnológico</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>Custom GPT library (versioned Git)</li>
+                            <li>LMS platform (Notion → custom $500k)</li>
+                            <li>CRM automation (HubSpot workflows)</li>
+                            <li>Analytics/dashboards (Looker)</li>
+                        </ul>
+                    </div>
+
+                    <div class="activity-card support">
+                        <h4>D. Procurement</h4>
+                        <p><strong>Adquisición Estratégica</strong></p>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>AI API licenses (OpenAI, Anthropic)</li>
+                            <li>Platform subscriptions (Zoom, HubSpot)</li>
+                            <li>Content licensing (cases, frameworks)</li>
+                            <li>Freelance coach network</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass">
+                <h2>Análisis de Márgenes - Stacked View</h2>
+                <div class="margin-chart">
+                    <h3 style="margin-bottom: 1.5rem;">Descomposición de Ingresos por Segmento de Actividad</h3>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                            <span><strong>Escenario Actual (70% utilización coaches)</strong></span>
+                            <span class="text-gold">100% Ingresos</span>
+                        </div>
+                        <div class="stacked-bar">
+                            <div class="bar-segment segment-primary" style="flex: 57;">
+                                <span>Primarias: 57%</span>
+                            </div>
+                            <div class="bar-segment segment-support" style="flex: 18;">
+                                <span>Soporte: 18%</span>
+                            </div>
+                            <div class="bar-segment segment-margin" style="flex: 25;">
+                                <span>Margen EBITDA: 25%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                            <span><strong>Escenario Target (85% utilización coaches)</strong></span>
+                            <span class="text-gold">100% Ingresos</span>
+                        </div>
+                        <div class="stacked-bar">
+                            <div class="bar-segment segment-primary" style="flex: 52;">
+                                <span>Primarias: 52%</span>
+                            </div>
+                            <div class="bar-segment segment-support" style="flex: 15;">
+                                <span>Soporte: 15%</span>
+                            </div>
+                            <div class="bar-segment segment-margin" style="flex: 33;">
+                                <span>Margen EBITDA: 33%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="margin-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, rgba(51, 180, 213, 0.6), rgba(98, 180, 220, 0.6));"></div>
+                            <span><strong>Actividades Primarias:</strong> F0-F5 delivery, coaching, curation</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, rgba(158, 113, 183, 0.6), rgba(180, 135, 200, 0.6));"></div>
+                            <span><strong>Actividades Soporte:</strong> Gobernanza, talento, tech, procurement</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, rgba(255, 240, 51, 0.5), rgba(255, 200, 87, 0.5));"></div>
+                            <span><strong>Margen EBITDA:</strong> Profit operacional después de todas las actividades</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: rgba(255, 240, 51, 0.08); border-left: 3px solid var(--brand-gold); border-radius: 4px;">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;"><strong>Estrategia de Optimización:</strong> Aumentar utilización de coaches (F3 constraint) sin sacrificar calidad mediante: (1) cohortes paralelas + asistentes, (2) productización de F1-F2, (3) customer success automation en F4.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Cadena de Suministro (Supply Chain) -->
+        <div id="supply" class="tab-content">
+            <h1><i data-lucide="package" class="icon-lg"></i> Cadena de Suministro - End-to-End Mapping</h1>
+            <p class="section-intro">Mapeo completo de proveedores (Tier 2, Tier 1), operaciones internas, distribución e inventario. Análisis de riesgos y métricas de rendimiento.</p>
+
+            <div class="card-glass">
+                <h2>Flujo de Suministro Aguas Arriba (Upstream)</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div>
+                        <h3 style="color: var(--brand-cyan);">Tier 2: Raw Materials</h3>
+                        <div class="activity-group" style="margin-top: 1rem;">
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>AI Model APIs</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">OpenAI (GPT-4), Anthropic (Claude), Google (Gemini). Critical: versioning, rate limits, pricing.</p>
+                            </div>
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>Google Services</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Workspace, Analytics, Ads platform, Drive storage. Backbone of ops.</p>
+                            </div>
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>Meta Ads Platform</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">B2C distribution, targeting, attribution tracking.</p>
+                            </div>
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>Research & Frameworks</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Gartner, McKinsey, HBR, academic sources. Continuous integration.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="color: var(--brand-emerald);">Tier 1: Direct Inputs</h3>
+                        <div class="activity-group" style="margin-top: 1rem;">
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>Coach Talent Pool</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Freelance + FTE. Recruitment, certification (7 levels), capacity planning.</p>
+                            </div>
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>Content Creators</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Curriculum designers, playbook authors, case study writers.</p>
+                            </div>
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>Technology Vendors</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">HubSpot (CRM), Zoom (conferencing), Notion (knowledge base), custom LMS.</p>
+                            </div>
+                            <div class="card-glass" style="margin-bottom: 0;">
+                                <h4>Marketing & Legal</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Paid media agencies, legal/accounting outsourcing for compliance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass">
+                <h2>Operaciones Internas (Core)</h2>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div class="activity-card">
+                        <h4>Planning & Scheduling</h4>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>Cohort planning (quarterly)</li>
+                            <li>Coach assignment (max 10/coach)</li>
+                            <li>Content calendar (monthly updates)</li>
+                            <li>Tech roadmap (quarterly sprints)</li>
+                        </ul>
+                    </div>
+
+                    <div class="activity-card">
+                        <h4>Production</h4>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>F1-F3: Service delivery</li>
+                            <li>Content: Playbooks, templates, GPTs</li>
+                            <li>QA: Quality gates (QG1-QG3)</li>
+                            <li>Customization: Client-specific GPT configs</li>
+                        </ul>
+                    </div>
+
+                    <div class="activity-card">
+                        <h4>Inventory Management</h4>
+                        <ul style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1.2rem; line-height: 1.7;">
+                            <li>Lead pipeline (F0 WIP tracking)</li>
+                            <li>Active clients (F1-F3 cap 10/coach)</li>
+                            <li>Content library (versioned assets)</li>
+                            <li>Coach availability (utilization dashboards)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass">
+                <h2>Flujo de Suministro Aguas Abajo (Downstream)</h2>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3>Canales de Distribución</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div class="card-glass" style="background: rgba(51, 180, 213, 0.08);">
+                            <h4>Direct B2C</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Website, social (LinkedIn/IG/TikTok), email nurture. High touch community.</p>
+                        </div>
+                        <div class="card-glass" style="background: rgba(51, 180, 213, 0.08);">
+                            <h4>Direct B2B</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Outbound SDR, inbound marketing, enterprise contracts. Account-based.</p>
+                        </div>
+                        <div class="card-glass" style="background: rgba(51, 180, 213, 0.08);">
+                            <h4>Indirect GTM</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Partner ecosystem, affiliate program, co-selling arrangements.</p>
+                        </div>
+                        <div class="card-glass" style="background: rgba(51, 180, 213, 0.08);">
+                            <h4>Community</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Alumni network, embajadores program, referral flywheel (F5→F0).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3>Segmentos de Clientes (7 total)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Segmento</th>
+                                <th>Descripción</th>
+                                <th>Canal Primario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="4" style="font-weight: 600;">B2C</td>
+                                <td><strong>P1 Professional</strong></td>
+                                <td>Trabajador de cuello blanco 25-45 años</td>
+                                <td>LinkedIn, email</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P2 Student</strong></td>
+                                <td>Estudiante universitario, carrera tech</td>
+                                <td>TikTok, IG, comunidad</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P3 Executive</strong></td>
+                                <td>C-level, decision maker</td>
+                                <td>Outbound, referrals</td>
+                            </tr>
+                            <tr>
+                                <td><strong>P4 Autodidact</strong></td>
+                                <td>Self-learner, curiosity-driven</td>
+                                <td>Content, comunidad, SEO</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3" style="font-weight: 600;">B2B</td>
+                                <td><strong>E1 Small Biz</strong></td>
+                                <td>Startups, SMEs 10-50 emp</td>
+                                <td>Inbound, partners</td>
+                            </tr>
+                            <tr>
+                                <td><strong>E2 Enterprise</strong></td>
+                                <td>Mid-market 50-500 emp</td>
+                                <td>Account-based, resellers</td>
+                            </tr>
+                            <tr>
+                                <td><strong>E3 Corporate</strong></td>
+                                <td>Large orgs 500+ emp, procurement</td>
+                                <td>Strategic partners, tenders</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <h3>Reverse Logistics - Feedback Loop</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div class="card-glass" style="background: rgba(158, 113, 183, 0.08);">
+                            <h4 style="color: var(--brand-purple-text);">NPS Surveys</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Post-F5 feedback → product improvement roadmap</p>
+                        </div>
+                        <div class="card-glass" style="background: rgba(158, 113, 183, 0.08);">
+                            <h4 style="color: var(--brand-purple-text);">Referrals</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">F5→F0 loop: cases + ambassadors → new leads</p>
+                        </div>
+                        <div class="card-glass" style="background: rgba(158, 113, 183, 0.08);">
+                            <h4 style="color: var(--brand-purple-text);">Case Studies</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Post-engagement → marketing content assets</p>
+                        </div>
+                        <div class="card-glass" style="background: rgba(158, 113, 183, 0.08);">
+                            <h4 style="color: var(--brand-purple-text);">Alumni Insights</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Community feedback → curriculum updates</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass">
+                <h2>Métricas de Cadena de Suministro</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Actual</th>
+                            <th>Target</th>
+                            <th>Notas Estratégicas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Lead-to-Revenue Cycle</strong></td>
+                            <td>15-52 semanas</td>
+                            <td>10-30 semanas</td>
+                            <td>Reducir espera F0→F1 (automatización)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Coach Utilization</strong></td>
+                            <td>~70%</td>
+                            <td>80-85%</td>
+                            <td>Balance calidad vs escalabilidad. Monitores QG1-QG3.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Content Freshness</strong></td>
+                            <td>Quarterly updates</td>
+                            <td>Monthly updates</td>
+                            <td>AI evoluciona rápido. CI/CD para frameworks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Supplier Concentration Risk</strong></td>
+                            <td>HIGH (OpenAI dominant)</td>
+                            <td>MEDIUM</td>
+                            <td>Multi-model strategy: Claude, Gemini fallbacks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Inventory Turns</strong></td>
+                            <td>2-3 cohorts/Q</td>
+                            <td>4-5 cohorts/Q</td>
+                            <td>Scale via asistentes, cohortes paralelas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-glass">
+                <h2>Risk Matrix - Probabilidad vs Impacto</h2>
+                <p class="text-muted mb-2">Evaluación de riesgos estratégicos en la cadena de suministro:</p>
+
+                <div class="risk-matrix">
+                    <div class="risk-quadrant high-high">
+                        <h4>ALTO/ALTO (Critical)</h4>
+                        <div class="risk-item">
+                            <strong>Coach Burnout a Escala:</strong> F3 constraint (10/coach) genera fatiga. Mitigation: asistentes, cohortes.
+                        </div>
+                        <div class="risk-item">
+                            <strong>API Price Shock:</strong> OpenAI puede subir costos 2x. Mitigation: multi-provider contracts.
+                        </div>
+                    </div>
+
+                    <div class="risk-quadrant high-low">
+                        <h4>ALTO/BAJO (Monitor)</h4>
+                        <div class="risk-item">
+                            <strong>Content Obsolescence:</strong> AI frameworks envejecen en meses. Mitigation: quarterly refresh SLA.
+                        </div>
+                        <div class="risk-item">
+                            <strong>Leads Stale en F0:</strong> WIP no convirtiendo. Mitigation: quality gates, nurture automation.
+                        </div>
+                    </div>
+
+                    <div class="risk-quadrant low-high">
+                        <h4>BAJO/ALTO (Contingency)</h4>
+                        <div class="risk-item">
+                            <strong>Key Coach Departure:</strong> Institutional knowledge loss. Mitigation: documentation, backup bench.
+                        </div>
+                        <div class="risk-item">
+                            <strong>Platform Outage (HubSpot/Zoom):</strong> Cascading impact en delivery. Mitigation: DR plans.
+                        </div>
+                    </div>
+
+                    <div class="risk-quadrant low-low">
+                        <h4>BAJO/BAJO (Accept)</h4>
+                        <div class="risk-item">
+                            <strong>Regulatory Changes LATAM:</strong> Data privacy, labor laws. Mitigation: legal monitoring.
+                        </div>
+                        <div class="risk-item">
+                            <strong>Competitor New Entrant:</strong> Well-funded rival. Mitigation: brand moat, community lock-in.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass" style="margin-top: 2rem;">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <i data-lucide="zap"></i>
+                    <span>Estrategia de Optimización - Próximos 6-12 Meses</span>
+                </div>
+                <div class="collapsible-content">
+                    <div style="padding: 1.5rem 0;">
+                        <ol style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.8; margin-left: 1.5rem;">
+                            <li><strong>Escalar F3 (Práctica):</strong> Constraint #1. Implementar asistentes coaches (50% del tiempo), cohortes sincronizadas, y gates automáticos (QG1 early intervention). Target: 15 clientes/coach sin degradar NPS.</li>
+                            <li><strong>Reducir F0→F1 Wait:</strong> Lead nurture automática (Zapier + HubSpot), qualification rápida (scoring), decisions en &lt;5 días. Target: 10-30 week cycle.</li>
+                            <li><strong>Multi-Model AI Strategy:</strong> Reduce OpenAI concentration. Integrate Claude (Anthropic) + Gemini (Google) con feature flags. Fallback para cost/latency optimization.</li>
+                            <li><strong>Content Productivity:</strong> Productizar F1-F2 (template-driven, low-code assessments). Reusable playbooks versionados en Git. Monthly update cadence.</li>
+                            <li><strong>Reverse Logistics Flywheel:</strong> Formalize F5→F0 (referral SLA). Ambassador enablement program. NPS feedback loop CI/CD (quick product iterations).</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+
+            // Tab navigation
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabId = this.getAttribute('data-tab');
+
+                    // Remove active from all tabs and buttons
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    // Add active to clicked tab and button
+                    document.getElementById(tabId).classList.add('active');
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const content = header.nextElementSibling;
+            header.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+
+            // Re-create icons after DOM change
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

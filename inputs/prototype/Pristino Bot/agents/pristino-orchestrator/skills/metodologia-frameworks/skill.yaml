@@ -1,0 +1,177 @@
+# =============================================================================
+# Skill: metodologia-frameworks
+# Agent: pristino-orchestrator
+# Purpose: Core Cognitive Algorithms & Operational Methodologies
+# =============================================================================
+
+id: metodologia-frameworks
+name: MetodologIA Cognitive Frameworks Engine
+version: "2.0.0"
+purpose: >
+  Dynamic access to the core algorithms and methodologies that power MetodologIA's 
+  reasoning engine. Provides prescriptive selection guidance: which algorithm to use, 
+  when, and why — based on task complexity and problem type.
+businessValue: >
+  Standardizes how Pristino solves complex problems. Guarantees 10/10 quality via 
+  the Excellence Loop and enforces the "method over hacks" philosophy at an 
+  algorithmic level. Prevents ad-hoc reasoning that produces inconsistent results.
+triggerTypes:
+  - complex_reasoning
+  - strategy_design
+  - problem_solving
+  - quality_validation
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "taskComplexity: enum (simple, medium, complex, expert)"
+  - "problemType: enum (diagnostic, creative, analytical, execution)"
+
+outputs:
+  - "recommendedAlgorithm: Framework (The algorithm to apply with rationale)"
+  - "appliedMethodology: Methodology (Specific steps to follow)"
+
+assumptions:
+  - "Complexity classification determines algorithm selection. Simple tasks use linear execution; complex tasks use ToT."
+  - "The Excellence Loop is universal — it applies to ALL output types, not just complex tasks."
+  - "Semantic Search is for internal knowledge retrieval. It is not a web search substitute."
+  - "Algorithm selection can be overridden by the user with explicit justification."
+
+limits:
+  - "Cannot execute algorithms autonomously. Provides the algorithm specification; executing skills apply it."
+  - "ToT branching is limited to 3–5 alternatives per decision point. More branches exceed cognitive management capacity."
+  - "The Excellence Loop is capped at 2 refinement iterations. Beyond that, diminishing returns exceed cost."
+  - "Semantic Search accuracy depends on the richness of the indexed knowledge base. Sparse KBs produce poor Tier 2+ results."
+
+# ── Algorithm Selection Matrix ──
+
+selectionMatrix:
+  simple_diagnostic: "Linear Execution (no ToT needed)"
+  simple_creative: "Single-pass generation + Excellence Loop"
+  medium_diagnostic: "Least-to-Most Decomposition"
+  medium_creative: "Analogical Reasoning → Excellence Loop"
+  medium_analytical: "Contrastive Reasoning + Scoring Matrix"
+  complex_diagnostic: "Tree-of-Thought (ToT) with 3-5 branches"
+  complex_creative: "ToT → Excellence Loop → Adversarial+"
+  complex_analytical: "ToT + Scoring Matrix + Sensitivity Analysis"
+  expert_any: "ToT + Multi-Agent Reasoning (MAR) + Cross-Validation"
+
+# ── Core Algorithms ──
+
+algorithms:
+  treeOfThought:
+    name: "Tree-of-Thought (ToT) Reasoning"
+    purpose: "Explore alternatives and deepen the best path for complex decisions."
+    when_to_use: "taskComplexity ≥ complex OR problemType = diagnostic with multiple hypotheses."
+    when_NOT_to_use: "Simple tasks with one obvious answer. Applying ToT to simple tasks violates KISS."
+    steps:
+      1: "Identify the decision point clearly. Frame as a question."
+      2: "Generate 3–5 distinct alternatives (branches). Each branch must be structurally different."
+      3: "Evaluate all branches simultaneously against scoring dimensions."
+      4: "Score against dimensions: Feasibility (0–10), Quality (0–10), Performance (0–10)."
+      5: "Select 1–2 highest-scoring branches. Deepen analysis on the selected path."
+    pruning_criteria: "Branches scoring <5/10 on any dimension are pruned. Explain the pruning rationale."
+    output: "Selected approach with comparison table showing all branches and scores."
+
+  excellenceLoop:
+    name: "Excellence Loop Algorithm"
+    purpose: "Automatic refinement to achieve 10/10 quality across all relevant dimensions."
+    universality: "Applied to EVERY non-trivial output. Not optional."
+    maxIterations: 2
+    steps:
+      1: "Generate initial output (v1)."
+      2: "Score across relevant quality dimensions (subset of 16D framework, context-dependent)."
+      3: "If any dimension < 9.5/10, identify the weakest dimension and targeted fix."
+      4: "Apply targeted refinement (v2). Do NOT rewrite entire output — surgical improvement only."
+      5: "Apply Adversarial+ testing: ambiguity attacks, edge cases, contradictions, stress tests, security tests."
+      6: "If passes Adversarial+, certify output. If max iterations reached, flag for manual review."
+    abort_condition: "If v2 scores lower than v1 on any dimension, revert to v1 and flag the regression."
+
+  semanticSearch:
+    name: "Multi-Tier Semantic Search"
+    purpose: "Find the exact MetodologIA concept, pattern, or framework efficiently."
+    tiers:
+      tier_1: "Exact string match (fastest, highest confidence)."
+      tier_2: "High semantic similarity (>0.9). Near-exact concept match."
+      tier_3: "Medium semantic similarity (>0.7). Related concepts."
+      tier_4: "Metadata/Tag matching. Last resort, broadest results."
+    selection: "Start at Tier 1. If no results, cascade to Tier 2, 3, 4."
+    constraint: "Return results from the highest-confidence tier that produces matches. Never mix tiers."
+
+# ── Methodology Families ──
+
+methodologies:
+  reasoning:
+    description: "Methodologies to structure complex thought processes."
+    selection_guide: "Use when breaking down a problem into solvable sub-problems."
+    methods:
+      - name: "Least-to-Most Decomposition"
+        steps: ["Find the simplest sub-problem", "Solve it", "Increase complexity incrementally", "Repeat until full problem resolved"]
+        when: "Problems with clear hierarchical structure. Each sub-problem builds on the previous."
+      - name: "Analogical Reasoning"
+        steps: ["Identify a source domain with a known solution", "Map structure from source to target", "Transfer insights and validate"]
+        when: "Novel problems that resemble solved problems in other domains."
+      - name: "Contrastive Reasoning"
+        steps: ["List all alternatives", "Compare feature-by-feature using a scoring matrix", "Highlight decisive differences", "Recommend based on weighted criteria"]
+        when: "Choosing between well-defined alternatives (tools, approaches, architectures)."
+      - name: "Socratic Method"
+        steps: ["Ask probing questions to surface assumptions", "Challenge inconsistencies", "Guide the user to discover their own answer"]
+        when: "Coaching, learning, assumption-testing. User owns the conclusion."
+
+  optimization:
+    description: "Methodologies for efficiency and prompt engineering."
+    methods:
+      - name: "Few-Shot Optimization"
+        when: "Pattern learning, style consistency. Provide 2–3 examples of desired output format."
+      - name: "Iterative Refinement"
+        when: "Quality-critical, complex tasks. Apply multiple passes with diminishing scope."
+      - name: "Constraint-Based Optimization"
+        when: "Compliance needed, strict restrictions. Define hard limits before generating."
+
+  behavioral:
+    description: "Methodologies to influence behavior and decision-making."
+    methods:
+      - name: "Nudge Theory"
+        application: "Guide behavior through subtle environmental cues (UX/Strategy)."
+        limit: "Nudges are suggestions, not mandates. User autonomy is preserved."
+      - name: "Social Proof"
+        application: "Use social evidence to build trust and credibility."
+        limit: "Requires real evidence. Fabricated social proof is fraud."
+      - name: "Scarcity/Reciprocity (Cialdini)"
+        application: "Engagement and conversion optimization."
+        limit: "Must be truthful. Artificial scarcity is deceptive."
+
+edge_cases:
+  - scenario: "User request is so simple that applying ToT adds unnecessary complexity."
+    handling: "Respect KISS. Select linear execution. Explain that ToT is reserved for complex decisions."
+  - scenario: "ToT branches produce a tie (equal scores on all dimensions)."
+    handling: "Add a tiebreaker dimension: implementation simplicity. If still tied, ask the user for their preference."
+  - scenario: "Excellence Loop v2 scores worse than v1."
+    handling: "Revert to v1 immediately. Flag the regression with specific dimension analysis."
+  - scenario: "No methodology fits the problem type."
+    handling: "Compose a hybrid from existing methodologies. Document the composition rationale. Never invent from scratch."
+
+trade_offs:
+  - decision: "Selection matrix (prescriptive) over freestyle algorithm choice."
+    justification: "Prescriptive selection prevents both under-engineering (too simple) and over-engineering (too complex for the task)."
+  - decision: "2-iteration Excellence Loop cap over unlimited refinement."
+    justification: "Beyond 2 iterations, improvements are marginal while costs are linear. The cap prevents perfectionism paralysis."
+  - decision: "Tier-based Semantic Search over single-pass search."
+    justification: "Tiered search guarantees the highest-confidence results are returned first, reducing false positives."
+
+constraints:
+  - "NEVER overcomplicate simple requests with ToT. Respect KISS principle."
+  - "NEVER exceed 2 Excellence Loop iterations. Certify or flag for review."
+  - "ALWAYS use the Selection Matrix to choose algorithms. No freestyle selection."
+  - "ALWAYS explain WHY an algorithm was selected (complexity × problem type)."
+  - "NEVER mix Semantic Search tiers in a single result set."
+
+evaluation:
+  acceptance_criteria:
+    - "Algorithm selection matches the Selection Matrix for the given complexity × problem type."
+    - "ToT reasoning shows 3–5 branches with visible scoring and pruning rationale."
+    - "Excellence Loop applied to all non-trivial outputs (verifiable in output metadata)."
+    - "Methodology steps followed in the correct order."
+  success_metrics:
+    - "100% of complex tasks use ToT reasoning with visible branch analysis."
+    - "≥95% of Excellence Loop v1 outputs achieve ≥9.5/10 within 2 iterations."
+    - "Zero instances of ToT applied to simple tasks (KISS compliance)."

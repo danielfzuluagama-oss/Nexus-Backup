@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Journey General - MetodologIA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Montserrat:wght@400;500;600&family=Jost:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-secondary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-tertiary: 'Jost', 'Futura', 'Trebuchet MS', Arial, sans-serif;
+            --bg-primary: hsl(220, 34%, 18%);
+            --bg-surface: hsl(220, 30%, 23%);
+            --bg-body: hsl(222, 29%, 12%);
+            --bg-elevated: hsla(220, 34%, 18%, 0.8);
+            --bg-hover: hsla(220, 30%, 23%, 0.9);
+            --text-primary: #FFFFFF;
+            --text-secondary: #e2e8f0;
+            --text-muted: #cbd5e1;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-default: rgba(255, 255, 255, 0.15);
+            --brand-gold: hsl(51, 100%, 50%);
+            --brand-gold-dark: hsl(45, 100%, 50%);
+            --brand-gold-glow: hsla(51, 100%, 50%, 0.12);
+            --brand-cyan: hsl(189, 94%, 53%);
+            --brand-emerald: hsl(158, 64%, 52%);
+            --brand-purple: hsl(271, 91%, 65%);
+            --brand-blue: hsl(221, 83%, 53%);
+            --brand-red: #ef4444;
+            --gradient-gold: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+            --shadow-glow-gold: 0 0 30px rgba(255, 240, 51, 0.12);
+            --brand-purple-text: hsl(271, 91%, 76%);
+            --brand-blue-text: hsl(221, 83%, 72%);
+            --brand-indigo-text: #a5b4fc;
+            --brand-gold-glow-bright: hsla(51, 100%, 50%, 0.12);
+            --brand-cyan-glow: hsla(189, 94%, 53%, 0.12);
+            --shadow-glow-cyan: 0 0 30px rgba(34, 211, 238, 0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-body); color: var(--text-secondary); font-family: var(--font-secondary); line-height: 1.6; overflow-x: hidden; }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-primary); color: var(--text-primary); font-weight: 700; }
+        a { color: var(--brand-gold); text-decoration: none; transition: all 0.3s ease; }
+        .highlight-ia-premium { background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+        .card-glass { background: var(--bg-elevated); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: 1rem; transition: all 0.3s ease; }
+        .card-glass:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px var(--brand-gold-glow); }
+        nav { position: fixed; top: 0; width: 100%; z-index: 50; background: hsla(220, 34%, 18%, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); padding: 1.5rem; }
+        nav-content { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo-container { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-svg { width: 40px; height: 40px; }
+        .brand-name { font-size: 1.125rem; font-weight: 700; }
+        .badge-glass { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; background: var(--bg-hover); border: 1px solid var(--border-default); font-size: 0.875rem; }
+        .hero-section { min-height: 100vh; padding: 6rem 1.5rem 5rem; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .hero-content { max-width: 1280px; width: 100%; position: relative; z-index: 10; }
+        .hero-badge { display: flex; justify-content: center; margin-bottom: 2rem; }
+        .hero-title { font-size: 3.75rem; line-height: 1.1; font-weight: 900; text-align: center; margin-bottom: 1.5rem; }
+        .hero-subtitle { font-size: 1.25rem; color: var(--text-muted); text-align: center; max-width: 768px; margin: 3rem auto; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
+        .stat-card { padding: 1.5rem; text-align: center; border-radius: 1rem; }
+        .stat-value { font-size: 2.25rem; font-weight: 900; margin-bottom: 0.5rem; }
+        .stat-label { font-size: 0.875rem; color: var(--text-muted); }
+        .assumptions-section { padding: 5rem 1.5rem; background: linear-gradient(to bottom, hsl(220, 26%, 15%), hsl(220, 20%, 12%)); }
+        .assumptions-content { max-width: 1280px; margin: 0 auto; }
+        .assumptions-header h2 { font-size: 2.25rem; margin-bottom: 1rem; }
+        .assumptions-header p { color: var(--text-muted); margin-bottom: 3rem; }
+        .accordion-list { display: flex; flex-direction: column; gap: 1rem; }
+        .accordion-item { border-radius: 1rem; overflow: hidden; }
+        .accordion-header { width: 100%; padding: 1.5rem; background: var(--bg-elevated); border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.3s ease; border-radius: 1rem; font-weight: 600; }
+        .accordion-header:hover { background: var(--bg-hover); }
+        .accordion-header-title { display: flex; align-items: center; gap: 0.75rem; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: var(--bg-primary); border: 1px solid var(--border-subtle); border-top: none; }
+        .accordion-content.open { max-height: 2000px; }
+        .accordion-table { width: 100%; padding: 1.5rem; overflow-x: auto; }
+        .table-inner { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .table-inner th { text-align: left; padding: 1rem; color: var(--brand-gold); font-weight: 600; border-bottom: 1px solid var(--border-default); }
+        .table-inner td { padding: 1rem; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+        .journey-section { padding: 5rem 1.5rem; background: var(--bg-body); }
+        .journey-content { max-width: 1280px; margin: 0 auto; }
+        .journey-title { font-size: 2.25rem; text-align: center; margin-bottom: 4rem; }
+        .phase-block { margin-bottom: 4rem; border-radius: 1.5rem; padding: 2rem; }
+        .phase-f0 { border-left: 5px solid hsl(210, 14%, 52%); }
+        .phase-f1 { border-left: 5px solid var(--brand-blue); }
+        .phase-f2 { border-left: 5px solid var(--brand-cyan); }
+        .phase-f3 { border-left: 5px solid var(--brand-gold); }
+        .phase-f4 { border-left: 5px solid var(--brand-emerald); }
+        .phase-f5 { border-left: 5px solid var(--brand-purple); }
+        .phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem; }
+        @media (max-width: 768px) { .phase-grid { grid-template-columns: 1fr; } }
+        .phase-left h3 { font-size: 1.875rem; margin-bottom: 1.5rem; }
+        .phase-thought { font-style: italic; color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .phase-detail { margin-bottom: 1.5rem; }
+        .phase-detail-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--brand-gold); display: block; margin-bottom: 0.5rem; }
+        .emotion-bar { background: var(--bg-primary); border-radius: 0.5rem; width: 100%; height: 0.75rem; overflow: hidden; margin: 0.75rem 0; }
+        .emotion-fill { height: 100%; background: var(--gradient-gold); }
+        .emotion-intensity { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .phase-right { display: flex; flex-direction: column; gap: 1rem; }
+        .info-box { background: var(--bg-primary); padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border-default); }
+        .info-box-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--brand-cyan); display: block; margin-bottom: 0.5rem; }
+        .mot-box { background: hsla(51, 100%, 50%, 0.1); border: 1px solid hsla(51, 100%, 50%, 0.3); }
+        .mot-box .info-box-label { color: var(--brand-gold); }
+        .phase-footer { border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; font-size: 0.875rem; color: var(--text-muted); }
+        .svg-curve-section { padding: 5rem 1.5rem; background: linear-gradient(to bottom, hsl(220, 20%, 12%), hsl(220, 26%, 15%)); text-align: center; }
+        .svg-curve-content { max-width: 1280px; margin: 0 auto; }
+        .svg-curve-title { font-size: 2.25rem; margin-bottom: 3rem; }
+        .svg-curve { filter: drop-shadow(0 0 20px var(--brand-gold-glow)); width: 100%; max-width: 800px; margin: 0 auto; }
+        .mot-criteria-section { padding: 5rem 1.5rem; background: var(--bg-body); }
+        .mot-criteria-content { max-width: 1280px; margin: 0 auto; }
+        .mot-criteria-title { font-size: 2.25rem; margin-bottom: 3rem; }
+        .mot-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; }
+        .mot-card h3 { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--brand-gold); }
+        .criteria-list { list-style: none; counter-reset: item; }
+        .criteria-list li { counter-increment: item; margin-bottom: 1rem; padding-left: 2rem; position: relative; }
+        .criteria-list li:before { content: counter(item); position: absolute; left: 0; top: 0; background: var(--brand-cyan); color: #000; width: 1.5rem; height: 1.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; }
+        .regression-section { padding: 5rem 1.5rem; background: linear-gradient(to bottom, hsl(220, 26%, 15%), hsl(220, 20%, 12%)); }
+        .regression-content { max-width: 1280px; margin: 0 auto; }
+        .regression-title { font-size: 2.25rem; margin-bottom: 3rem; }
+        .regression-path { background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; }
+        .regression-path h3 { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--brand-red); }
+        .footer-section { padding: 5rem 1.5rem; background: var(--bg-primary); border-top: 1px solid var(--border-default); text-align: center; }
+        .footer-content { max-width: 1280px; margin: 0 auto; }
+        .footer-logo { margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; }
+        .footer-text { color: var(--text-muted); margin-bottom: 2rem; }
+        .footer-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle); }
+        .footer-meta-item { text-align: left; }
+        .footer-meta-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--brand-gold); display: block; margin-bottom: 0.5rem; }
+        .footer-meta-value { font-size: 0.875rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <nav><nav-content>
+        <div class="logo-container">
+            <svg class="logo-svg" viewBox="0 0 40 40" fill="none"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="hsl(51, 100%, 50%)"/><stop offset="100%" stop-color="hsl(45, 100%, 50%)"/></linearGradient></defs>
+            <rect width="40" height="40" rx="12" fill="url(#logoGrad)"/><circle cx="20" cy="12" r="3" fill="#000"/><path d="M15 20h10v2H15v-2zm0 4h10v2H15v-2z" fill="#000"/></svg>
+            <span class="brand-name">Metodolog<span class="highlight-ia-premium">IA</span></span>
+        </div>
+        <button style="background: var(--gradient-gold); color: #000; font-weight: 700; border-radius: 0.75rem; padding: 0.5rem 1.5rem; border: none; cursor: pointer;">Agendar Diagnóstico</button>
+    </nav-content></nav>
+
+    <section class="hero-section" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge"><div class="badge-glass">Customer Journey General · J0 North Star · v3.0</div></div>
+            <h1 class="hero-title">Tu Viaje hacia la <span class="highlight-ia-premium">Soberanía Digital</span></h1>
+            <p class="hero-subtitle">El mapa maestro que guía cada interacción. 6 fases, 5 momentos de verdad, un destino: tu autonomía.</p>
+            <div class="stats-grid">
+                <div class="card-glass stat-card"><div class="stat-value highlight-ia-premium">6</div><div class="stat-label">Fases Universales</div></div>
+                <div class="card-glass stat-card"><div class="stat-value" style="color: var(--brand-cyan);">5</div><div class="stat-label">Momentos de Verdad</div></div>
+                <div class="card-glass stat-card"><div class="stat-value" style="color: var(--brand-blue);">7</div><div class="stat-label">Segmentos Heredan</div></div>
+                <div class="card-glass stat-card"><div class="stat-value highlight-ia-premium">~30</div><div class="stat-label">Días Pipeline B2C</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="assumptions-section" id="assumptions">
+        <div class="assumptions-content">
+            <div class="assumptions-header"><h2 class="highlight-ia-premium">Supuestos del Journey</h2><p>Para que este journey funcione, estas condiciones deben ser verdaderas:</p></div>
+            <div class="accordion-list">
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)"><div class="accordion-header-title">Supuestos Tecnológicos</div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="accordion-content"><div class="accordion-table"><table class="table-inner"><thead><tr><th>Supuesto</th><th>Si NO se cumple</th><th>Mitigación</th></tr></thead><tbody><tr><td>Internet estable</td><td>Pérdida de sesión, frustración</td><td>Sesiones async, materiales offline</td></tr><tr><td>Dispositivo >5"</td><td>Experiencia degradada mobile-only</td><td>Versión simplificada mobile (future)</td></tr><tr><td>Plataforma carga <3s</td><td>Dropout pre-F1, refund requests</td><td>Audit infraestructura trimestral</td></tr><tr><td>GPTs custom actualizados</td><td>Cliente pierde confianza en F3</td><td>Versioning + testing pre-F3</td></tr></tbody></table></div></div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)"><div class="accordion-header-title">Supuestos Geográficos/Temporales</div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="accordion-content"><div class="accordion-table"><table class="table-inner"><thead><tr><th>Supuesto</th><th>Si NO se cumple</th><th>Mitigación</th></tr></thead><tbody><tr><td>Cliente en timezone LATAM</td><td>Friction scheduling, baja engagement</td><td>Cohortes regionales + async-first</td></tr><tr><td>F1 en primera semana</td><td>Lead pierde interés, olvida motivación</td><td>SLA: F0→F1 max 5 días</td></tr><tr><td>F3 es 4-6 semanas continuas</td><td>Cliente olvida contexto, dropout</td><td>Pausa explícita en recesos</td></tr><tr><td>Comunicación en Español</td><td>Experiencia no optimizada</td><td>Excluir no-hispanohablantes (MVP)</td></tr></tbody></table></div></div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)"><div class="accordion-header-title">Supuestos de Comportamiento</div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="accordion-content"><div class="accordion-table"><table class="table-inner"><thead><tr><th>Supuesto</th><th>Si NO se cumple</th><th>Mitigación</th></tr></thead><tbody><tr><td>Cliente es honesto en diagnóstico</td><td>Recomendaciones erradas, journey falla</td><td>Validación manual en sesión</td></tr><tr><td>Cliente tiene autonomía para actuar</td><td>Cliente stuck sin permiso implementar</td><td>Variant empresarial si employed</td></tr><tr><td>Motivación intrínseca</td><td>Baja engagement, refund request</td><td>Assessment motivación en intake</td></tr><tr><td>Completa F1 antes de F2</td><td>Expectativas erradas, waste presupuesto</td><td>Hard gate: no F2 sin baseline report</td></tr></tbody></table></div></div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)"><div class="accordion-header-title">Supuestos de Organización</div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="accordion-content"><div class="accordion-table"><table class="table-inner"><thead><tr><th>Supuesto</th><th>Si NO se cumple</th><th>Mitigación</th></tr></thead><tbody><tr><td>Coaches entrenados y disponibles</td><td>Mala quality, churn alto</td><td>Cap cohorts: max 10 clientes/coach</td></tr><tr><td>SOPs actualizadas y seguidas</td><td>Variación wild en quality, NPS inestable</td><td>Monthly audit, quarterly training</td></tr><tr><td>Métricas siendo tracked</td><td>Blind to what's happening</td><td>Weekly analytics review, dashboard KPIs</td></tr></tbody></table></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="journey-section" id="journey">
+        <div class="journey-content">
+            <h2 class="journey-title highlight-ia-premium">El Viaje: 6 Fases Universales</h2>
+            <div class="phase-block card-glass phase-f0"><div class="phase-grid"><div class="phase-left"><h3>F0: AWARENESS</h3><p class="phase-thought">"Algo debe cambiar... escucho mucho sobre IA pero no sé por dónde empezar"</p><div class="phase-detail"><span class="phase-detail-label">Contexto</span><p>El cliente vive un life event que genera conciencia de necesidad</p></div><div class="phase-detail"><span class="phase-detail-label">Emoción</span><p>Curiosidad mezclada con ansiedad</p><div class="emotion-bar"><div class="emotion-fill" style="width: 30%;"></div></div><p class="emotion-intensity">3/10 Intensidad Emocional</p></div></div><div class="phase-right"><div class="info-box"><span class="info-box-label">Touchpoints</span><p>Web, LinkedIn, Instagram, webinars, referrals</p></div><div class="info-box"><span class="info-box-label">Canal Dominante</span><p>Orgánico (SEO + Social) + Referral</p></div><div class="info-box"><span class="info-box-label">KPI</span><p>Tráfico web, leads generados, CTR</p></div><div class="info-box mot-box"><span class="info-box-label">MOT #1</span><p>"Esto me habla a mí"</p></div></div></div><div class="phase-footer"><strong>Oportunidad:</strong> Contenido que educa sin vender → posicionar como autoridad confiable</div></div>
+            <div class="phase-block card-glass phase-f1"><div class="phase-grid"><div class="phase-left"><h3>F1: DIAGNÓSTICO</h3><p class="phase-thought">"Quiero saber dónde estoy parado/a realmente... pero sin compromiso"</p><div class="phase-detail"><span class="phase-detail-label">Contexto</span><p>El cliente solicita un diagnóstico gratuito para entender su situación</p></div><div class="phase-detail"><span class="phase-detail-label">Emoción</span><p>Esperanza cautelosa</p><div class="emotion-bar"><div class="emotion-fill" style="width: 50%;"></div></div><p class="emotion-intensity">5/10 Intensidad Emocional</p></div></div><div class="phase-right"><div class="info-box"><span class="info-box-label">Touchpoints</span><p>Landing, formulario, videocall, Baseline Report</p></div><div class="info-box"><span class="info-box-label">Canal Dominante</span><p>1:1 Video (Zoom/Meet) + Email</p></div><div class="info-box"><span class="info-box-label">KPI</span><p>Conversion lead→diagnóstico, NPS sesión, % avanza F2</p></div><div class="info-box mot-box"><span class="info-box-label">MOT #2</span><p>"Ahora veo dónde pierdo"</p></div></div></div><div class="phase-footer"><strong>Oportunidad:</strong> El diagnóstico gratuito como "wow moment"</div></div>
+            <div class="phase-block card-glass phase-f2"><div class="phase-grid"><div class="phase-left"><h3>F2: DISEÑO</h3><p class="phase-thought">"Ya entiendo mi situación. Ahora necesito un plan concreto"</p><div class="phase-detail"><span class="phase-detail-label">Contexto</span><p>El cliente decide invertir y co-diseñar su ruta personalizada</p></div><div class="phase-detail"><span class="phase-detail-label">Emoción</span><p>Determinación + expectativa</p><div class="emotion-bar"><div class="emotion-fill" style="width: 60%;"></div></div><p class="emotion-intensity">6/10 Intensidad Emocional</p></div></div><div class="phase-right"><div class="info-box"><span class="info-box-label">Touchpoints</span><p>Propuesta/ODS, dashboard KPIs, calendario, contrato, pago</p></div><div class="info-box"><span class="info-box-label">Canal Dominante</span><p>Video 1:1 + Email + WhatsApp</p></div><div class="info-box"><span class="info-box-label">KPI</span><p>Conversion diagnóstico→diseño, ticket promedio, time-to-decision</p></div><div class="info-box mot-box"><span class="info-box-label">Transición</span><p>De prospect a cliente pagante</p></div></div></div><div class="phase-footer"><strong>Oportunidad:</strong> Micro-oferta (Taller $200k) como escalón de compromiso</div></div>
+            <div class="phase-block card-glass phase-f3"><div class="phase-grid"><div class="phase-left"><h3>F3: PRÁCTICA</h3><p class="phase-thought">"Estoy aprendiendo cosas que puedo aplicar HOY... esto es diferente"</p><div class="phase-detail"><span class="phase-detail-label">Contexto</span><p>El cliente ejecuta su ruta con coaching, bootcamp y herramientas</p></div><div class="phase-detail"><span class="phase-detail-label">Emoción</span><p>Entusiasmo con momentos de frustración</p><div class="emotion-bar"><div class="emotion-fill" style="width: 80%;"></div></div><p class="emotion-intensity">8/10 Intensidad Emocional</p></div></div><div class="phase-right"><div class="info-box"><span class="info-box-label">Touchpoints</span><p>Plataforma bootcamp, sesiones 1:1/grupo, GPTs custom, WhatsApp</p></div><div class="info-box"><span class="info-box-label">Canal Dominante</span><p>Video + plataforma + WhatsApp async</p></div><div class="info-box"><span class="info-box-label">KPI</span><p>Asistencia, completitud ejercicios, NPS sesión, aplicación inmediata</p></div><div class="info-box mot-box"><span class="info-box-label">MOT #3</span><p>"Esto funciona en mi día a día"</p></div></div></div><div class="phase-footer"><strong>Aha! Moment:</strong> Semana 3-4 es punto de inflexión</div></div>
+            <div class="phase-block card-glass phase-f4"><div class="phase-grid"><div class="phase-left"><h3>F4: AUTONOMÍA</h3><p class="phase-thought">"Ya no necesito que me guíen... puedo solo/a"</p><div class="phase-detail"><span class="phase-detail-label">Contexto</span><p>El programa formal termina; el cliente opera con soberanía</p></div><div class="phase-detail"><span class="phase-detail-label">Emoción</span><p>Confianza + orgullo</p><div class="emotion-bar"><div class="emotion-fill" style="width: 70%;"></div></div><p class="emotion-intensity">7/10 Intensidad Emocional</p></div></div><div class="phase-right"><div class="info-box"><span class="info-box-label">Touchpoints</span><p>Autonomy Kit, canal async, check-in mensual, recursos</p></div><div class="info-box"><span class="info-box-label">Canal Dominante</span><p>Async (WhatsApp/email) + check-in video mensual</p></div><div class="info-box"><span class="info-box-label">KPI</span><p>% tareas sin apoyo >80%, mantenimiento hábitos a 90+ días, NPS post-programa</p></div><div class="info-box mot-box"><span class="info-box-label">MOT #4</span><p>"Puedo solo/a"</p></div></div></div><div class="phase-footer"><strong>Oportunidad:</strong> Evidenciar gap residual con métricas</div></div>
+            <div class="phase-block card-glass phase-f5"><div class="phase-grid"><div class="phase-left"><h3>F5: ADVOCACY</h3><p class="phase-thought">"Esto cambió mi forma de trabajar/vivir... otros necesitan saber"</p><div class="phase-detail"><span class="phase-detail-label">Contexto</span><p>El cliente exitoso se convierte en promotor orgánico</p></div><div class="phase-detail"><span class="phase-detail-label">Emoción</span><p>Gratitud + identidad</p><div class="emotion-bar"><div class="emotion-fill" style="width: 90%;"></div></div><p class="emotion-intensity">9/10 Intensidad Emocional</p></div></div><div class="phase-right"><div class="info-box"><span class="info-box-label">Touchpoints</span><p>Badge Digital Champion, referral program, caso de éxito, comunidad</p></div><div class="info-box"><span class="info-box-label">Canal Dominante</span><p>LinkedIn, boca a boca, eventos, WhatsApp</p></div><div class="info-box"><span class="info-box-label">KPI</span><p>Referral rate >25%, testimonios generados, leads por referral</p></div><div class="info-box mot-box"><span class="info-box-label">MOT #5</span><p>"Otros necesitan saber"</p></div></div></div><div class="phase-footer"><strong>Oportunidad:</strong> Kit referral + incentivos + reconocimiento</div></div>
+        </div>
+    </section>
+
+    <section class="svg-curve-section" id="emotion-curve">
+        <div class="svg-curve-content"><h2 class="svg-curve-title highlight-ia-premium">Curva Emocional Completa</h2>
+            <svg class="svg-curve" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="curveGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="hsl(51, 100%, 50%)" stop-opacity="0.8"/><stop offset="100%" stop-color="hsl(51, 100%, 50%)" stop-opacity="0.2"/></linearGradient></defs>
+                <line x1="60" y1="50" x2="60" y2="350" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><line x1="60" y1="350" x2="750" y2="350" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                <text x="40" y="55" text-anchor="end" font-size="12" fill="rgba(255,255,255,0.85)">10</text><text x="40" y="200" text-anchor="end" font-size="12" fill="rgba(255,255,255,0.85)">5</text><text x="40" y="355" text-anchor="end" font-size="12" fill="rgba(255,255,255,0.85)">0</text>
+                <text x="130" y="375" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.85)">F0</text><text x="220" y="375" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.85)">F1</text><text x="310" y="375" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.85)">F2</text><text x="400" y="375" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.85)">F3</text><text x="490" y="375" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.85)">F4</text><text x="580" y="375" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.85)">F5</text>
+                <line x1="60" y1="250" x2="750" y2="250" stroke="rgba(255, 240, 51, 0.12)" stroke-width="1" stroke-dasharray="5,5"/>
+                <path d="M 130 310 Q 175 280 220 270 Q 265 260 310 250 Q 355 210 400 140 Q 445 170 490 210 Q 535 160 580 90" stroke="hsl(51, 100%, 50%)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M 130 310 Q 175 280 220 270 Q 265 260 310 250 Q 355 210 400 140 Q 445 170 490 210 Q 535 160 580 90 L 580 350 L 130 350 Z" fill="url(#curveGrad)"/>
+                <circle cx="130" cy="310" r="4" fill="hsl(51, 100%, 50%)"/><circle cx="220" cy="270" r="4" fill="hsl(51, 100%, 50%)"/><circle cx="310" cy="250" r="4" fill="hsl(51, 100%, 50%)"/><circle cx="400" cy="140" r="5" fill="hsl(51, 100%, 50%)"/><circle cx="490" cy="210" r="4" fill="hsl(51, 100%, 50%)"/><circle cx="580" cy="90" r="4" fill="hsl(51, 100%, 50%)"/>
+                <text x="400" y="120" text-anchor="middle" font-size="14" fill="hsl(51, 100%, 50%)" font-weight="bold">Aha! Moment</text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="mot-criteria-section" id="mot-criteria">
+        <div class="mot-criteria-content"><h2 class="mot-criteria-title highlight-ia-premium">Criterios de Aceptación por MOT</h2>
+            <div class="mot-card"><h3>MOT #1: "Esto me habla a mí" (F0 → F1)</h3><ul class="criteria-list"><li>Lead completa formulario inicial (nombre, email, teléfono, pain)</li><li>Lead entra en secuencia nurturing (email <2h)</li><li>Lead abre ≥1 email de nurturing</li><li>Lead hace click en "Agendar Diagnóstico"</li><li>Lead acepta sesión diagnóstico (fecha/hora confirmada)</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> Lead scoring ≥60 puntos en CRM antes de F1.</p></div>
+            <div class="mot-card"><h3>MOT #2: "Ahora veo dónde pierdo" (F1 → F2)</h3><ul class="criteria-list"><li>Cliente completa cuestionario discovery (100%)</li><li>Cliente asiste a sesión diagnóstico</li><li>Coach genera Baseline Report con brechas</li><li>Cliente recibe y revisa report (<2 días)</li><li>Cliente expresa interés en siguiente paso</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> NPS sesión ≥6/10 AND cliente firma baseline AND progresa a F2.</p></div>
+            <div class="mot-card"><h3>MOT #3: "Diseño personalizado" (F2 → F3)</h3><ul class="criteria-list"><li>Coach diseña propuesta personalizada (ODS)</li><li>Cliente revisa propuesta (<7 días)</li><li>Cliente y coach alinean métricas de éxito</li><li>Cliente completa pago</li><li>Cliente confirma calendario F3 (primer bootcamp agendado)</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> Conversion diagnóstico→programa ≥30% AND ticket promedio ≥target.</p></div>
+            <div class="mot-card"><h3>MOT #4: "Esto funciona en mi día a día" (F3 → F4)</h3><ul class="criteria-list"><li>Cliente asiste ≥80% de sesiones</li><li>Cliente completa ≥70% de ejercicios</li><li>Cliente reporta aplicación inmediata</li><li>Coach observa progreso en métricas (KPI +10%)</li><li>Cliente expresa satisfacción (NPS ≥7/10)</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> % completition ≥75% AND NPS ≥7 AND cliente termina F3.</p></div>
+            <div class="mot-card"><h3>MOT #5: "Puedo Sostenible" (F4)</h3><ul class="criteria-list"><li>Cliente implementa ≥2 cosas sin coaching</li><li>Cliente mantiene hábitos 30+ días consecutivos</li><li>Autonomía > 80% en tareas core</li><li>Cliente reporta KPI +15% sostenido</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> % tareas sin apoyo >80% AND mantenimiento 30+ días AND NPS ≥6.</p></div>
+            <div class="mot-card"><h3>MOT #6: "Puedo Escalable" (F4 → F5)</h3><ul class="criteria-list"><li>Cliente aplica soluciones a ≥2 áreas diferentes</li><li>Cliente o equipo reporta expansión de resultados</li><li>Expansión ≥ 2 áreas OR alcance >1 rol</li><li>Cliente documenta procesos replicables</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> Replicación confirmada en ≥2 procesos/áreas AND resultados medibles.</p></div>
+            <div class="mot-card"><h3>MOT #7: "Puedo enseñar a otros" (F5)</h3><ul class="criteria-list"><li>Cliente capacita ≥1 persona en metodología</li><li>Persona capacitada demuestra autonomía (Fase 1)</li><li>Cliente proporciona mentoring/guidance voluntario</li><li>Documentación o playbook creado por cliente</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> ≥1 persona capacitada Y demostrando competencia transferida.</p></div>
+            <div class="mot-card"><h3>MOT #8: "Puedo ser embajador" (F5+)</h3><ul class="criteria-list"><li>Cliente refiere ≥1 cliente calificado</li><li>Cliente participa como case study o testimonio</li><li>Cliente promueve metodología en su red</li><li>Referral conversion rate > 25% OR leads generados</li></ul><p style="margin-top: 1.5rem; color: var(--text-muted);"><strong>Métrica de Éxito:</strong> Referral > 25% conversion OR ≥1 lead calificado generado.</p></div>
+        </div>
+    </section>
+
+    <section class="regression-section">
+        <div class="regression-content"><h2 class="regression-title highlight-ia-premium">Regression Paths & Exception Flows</h2>
+            <div class="regression-path"><h3>F4 → F3: Regresión por Degradación de Hábitos</h3><p style="color: var(--text-secondary);">Cuando cliente pierde aplicación en día a día. Acción: Check-in "Vimos movimiento pre-programa. Por qué se detuvo?" → Oferta: 2 semanas de re-bootcamping + 3 sesiones 1:1 → Plan: "Reset y reanchorizar hábitos. Esto es normal, pasa en 60%" → Exit: Cliente demuestra >80% habit maintenance nuevamente.</p></div>
+            <div class="regression-path"><h3>F3 → F2: Regresión por Cambio de Scope</h3><p style="color: var(--text-secondary);">Cuando contexto del cliente cambia mid-programa (pérdida de empleo, cambio de rol). Acción: Evaluación de readiness → If timing: pausa + re-start. If not fit: F2 redesign → Ejemplo: "Bootcamp solo sin 1:1" → Re-entry a F3 con nuevo ODS y precio reducido.</p></div>
+            <div class="regression-path"><h3>F2 → F1: Regresión pre-F3 por Cambio de Mind</h3><p style="color: var(--text-secondary);">Cliente no quiere proceder a F3 ("Es muy caro", "No estoy listo"). Acción: NO presionar. Entender razon real → Oferta apropiada (micro-offer, extended timeline, otra sesión discovery) → Regresión a nurturing 6-12 meses → Re-engagement cuando cliente entra contexto nuevo.</p></div>
+            <div class="regression-path"><h3>Exception E1: Cliente No-Shows en Diagnostico (F1)</h3><p style="color: var(--text-secondary);">Cliente agendó sesión F1 pero no entra a videocall. Acción: Minuto 5: Intento reschedule soft via WhatsApp → 1h post: Mensaje empático con opciones → 3 días sin respuesta: Regresión a nurturing.</p></div>
+            <div class="regression-path"><h3>Exception E2: Cliente Paga pero Nunca Inicia F3</h3><p style="color: var(--text-secondary);">Cliente pagó programa pero no aparece día 1. Acción: Immediate outreach via WhatsApp + call → Investigación de razón → Si técnica: fix + re-inicio. Si contexto: pausa o reduced scope. Si desalineación: refund + exit amigable.</p></div>
+            <div class="regression-path"><h3>Exception E3: Cliente Completa F3 pero NPS < 5</h3><p style="color: var(--text-secondary);">Cliente termina programa pero satisfaction muy baja. Acción: Immediate call sin defensiva → Diagnóstico de causa → Remediation (sesiones bonus, recalibrada KPIs) o refund basado en tiempo consumido → Alumni follow-up (30% churns vuelven después).</p></div>
+            <div class="regression-path"><h3>Exception E4: Cliente Quiere Refund (Any Phase)</h3><p style="color: var(--text-secondary);"><strong>Policy Master:</strong> Nunca combatir refund. Ejecuta policy clara y amigable. F2 (<7d): 100%. F2 (7-14d): 75%. F3 (<2w): 75%. F3 (2-4w): 50%. F3 (4-6w): 25%. F3 (>6w): no refund.</p></div>
+        </div>
+    </section>
+
+    <section class="footer-section">
+        <div class="footer-content"><div class="footer-logo">Metodolog<span class="highlight-ia-premium">IA</span></div>
+            <p class="footer-text">Customer Journey General — La vista maestra que unifica experiencia en todos los segmentos</p>
+            <div class="footer-meta">
+                <div class="footer-meta-item"><span class="footer-meta-label">Documento</span><span class="footer-meta-value">Customer Journey Map General (J0 — North Star)</span></div>
+                <div class="footer-meta-item"><span class="footer-meta-label">Versión</span><span class="footer-meta-value">3.0 — Expansion Completa (2026-03-24)</span></div>
+                <div class="footer-meta-item"><span class="footer-meta-label">Aplicación</span><span class="footer-meta-value">Todos los segmentos — Vista unificada</span></div>
+                <div class="footer-meta-item"><span class="footer-meta-label">Propietario</span><span class="footer-meta-value">Director de Producto + Operaciones</span></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function toggleAccordion(btn) {
+            const content = btn.nextElementSibling;
+            const chevron = btn.querySelector('svg');
+            document.querySelectorAll('.accordion-content.open').forEach(el => {
+                if (el !== content) el.classList.remove('open');
+            });
+            content.classList.toggle('open');
+            if (content.classList.contains('open')) {
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
+</body>
+</html>

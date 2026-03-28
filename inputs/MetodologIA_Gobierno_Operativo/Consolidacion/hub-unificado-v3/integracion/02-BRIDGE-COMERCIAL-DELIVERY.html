@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="PUENTE: Proceso Comercial → Proceso Delivery — Proceso de Delivery MetodologIA">
+    <title>PUENTE: Proceso Comercial → Proceso Delivery — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Integracion</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">PUENTE: Proceso Comercial → Proceso Delivery</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>PUENTE: Proceso Comercial → Proceso Delivery</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 1.0 | Fecha: 2026-03-24 | Clasificación: Tejido Conectivo Sistémico</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">9</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">2</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">11</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('propsito-346c6e')" aria-label="Ir a PROPÓSITO">PROPÓSITO</button>
+<button class="nav-btn" onclick="scrollToSection('mapa-de-transicin-comercial-delivery-81d808')" aria-label="Ir a MAPA DE TRANSICIÓN: COMERCIAL → DELIVERY">MAPA DE TRANSICIÓN: COMERCIAL → DEL</button>
+<button class="nav-btn" onclick="scrollToSection('gate-h01-handoff-comercial-delivery-5593ac')" aria-label="Ir a GATE H-01: HANDOFF COMERCIAL → DELIVERY">GATE H-01: HANDOFF COMERCIAL → DELI</button>
+<button class="nav-btn" onclick="scrollToSection('mapa-de-transicin-delivery-comercial-recompra-6fe967')" aria-label="Ir a MAPA DE TRANSICIÓN: DELIVERY → COMERCIAL (Recompra)">MAPA DE TRANSICIÓN: DELIVERY → COME</button>
+<button class="nav-btn" onclick="scrollToSection('gate-r01-handoff-delivery-comercial-recompra-30188e')" aria-label="Ir a GATE R-01: HANDOFF DELIVERY → COMERCIAL (RECOMPRA)">GATE R-01: HANDOFF DELIVERY → COMER</button>
+<button class="nav-btn" onclick="scrollToSection('matriz-de-crosssell-servicio-actual-siguiente-serv-f4a0e4')" aria-label="Ir a MATRIZ DE CROSS-SELL: SERVICIO ACTUAL → SIGUIENTE SERVICIO">MATRIZ DE CROSS-SELL: SERVICIO ACTU</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-explcitos-c648d8')" aria-label="Ir a SUPUESTOS EXPLÍCITOS">SUPUESTOS EXPLÍCITOS</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-25ff81')" aria-label="Ir a CASOS BORDE">CASOS BORDE</button>
+<button class="nav-btn" onclick="scrollToSection('decisiones-de-diseo-8b0284')" aria-label="Ir a DECISIONES DE DISEÑO">DECISIONES DE DISEÑO</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="propsito-346c6e" data-searchable aria-labelledby="head-propsito-346c6e">
+            <div class="phase-header" id="head-propsito-346c6e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> PROPÓSITO</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Este documento conecta los dos macro-procesos operativos de MetodologIA: el <strong>Proceso Comercial</strong> (captación, calificación, cierre) y el <strong>Proceso de Delivery</strong> (entrega del servicio contratado). Sin este puente, existe riesgo de handoff incompleto, expectativas desalineadas, y pérdida de contexto del cliente entre equipos.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mapa-de-transicin-comercial-delivery-81d808" data-searchable aria-labelledby="head-mapa-de-transicin-comercial-delivery-81d808">
+            <div class="phase-header" id="head-mapa-de-transicin-comercial-delivery-81d808" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> MAPA DE TRANSICIÓN: COMERCIAL → DELIVERY</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>PROCESO COMERCIAL                          PROCESO DELIVERY
+═══════════════                            ═══════════════
+
+[Discovery]
+    │ Calificación
+    ▼
+[Propuesta]
+    │ Cierre
+    ▼
+[Contrato Firmado] ──── HANDOFF ────►  [Kick-off Delivery]
+                     Gate: H-01             │
+                                            ├── Workshop → Preparación (T-14)
+                                            ├── Bootcamp → Diseño Curricular
+                                            ├── Élite → Diseño Transformacional
+                                            └── Consultoría → Diagnóstico/Tracción/Evolución</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="gate-h01-handoff-comercial-delivery-5593ac" data-searchable aria-labelledby="head-gate-h01-handoff-comercial-delivery-5593ac">
+            <div class="phase-header" id="head-gate-h01-handoff-comercial-delivery-5593ac" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> GATE H-01: HANDOFF COMERCIAL → DELIVERY</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="trigger-f698f6">Trigger</h3>
+<p>Contrato firmado + pago confirmado (o primera cuota recibida).</p>
+<h3 class="subsection-title" id="paquete-de-handoff-obligatorio-156091">Paquete de Handoff (obligatorio)</h3>
+<p>El equipo comercial debe entregar AL equipo de delivery los siguientes artefactos antes del kick-off:</p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Artefacto</th><th scope="col">Descripción</th><th scope="col">Responsable</th><th scope="col">SLA</th></tr></thead><tbody><tr><td><strong>Ficha de Cliente</strong></td><td>Nombre, industria, tamaño, contactos clave, decision maker, sponsor</td><td>Account Manager</td><td>24h post-firma</td></tr><tr><td><strong>Discovery Notes</strong></td><td>Transcripción/resumen de calls de discovery, pain points, objetivos declarados</td><td>Account Manager</td><td>24h post-firma</td></tr><tr><td><strong>Propuesta Aprobada</strong></td><td>Documento de propuesta con scope, timeline, inversión, entregables prometidos</td><td>Account Manager</td><td>Con contrato</td></tr><tr><td><strong>Contrato Firmado</strong></td><td>PDF del contrato con T&amp;C, cláusulas especiales, pagos</td><td>Legal/Admin</td><td>Con pago</td></tr><tr><td><strong>Expectativas Documentadas</strong></td><td>¿Qué espera el cliente que suceda? ¿Qué métricas de éxito mencionó?</td><td>Account Manager</td><td>48h post-firma</td></tr><tr><td><strong>Red Flags Identificadas</strong></td><td>Cualquier señal de riesgo: sponsor débil, resistencia interna, presupuesto ajustado, timeline agresivo</td><td>Account Manager</td><td>48h post-firma</td></tr><tr><td><strong>Segmento de Origen</strong></td><td>B2B Empresas / B2C Personas / Aliados GTM (afecta pricing, tono, expectativas)</td><td>CRM automático</td><td>Automático</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="criterios-de-aceptacin-del-handoff-122591">Criterios de Aceptación del Handoff</h3>
+<label class="checklist-item" for="chk-el-paquete-tiene-los-7-artefactos-completos-si-fal-88d9f2"><input type="checkbox" id="chk-el-paquete-tiene-los-7-artefactos-completos-si-fal-88d9f2" ><span>¿El paquete tiene los 7 artefactos completos? → Si falta alguno, delivery puede rechazar kick-off</span></label>
+<label class="checklist-item" for="chk-las-expectativas-del-cliente-son-realizables-con-e-566a23"><input type="checkbox" id="chk-las-expectativas-del-cliente-son-realizables-con-e-566a23" ><span>¿Las expectativas del cliente son realizables con el scope contratado? → Si no, escalación a Director antes de kick-off</span></label>
+<label class="checklist-item" for="chk-el-timeline-acordado-es-operativamente-viable-cons-3ceee9"><input type="checkbox" id="chk-el-timeline-acordado-es-operativamente-viable-cons-3ceee9" ><span>¿El timeline acordado es operativamente viable? → Consultar disponibilidad de equipo delivery ANTES de prometer fechas</span></label>
+<label class="checklist-item" for="chk-hay-red-flags-sin-plan-de-mitigacin-si-hay-red-fla-c79048"><input type="checkbox" id="chk-hay-red-flags-sin-plan-de-mitigacin-si-hay-red-fla-c79048" ><span>¿Hay red flags sin plan de mitigación? → Si hay red flags graves, reunión comercial+delivery pre-kick-off</span></label>
+<h3 class="subsection-title" id="antipatterns-del-handoff-3a243a">Anti-patterns del Handoff</h3>
+<p class="key-value"><strong>Anti-pattern: &quot;Handoff de Pasillo&quot;</strong> → Señal: Comercial pasa info verbal sin documentar. → Corrección: Ningún delivery arranca sin paquete escrito en carpeta compartida.</p>
+<p class="key-value"><strong>Anti-pattern: &quot;Promesa Inflada&quot;</strong> → Señal: Propuesta promete entregables que delivery no puede cumplir en timeline. → Corrección: Delivery valida scope ANTES de que comercial envíe propuesta final. Template de validación obligatorio para servicios &gt;$10M COP.</p>
+<p class="key-value"><strong>Anti-pattern: &quot;Cliente Fantasma&quot;</strong> → Señal: Post-firma, el sponsor desaparece y no responde para kick-off. → Corrección: SLA de 5 días para kick-off. Si no hay respuesta en 10 días, Account Manager re-engage con urgencia.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mapa-de-transicin-delivery-comercial-recompra-6fe967" data-searchable aria-labelledby="head-mapa-de-transicin-delivery-comercial-recompra-6fe967">
+            <div class="phase-header" id="head-mapa-de-transicin-delivery-comercial-recompra-6fe967" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> MAPA DE TRANSICIÓN: DELIVERY → COMERCIAL (Recompra)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>PROCESO DELIVERY                           PROCESO COMERCIAL
+═══════════════                            ═══════════════
+
+[Entrega Completada]
+    │
+    ▼
+[Evaluación de Satisfacción]
+    │ NPS ≥ 7?
+    ▼
+[Identificación Recompra] ── HANDOFF ──► [Pipeline Recompra]
+                           Gate: R-01       │
+                                            ├── Upsell (tier superior)
+                                            ├── Cross-sell (servicio diferente)
+                                            └── Referral (nuevo cliente)</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="gate-r01-handoff-delivery-comercial-recompra-30188e" data-searchable aria-labelledby="head-gate-r01-handoff-delivery-comercial-recompra-30188e">
+            <div class="phase-header" id="head-gate-r01-handoff-delivery-comercial-recompra-30188e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> GATE R-01: HANDOFF DELIVERY → COMERCIAL (RECOMPRA)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="trigger-f698f6">Trigger</h3>
+<p>Delivery completado + NPS registrado + evaluación final disponible.</p>
+<h3 class="subsection-title" id="paquete-de-recompra-delivery-comercial-a2e566">Paquete de Recompra (delivery → comercial)</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Artefacto</th><th scope="col">Descripción</th><th scope="col">Timing</th></tr></thead><tbody><tr><td><strong>Informe de Impacto</strong></td><td>Métricas antes/después, ROI calculado, testimonios</td><td>Último día de engagement</td></tr><tr><td><strong>NPS + Feedback</strong></td><td>Score numérico + comentarios cualitativos</td><td>Encuesta cierre</td></tr><tr><td><strong>Oportunidades Identificadas</strong></td><td>Áreas donde el cliente podría beneficiarse de más servicio</td><td>Durante delivery</td></tr><tr><td><strong>Contactos Calientes</strong></td><td>Personas dentro del cliente que mostraron interés en ampliar</td><td>Durante delivery</td></tr><tr><td><strong>Nivel de Recompra Sugerido</strong></td><td>¿Workshop adicional? ¿Bootcamp? ¿Upgrade a Élite? ¿Consultoría nueva área?</td><td>Reunión interna delivery-comercial</td></tr></tbody></table></div>
+<h3 class="subsection-title" id="timing-por-servicio-fcde09">Timing por Servicio</h3>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Servicio</th><th scope="col">Momento de Identificación Recompra</th><th scope="col">Momento de Handoff a Comercial</th></tr></thead><tbody><tr><td>Workshop</td><td>T+1 (día siguiente al workshop)</td><td>T+7 (follow-up nurturing)</td></tr><tr><td>Bootcamp</td><td>Semana 2 (post-onboarding, ya ves engagement)</td><td>Graduación (Sem 3)</td></tr><tr><td>Programa Élite</td><td>Semana 8 (checkpoint mid-program)</td><td>Fase Alumni (Sem 17+)</td></tr><tr><td>Consultoría Diagnóstico</td><td>Presentación ejecutiva (Sem 3)</td><td>Inmediato post-presentación</td></tr><tr><td>Consultoría Tracción</td><td>Semana 4 (post-Sprint A)</td><td>Handoff (Sem 8)</td></tr><tr><td>Consultoría Evolución</td><td>QBR Mes 3</td><td>Handoff sostenibilidad (Sem 20-24)</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="matriz-de-crosssell-servicio-actual-siguiente-serv-f4a0e4" data-searchable aria-labelledby="head-matriz-de-crosssell-servicio-actual-siguiente-serv-f4a0e4">
+            <div class="phase-header" id="head-matriz-de-crosssell-servicio-actual-siguiente-serv-f4a0e4" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> MATRIZ DE CROSS-SELL: SERVICIO ACTUAL → SIGUIENTE SERVICIO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>                SIGUIENTE SERVICIO RECOMENDADO
+                ┌──────────┬──────────┬──────────┬──────────┐
+                │ Workshop │ Bootcamp │ Élite    │ Consult. │
+    ┌───────────┼──────────┼──────────┼──────────┼──────────┤
+    │ Workshop  │ WS otro  │ ████ 35% │ ░░░ 10% │ ████ 30% │
+S   │           │ tema     │ Profund. │ Si exec  │ Si B2B   │
+E   ├───────────┼──────────┼──────────┼──────────┼──────────┤
+R   │ Bootcamp  │ ░░░ 5%  │ BC otro  │ ████ 25% │ ████ 40% │
+V   │           │ Raro     │ tema     │ Individual│ Org.    │
+.   ├───────────┼──────────┼──────────┼──────────┼──────────┤
+    │ Élite     │ ░░░ 5%  │ ░░░ 10% │ Élite II │ ████ 30% │
+A   │           │ Tema esp.│ Equipo   │ Advanced │ Org.     │
+C   ├───────────┼──────────┼──────────┼──────────┼──────────┤
+T   │ Consult.  │ ████ 20%│ ████ 25% │ ░░░ 15% │ Tier ↑   │
+U   │           │ Difusión │ Upskill  │ Si líder │ Upgrade  │
+A   └───────────┴──────────┴──────────┴──────────┴──────────┘
+L
+    ████ = Ruta natural (&gt;20% probabilidad)
+    ░░░  = Ruta posible (&lt;20%)</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-explcitos-c648d8" data-searchable aria-labelledby="head-supuestos-explcitos-c648d8">
+            <div class="phase-header" id="head-supuestos-explcitos-c648d8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> SUPUESTOS EXPLÍCITOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>El equipo comercial documenta ANTES de cerrar.</strong> Si el handoff depende de memoria verbal, falla. El CRM debe forzar campos obligatorios pre-cierre.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Delivery identifica oportunidades de recompra activamente</strong>, no solo responde a peticiones comerciales. El consultor/facilitador está entrenado para detectar señales.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>El cliente percibe continuidad.</strong> No debe sentir que &quot;le pasaron&quot; a otro equipo. El Account Manager participa en kick-off y en cierre.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Los segmentos afectan delivery.</strong> Un cliente B2B Enterprise tiene expectativas, tono y rigor diferentes a un B2C individual. El paquete de handoff incluye segmento para calibrar.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>La recompra NO es responsabilidad exclusiva de comercial.</strong> Delivery siembra, comercial cosecha. Sin señales de delivery, comercial opera a ciegas.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-25ff81" data-searchable aria-labelledby="head-casos-borde-25ff81">
+            <div class="phase-header" id="head-casos-borde-25ff81" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> CASOS BORDE</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Caso Borde: Handoff Incompleto</strong> → Trigger: Delivery recibe paquete con &lt;5 de 7 artefactos. → Protocolo: Delivery rechaza kick-off, notifica Director. Comercial tiene 48h para completar. → Fallback: Si persiste, Director de Delivery escala a CEO. No se arranca con información incompleta.</p>
+<p class="key-value"><strong>Caso Borde: Expectativas Desalineadas</strong> → Trigger: Cliente esperaba X, propuesta dice Y. → Protocolo: Reunión tripartita (comercial + delivery + cliente) en primeras 48h. Realinear o ajustar scope con addendum. → Fallback: Si gap es irreconciliable, opción de cancelación con reembolso parcial.</p>
+<p class="key-value"><strong>Caso Borde: Recompra No Identificada</strong> → Trigger: Delivery termina, NPS es 9, pero nadie pasa oportunidad a comercial. → Protocolo: Checklist obligatorio de cierre incluye &quot;¿Oportunidad de recompra identificada? Sí/No. Si sí, descripción.&quot; → Fallback: Comercial hace follow-up proactivo a todo cliente NPS ≥7 en T+30.</p>
+<p class="key-value"><strong>Caso Borde: Cliente Compra Servicio Equivocado</strong> → Trigger: Diagnóstico revela que cliente necesitaba Bootcamp, no Consultoría. → Protocolo: Director de Delivery puede proponer pivote de servicio sin penalización. Comercial ajusta contrato. → Fallback: Si cliente insiste en servicio original, documentar riesgo y proceder con caveats.</p>
+<p class="key-value"><strong>Caso Borde: Sponsor Cambió Post-Firma</strong> → Trigger: La persona que firmó ya no es el sponsor cuando delivery arranca. → Protocolo: Sesión de re-alineación con nuevo sponsor antes de kick-off formal. Validar que expectativas originales siguen vigentes. → Fallback: Si nuevo sponsor tiene agenda diferente, renegociar scope o pausar.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="decisiones-de-diseo-8b0284" data-searchable aria-labelledby="head-decisiones-de-diseo-8b0284">
+            <div class="phase-header" id="head-decisiones-de-diseo-8b0284" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> DECISIONES DE DISEÑO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>¿Por qué handoff documentado y no verbal?</strong> Porque MetodologIA escala con procesos, no con personas. Cuando el Account Manager se va de vacaciones, el contexto del cliente no puede perderse. El overhead de documentar (30 min) previene horas de re-discovery.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>¿Por qué el Account Manager participa en kick-off?</strong> Para que el cliente sienta continuidad relacional. La confianza construida en discovery se transfiere al equipo de delivery. El AM no necesita quedarse más allá del kick-off, pero su presencia inicial es puente emocional.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>¿Por qué delivery identifica recompra y no solo comercial?</strong> Porque delivery está &quot;dentro&quot; del cliente. Ve problemas, oportunidades y champions que comercial nunca vería. El 60% de recompras en consultoría profesional viene de señales que el consultor detecta en campo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>¿Por qué la matriz de cross-sell es probabilística?</strong> Para evitar que comercial force rutas no naturales. Un cliente de Workshop que podría ir a Bootcamp (35%) es diferente de uno que &quot;podría&quot; ir a Élite (10%). Las probabilidades calibran esfuerzo comercial.</span></div>
+<hr class="divider">
+<p class="key-value"><strong>Fin del Documento: Puente Comercial → Delivery</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

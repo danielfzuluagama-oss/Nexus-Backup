@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Nombre de la Biblioteca] - MetodologIA</title>
+    <link rel="stylesheet" href="../../../css/main.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;900&family=Montserrat:wght@400;600&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- MetodologIA Design System -->
+    <link rel="stylesheet" href="../../../estilos/variables.css">
+    <link rel="stylesheet" href="../../../estilos/base.css">
+    <link rel="stylesheet" href="../../../estilos/components.css">
+    
+    <!-- Components -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../../js/icons.js" defer></script>
+    <script src="../../../components/SiteHeader.js" defer></script>
+    <script src="../../../components/SiteFooter.js" defer></script>
+    <style>
+        :root {
+            --brand-gold: #eab308;
+            --brand-emerald: #10b981;
+            --brand-blue: #3b82f6;
+            --bg-dark: #020617;
+            --card-glass: rgba(15, 23, 42, 0.6);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Jost', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; }
+
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(234, 179, 8, 0.08) 0%, transparent 50%);
+        }
+
+        .hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .filter-container {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(2, 6, 23, 0.8);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .category-chip {
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .category-chip:hover, .category-chip.active {
+            background: var(--brand-blue);
+            color: white;
+            border-color: var(--brand-blue);
+        }
+
+        .prompt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            padding: 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .prompt-card {
+            background: var(--card-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .prompt-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .prompt-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--brand-blue);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .prompt-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .prompt-preview {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+
+        .copy-btn {
+            margin-top: auto;
+            width: 100%;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--brand-blue);
+            color: white;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .back-link:hover { color: white; }
+    </style>
+</head>
+    <site-header base-path="../../.." theme="dark"></site-header>
+
+    <main>
+        <!-- Golden Layout: Quote & Breadcrumb -->
+        <section class="hook-quote-section">
+            <div class="hook-quote-divider"></div>
+            <div class="hook-quote-content">
+                <p class="hook-quote-text">"El conocimiento es poder, pero el prompt es la palanca"</p>
+            </div>
+        </section>
+
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item"><a href="../../../index.html">Inicio</a></li>
+                <li class="breadcrumb-separator">/</li>
+                <li class="breadcrumb-item"><a href="../../../recursos/index.html">Recursos</a></li>
+                <li class="breadcrumb-separator">/</li>
+                <li class="breadcrumb-item"><a href="../index.html">Bibliotecas de Prompts</a></li>
+                <li class="breadcrumb-separator">/</li>
+                <li class="breadcrumb-item active">[Nombre de la Biblioteca]</li>
+            </ol>
+        </nav>
+
+    <header class="hero">
+        <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6">[Nombre de la Biblioteca]</h1>
+        <p class="text-slate-400 max-w-2xl mx-auto text-lg">
+            [Breve descripción del propósito de esta biblioteca y el valor que aporta al usuario].
+        </p>
+    </header>
+
+    <div class="filter-container">
+        <div class="max-w-7xl mx-auto px-6 overflow-x-auto">
+            <div class="flex gap-3 pb-2">
+                <button class="category-chip active">Todos</button>
+                <button class="category-chip">Categoría 1</button>
+                <button class="category-chip">Categoría 2</button>
+                <button class="category-chip">Categoría 3</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="prompt-grid">
+        <!-- Prompt Card 1 -->
+        <article class="prompt-card">
+            <span class="prompt-tag">Categoría 1</span>
+            <h3 class="prompt-title">Título del Prompt 1</h3>
+            <div class="prompt-preview">
+                "Este es el contenido del prompt con [parámetros] personalizables..."
+            </div>
+            <button class="copy-btn">Copiar Prompt</button>
+        </article>
+
+        <!-- Prompt Card 2 -->
+        <article class="prompt-card">
+            <span class="prompt-tag">Categoría 2</span>
+            <h3 class="prompt-title">Título del Prompt 2</h3>
+            <div class="prompt-preview">
+                "Este es otro prompt diseñado para [objetivo] específico..."
+            </div>
+            <button class="copy-btn">Copiar Prompt</button>
+        </article>
+    </main>
+
+    <site-footer base-path="../../.."></site-footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof icons !== 'undefined') icons.createIcons();
+        });
+    </script>
+
+    <script>
+        // Lógica básica de filtrado
+        const chips = document.querySelectorAll('.category-chip');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                // Aquí se añadiría la lógica de filtrado real
+            });
+        });
+    </script>
+</body>
+</html>

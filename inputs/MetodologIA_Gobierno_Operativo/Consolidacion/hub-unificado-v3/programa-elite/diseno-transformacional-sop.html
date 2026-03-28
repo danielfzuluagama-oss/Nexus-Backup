@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Diseño Transformacional — Proceso de Delivery MetodologIA">
+    <title>SOP: Diseño Transformacional — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Programa Elite</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Diseño Transformacional</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Diseño Transformacional</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 1.0 | Fecha: 2026-03-24 | Certif. Moat: SOP-PE-DT-2401</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">13</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">7</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">6</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">8</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">24</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('objetivo-979b48')" aria-label="Ir a OBJETIVO">OBJETIVO</button>
+<button class="nav-btn" onclick="scrollToSection('trigger-entrada-61c6e6')" aria-label="Ir a TRIGGER &amp; ENTRADA">TRIGGER &amp; ENTRADA</button>
+<button class="nav-btn" onclick="scrollToSection('responsables-01e009')" aria-label="Ir a RESPONSABLES">RESPONSABLES</button>
+<button class="nav-btn" onclick="scrollToSection('paso-a-paso-fase-0-diseo-transformacional-2-semana-08d0f9')" aria-label="Ir a PASO A PASO: FASE 0 DISEÑO TRANSFORMACIONAL (2 SEMANAS)">PASO A PASO: FASE 0 DISEÑO TRANSFOR</button>
+<button class="nav-btn" onclick="scrollToSection('checklist-fin-de-fase-0-d0d316')" aria-label="Ir a CHECKLIST: FIN DE FASE 0">CHECKLIST: FIN DE FASE 0</button>
+<button class="nav-btn" onclick="scrollToSection('documentacin-de-referencia-16d4e7')" aria-label="Ir a DOCUMENTACIÓN DE REFERENCIA">DOCUMENTACIÓN DE REFERENCIA</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-explcitos-c648d8')" aria-label="Ir a SUPUESTOS EXPLÍCITOS">SUPUESTOS EXPLÍCITOS</button>
+<button class="nav-btn" onclick="scrollToSection('lmites-89f0a8')" aria-label="Ir a LÍMITES">LÍMITES</button>
+<button class="nav-btn" onclick="scrollToSection('criterios-de-aceptacin-354d6e')" aria-label="Ir a CRITERIOS DE ACEPTACIÓN">CRITERIOS DE ACEPTACIÓN</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-25ff81')" aria-label="Ir a CASOS BORDE">CASOS BORDE</button>
+<button class="nav-btn" onclick="scrollToSection('decisiones-de-diseo-8b0284')" aria-label="Ir a DECISIONES DE DISEÑO">DECISIONES DE DISEÑO</button>
+<button class="nav-btn" onclick="scrollToSection('antipatterns-d84484')" aria-label="Ir a ANTI-PATTERNS">ANTI-PATTERNS</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-operativos-a840ab')" aria-label="Ir a FALLBACKS OPERATIVOS">FALLBACKS OPERATIVOS</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="objetivo-979b48" data-searchable aria-labelledby="head-objetivo-979b48">
+            <div class="phase-header" id="head-objetivo-979b48" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> OBJETIVO</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Construir la brújula individualizada del participante mediante diagnóstico 360° profundo, mapeo transformacional claro, y definición de éxito cuantificable. Al final de esta SOP, cada participante tiene un <strong>Transformation Roadmap</strong> personalizado que será su guía por 16 semanas.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="trigger-entrada-61c6e6" data-searchable aria-labelledby="head-trigger-entrada-61c6e6">
+            <div class="phase-header" id="head-trigger-entrada-61c6e6" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> TRIGGER &amp; ENTRADA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Trigger:</strong> Pago confirmado + cliente aceptó términos. Contratación oficializada.</p>
+<p class="key-value"><strong>Entrada:</strong></p>
+<div class="bullet-item">Perfil del participante (CV, datos demográficos, industria)</div>
+<div class="bullet-item">Contexto comercial (resultado de descubrimiento, decisión maker, motivación)</div>
+<div class="bullet-item">Datos organizacionales (si corporate: tamaño, industria, desafíos de org)</div>
+<div class="bullet-item">Disponibilidad horaria (para calendarizar sesiones)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="responsables-01e009" data-searchable aria-labelledby="head-responsables-01e009">
+            <div class="phase-header" id="head-responsables-01e009" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> RESPONSABLES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Tarea</th><th scope="col">Tiempo</th></tr></thead><tbody><tr><td><strong>Diseñador Transformacional</strong></td><td>Entrevista diagnóstica, mapeo, roadmap visual</td><td>8h</td></tr><tr><td><strong>Psicólogo Organizacional</strong></td><td>Evaluaciones psicométricas, análisis de blockers</td><td>3h</td></tr><tr><td><strong>Tech Coach</strong></td><td>Audit digital, evaluación de stack</td><td>2h</td></tr><tr><td><strong>Mentor Asignado</strong></td><td>Revisión del roadmap, handoff, validación</td><td>1h</td></tr><tr><td><strong>Admin</strong></td><td>Scheduling, documentación, coordinación</td><td>2h</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="paso-a-paso-fase-0-diseo-transformacional-2-semana-08d0f9" data-searchable aria-labelledby="head-paso-a-paso-fase-0-diseo-transformacional-2-semana-08d0f9">
+            <div class="phase-header" id="head-paso-a-paso-fase-0-diseo-transformacional-2-semana-08d0f9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> PASO A PASO: FASE 0 DISEÑO TRANSFORMACIONAL (2 SEMANAS)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="paso-1-onboarding-administrativo-da-01-ba7edb">PASO 1: ONBOARDING ADMINISTRATIVO (Día 0-1)</h3>
+<p class="key-value"><strong>Actividades:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Email de Bienvenida (Día 0, Admin)</strong></span></div>
+<div class="bullet-item">Asunto: &quot;¡Bienvenido a tu transformación! Aquí comienza todo&quot;</div>
+<div class="bullet-item">Contenido:</div>
+<div class="bullet-item">Celebración del compromiso</div>
+<div class="bullet-item">Explicación de qué esperar en Fase 0</div>
+<div class="bullet-item">Link a encuesta pre-diagnóstico (5 min, 20 preguntas)</div>
+<div class="bullet-item">Calendario propuesto para entrevista diagnóstica (ofrece 3 slots)</div>
+<div class="bullet-item">Explicación de tecnologías (zoom, plataforma, slack)</div>
+<div class="bullet-item">Pedido de CV + foto de perfil</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Encuesta Pre-Diagnóstico (Participante, 5 min)</strong></span></div>
+<div class="bullet-item">Campos:</div>
+<div class="bullet-item">Rol actual, industria, años experiencia</div>
+<div class="bullet-item">Por qué decidiste hacer este programa (motivación primaria)</div>
+<div class="bullet-item">¿Qué quieres lograr en 16 semanas? (1-3 objetivos)</div>
+<div class="bullet-item">¿Cuáles son tus mayores blockers hoy? (miedo, hábito, creencia)</div>
+<div class="bullet-item">Escala de claridad: 0-10 (¿cuánto sabes qué quieres?)</div>
+<div class="bullet-item">Escala de energía: 0-10 (¿qué tan energizado estás?)</div>
+<div class="bullet-item">Recolección inmediata en Airtable/Sheets</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Asignación de Mentor (Admin + Director, 24h)</strong></span></div>
+<div class="bullet-item">Criterios:</div>
+<div class="bullet-item">Disponibilidad inmediata</div>
+<div class="bullet-item">Profile match (si Digital Champions, mentor exp org; si Empoderamiento, mentor con presencia personal)</div>
+<div class="bullet-item">Carga actual ≤6 participantes</div>
+<div class="bullet-item">Email al mentor: Bienvenida + contexto participante + recomendación de lectura pre-sesión</div>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-2-entrevista-diagnstica-da-13-90-min-11-41a3b5">PASO 2: ENTREVISTA DIAGNÓSTICA (Día 1-3, 90 min 1:1)</h3>
+<p class="key-value"><strong>Responsable:</strong> Diseñador Transformacional (con posible co-facilitación de Psicólogo)</p>
+<p class="key-value"><strong>Preparación:</strong></p>
+<div class="bullet-item">Leer CV, encuesta pre-diagnóstico, contexto comercial</div>
+<div class="bullet-item">Preparar guía de preguntas (80/20: 80% listening, 20% preguntas)</div>
+<div class="bullet-item">Zoom con grabación (con consentimiento)</div>
+<p class="key-value"><strong>Estructura de Entrevista (90 min):</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Tiempo</th><th scope="col">Sección</th><th scope="col">Actividad</th><th scope="col">Notas</th></tr></thead><tbody><tr><td>0-10</td><td>Warm-up</td><td>Conexión personal, explicar flujo sesión</td><td>Construir confianza</td></tr><tr><td>10-25</td><td>Historia</td><td>&quot;Cuéntame tu historia profesional: de dónde vienes, principales hitos, lo que te enorgullece&quot;</td><td>Escuchar, notar patrones</td></tr><tr><td>25-40</td><td>Aspiración</td><td>&quot;¿Quién quieres ser en 5 años? ¿Qué querría tu yo futuro que hicieras ahora?&quot;</td><td>Visión, no estrategia</td></tr><tr><td>40-55</td><td>Blockers</td><td>&quot;¿Qué te frena? ¿Qué miedo es más grande? ¿Qué creencia sobre ti es limitante?&quot;</td><td>Vulnerabilidad, validar</td></tr><tr><td>55-70</td><td>Contexto</td><td>&quot;¿Qué pasa en tu vida ahora? ¿Presiones, oportunidades, cambios?&quot;</td><td>Realidad del participante</td></tr><tr><td>70-85</td><td>Capacidad</td><td>&quot;¿Cómo aprendes mejor? ¿Qué ha funcionado en cambios anteriores? ¿Tienes soporte en casa/trabajo?&quot;</td><td>Recursos reales</td></tr><tr><td>85-90</td><td>Clarity</td><td>Resumir lo que escuchaste, preguntar si falta algo</td><td>Validación</td></tr></tbody></table></div>
+<p class="key-value"><strong>Documentación:</strong></p>
+<div class="bullet-item">Notas en tiempo real (Google Doc compartido)</div>
+<div class="bullet-item">Transcripción automática (Otter.ai o similar)</div>
+<div class="bullet-item">Grabación guardada (AWS S3 privado)</div>
+<p class="key-value"><strong>Output de Sesión:</strong></p>
+<div class="bullet-item">Raw Notes (transcritos)</div>
+<div class="bullet-item">3 Key Insights (patrones observados)</div>
+<div class="bullet-item">3 Questions to Explore (temas para próximas sesiones)</div>
+<div class="bullet-item">First Impression of T-Index (rango estimado 0-100)</div>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-3-evaluaciones-psicomtricas-da-35-f7f4a8">PASO 3: EVALUACIONES PSICOMÉTRICAS (Día 3-5)</h3>
+<p class="key-value"><strong>Responsable:</strong> Psicólogo Organizacional</p>
+<p class="key-value"><strong>Herramientas:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>HEXACO Adaptado (20 min, online)</strong></span></div>
+<div class="bullet-item">Medición de: Honestidad-Humildad, Emocionalidad, Extraversión, Apertura, Amabilidad, Escrupulosidad</div>
+<div class="bullet-item">Scoring automático</div>
+<div class="bullet-item">Reporte: fortalezas + áreas de desarrollo</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Evaluación de Resistencia al Cambio (10 min, online)</strong></span></div>
+<div class="bullet-item">10 preguntas sobre: ansiedad de cambio, capacidad de aprendizaje, apertura</div>
+<div class="bullet-item">Score: Low/Medium/High resistencia</div>
+<div class="bullet-item">Implicación: ajustar pace y soporte mentorial</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Inventory de Hábitos Actuales (15 min, online)</strong></span></div>
+<div class="bullet-item">Audit de hábitos productivos, de aprendizaje, de salud, relacionales</div>
+<div class="bullet-item">Scoring: fortalezas vs áreas vacías</div>
+<div class="bullet-item">Identificación de 1-2 hábitos &quot;quick win&quot; iniciales</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Entrevista de Blockers Profundos (30 min, 1:1 con psicólogo, opcional)</strong></span></div>
+<div class="bullet-item">Si encuesta inicial sugiere ansiedad, trauma, o bloqueos mayores</div>
+<div class="bullet-item">Evaluación: ¿es seguro proceder? ¿necesita referencia paralela a terapeuta?</div>
+<div class="bullet-item">Output: recomendación de soporte adicional</div>
+<p class="key-value"><strong>Documentación:</strong></p>
+<div class="bullet-item">Reporte de Evaluación Integrada (5 páginas, lenguaje para participante)</div>
+<div class="bullet-item">Scoring Summary (tabla c/herramienta)</div>
+<div class="bullet-item">Recomendaciones Específicas (ej: &quot;Tu resistencia al cambio es media; recomendamos mentoría semanal + buddy soporte&quot;)</div>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-4-audit-digital-da-46-a0b6eb">PASO 4: AUDIT DIGITAL (Día 4-6)</h3>
+<p class="key-value"><strong>Responsable:</strong> Tech Coach</p>
+<p class="key-value"><strong>Actividades:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Audit de Presencia Online</strong> (si Empoderamiento; skip si Digital Champions)</span></div>
+<div class="bullet-item">LinkedIn: búsqueda de perfil, análisis de contenido, # conexiones, endorse-ments</div>
+<div class="bullet-item">Website/Blog: si existe, análisis de contenido, SEO, engagement</div>
+<div class="bullet-item">Twitter/Instagram: si existe, análisis de actividad, followers, engagement</div>
+<div class="bullet-item">Scoring 0-100: Claridad de presencia, consistencia, engagement, visibilidad</div>
+<div class="bullet-item">Documento: &quot;LinkedIn Gaps&quot; (qué falta vs oportunidad)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Audit de Stack Digital</strong> (todos los participantes)</span></div>
+<div class="bullet-item">Preguntas:</div>
+<div class="bullet-item">¿Qué herramientas usas diariamente? (ej: Slack, Gmail, Notion, Figma)</div>
+<div class="bullet-item">¿Para qué? (productividad, comunicación, creación, organización)</div>
+<div class="bullet-item">¿Cuál es tu stack: hecho consciente o por defecto?</div>
+<div class="bullet-item">¿Hay fricción, redundancia, o herramientas que no usas?</div>
+<div class="bullet-item">Scoring: Minimalismo (# herramientas necesarias), Integración (cómo hablan entre sí), Optimización (¿estás usando el 80% de capacidad?)</div>
+<div class="bullet-item">Documento: &quot;Stack Diagnosis&quot; (estado actual + oportunidades)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Entrevista Tech Fluency</strong> (20 min, 1:1)</span></div>
+<div class="bullet-item">Evaluación: ¿qué tan cómodo estás con tecnología?</div>
+<div class="bullet-item">Preguntas:</div>
+<div class="bullet-item">¿Usas AI? (ChatGPT, etc.)</div>
+<div class="bullet-item">¿Entiendes básicos de data/privacy?</div>
+<div class="bullet-item">¿Qué tecnologías te intimidan?</div>
+<div class="bullet-item">Output: Tech Fluency Score (0-100), áreas de miedo, oportunidades</div>
+<p class="key-value"><strong>Documentación:</strong></p>
+<div class="bullet-item">Presencia Online Audit (2 páginas, con screenshots)</div>
+<div class="bullet-item">Stack Digital Audit (2 páginas, visual map)</div>
+<div class="bullet-item">Tech Fluency Assessment (½ página, recomendaciones)</div>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-5-mapeo-transformacional-da-710-7ddb42">PASO 5: MAPEO TRANSFORMACIONAL (Día 7-10)</h3>
+<p class="key-value"><strong>Responsable:</strong> Diseñador Transformacional + Mentor Asignado (co-diseño)</p>
+<p class="key-value"><strong>Actividades:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Sesión de Co-Mapeo (Día 7-8, 90 min 1:1 con Diseñador + Mentor)</strong></span></div>
+<p class="key-value"><strong>Preparación:</strong></p>
+<div class="bullet-item">Mentor lee todas las evaluaciones + notas diagnósticas</div>
+<div class="bullet-item">Diseñador prepara &quot;mapa visual en blanco&quot; (Miro/Figma template)</div>
+<p class="key-value"><strong>Estructura (90 min):</strong></p>
+<div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Tiempo</th><th scope="col">Sección</th><th scope="col">Actividad</th></tr></thead><tbody><tr><td>0-10</td><td>Contexto</td><td>Resumen de lo aprendido en diagnóstico (espejo)</td></tr><tr><td>10-30</td><td>Pilares</td><td>&quot;De todo lo que vimos, ¿cuáles son tus 3 pilares de transformación?&quot; (ej: Identidad, Presencia, Impacto)</td></tr><tr><td>30-50</td><td>Visión</td><td>Construir visión de Futuro en Sem 16: &quot;¿Quién eres? ¿Cómo te sientes? ¿Qué es posible?&quot;</td></tr><tr><td>50-70</td><td>Roadmap</td><td>Mapear 4 hitos mayores: Sem 4, 8, 12, 16 (qué debe haber sucedido en cada)</td></tr><tr><td>70-85</td><td>Monedas</td><td>Identificar &quot;Monedas de Cambio&quot;: 3 quick wins de Sem 1-2 (pequeños, visibles, motivadores)</td></tr><tr><td>85-90</td><td>Validación</td><td>&quot;¿Sientes que esto es tuyo? ¿Es ambicioso pero posible?&quot;</td></tr></tbody></table></div>
+<p class="key-value"><strong>Output:</strong></p>
+<div class="bullet-item">Miro board: mapa visual compartido</div>
+<div class="bullet-item">3 Pilares definidos</div>
+<div class="bullet-item">Visión del Futuro (50-100 palabras, vívida, emocional)</div>
+<div class="bullet-item">4 Hitos (½ página c/uno: qué será diferente)</div>
+<div class="bullet-item">3 Quick Wins Sem 1-2 (descripción, métrica)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Roadmap Visual (Día 8-9)</strong></span></div>
+<div class="bullet-item">Designer crea visual: línea de tiempo 16 semanas, con 4 hitos, talleres, checkpoints</div>
+<div class="bullet-item">Incluir: fases (Inmersión, Acompañamiento, Consolidación), dinámicas (mentoría semanal, talleres, grupos)</div>
+<div class="bullet-item">Style: colorido, fácil de leer, inspirador</div>
+<div class="bullet-item">Formato: PDF + Figma editable (participante puede anotar)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Documento Roadmap Personalizado (Día 9-10, 10-15 páginas)</strong></span></div>
+<p class="key-value"><strong>Estructura:</strong></p>
+<div class="bullet-item">Portada: Nombre participante, &quot;Tu Viaje de Transformación&quot;, fecha inicio</div>
+<div class="bullet-item">Sección 1: Resumen Diagnóstico (½ página, storytelling)</div>
+<div class="bullet-item">Sección 2: Pilares de Transformación (1 página, descripción c/uno)</div>
+<div class="bullet-item">Sección 3: Visión del Futuro (½ página, vívida)</div>
+<div class="bullet-item">Sección 4: Hitos del Viaje (3 páginas, 1 página c/hito Sem 4, 8, 12, 16)</div>
+<div class="bullet-item">Sección 5: Monedas de Cambio Sem 1-2 (1 página, detalles)</div>
+<div class="bullet-item">Sección 6: Talleres &amp; Tópicos Relevantes (½ página, cuáles se espera que saquen mayor valor)</div>
+<div class="bullet-item">Sección 7: Métricas de Éxito (½ página, T-Index baseline, Skill Delta targets, NPS personal)</div>
+<div class="bullet-item">Sección 8: Notas Importantes (½ página, cosas que el mentor debe saber sobre el participante)</div>
+<p class="key-value"><strong>Lenguaje:</strong> Narrativo, inspirador, personal (&quot;Tú eres...&quot;, &quot;Vas a...&quot;), no impersonal</p>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-6-calibracin-de-indicadores-da-1014-544e40">PASO 6: CALIBRACIÓN DE INDICADORES (Día 10-14)</h3>
+<p class="key-value"><strong>Responsable:</strong> Diseñador Transformacional + Mentor</p>
+<p class="key-value"><strong>Actividades:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Definición de T-Index Baseline (Día 11)</strong></span></div>
+<div class="bullet-item">T-Index = Escala 0-100 de &quot;transformación percibida&quot; actual</div>
+<div class="bullet-item">Método:</div>
+<div class="bullet-item">Pregunta auto-report: &quot;En escala 0-10, ¿cuánto te sientes ya transformado vs donde quieres estar?&quot;</div>
+<div class="bullet-item">Mentor observation: &quot;¿Cuál diría yo que es el T-Index?&quot;</div>
+<div class="bullet-item">Promedio de ambos = Baseline</div>
+<div class="bullet-item">Ejemplo: Si participante dice 4/10 y mentor observa 5/10, baseline = 4.5 → scoring como 45/100</div>
+<div class="bullet-item">Target post-programa: +30 pts típicamente (ej: 45 → 75)</div>
+<div class="bullet-item">Documentación: Baseline T-Index en Dashboard (Google Sheets)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Definición de Skill Delta Targets (Día 12)</strong></span></div>
+<div class="bullet-item">Identificar 5 competencias clave a desarrollar (basadas en diagnóstico + pilares)</div>
+<div class="bullet-item">Ejemplos típicos:</div>
+<div class="bullet-item">[Presencia Auténtica]: capacidad de estar presente, sin máscara</div>
+<div class="bullet-item">[Comunicación Transformacional]: capacidad de contar historias de cambio</div>
+<div class="bullet-item">[Soberanía Digital]: maestría en stack, privacidad, intención online</div>
+<div class="bullet-item">[Liderazgo desde Adentro]: influencia sin poder formal</div>
+<div class="bullet-item">[Resiliencia]: capacidad de navegar incertidumbre sin colapsar</div>
+<div class="bullet-item">Para cada competencia:</div>
+<div class="bullet-item">Baseline 0-10 (auto + observación mentor)</div>
+<div class="bullet-item">Target post (típicamente +3-5 pts)</div>
+<div class="bullet-item">Método de evaluación (360 feedback, auto, observación)</div>
+<div class="bullet-item">Documentación: Tabla en Dashboard</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Métricas Cualitativas Observables (Día 13)</strong></span></div>
+<div class="bullet-item">Definir 3 comportamientos específicos que, si suceden, = transformación real</div>
+<div class="bullet-item">Ejemplos:</div>
+<div class="bullet-item">[Comportamiento 1]: &quot;Toma decisiones rápidas en situaciones de presión sin pasar por análisis paralizador&quot;</div>
+<div class="bullet-item">[Comportamiento 2]: &quot;Habla en público (reunión, conferencia, evento) sin ansiedad&quot;</div>
+<div class="bullet-item">[Comportamiento 3]: &quot;Comunica un cambio personal sin defensividad a su círculo cercano&quot;</div>
+<div class="bullet-item">Formato: Si/No observable por mentor/círculo cercano</div>
+<div class="bullet-item">Documentación: Lista en Dashboard</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>NPS Personal Baseline (Día 14)</strong></span></div>
+<div class="bullet-item">Pregunta: &quot;Si tuvieras que recomendar tu propia transformación a un amigo en escala 0-10, ¿qué dirías?&quot;</div>
+<div class="bullet-item">Baseline típicamente 5-6 (esperanza pero incertidumbre)</div>
+<div class="bullet-item">Target post: ≥8 (confianza en que funcionó)</div>
+<div class="bullet-item">Documentación: NPS en Dashboard</div>
+<p class="key-value"><strong>Dashboard Personalizado (Google Sheets Template):</strong></p>
+<div class="bullet-item">Columnas: Métrica | Baseline | Target | Método Evaluación | Notas</div>
+<div class="bullet-item">Incluir: T-Index, 5 Skill Deltas, 3 Comportamientos, NPS, Key Dates</div>
+<div class="bullet-item">Compartido con participante + mentor, editable, vivo</div>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-7-mentor-handbook-handoff-da-1415-973bb1">PASO 7: MENTOR HANDBOOK &amp; HANDOFF (Día 14-15)</h3>
+<p class="key-value"><strong>Responsable:</strong> Diseñador Transformacional + Mentor Asignado</p>
+<p class="key-value"><strong>Mentor Handbook (10 páginas, solo para mentor):</strong></p>
+<p>Contenido:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Resumen de Participante</strong> (1 página)</span></div>
+<div class="bullet-item">Nombre, rol, industria, años experiencia</div>
+<div class="bullet-item">Una línea: &quot;Quién es&quot;</div>
+<div class="bullet-item">Motivación primaria</div>
+<div class="bullet-item">Blockers clave identificados</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Diagnóstico Integrado</strong> (2 páginas)</span></div>
+<div class="bullet-item">HEXACO highlights (fortalezas + áreas de desarrollo)</div>
+<div class="bullet-item">Resistencia al cambio: low/medium/high + implicaciones</div>
+<div class="bullet-item">Evaluación de blockers emocionales/cognitivos</div>
+<div class="bullet-item">Recomendación: &quot;Este participante necesita [mentoría semanal estructurada / libertad de exploración / accountability externa]&quot;</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Contexto Organizacional</strong> (½ página)</span></div>
+<div class="bullet-item">Si aplica: empresa, sector, retos org</div>
+<div class="bullet-item">Cómo conecta transformación personal a contexto org</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Roadmap &amp; Expectativas</strong> (1 página)</span></div>
+<div class="bullet-item">Pilares</div>
+<div class="bullet-item">Visión del Futuro (para que mentor &quot;vea&quot; dónde va)</div>
+<div class="bullet-item">Hitos sem 4, 8, 12, 16</div>
+<div class="bullet-item">Quick Wins Sem 1-2</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Métricas &amp; Success Criteria</strong> (1 página)</span></div>
+<div class="bullet-item">T-Index baseline + target</div>
+<div class="bullet-item">Skill Deltas (5 competencias)</div>
+<div class="bullet-item">Comportamientos observables</div>
+<div class="bullet-item">NPS baseline + target</div>
+<div class="bullet-item">Gates mensuales</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Recomendaciones de Mentoría</strong> (2 páginas)</span></div>
+<div class="bullet-item">Tone sugerido: ¿más coach, más facilitador, más accountability?</div>
+<div class="bullet-item">Temas a enfatizar en Sem 1-4, 5-8, 9-12</div>
+<div class="bullet-item">Preguntas potentes para usar</div>
+<div class="bullet-item">Cosas a evitar (ej: si tiene ansiedad, no presionar; si evita presencia, crear space seguro)</div>
+<div class="bullet-item">Recursos especiales (referencia a psicólogo si aplica, herramientas favoritas)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Comunicación del Roadmap al Participante</strong> (agenda)</span></div>
+<div class="bullet-item">Cuando mentor hace sesión 1:1 (Fase 1, Sem 1), cómo presentar roadmap</div>
+<div class="bullet-item">Script sugerido: &quot;Aquí está el mapa de tu viaje...&quot;</div>
+<hr class="divider">
+<h3 class="subsection-title" id="paso-8-activation-email-confirmacin-da-15-8feb70">PASO 8: ACTIVATION EMAIL &amp; CONFIRMACIÓN (Día 15)</h3>
+<p class="key-value"><strong>Responsable:</strong> Admin</p>
+<p class="key-value"><strong>Email al Participante:</strong></p>
+<p>Asunto: &quot;Tu Transformation Roadmap está listo 🚀&quot;</p>
+<p>Contenido:</p>
+<div class="bullet-item">Celebración de completar diagnóstico</div>
+<div class="bullet-item">Descripción emocionante de lo que aprendimos sobre ti</div>
+<div class="bullet-item">Resumen breve (3-5 bullets) de lo que va a suceder en 16 semanas</div>
+<div class="bullet-item">Adjuntos: PDF de Roadmap personalizado + Visual Roadmap</div>
+<div class="bullet-item">Introducción formal del mentor (corta, cálida bio)</div>
+<div class="bullet-item">Próximo paso: mentor te contactará para agendar Sem 1, Sesión 1 (Fase 1)</div>
+<div class="bullet-item">Link a calendario de disponibilidades mentor (para que participante proponga horario)</div>
+<div class="bullet-item">Link a Slack/Discord privado (para que se una a cohorte)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="checklist-fin-de-fase-0-d0d316" data-searchable aria-labelledby="head-checklist-fin-de-fase-0-d0d316">
+            <div class="phase-header" id="head-checklist-fin-de-fase-0-d0d316" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge gate">GATE</span> CHECKLIST: FIN DE FASE 0</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Antes de pasar a Fase 1, verificar:</p>
+<label class="checklist-item" for="chk-encuesta-prediagnstico-completada-45de81"><input type="checkbox" id="chk-encuesta-prediagnstico-completada-45de81" ><span>Encuesta pre-diagnóstico completada</span></label>
+<label class="checklist-item" for="chk-entrevista-diagnstica-completada-grabada-transcrit-088f63"><input type="checkbox" id="chk-entrevista-diagnstica-completada-grabada-transcrit-088f63" ><span>Entrevista diagnóstica completada + grabada + transcrita</span></label>
+<label class="checklist-item" for="chk-evaluaciones-psicomtricas-completas-hexaco-resiste-561e4e"><input type="checkbox" id="chk-evaluaciones-psicomtricas-completas-hexaco-resiste-561e4e" ><span>Evaluaciones psicométricas completas (HEXACO, resistencia, hábitos)</span></label>
+<label class="checklist-item" for="chk-audit-digital-completado-presencia-stack-d59e30"><input type="checkbox" id="chk-audit-digital-completado-presencia-stack-d59e30" ><span>Audit digital completado (presencia + stack)</span></label>
+<label class="checklist-item" for="chk-mapeo-transformacional-codiseado-miro-board-finali-f18557"><input type="checkbox" id="chk-mapeo-transformacional-codiseado-miro-board-finali-f18557" ><span>Mapeo transformacional co-diseñado (Miro board finalizado)</span></label>
+<label class="checklist-item" for="chk-roadmap-visual-creado-pdf-figma-8d0e2b"><input type="checkbox" id="chk-roadmap-visual-creado-pdf-figma-8d0e2b" ><span>Roadmap visual creado (PDF + Figma)</span></label>
+<label class="checklist-item" for="chk-documento-roadmap-personalizado-completado-1015-pg-dacee2"><input type="checkbox" id="chk-documento-roadmap-personalizado-completado-1015-pg-dacee2" ><span>Documento Roadmap Personalizado completado (10-15 páginas)</span></label>
+<label class="checklist-item" for="chk-dashboard-con-mtricas-baseline-completo-dc3249"><input type="checkbox" id="chk-dashboard-con-mtricas-baseline-completo-dc3249" ><span>Dashboard con métricas baseline completo</span></label>
+<label class="checklist-item" for="chk-mentor-handbook-completado-10-pginas-f78e89"><input type="checkbox" id="chk-mentor-handbook-completado-10-pginas-f78e89" ><span>Mentor Handbook completado (10 páginas)</span></label>
+<label class="checklist-item" for="chk-activation-email-enviado-al-participante-436919"><input type="checkbox" id="chk-activation-email-enviado-al-participante-436919" ><span>Activation Email enviado al participante</span></label>
+<label class="checklist-item" for="chk-mentor-contact-al-participante-para-agendar-sem-1-f7fac5"><input type="checkbox" id="chk-mentor-contact-al-participante-para-agendar-sem-1-f7fac5" ><span>Mentor contactó al participante para agendar Sem 1</span></label>
+<label class="checklist-item" for="chk-participante-se-uni-a-slackdiscord-de-cohorte-66781f"><input type="checkbox" id="chk-participante-se-uni-a-slackdiscord-de-cohorte-66781f" ><span>Participante se unió a Slack/Discord de cohorte</span></label>
+<label class="checklist-item" for="chk-mentor-anot-en-bitcora-fase-0-completa-clarity-sco-e91661"><input type="checkbox" id="chk-mentor-anot-en-bitcora-fase-0-completa-clarity-sco-e91661" ><span>Mentor anotó en bitácora: &quot;Fase 0 completa, Clarity Score = X/10, Go a Fase 1&quot;</span></label>
+<p class="key-value"><strong>Gate Decisión:</strong></p>
+<div class="bullet-item">¿Clarity Score ≥8/10 en participante + mentor?</div>
+<div class="bullet-item">¿El participante se siente emocionado y claro sobre su viaje?</div>
+<div class="bullet-item">¿El mentor está preparado y connected?</div>
+<p class="key-value"><strong>Si Yes:</strong> <span class="status-ok" aria-label="Completado">✅</span> Proceder a Fase 1 (Inmersión Inicial)</p>
+<p class="key-value"><strong>Si No:</strong> 🔄 Sesión adicional de clarity con director + mentor antes de Fase 1</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documentacin-de-referencia-16d4e7" data-searchable aria-labelledby="head-documentacin-de-referencia-16d4e7">
+            <div class="phase-header" id="head-documentacin-de-referencia-16d4e7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> DOCUMENTACIÓN DE REFERENCIA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Documentos Generados:</strong></p>
+<div class="bullet-item">Transformation Roadmap (PDF personalizado, 10-15 páginas)</div>
+<div class="bullet-item">Roadmap Visual (Figma + PDF)</div>
+<div class="bullet-item">Dashboard Personalizado (Google Sheets)</div>
+<div class="bullet-item">Mentor Handbook (10 páginas, privado)</div>
+<div class="bullet-item">Evaluación Psicométrica Integrada (reporte)</div>
+<div class="bullet-item">Audit Digital (presencia + stack)</div>
+<p class="key-value"><strong>Almacenamiento:</strong></p>
+<div class="bullet-item">Roadmap PDF: Drive compartido (participante + mentor)</div>
+<div class="bullet-item">Dashboard: Sheets con acceso a participante + mentor</div>
+<div class="bullet-item">Handbook: Drive privado (mentor only)</div>
+<div class="bullet-item">Evaluaciones: Sistema seguro de documentación (HIPAA-compliant si aplicable)</div>
+<div class="bullet-item">Grabación: AWS S3 privado (acceso mentor)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-explcitos-c648d8" data-searchable aria-labelledby="head-supuestos-explcitos-c648d8">
+            <div class="phase-header" id="head-supuestos-explcitos-c648d8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> SUPUESTOS EXPLÍCITOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Participante entra Fase 0 con claridad mínima sobre transformación que busca</strong> — Si llegan con roadmap perfecto = probablemente no lo necesitan. Entramos en incertidumbre; diagnóstico es revelación, no confirmación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>90 minutos de entrevista diagnóstica revela patrón verdadero</strong> — Primeros 30 min es performance/narrativa segura; min 40-80 es donde emergen creencias limitantes. Menos tiempo = superficial.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Psicometría no predice éxito, pero sí revela sesgos operativos</strong> — HEXACO identifica cómo alguien se relaciona con cambio (ej: alta escrupulosidad = necesita plan detallado vs exploración abierta).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Mentor asignado pre-Fase 1 es crítico</strong> — Mentor que entra en Sem 1 sin haber leído Handbook = relación débil. Pre-asignación + prep = efecto 2x en rapport Sem 1.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Roadmap personalizado en Miro (visual) + Documento (narrativo) = integración hemisférica</strong> — Solo visual = falta profundidad; solo documento = falta emoción. Ambos = anclaje dual.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="lmites-89f0a8" data-searchable aria-labelledby="head-lmites-89f0a8">
+            <div class="phase-header" id="head-lmites-89f0a8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> LÍMITES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item"><strong>No diagnostica condiciones clínicas</strong> — Si psicólogo identifica depresión severa, ansiedad de pánico, PTSD, refiere a especialista paralelo. Diagnóstico no es tratamiento.</div>
+<div class="bullet-item"><strong>Fase 0 no es &quot;coaching de vida&quot;</strong> — Diseña transformación, no resuelve crisis. Si participante está en crisis aguda (divorcio, despido, duelo), Fase 0 se pausa 2-4 semanas; después procede.</div>
+<div class="bullet-item"><strong>No predice participantes que fallarán</strong> — Claridad alta ≠ éxito (algunos &quot;claros&quot; tienen resistencia inconsciente). NPS inicial bajo ≠ fracaso post. Indicadores son data, no profecía.</div>
+<div class="bullet-item"><strong>Roadmap no es &quot;plan de implementación&quot;</strong> — Es brújula (dónde vamos), no ruta (cómo llegamos). Cómo llegar lo define mentoría semanal Sem 1-16.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="criterios-de-aceptacin-354d6e" data-searchable aria-labelledby="head-criterios-de-aceptacin-354d6e">
+            <div class="phase-header" id="head-criterios-de-aceptacin-354d6e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> CRITERIOS DE ACEPTACIÓN</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="entrevista-diagnstica-paso-2-a369d3">Entrevista Diagnóstica (Paso 2)</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> 90 min completados, grabados, transcritos</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> 3+ Key Insights extraídos (patrones, no superficie)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> 3 Questions to Explore identificadas para próximas sesiones</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Participante siente &quot;visto y escuchado&quot; post-sesión (auto-report ≥8/10)</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> Rechazo si &lt;60 min, sin transcripción, o Key Insights son obvios</div>
+<h3 class="subsection-title" id="evaluaciones-psicomtricas-paso-3-44a950">Evaluaciones Psicométricas (Paso 3)</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> 4 herramientas completadas (HEXACO, Resistencia, Hábitos, ±Blockers)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Reporte Integrado 5 páginas generado con recomendaciones específicas</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Scoring summary legible para participante (no jargón psicológico)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Si ansiedad/trauma identificado, referencia a terapeuta completada</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> Rechazo si tools incompletas o reporte es genérico</div>
+<h3 class="subsection-title" id="audit-digital-paso-4-526283">Audit Digital (Paso 4)</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Presencia Online mapeada (si Empoderamiento) con LinkedIn Gaps doc</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Stack Digital auditado + visual map creada</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Tech Fluency Score definido + áreas de miedo identificadas</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Documentación es visual + accionable (no solo análisis)</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> Rechazo si Presencia/Stack audits son incompletos o superficiales</div>
+<h3 class="subsection-title" id="mapeo-transformacional-paso-5-ff5dc8">Mapeo Transformacional (Paso 5)</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Sesión Co-Mapeo completada 90 min (Diseñador + Mentor presentes)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Miro board visual finalizado con pilares, visión, hitos, monedas</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Roadmap Visual PDF generado (inspirador, fácil de leer)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Documento Roadmap Personalizado 10-15 páginas completado, narrativo</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Participante siente: &quot;Este roadmap es MÍO, no generic&quot; (≥8/10)</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> Rechazo si documento es template-like o visión es vaga</div>
+<h3 class="subsection-title" id="calibracin-indicadores-paso-6-388ce3">Calibración Indicadores (Paso 6)</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> T-Index baseline definido (auto + mentor, promediados)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> 5 Skill Deltas con baselines + targets definidos</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> 3 Comportamientos Observables específicos (no vagas)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> NPS Personal Baseline capturado (0-10)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Dashboard compartido con participante + mentor, vivo</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> Rechazo si métricas son copy-paste (no personalizadas) o Dashboard falta</div>
+<h3 class="subsection-title" id="mentor-handbook-handoff-paso-7-ecd54b">Mentor Handbook &amp; Handoff (Paso 7)</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Handbook 10 páginas completado (solo mentor, no participante)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Diagnóstico Integrado sintetizado (2 páginas, legible)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Recomendaciones de Mentoría específicas (tone, temas, evitar)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Mentor lee Handbook + anota 3 observaciones antes de Fase 1</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> Rechazo si Handbook es genérico o mentor no lo lee</div>
+<h3 class="subsection-title" id="activation-email-confirmacin-paso-8-f3d8e8">Activation Email &amp; Confirmación (Paso 8)</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Email enviado Día 15 con tono celebratorio + instrucciones claras</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Roadmaps (PDF + Visual) adjuntados</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Mentor introducido con bio cálida + contacto</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Próximo paso claro: participante elige slot de calendario Sem 1</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Participante unido a Slack/Discord privado</div>
+<div class="bullet-item"><span class="status-fail" aria-label="No completado">❌</span> Rechazo si email es genérico, sin entusiasmo, o falta contexto personalizado</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-25ff81" data-searchable aria-labelledby="head-casos-borde-25ff81">
+            <div class="phase-header" id="head-casos-borde-25ff81" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> CASOS BORDE</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Caso Borde 1: Participante en entrevista diagnóstica revela trauma significativo</strong></p>
+<div class="bullet-item">Trigger: En min 50-70, participante llora, comparte trauma de infancia que bloquea cambio</div>
+<div class="bullet-item">Protocolo: Diseñador validar, desacelerar, ofrecer agua. NO convertir en sesión de terapia. Documentar, pasar a Psicólogo. Psicólogo determina: ¿sigue Fase 0 o refiere a terapeuta? (típicamente refiere + continúa en paralelo).</div>
+<div class="bullet-item">Fallback: Si trauma es severo, Fase 0 se pausa 4 semanas; participante hace terapia; re-entra después. No es rechazo, es secuencia responsable.</div>
+<p class="key-value"><strong>Caso Borde 2: Evaluaciones psicométricas revelan resistencia al cambio = ALTA</strong></p>
+<div class="bullet-item">Trigger: Resistencia Score &gt;75th percentile; participante muestra ansiedad ante incertidumbre</div>
+<div class="bullet-item">Protocolo: Psicólogo sesión 1:1 interpretativa: &quot;Tu resistencia es fortaleza disfrazada: valoras estabilidad. Transformación requiere balance: structure + exploración&quot;. Mentor Handbook nota: &quot;Estructura semanal rígida + space seguro = necesario&quot;.</div>
+<div class="bullet-item">Fallback: Si resistencia es extrema, opción de &quot;programa extendido&quot; (24 semanas vs 16) con menos presión semanal</div>
+<p class="key-value"><strong>Caso Borde 3: Participante no completa evaluaciones psicométricas Día 5</strong></p>
+<div class="bullet-item">Trigger: Día 5, solo 2/4 herramientas completadas</div>
+<div class="bullet-item">Protocolo: Admin follow-up email + calendar invite para completar las 2 faltantes en 48h. Reasignar si Día 7 aún falta.</div>
+<div class="bullet-item">Fallback: Si no completa por trabajo/vida, extender Fase 0 1 semana; mejor completar bien que apresurar</div>
+<p class="key-value"><strong>Caso Borde 4: Stack Digital audit revela participante usa 30+ herramientas (&quot;tool chaos&quot;)</strong></p>
+<div class="bullet-item">Trigger: Tech Coach identifica: Slack, Teams, Telegram, 3 email accounts, Notion, Obsidian, 5 apps de notas, Figma, Adobe, etc.</div>
+<div class="bullet-item">Protocolo: Stack Diagnosis incluye &quot;minimalización strategy&quot;: identifica 5-7 core tools, retira resto. Incluir en Fase 1 Taller 1 (&quot;Tu stack digital minimalista&quot;).</div>
+<div class="bullet-item">Fallback: Si participante resistente a cambiar stack, respetar; pero Mentor Handbook nota: &quot;Observa cómo fragmentación de stack = fragmentación de focus&quot;</div>
+<p class="key-value"><strong>Caso Borde 5: Mentor asignado tieneAGENDA contra participante (conflicto previo)</strong></p>
+<div class="bullet-item">Trigger: Admin descubre: Mentor X y Participante Y trabajaron juntos; hubo desacuerdo/resentimiento</div>
+<div class="bullet-item">Protocolo: STOP. Reasignar mentor antes de Fase 1. No intentar &quot;reconciliación&quot; dentro del programa; relación de mentoría requiere limpieza previa.</div>
+<div class="bullet-item">Fallback: Si descubierto post-Sem 1, sesión de &quot;clearing&quot; (director medía 30 min privada) o swap si relación no recupera</div>
+<p class="key-value"><strong>Caso Borde 6: Roadmap es demasiado ambicioso (participante quiere cambiar 5 pilares, trabajar 40h extra, aprender 3 lenguajes)</strong></p>
+<div class="bullet-item">Trigger: En Sesión Co-Mapeo, participante lista objetivos que requieren 50+ h/semana</div>
+<div class="bullet-item">Protocolo: Diseñador reframe: &quot;Esto es 16 semanas, no 2 años. ¿Cuál es el 1 pilar que si lo logras, todo lo demás está posible?&quot; Reduzca a 2-3 pilares máximo, específicos.</div>
+<div class="bullet-item">Fallback: Documento Roadmap incluye &quot;Post-Programa Phase 2&quot; (Sem 17-32) para pilares secundarios; esto gestiona expectativa</div>
+<p class="key-value"><strong>Caso Borde 7: T-Index baseline estimado es muy bajo (&lt;20/100)</strong></p>
+<div class="bullet-item">Trigger: Participante auto-report 2/10, mentor observa 3/10; baseline = 25</div>
+<div class="bullet-item">Protocolo: Diseñador sesión 1:1 interpretativa: &quot;Bajo baseline es honesto. Significa tu delta será 30pts = real transformación visible.&quot; Mentor Handbook especiales: &quot;Este participante necesita wins tempranos Sem 1-2 para creer en posibilidad&quot;.</div>
+<div class="bullet-item">Fallback: Target adjusted to +25 pts (en lugar de +30) si baseline es &lt;30; aún válido éxito</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="decisiones-de-diseo-8b0284" data-searchable aria-labelledby="head-decisiones-de-diseo-8b0284">
+            <div class="phase-header" id="head-decisiones-de-diseo-8b0284" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> DECISIONES DE DISEÑO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>¿Por qué entrevista diagnóstica es 90 min, no 60?</strong></p>
+<div class="bullet-item">60 min es apenas suficiente para historia + aspiración. Blockers profundos emergen en min 40-70. 120+ es fatiga. 90 es zona óptima: tiempo para vulnerabilidad sin colapso.</div>
+<p><strong>¿Por qué 4 evaluaciones psicométricas, no 10?</strong></p>
+<div class="bullet-item">10 sería análisis exhaustivo pero participante fatiga + tiempo inflado. 4 (HEXACO, Resistencia, Hábitos, Blockers) cubre: cómo es, cómo enfrenta cambio, qué hace, qué frena. Suficiente.</div>
+<p><strong>¿Por qué Miro visual + Documento Narrativo, no solo uno?</strong></p>
+<div class="bullet-item">Miro es visual/emocional (cuerpo entiende visión vívida). Documento es narrativo/cognitivo (mente entiende story lógica). Ambos integran hemisferios derecho + izquierdo.</div>
+<p><strong>¿Por qué Mentor asignado ANTES de Fase 0, no durante Fase 1?</strong></p>
+<div class="bullet-item">Mentor pre-asignado permite Handbook profundo + prep. Si mentor entra Sem 1, aún sin contexto = relación débil Sem 1-2. Pre-asignación = efecto 2x.</div>
+<p><strong>¿Por qué 3 Pilares, no 5?</strong></p>
+<div class="bullet-item">5 es distracting. Mente aún en &quot;qué estoy haciendo&quot;. 3 es enfoque suficiente sin fragmentar. Pilar 4-5 emergen naturalmente Sem 8-12.</div>
+<p><strong>¿Por qué 3 Quick Wins Sem 1-2, no 5?</strong></p>
+<div class="bullet-item">5 overwhelm participante + mentora. 3 es suficiente para momentum temprano. Velocidad de pequeños logros &gt; cantidad.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="antipatterns-d84484" data-searchable aria-labelledby="head-antipatterns-d84484">
+            <div class="phase-header" id="head-antipatterns-d84484" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> ANTI-PATTERNS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Anti-pattern: Diseñador es &quot;experto&quot; que diagnóstica, no facilitador que descubre</strong></p>
+<div class="bullet-item">Señal: Entrevista siente como interrogatorio; diseñador interrumpe, propone soluciones, pierde escucha</div>
+<div class="bullet-item">Corrección: 80% listening, 20% preguntas. Diseñador es curioso, no experto. Descubre con participante, no para participante.</div>
+<p class="key-value"><strong>Anti-pattern: Evaluaciones psicométricas se &quot;corren&quot; sin interpretación</strong></p>
+<div class="bullet-item">Señal: Scores son generados pero nunca conversados con participante; reporte es jargón psicológico</div>
+<div class="bullet-item">Corrección: Psicólogo sesión 1:1 interpretativa. Score debe traducir a lenguaje humano: &quot;Alta escrupulosidad significa [comportamiento], que en transformación significa [oportunidad]&quot;.</div>
+<p class="key-value"><strong>Anti-pattern: Roadmap es &quot;template rellenado&quot; con detalles genéricos</strong></p>
+<div class="bullet-item">Señal: Pilares se ven copiados de otro roadmap; visión es vaga (&quot;ser mejor líder&quot;); hitos sin stories personales</div>
+<div class="bullet-item">Corrección: Cada sección narra historia personal. Pilares no son títulos, son narrativas. Visión es sensorial (ves qué, sientes qué, haces qué).</div>
+<p class="key-value"><strong>Anti-pattern: Dashboard métricas son &quot;aspiracional&quot;, no baseline real</strong></p>
+<div class="bullet-item">Señal: Baseline T-Index se estima como 50 cuando debería ser 25; Skill Deltas sin auto-report del participante</div>
+<div class="bullet-item">Corrección: Baseline siempre es &quot;honest low&quot; (participante tiende a auto-reportar bajo; mentor añade +10%). Mejor subestimar baseline que inflarlo.</div>
+<p class="key-value"><strong>Anti-pattern: Mentor Handbook nunca se lee o se trata como &quot;reference document&quot;</strong></p>
+<div class="bullet-item">Señal: Handbook completo pero mentor nunca lo abre Fase 1; trata cada sesión como descubrimiento</div>
+<div class="bullet-item">Corrección: Mentor lee pre-Fase 1. En Sem 1 Sesión 1, mentor puede decir: &quot;Leí tu roadmap y veo que [pillar X] es importante porque [reason]. Validaste eso?&quot;</div>
+<p class="key-value"><strong>Anti-pattern: Participante &quot;pasivo&quot; durante Co-Mapeo (diseñador + mentor hablan, participante asiente)</strong></p>
+<div class="bullet-item">Señal: Sesión mapeo es 60% facilitator talking, 30% mentor, 10% participante</div>
+<div class="bullet-item">Corrección: Participante es co-creator, no escuchante. Estructura: facilitador pregunta, participante responde, mentor refleja. Si participante silencio &gt;2 min, preguntar directamente.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-operativos-a840ab" data-searchable aria-labelledby="head-fallbacks-operativos-a840ab">
+            <div class="phase-header" id="head-fallbacks-operativos-a840ab" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> FALLBACKS OPERATIVOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="si-participante-no-puede-hacer-entrevista-diagnsti-29fa78">Si participante no puede hacer entrevista diagnóstica en Día 1-3</h3>
+<p class="key-value"><strong>Fallback 1:</strong> Extender a Día 5-7 (dentro de Fase 0). Mejor completa que apresurada.</p>
+<p class="key-value"><strong>Fallback 2:</strong> Split entrevista en 2 x 60 min (vs 1 x 90 min) si participante tiene límite atencional.</p>
+<h3 class="subsection-title" id="si-psiclogo-identificar-necesidad-de-referencia-a--523acd">Si Psicólogo identificar necesidad de referencia a terapeuta</h3>
+<p class="key-value"><strong>Fallback:</strong> Fase 0 continúa EN PARALELO con terapia (no &quot;espera hasta que termines terapia&quot;). Terapia resuelve trauma; Fase 0 diseña transformación. Ambas se retroalimentan.</p>
+<h3 class="subsection-title" id="si-participante-no-termina-roadmap-visual-en-tiemp-914266">Si participante no termina Roadmap Visual en tiempo</h3>
+<p class="key-value"><strong>Fallback 1:</strong> Diseñador completa visual basado en datos (sesión co-mapeo grabada). Participante revisa + ajusta antes de Activation Email.</p>
+<p class="key-value"><strong>Fallback 2:</strong> Si visual no puede completarse, Documento Roadmap es suficiente (no bloqueador). Visual es &quot;nice to have&quot;, narrativa es &quot;must have&quot;.</p>
+<h3 class="subsection-title" id="si-mentor-asignado-est-overload-6-participantes-ac-391541">Si Mentor Asignado está overload (&gt;6 participantes actuales)</h3>
+<p class="key-value"><strong>Fallback:</strong> Reasignar participante a otra mentor pre-Fase 1. Mejor prevenir que remediar sobrecarga que degrada sesiones Sem 1-2.</p>
+<h3 class="subsection-title" id="si-clarity-score-es-810-postfase-0-5fa887">Si Clarity Score es &lt;8/10 post-Fase 0</h3>
+<p class="key-value"><strong>Fallback:</strong> Director sesión 1:1 especial (30 min antes de Fase 1 Día 1) para inyectar claridad. Si aún &lt;7, Hold de Fase 1; sesión diagnóstica adicional 2 semanas.</p>
+<h3 class="subsection-title" id="si-nps-personal-baseline-es-410-baja-confianza-7f791d">Si NPS Personal baseline es &lt;4/10 (baja confianza)</h3>
+<p class="key-value"><strong>Fallback:</strong> No es bloqueador. Pero Mentor Handbook nota: &quot;Este participante necesita wins tempranos Sem 1-2 + validación frecuente. Mentoría semanal no opta; es mandatory.&quot;</p>
+<hr class="divider">
+<p class="key-value"><strong>Fin de SOP: Diseño Transformacional</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

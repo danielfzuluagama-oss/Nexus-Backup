@@ -1,0 +1,103 @@
+# Standards: Security Headers, Gzip Compression, Aggressive Caching, Keep-Alive
+
+# 0. REWRITE ENGINE (CLEAN URLs & HTTPS)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Remove .html extension from URL
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+    # Redirect directly to clean URL if .html is typed
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/
+    RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+</IfModule>
+
+# 1. SECURITY HEADERS
+<IfModule mod_headers.c>
+    # Prevent MIME-sniffing
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Prevent Clickjacking (Legacy)
+    Header set X-Frame-Options "SAMEORIGIN"
+    
+    # Modern XSS Protection
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Privacy & Referrer
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Permitted Policies (Flash/PDF)
+    Header set X-Permitted-Cross-Domain-Policies "none"
+    
+    # Security Transport (HSTS - 1 Year)
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # Isolation (COOP) - Critical for Cross-Origin Attacks
+    Header set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+    
+    # Content Security Policy (CSP) - Mitigate XSS & Injection
+    # script-src: Allows self, inline (needed for hydration), and trusted CDNs.
+    # object-src: 'none' blocks plugins (Flash/Java).
+    # base-uri: 'self' prevents base tag hijacking.
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.metodologia.info; object-src 'none'; media-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+    
+    # Permissions Policy (FKA Feature Policy)
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+</IfModule>
+
+# 2. COMPRESSION (BROTLI / GZIP)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json image/svg+xml
+    <IfModule mod_setenvif.c>
+        SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+    </IfModule>
+</IfModule>
+
+# 3. BROWSER CACHING & PERFORMANCE
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images: Long Term (1 Year)
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # Assets: Medium Term (1 Month)
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/json "access plus 1 month"
+    
+    # Web Components & Modules (Aggressive Cache)
+    ExpiresByType application/javascript "access plus 1 year"
+    
+    # LLM Context (AEO)
+    ExpiresByType text/plain "access plus 1 hour"
+    
+    # HTML: Short Term (Ensure Freshness)
+    ExpiresByType text/html "access plus 1 hour"
+    
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# 4. CONNECTION OPTIMIZATION
+<IfModule mod_headers.c>
+    Header set Connection keep-alive
+    Header append Vary User-Agent
+    Header append Vary Accept-Encoding
+</IfModule>
+
+# 5. ERROR HANDLING
+ErrorDocument 404 /index.html

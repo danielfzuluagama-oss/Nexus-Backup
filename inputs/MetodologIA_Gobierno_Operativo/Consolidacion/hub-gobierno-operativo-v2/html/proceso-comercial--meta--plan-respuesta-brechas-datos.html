@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Plan de Respuesta a Incidentes de Seguridad de Datos Personales — MetodologIA</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#122562;--gold:#FFD700;--blue:#137DC5;--dark:#1F2833;--lavender:#BBA0CC;--grey:#808080;--bg:#FAFBFD;--surface:#FFFFFF;--border:#E8ECF1;--text-1:#1F2833;--text-2:#4A5568;--text-3:#808080;--radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Trebuchet MS',Verdana,sans-serif;background:var(--bg);color:var(--text-1);line-height:1.7;padding:0}
+.doc-header{background:var(--navy);color:#fff;padding:32px 40px 24px;position:relative;overflow:hidden}
+.doc-header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,215,0,.08),transparent 70%);border-radius:50%}
+.doc-header h1{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:var(--gold);letter-spacing:-.3px;position:relative}
+.doc-header .meta{font-family:'Futura','Century Gothic',sans-serif;font-size:.72rem;color:rgba(255,255,255,.6);margin-top:6px;position:relative}
+.doc-header .back{position:absolute;top:16px;right:24px;padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);cursor:pointer;font-family:'Futura','Century Gothic',sans-serif;font-size:.72rem;text-decoration:none;transition:all .2s}
+.doc-header .back:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.doc-body{max-width:820px;margin:0 auto;padding:32px 40px 60px}
+h1{font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;color:var(--navy);margin:32px 0 12px;border-bottom:2px solid var(--gold);padding-bottom:8px}
+h2{font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:700;color:var(--navy);margin:28px 0 10px;border-left:4px solid var(--gold);padding-left:12px}
+h3{font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;color:var(--navy);margin:20px 0 8px}
+h4{font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;color:var(--blue);margin:16px 0 6px}
+p{margin:8px 0;font-size:.88rem}
+ul,ol{margin:8px 0 8px 24px;font-size:.85rem}
+li{margin:4px 0}
+strong{color:var(--navy)}
+blockquote{border-left:3px solid var(--lavender);padding:12px 16px;margin:12px 0;background:rgba(187,160,204,.06);border-radius:0 var(--radius) var(--radius) 0;font-size:.82rem;color:var(--text-2)}
+code{background:rgba(18,37,98,.06);padding:2px 6px;border-radius:4px;font-size:.8rem;color:var(--navy)}
+pre{background:var(--dark);color:#e2e8f0;padding:16px 20px;border-radius:var(--radius);overflow-x:auto;font-size:.78rem;line-height:1.5;margin:12px 0}
+pre code{background:none;padding:0;color:inherit}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.8rem}
+th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Poppins',sans-serif;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:rgba(19,125,197,.03)}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+.chip{display:inline-block;font-size:.65rem;padding:2px 8px;border-radius:6px;font-family:'Futura','Century Gothic',sans-serif;font-weight:600}
+.chip-gold{background:rgba(255,215,0,.12);color:#B8860B}
+.chip-blue{background:rgba(19,125,197,.1);color:var(--blue)}
+.chip-red{background:rgba(239,68,68,.08);color:#DC2626}
+.footer{text-align:center;padding:20px;font-size:.68rem;color:var(--text-3);font-family:'Futura','Century Gothic',sans-serif;border-top:1px solid var(--border);margin-top:32px}
+@media print{.doc-header .back{display:none}body{padding:0}.doc-body{max-width:100%}}
+@media(max-width:768px){.doc-body{padding:20px}.doc-header{padding:24px 20px 16px}.doc-header h1{font-size:1.2rem}}
+</style>
+</head>
+<body>
+<div class="doc-header">
+  <a href="../index.html" class="back">← Hub</a>
+  <h1>Plan de Respuesta a Incidentes de Seguridad de Datos Personales</h1>
+  <div class="meta">Versión: 2.0.0 | Fecha: 2026-03-25 | Contexto Legal: República de Colombia | Normas aplicables: Ley 1581/2012 (Art. 17 lit. n), Decreto 1377/2013, Circular 002/2023 SIC</div>
+</div>
+<div class="doc-body">
+<h1>Plan de Respuesta a Incidentes de Seguridad de Datos Personales</h1>
+
+<p><strong>Versión:</strong> 2.0.0</p>
+<p><strong>Fecha:</strong> 2026-03-25</p>
+<p><strong>Contexto Legal:</strong> República de Colombia</p>
+<p><strong>Normas aplicables:</strong> Ley 1581/2012 (Art. 17 lit. n), Decreto 1377/2013, Circular 002/2023 SIC</p>
+<p><strong>Cierra:</strong> FM-02 (Backcasting COO)</p>
+<p><strong>Owner:</strong> Oficial de Protección de Datos / COO</p>
+
+<blockquote><strong>DISCLAIMER:</strong> Template operativa. Adaptar a la estructura organizacional real y validar con asesor legal.</blockquote>
+
+<hr>
+
+<h2>1. Propósito</h2>
+
+<p>Establecer el procedimiento para <strong>detectar, contener, investigar, notificar y remediar</strong> incidentes de seguridad que comprometan datos personales bajo custodia de MetodologIA, cumpliendo los tiempos y requisitos de la SIC.</p>
+
+<hr>
+
+<h2>2. Alcance</h2>
+
+<p>Aplica a todo incidente que involucre:</p>
+<ul>
+<li>Acceso no autorizado a datos personales</li>
+<li>Pérdida, destrucción o alteración no intencional de datos</li>
+<li>Divulgación no autorizada de datos personales</li>
+<li>Ransomware o malware que afecte bases de datos con información personal</li>
+</ul>
+
+<hr>
+
+<h2>3. Roles y Responsabilidades</h2>
+
+<table>
+<tr><th>Rol</th><th>Responsabilidad</th><th>Titular</th></tr>
+<tr><td><strong>Oficial de Protección de Datos (OPD)</strong></td><td>Coordinación general, notificaciones</td><td>Por designar</td></tr>
+<tr><td><strong>COO</strong></td><td>Decisiones operativas, autorización de comunicaciones</td><td>Por designar</td></tr>
+<tr><td><strong>CEO</strong></td><td>Aprobación de comunicaciones públicas, contacto con SIC</td><td>Por designar</td></tr>
+<tr><td><strong>Responsable de TI</strong></td><td>Contención técnica, forensia, restauración</td><td>Por designar</td></tr>
+<tr><td><strong>Asesor Legal</strong></td><td>Evaluación de obligaciones legales</td><td>Firma externa por definir</td></tr>
+<tr><td><strong>Comunicaciones</strong></td><td>Comunicaciones internas y externas</td><td>Por designar</td></tr>
+</table>
+
+<hr>
+
+<h2>4. Clasificación de Incidentes</h2>
+
+<table>
+<tr><th>Nivel</th><th>Descripción</th><th>Ejemplo</th><th>Tiempo de respuesta</th></tr>
+<tr><td><strong>CRITICO</strong></td><td>Datos sensibles comprometidos, &gt;1000 titulares, exposición pública</td><td>Base de datos filtrada públicamente</td><td>Activación inmediata (0h)</td></tr>
+<tr><td><strong>ALTO</strong></td><td>Datos personales comprometidos, &lt;1000 titulares, sin exposición pública</td><td>Acceso no autorizado a carpeta con datos de clientes</td><td>Activación en &lt;4h</td></tr>
+<tr><td><strong>MEDIO</strong></td><td>Posible compromiso, en investigación</td><td>Email con datos enviado a destinatario incorrecto</td><td>Activación en &lt;8h</td></tr>
+<tr><td><strong>BAJO</strong></td><td>Vulnerabilidad detectada sin explotación confirmada</td><td>Contraseña débil en sistema con datos personales</td><td>Evaluación en &lt;24h</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Procedimiento de Respuesta</h2>
+
+<h3>Fase 1: DETECCION (0-2 horas)</h3>
+
+<table>
+<tr><th>Paso</th><th>Acción</th><th>Responsable</th><th>Evidencia</th></tr>
+<tr><td>1.1</td><td>Recibir reporte del incidente</td><td>Cualquier empleado -&gt; OPD</td><td>Registro con timestamp</td></tr>
+<tr><td>1.2</td><td>Clasificar severidad</td><td>OPD</td><td>Formulario de clasificación</td></tr>
+<tr><td>1.3</td><td>Activar equipo de respuesta según severidad</td><td>OPD</td><td>Notificación al equipo</td></tr>
+<tr><td>1.4</td><td>Documentar hallazgos iniciales</td><td>OPD</td><td>Bitácora de incidente iniciada</td></tr>
+</table>
+
+<h3>Fase 2: CONTENCION (2-24 horas)</h3>
+
+<table>
+<tr><th>Paso</th><th>Acción</th><th>Responsable</th><th>Evidencia</th></tr>
+<tr><td>2.1</td><td>Aislar sistema(s) afectado(s)</td><td>TI</td><td>Log de acciones técnicas</td></tr>
+<tr><td>2.2</td><td>Preservar evidencia forense (logs, imágenes, tráfico)</td><td>TI</td><td>Copia forense con hash SHA-256</td></tr>
+<tr><td>2.3</td><td>Revocar accesos comprometidos</td><td>TI</td><td>Lista de accesos revocados</td></tr>
+<tr><td>2.4</td><td>Evaluar alcance: datos, titulares, bases afectadas</td><td>OPD + TI</td><td>Informe de alcance</td></tr>
+<tr><td>2.5</td><td>Activar comunicación interna (equipo directivo informado)</td><td>COO</td><td>Minuta de reunión</td></tr>
+</table>
+
+<h3>Fase 3: NOTIFICACION (24-72 horas)</h3>
+
+<h4>Árbol de decisión: ¿Notificar a la SIC?</h4>
+
+<pre><code>
+¿Se comprometieron datos personales confirmados?
+  ├─ NO → Registrar internamente. No notificar SIC. Cerrar como incidente de seguridad general.
+  └─ SÍ → ¿El incidente representa riesgo significativo para los derechos de los titulares?
+           ├─ NO (ej. email interno enviado a colega equivocado, sin datos sensibles)
+           │     → Notificar titulares afectados. No notificar SIC. Registrar internamente.
+           └─ SÍ (datos sensibles, &gt;100 titulares, exposición externa, o acceso malintencionado)
+                 → Notificar titulares + Notificar SIC conforme Circular 002/2023.
+</code></pre>
+
+<table>
+<tr><th>Paso</th><th>Acción</th><th>Responsable</th><th>Plazo</th><th>Evidencia</th></tr>
+<tr><td>3.1</td><td>Evaluar obligación de notificación (usar árbol arriba)</td><td>OPD + Legal</td><td>24h post-contención</td><td>Informe legal</td></tr>
+<tr><td>3.2</td><td>Notificar a titulares afectados (si aplica)</td><td>OPD + Comunicaciones</td><td>72h post-detección</td><td>Comunicación con acuse</td></tr>
+<tr><td>3.3</td><td>Notificar a la SIC (si aplica)</td><td>OPD + Legal + CEO</td><td>Conforme plazos SIC</td><td>Radicado ante SIC</td></tr>
+<tr><td>3.4</td><td>Notificar a clientes corporativos (si datos de sus usuarios)</td><td>OPD + Comercial</td><td>24h post-contención</td><td>Comunicación contractual</td></tr>
+<tr><td>3.5</td><td>Notificar a encargados de tratamiento afectados</td><td>OPD</td><td>24h post-contención</td><td>Notificación escrita</td></tr>
+</table>
+
+<p><strong>Contenido mínimo de la notificación a titulares:</strong></p>
+<ol>
+<li>Descripción del incidente (sin detalles técnicos sensibles)</li>
+<li>Categorías de datos comprometidos</li>
+<li>Acciones de contención tomadas</li>
+<li>Recomendaciones para el titular</li>
+<li>Canal de contacto para consultas</li>
+<li>Medidas correctivas planificadas</li>
+</ol>
+
+<h3>Fase 4: ERRADICACION (1-7 días)</h3>
+
+<table>
+<tr><th>Paso</th><th>Acción</th><th>Responsable</th><th>Evidencia</th></tr>
+<tr><td>4.1</td><td>Eliminar causa raíz del incidente</td><td>TI</td><td>Informe técnico</td></tr>
+<tr><td>4.2</td><td>Parchear vulnerabilidades identificadas</td><td>TI</td><td>Log de parches</td></tr>
+<tr><td>4.3</td><td>Verificar contención efectiva (re-test)</td><td>TI</td><td>Resultado de pruebas</td></tr>
+<tr><td>4.4</td><td>Restaurar servicios afectados</td><td>TI</td><td>Confirmación de restauración</td></tr>
+</table>
+
+<h3>Fase 5: RECUPERACION Y LECCIONES (7-30 días)</h3>
+
+<table>
+<tr><th>Paso</th><th>Acción</th><th>Responsable</th><th>Evidencia</th></tr>
+<tr><td>5.1</td><td>Monitoreo intensivo post-incidente (30 días)</td><td>TI</td><td>Dashboard de monitoreo</td></tr>
+<tr><td>5.2</td><td>Informe completo del incidente (post-mortem)</td><td>OPD</td><td>Informe final</td></tr>
+<tr><td>5.3</td><td>Reunión de lecciones aprendidas</td><td>COO</td><td>Minuta con acciones correctivas</td></tr>
+<tr><td>5.4</td><td>Actualizar controles de seguridad</td><td>OPD + TI</td><td>Plan de mejora implementado</td></tr>
+<tr><td>5.5</td><td>Actualizar este plan si se identifican gaps</td><td>OPD</td><td>Nueva versión del plan</td></tr>
+<tr><td>5.6</td><td>Capacitación al personal (si aplica)</td><td>OPD</td><td>Registro de capacitación</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Templates de Comunicación</h2>
+
+<h3>6.1 Incidente CRITICO/ALTO — Notificación a titulares</h3>
+
+<pre><code>
+Asunto: Aviso importante sobre la seguridad de sus datos — MetodologIA
+
+Estimado/a [nombre del titular]:
+
+Le informamos que el [fecha] identificamos un incidente de seguridad que
+pudo haber afectado los siguientes datos personales suyos: [categorías
+de datos: nombre, email, teléfono, etc.].
+
+Qué ocurrió: [descripción breve sin detalles técnicos sensibles].
+
+Qué hicimos: Inmediatamente [acciones de contención tomadas].
+
+Qué le recomendamos:
+- [Recomendación 1: ej. cambiar contraseña de la plataforma]
+- [Recomendación 2: ej. estar atento a comunicaciones sospechosas]
+
+Para consultas: [canal de contacto, ej. incidentes@metodologia.co]
+
+Lamentamos esta situación y estamos comprometidos con la protección de
+su información.
+
+MetodologIA — Oficial de Protección de Datos
+</code></pre>
+
+<h3>6.2 Incidente MEDIO — Notificación interna</h3>
+
+<pre><code>
+Asunto: [MEDIO] Incidente de datos — acción requerida
+
+Equipo:
+
+Se ha detectado un incidente de severidad MEDIA:
+- Qué: [descripción]
+- Cuándo: [fecha/hora de detección]
+- Alcance estimado: [número de titulares, tipo de datos]
+- Estado: En investigación
+
+Acciones inmediatas requeridas:
+- [Responsable TI]: [acción de contención]
+- [OPD]: Evaluar obligación de notificación en 24h
+
+Próxima reunión de seguimiento: [fecha/hora]
+
+— OPD
+</code></pre>
+
+<h3>6.3 Notificación a cliente corporativo (DPA)</h3>
+
+<pre><code>
+Asunto: Notificación de incidente de seguridad — Ref. Contrato [ID]
+
+Estimado/a [contacto del cliente]:
+
+Conforme al Acuerdo de Procesamiento de Datos (DPA) vigente entre
+MetodologIA y [nombre del cliente], le notificamos que hemos identificado
+un incidente de seguridad que podría afectar datos personales procesados
+en el contexto de nuestro contrato.
+
+Tipo de incidente: [descripción]
+Datos potencialmente afectados: [categorías]
+Titulares potencialmente afectados: [cantidad estimada]
+Acciones de contención: [resumen]
+Estado actual: [en contención / contenido / en remediación]
+
+Quedamos a disposición para coordinación inmediata.
+
+MetodologIA — Oficial de Protección de Datos
+Tel: [número de emergencia]
+</code></pre>
+
+<hr>
+
+<h2>7. Plantilla de Registro de Incidente</h2>
+
+<pre><code>
+## REGISTRO DE INCIDENTE DE SEGURIDAD DE DATOS
+
+**ID Incidente:** INC-[AAAA]-[###]
+**Fecha/hora de detección:** [_______________]
+**Fecha/hora de reporte:** [_______________]
+**Reportado por:** [_______________]
+**Clasificación:** ☐ CRITICO | ☐ ALTO | ☐ MEDIO | ☐ BAJO
+
+### Descripción del incidente
+[_______________]
+
+### Datos comprometidos
+- Tipo de datos: [_______________]
+- Número estimado de titulares: [_______________]
+- Bases de datos afectadas: [_______________]
+
+### Cronología de respuesta
+| Hora | Acción | Responsable |
+|------|--------|------------|
+| [___] | [___] | [___] |
+
+### Notificaciones realizadas
+- [ ] Titulares: [Fecha] [Medio]
+- [ ] SIC: [Fecha] [Radicado]
+- [ ] Clientes corporativos: [Fecha]
+- [ ] Encargados: [Fecha]
+
+### Causa raíz
+[_______________]
+
+### Acciones correctivas
+[_______________]
+
+### Estado
+☐ Abierto | ☐ En contención | ☐ En remediación | ☐ Cerrado
+</code></pre>
+
+<hr>
+
+<h2>8. Métricas Post-Incidente</h2>
+
+<p>Después de cada incidente cerrado, registrar:</p>
+
+<table>
+<tr><th>Métrica</th><th>Valor</th><th>Meta</th></tr>
+<tr><td><strong>Tiempo de detección (TTD)</strong> — desde que ocurrió hasta que se detectó</td><td>[___] horas</td><td>&lt; 24h</td></tr>
+<tr><td><strong>Tiempo de contención (TTC)</strong> — desde detección hasta contención</td><td>[___] horas</td><td>&lt; 4h (Crítico), &lt; 24h (Alto)</td></tr>
+<tr><td><strong>Tiempo de notificación (TTN)</strong> — desde detección hasta notificación a titulares</td><td>[___] horas</td><td>&lt; 72h</td></tr>
+<tr><td><strong>Registros afectados</strong> — número total de titulares impactados</td><td>[___]</td><td>Tender a 0</td></tr>
+<tr><td><strong>Costo del incidente</strong> — horas-persona + costos directos + asesoría legal</td><td>COP [___]</td><td>Baseline por establecer</td></tr>
+<tr><td><strong>Acciones correctivas implementadas</strong></td><td>[___] de [___]</td><td>100% en 30 días</td></tr>
+</table>
+
+<p>Estas métricas se consolidan en el informe trimestral de seguridad para la dirección.</p>
+
+<hr>
+
+<h2>9. Seguro de Responsabilidad Cibernética</h2>
+
+<table>
+<tr><th>Estado</th><th>Detalle</th></tr>
+<tr><td><strong>¿MetodologIA tiene seguro cyber?</strong></td><td><strong>NO — RIESGO ABIERTO</strong></td></tr>
+<tr><td>Recomendación</td><td>Cotizar póliza de responsabilidad cibernética antes de Q3 2026</td></tr>
+<tr><td>Cobertura mínima sugerida</td><td>Respuesta a incidentes, notificación a titulares, defensa legal, daño reputacional</td></tr>
+<tr><td>Proveedores a evaluar</td><td>Sura, Chubb, AIG (todos ofrecen cyber en Colombia)</td></tr>
+<tr><td>Responsable de seguimiento</td><td>COO</td></tr>
+<tr><td>Fecha límite</td><td>2026-09-30</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Simulacros</h2>
+
+<p>EL RESPONSABLE realizará un <strong>simulacro de incidente de datos</strong> al menos una vez al año.</p>
+
+<table>
+<tr><th>Frecuencia</th><th>Tipo</th><th>Participantes</th></tr>
+<tr><td>Anual (obligatorio)</td><td>Tabletop exercise completo</td><td>Equipo completo de respuesta</td></tr>
+<tr><td>Semestral (recomendado)</td><td>Simulacro parcial (notificación)</td><td>OPD + Legal + Comunicaciones</td></tr>
+</table>
+
+<h3>Escenarios para tabletop exercise anual</h3>
+
+<p><strong>Escenario 1 — Laptop robada:</strong></p>
+<p>Un consultor de MetodologIA deja su laptop en un café. El equipo contiene: carpeta con datos de 50 participantes de un bootcamp (nombres, emails, empresas), acceso al LMS con sesión abierta, credenciales guardadas en el navegador para Google Workspace.</p>
+<ul>
+<li>Preguntas clave: ¿El disco estaba cifrado? ¿Se puede hacer wipe remoto? ¿Se clasifica como ALTO o MEDIO? ¿Se notifica a los 50 participantes?</li>
+</ul>
+
+<p><strong>Escenario 2 — Phishing exitoso:</strong></p>
+<p>Un empleado hace clic en un enlace de phishing que imita la página de login de Google Workspace. El atacante obtiene acceso al correo corporativo durante 6 horas antes de que se detecte. En ese correo hay hilos con propuestas comerciales que incluyen nombres, cargos y NIT de clientes prospect.</p>
+<ul>
+<li>Preguntas clave: ¿Cuántos titulares se ven afectados? ¿Los datos de NIT empresarial son &quot;datos personales&quot;? ¿Se notifica a los prospects? ¿Se reporta a la SIC?</li>
+</ul>
+
+<p><strong>Escenario 3 — Brecha en proveedor:</strong></p>
+<p>El proveedor de LMS notifica que sufrió una brecha. Datos potencialmente expuestos: nombres, emails y progreso académico de todos los usuarios de MetodologIA en la plataforma (aprox. 300 titulares). El proveedor dice que &quot;no hay evidencia de exfiltración&quot;.</p>
+<ul>
+<li>Preguntas clave: ¿MetodologIA es responsable de notificar o lo es el proveedor? ¿Qué dice el DPA? ¿Se confía en la evaluación del proveedor o se hace investigación propia? ¿Se activa el plan B para el LMS?</li>
+</ul>
+
+<hr>
+
+<h2>Changelog</h2>
+
+<ul>
+<li>v2.0.0 — Templates de comunicación por severidad, árbol de decisión para notificación SIC, métricas post-incidente, seguro cyber como riesgo abierto, 3 escenarios de tabletop, defaults en roles / Javier Montaño + Claude</li>
+<li>v1.0.0 — Creación inicial / Cierra FM-02 / Javier Montaño + Claude</li>
+</ul>
+
+</div>
+<div class="footer">MetodologIA — Gobierno Operativo v2.0 | Neo-Swiss Clean</div>
+</body>
+</html>

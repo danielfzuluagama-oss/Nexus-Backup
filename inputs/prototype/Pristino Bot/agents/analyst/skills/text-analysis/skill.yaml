@@ -1,0 +1,547 @@
+id: text-analysis
+name: Text Analysis
+purpose: >
+  Analyze textual content such as reviews, articles, and proposals to extract
+  structure, sentiment, and key insights.
+businessValue: >
+  Deep understanding of text structure, sentiment, and key points enabling
+  informed decision-making from unstructured content.
+triggerTypes:
+  - user_message
+owningAgent: analyst
+inputs:
+  - "textContent: string — the raw text to analyze"
+  - "analysisType: string — content | sentiment | structure | key-points"
+  - "contextHints: string[] — optional domain or audience hints"
+outputs:
+  - "analysisReport: object — structured findings with sections and evidence"
+  - "sentimentScore: number — -1.0 to 1.0 sentiment polarity (when applicable)"
+  - "keyPoints: string[] — prioritized list of extracted key points"
+dependencies:
+  - "llm-chat — LLM inference for text analysis"
+  - "security.ts — CP1/CP2/CP3 checkpoints"
+toolUsage:
+  - get_current_time
+memoryReadsWrites:
+  reads:
+    - "Delegated task context from orchestrator"
+  writes: []
+securityValidations:
+  - "CP1: sanitizeInput() on all user-facing text"
+  - "CP2: buildSecurePrompt() on all system prompts"
+  - "CP3: validateOutput() on all LLM responses before delivery"
+observabilityEvents:
+  - skill_activated
+  - workflow_started
+  - step_completed
+  - analysis_completed
+  - validation_failed
+  - fallback_triggered
+failureHandling:
+  - "Empty or malformed input: return error with guidance on expected format"
+  - "Text too long for context window: chunk text and analyze in segments"
+  - "LLM timeout: retry once then return partial analysis with disclaimer"
+  - "Ambiguous analysis type: default to content-analysis workflow"
+interoperabilityContract:
+  inputType: "AnalysisRequest { textContent: string, analysisType: string, contextHints?: string[] }"
+  outputType: "AnalysisResult { report: object, sentiment?: number, keyPoints: string[], metadata: object }"
+wowCriteria:
+  - "Analysis reveals non-obvious patterns or connections in the text"
+  - "Sentiment analysis captures nuance including mixed or conditional sentiment"
+  - "Key points are ranked by relevance with supporting evidence quoted"
+  - "Structure analysis provides actionable feedback on argumentation flow"
+safeCriteria:
+  - "All conclusions backed by specific text evidence"
+  - "No fabricated quotes or misattributed claims"
+  - "Potential biases in the analysis are declared"
+  - "Output passes CP3 validation without flags"
+
+workflows:
+  - id: content-analysis
+    title: Content analysis
+    objective: Produce a comprehensive analysis of textual content covering theme, argumentation, audience, and quality
+    trigger: "analysisType === 'content' or default when no specific type requested"
+    preconditions:
+      - "Input text is non-empty and sanitized via CP1"
+      - "Text length is within processing limits (max 100k chars)"
+    inputs:
+      - "textContent: string — sanitized text to analyze"
+      - "contextHints: string[] — optional domain or audience context"
+    steps:
+      - stepNumber: 1
+        title: Sanitize input text
+        desc: Apply CP1 security checkpoint to the raw text content to strip control characters and detect injection patterns.
+        whyThisMatters: Prevents prompt injection and ensures clean text reaches the LLM analysis pipeline.
+        inputNeeded: "Raw textContent string from the delegated task"
+        actionInstruction: "Call sanitizeInput(textContent) from security.ts. Validate returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: boolean, cleaned: string, reason?: string } with control chars stripped"
+        validationRule: "cleaned.length > 0 and safe === true"
+        failureSignal: "safe === false or cleaned is empty string after sanitization"
+        recoveryAction: "Return error to orchestrator: 'Input text could not be sanitized. Please provide clean text content.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Identify text metadata
+        desc: Determine the text type, approximate length, language, and domain before deep analysis.
+        whyThisMatters: Knowing the text type (article, review, proposal) calibrates the analysis approach and criteria.
+        inputNeeded: "Sanitized text content from step 1"
+        actionInstruction: "Call llm.chat() with the classification prompt. Parse the metadata response."
+        promptToUse: |
+          You are a text classification specialist. Examine this text and identify:
+          1. Text type (article, review, proposal, report, essay, other)
+          2. Approximate word count
+          3. Primary language
+          4. Domain/subject area
+          5. Intended audience (if discernible)
+
+          Text to classify:
+          {{cleanedText}}
+
+          Respond in structured format with the 5 fields above.
+        expectedOutput: "TextMetadata { type, wordCount, language, domain, audience }"
+        validationRule: "All 5 fields are non-null and type is a recognized category"
+        failureSignal: "LLM returns unstructured text or missing fields"
+        recoveryAction: "Default to type='general', domain='unknown' and proceed with generic analysis"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Execute deep content analysis
+        desc: Analyze the text for themes, argumentation quality, rhetorical devices, evidence strength, and coherence.
+        whyThisMatters: This is the core analysis step that produces the primary value — skipping it means no analysis is delivered.
+        inputNeeded: "Sanitized text content and TextMetadata from step 2"
+        actionInstruction: "Call llm.chat() with the content analysis prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst agent performing content analysis.
+          Analyze the following {{textType}} text in the domain of {{domain}}.
+
+          Provide a structured analysis covering:
+          1. **Main Themes**: Identify 2-5 central themes with supporting evidence
+          2. **Argumentation Quality**: Assess logical structure, evidence usage, and persuasiveness
+          3. **Rhetorical Devices**: Note significant rhetorical strategies employed
+          4. **Strengths**: What the text does well (with specific examples)
+          5. **Weaknesses**: Gaps, logical fallacies, unsupported claims (with specifics)
+          6. **Coherence Score**: 1-10 rating of internal consistency and flow
+          7. **Overall Assessment**: 2-3 sentence summary judgment
+
+          Text to analyze:
+          {{cleanedText}}
+
+          Be objective. Support every claim with evidence from the text. Declare any potential biases in your analysis.
+        expectedOutput: "ContentAnalysis object with all 7 sections populated with evidence-backed findings"
+        validationRule: "All 7 sections present, each strength/weakness cites specific text passages"
+        failureSignal: "LLM returns fewer than 5 sections or provides claims without textual evidence"
+        recoveryAction: "Re-prompt with explicit instruction to cite evidence. If second attempt fails, return partial analysis with disclaimer."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation to the analysis output, format it for delivery, and add metadata.
+        whyThisMatters: Ensures the analysis is safe, properly formatted, and traceable before reaching the user.
+        inputNeeded: "ContentAnalysis from step 3, TextMetadata from step 2"
+        actionInstruction: "Call validateOutput(analysis) from security.ts. Format into final AnalysisResult structure with timestamp via get_current_time."
+        promptToUse: null (mechanical step)
+        expectedOutput: "AnalysisResult { report: ContentAnalysis, metadata: { timestamp, textType, wordCount }, keyPoints: string[] }"
+        validationRule: "CP3 passes, all fields populated, timestamp is valid ISO string"
+        failureSignal: "CP3 flags output or formatting throws exception"
+        recoveryAction: "Log CP3 warning (log-but-don't-block policy), strip flagged content, deliver sanitized version"
+        handoffIfNeeded: null
+
+    mainOutput: "Structured content analysis report with themes, argumentation assessment, strengths/weaknesses, and coherence score"
+    secondaryOutputs:
+      - "text_metadata: type, domain, word count classification"
+      - "analysis_event_log: timestamps for each step"
+      - "coherence_score: numeric 1-10 rating"
+    DoD:
+      - "All 7 analysis sections populated with evidence"
+      - "Every claim references specific text passages"
+      - "Potential biases declared"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "No fabricated quotes in the analysis"
+      - "Strengths and weaknesses are balanced and fair"
+      - "Coherence score is justified with reasoning"
+      - "Output format is structured with headers and bullets"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "analysis_completeness: all 7 sections populated"
+      - "evidence_ratio: >= 80% of claims cite text passages"
+      - "response_time_p95: < 20s"
+    cadence: "Per-request (when content analysis is requested)"
+    errorHandling: "If text is too long, chunk into segments and analyze each, then merge findings"
+    fallbackRoute: "Return simplified analysis covering only main themes and overall assessment"
+    escalationRoute: "Report to orchestrator that analysis could not be completed with reason"
+
+  - id: sentiment-analysis
+    title: Sentiment analysis
+    objective: Determine the emotional tone, polarity, and sentiment nuances within the text
+    trigger: "analysisType === 'sentiment'"
+    preconditions:
+      - "Input text is non-empty and sanitized via CP1"
+      - "Text contains evaluative or opinion-bearing content"
+    inputs:
+      - "textContent: string — sanitized text to analyze"
+      - "contextHints: string[] — optional domain context for calibration"
+    steps:
+      - stepNumber: 1
+        title: Sanitize input text
+        desc: Apply CP1 security checkpoint to strip control characters and detect injection patterns.
+        whyThisMatters: Prevents prompt injection from reaching the sentiment analysis pipeline.
+        inputNeeded: "Raw textContent string from the delegated task"
+        actionInstruction: "Call sanitizeInput(textContent) from security.ts. Validate returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: boolean, cleaned: string, reason?: string } with control chars stripped"
+        validationRule: "cleaned.length > 0 and safe === true"
+        failureSignal: "safe === false or cleaned is empty after sanitization"
+        recoveryAction: "Return error to orchestrator: 'Input text could not be sanitized for sentiment analysis.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Segment text for analysis
+        desc: Break the text into logical segments (paragraphs, sections, sentences) for granular sentiment tracking.
+        whyThisMatters: Whole-text sentiment misses local variations — a positive review may contain negative subsections.
+        inputNeeded: "Sanitized text from step 1"
+        actionInstruction: "Call llm.chat() with the segmentation prompt. Parse returned segments array."
+        promptToUse: |
+          You are a text segmentation specialist. Break this text into logical segments
+          for sentiment analysis. Each segment should be a coherent unit of opinion or evaluation.
+
+          For each segment provide:
+          1. Segment text (verbatim excerpt)
+          2. Segment type (claim, opinion, fact, question, mixed)
+          3. Topic of the segment
+
+          Text to segment:
+          {{cleanedText}}
+
+          Return as a structured list of segments.
+        expectedOutput: "TextSegment[] — array of { text, type, topic } objects"
+        validationRule: "At least 1 segment returned, each has non-empty text and valid type"
+        failureSignal: "Empty segments array or segments missing required fields"
+        recoveryAction: "Treat entire text as single segment with type='mixed' and proceed"
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Analyze sentiment per segment
+        desc: Evaluate sentiment polarity, intensity, and emotional tone for each text segment.
+        whyThisMatters: Segment-level sentiment enables nuanced understanding — the core deliverable of this workflow.
+        inputNeeded: "TextSegment[] from step 2, contextHints for domain calibration"
+        actionInstruction: "Call llm.chat() with the sentiment analysis prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst performing sentiment analysis.
+          Domain context: {{contextHints}}
+
+          For each text segment, determine:
+          1. **Polarity**: positive, negative, neutral, or mixed
+          2. **Intensity**: 0.0 (neutral) to 1.0 (extreme)
+          3. **Emotion**: primary emotion (joy, anger, sadness, fear, surprise, disgust, trust, anticipation)
+          4. **Confidence**: 0.0 to 1.0 how certain the classification is
+          5. **Key phrases**: words or phrases that signal the sentiment
+
+          Segments to analyze:
+          {{segments}}
+
+          Also provide an overall sentiment summary with:
+          - Aggregate polarity score: -1.0 (most negative) to 1.0 (most positive)
+          - Dominant emotion across the full text
+          - Sentiment trajectory (does sentiment shift through the text?)
+          - Notable contradictions or mixed signals
+
+          Be precise. Cite the exact phrases that drive each sentiment classification.
+        expectedOutput: "SentimentResult { segments: SegmentSentiment[], overall: OverallSentiment }"
+        validationRule: "Each segment has polarity, intensity, emotion, confidence. Overall score is in [-1.0, 1.0] range."
+        failureSignal: "Missing polarity for any segment, or overall score outside valid range"
+        recoveryAction: "Re-prompt with stricter format instructions. If second attempt fails, return overall-only sentiment."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, compile final sentiment report with aggregate metrics and timestamp.
+        whyThisMatters: Ensures sentiment findings are safe, properly formatted, and timestamped for traceability.
+        inputNeeded: "SentimentResult from step 3"
+        actionInstruction: "Call validateOutput(sentimentResult) from security.ts. Add timestamp via get_current_time. Format into final output."
+        promptToUse: null (mechanical step)
+        expectedOutput: "AnalysisResult { report: SentimentResult, sentimentScore: number, keyPoints: string[], metadata: object }"
+        validationRule: "CP3 passes, sentimentScore is a number in [-1.0, 1.0], keyPoints is non-empty array"
+        failureSignal: "CP3 flags output or sentimentScore is NaN"
+        recoveryAction: "Log CP3 warning, strip flagged content, deliver sanitized version with disclaimer"
+        handoffIfNeeded: null
+
+    mainOutput: "Sentiment analysis report with per-segment polarity, emotion, intensity, and aggregate sentiment score"
+    secondaryOutputs:
+      - "segment_sentiment_map: per-segment sentiment classifications"
+      - "sentiment_trajectory: how sentiment shifts through the text"
+      - "analysis_event_log: timestamps and step metrics"
+    DoD:
+      - "Every segment has polarity, intensity, emotion, and confidence scores"
+      - "Aggregate sentiment score computed and in valid range"
+      - "Key sentiment-driving phrases cited from the text"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Sentiment classifications are supported by cited phrases"
+      - "Mixed or contradictory sentiments are explicitly noted"
+      - "Confidence scores reflect genuine uncertainty"
+      - "No personal opinions injected into objective analysis"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "segment_coverage: 100% of segments have sentiment scores"
+      - "citation_rate: >= 90% of classifications cite key phrases"
+      - "response_time_p95: < 15s"
+    cadence: "Per-request (when sentiment analysis is requested)"
+    errorHandling: "If segmentation fails, analyze full text as single unit with reduced granularity"
+    fallbackRoute: "Return simple positive/negative/neutral classification with confidence score"
+    escalationRoute: "Report to orchestrator that sentiment analysis could not be completed"
+
+  - id: structure-analysis
+    title: Structure analysis
+    objective: Evaluate the organizational structure, logical flow, and compositional quality of the text
+    trigger: "analysisType === 'structure'"
+    preconditions:
+      - "Input text is non-empty and sanitized via CP1"
+      - "Text is long enough to have meaningful structure (min 100 words)"
+    inputs:
+      - "textContent: string — sanitized text to analyze"
+      - "contextHints: string[] — optional genre or format expectations"
+    steps:
+      - stepNumber: 1
+        title: Sanitize input text
+        desc: Apply CP1 security checkpoint to strip control characters and detect injection patterns.
+        whyThisMatters: Prevents prompt injection and ensures clean text for structural analysis.
+        inputNeeded: "Raw textContent string from the delegated task"
+        actionInstruction: "Call sanitizeInput(textContent) from security.ts. Validate returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: boolean, cleaned: string, reason?: string }"
+        validationRule: "cleaned.length > 0 and safe === true"
+        failureSignal: "safe === false or cleaned is empty"
+        recoveryAction: "Return error to orchestrator: 'Input text could not be sanitized for structure analysis.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Map text architecture
+        desc: Identify the high-level structure including sections, transitions, introduction, body, and conclusion patterns.
+        whyThisMatters: Understanding the macro-structure is prerequisite to evaluating its quality and effectiveness.
+        inputNeeded: "Sanitized text from step 1, contextHints for genre expectations"
+        actionInstruction: "Call llm.chat() with the architecture mapping prompt."
+        promptToUse: |
+          You are a text structure analyst. Map the architectural structure of this text.
+
+          Identify and describe:
+          1. **Opening/Introduction**: How the text begins, hook quality
+          2. **Section Breakdown**: List each logical section with topic and approximate proportion
+          3. **Transition Quality**: How sections connect to each other (smooth, abrupt, missing)
+          4. **Argument Flow**: The logical progression of ideas (linear, circular, branching)
+          5. **Closing/Conclusion**: How the text ends, resolution quality
+          6. **Structural Pattern**: The overall pattern (inverted pyramid, problem-solution, chronological, compare-contrast, other)
+
+          Genre/format context: {{contextHints}}
+
+          Text to analyze:
+          {{cleanedText}}
+        expectedOutput: "TextArchitecture { opening, sections[], transitions, argumentFlow, closing, pattern }"
+        validationRule: "All 6 structural elements identified and described with specific text references"
+        failureSignal: "Fewer than 4 elements identified or descriptions lack specificity"
+        recoveryAction: "Re-prompt with explicit instructions to reference specific text portions. If fails, provide simplified 3-part analysis."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Evaluate structural effectiveness
+        desc: Score the text structure on multiple dimensions and provide actionable improvement suggestions.
+        whyThisMatters: The evaluation with scoring and suggestions is the primary value — raw mapping alone is insufficient.
+        inputNeeded: "TextArchitecture from step 2, original text, contextHints"
+        actionInstruction: "Call llm.chat() with the structural evaluation prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst evaluating text structure effectiveness.
+
+          Given the structural map:
+          {{textArchitecture}}
+
+          Score each dimension 1-10 with justification:
+          1. **Organization**: Is the structure logical for this type of text?
+          2. **Flow**: Do ideas progress naturally? Are transitions effective?
+          3. **Completeness**: Are expected structural elements present?
+          4. **Balance**: Are sections proportioned appropriately?
+          5. **Accessibility**: Is the structure easy for the target audience to follow?
+
+          For each dimension scoring below 7, provide a specific, actionable improvement suggestion.
+
+          Provide an overall structural quality score (1-10) with a 2-sentence summary.
+        expectedOutput: "StructureEvaluation { dimensions: DimensionScore[5], overallScore: number, improvements: string[] }"
+        validationRule: "All 5 dimensions scored 1-10 with justification, overall score is average of dimensions"
+        failureSignal: "Missing dimension scores or scores outside 1-10 range"
+        recoveryAction: "Re-prompt for missing dimensions. If fails, compute available scores and note gaps."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, compile final structure report with scores and improvement suggestions.
+        whyThisMatters: Ensures the structural analysis is safe and properly formatted before delivery.
+        inputNeeded: "TextArchitecture from step 2, StructureEvaluation from step 3"
+        actionInstruction: "Call validateOutput(evaluation) from security.ts. Add timestamp via get_current_time. Format final output."
+        promptToUse: null (mechanical step)
+        expectedOutput: "AnalysisResult { report: { architecture, evaluation }, keyPoints: string[], metadata: object }"
+        validationRule: "CP3 passes, all scores present, improvement suggestions are actionable"
+        failureSignal: "CP3 flags output or formatting fails"
+        recoveryAction: "Log CP3 warning, strip flagged content, deliver sanitized version"
+        handoffIfNeeded: null
+
+    mainOutput: "Structural analysis report with architecture map, 5-dimension scoring, and actionable improvement suggestions"
+    secondaryOutputs:
+      - "text_architecture_map: section breakdown and flow diagram"
+      - "dimension_scores: individual and overall structural quality scores"
+      - "improvement_suggestions: prioritized list of structural fixes"
+    DoD:
+      - "Architecture map with all 6 structural elements identified"
+      - "All 5 dimensions scored with justification"
+      - "Improvement suggestions provided for low-scoring dimensions"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "Scores are consistent with the justifications provided"
+      - "Improvement suggestions are specific and actionable"
+      - "Analysis references specific text passages"
+      - "No subjective opinions presented as objective facts"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "dimension_coverage: all 5 dimensions scored"
+      - "improvement_specificity: each suggestion references a specific section"
+      - "response_time_p95: < 18s"
+    cadence: "Per-request (when structure analysis is requested)"
+    errorHandling: "If text is too short for meaningful structure analysis, return simplified assessment with note"
+    fallbackRoute: "Return basic 3-part assessment (intro/body/conclusion) with overall score"
+    escalationRoute: "Report to orchestrator that structural analysis requires more context"
+
+  - id: key-points-extraction
+    title: Key points extraction
+    objective: Extract, rank, and summarize the most important points from the text with supporting evidence
+    trigger: "analysisType === 'key-points'"
+    preconditions:
+      - "Input text is non-empty and sanitized via CP1"
+      - "Text contains substantive content with identifiable claims or points"
+    inputs:
+      - "textContent: string — sanitized text to analyze"
+      - "contextHints: string[] — optional priority topics or audience context"
+    steps:
+      - stepNumber: 1
+        title: Sanitize input text
+        desc: Apply CP1 security checkpoint to strip control characters and detect injection patterns.
+        whyThisMatters: Prevents prompt injection and ensures clean text for key point extraction.
+        inputNeeded: "Raw textContent string from the delegated task"
+        actionInstruction: "Call sanitizeInput(textContent) from security.ts. Validate returned { safe, cleaned, reason }."
+        promptToUse: null (mechanical step)
+        expectedOutput: "Object { safe: boolean, cleaned: string, reason?: string }"
+        validationRule: "cleaned.length > 0 and safe === true"
+        failureSignal: "safe === false or cleaned is empty"
+        recoveryAction: "Return error to orchestrator: 'Input text could not be sanitized for key points extraction.'"
+        handoffIfNeeded: null
+
+      - stepNumber: 2
+        title: Extract candidate points
+        desc: Identify all substantive claims, arguments, findings, and conclusions in the text.
+        whyThisMatters: Comprehensive extraction ensures no important point is missed before the ranking step.
+        inputNeeded: "Sanitized text from step 1, contextHints for priority topics"
+        actionInstruction: "Call llm.chat() with the extraction prompt."
+        promptToUse: |
+          You are a key point extraction specialist. Identify ALL substantive points in this text.
+
+          A "key point" is a claim, argument, finding, conclusion, or significant fact.
+
+          For each point extracted, provide:
+          1. **Point**: One-sentence summary of the point
+          2. **Type**: claim, argument, finding, conclusion, fact, recommendation
+          3. **Supporting evidence**: Direct quote or paraphrase from the text
+          4. **Location**: Where in the text this appears (beginning, middle, end)
+
+          Priority topics (if any): {{contextHints}}
+
+          Text to analyze:
+          {{cleanedText}}
+
+          Extract comprehensively — it is better to over-extract than miss an important point.
+        expectedOutput: "CandidatePoint[] — array of { point, type, evidence, location } objects"
+        validationRule: "At least 3 candidate points extracted, each with evidence from the text"
+        failureSignal: "Fewer than 2 points extracted or points lack supporting evidence"
+        recoveryAction: "Re-prompt with instruction to look for implicit points and assumptions. If fails, return top-level summary only."
+        handoffIfNeeded: null
+
+      - stepNumber: 3
+        title: Rank and prioritize points
+        desc: Score each candidate point by importance, novelty, and actionability, then rank and deduplicate.
+        whyThisMatters: Ranking transforms a raw list into a prioritized deliverable — the key differentiator of this workflow.
+        inputNeeded: "CandidatePoint[] from step 2, contextHints for relevance calibration"
+        actionInstruction: "Call llm.chat() with the ranking prompt using CP2-secured system prompt."
+        promptToUse: |
+          You are the Pristino Analyst ranking extracted key points.
+
+          Candidate points:
+          {{candidatePoints}}
+
+          For each point, score these dimensions (1-10):
+          1. **Importance**: How central is this to the text's message?
+          2. **Novelty**: How surprising or non-obvious is this point?
+          3. **Actionability**: How directly can someone act on this point?
+
+          Then:
+          - Remove duplicates (merge similar points, keep the stronger formulation)
+          - Compute a composite score: (Importance * 0.5) + (Novelty * 0.3) + (Actionability * 0.2)
+          - Rank from highest to lowest composite score
+          - Return the top 5-10 key points with their scores and evidence
+
+          Context for relevance: {{contextHints}}
+        expectedOutput: "RankedKeyPoints { points: RankedPoint[], totalExtracted: number, duplicatesRemoved: number }"
+        validationRule: "Points are sorted by composite score descending, scores are in [1.0, 10.0] range, top 5 minimum"
+        failureSignal: "Points not sorted, scores outside range, or fewer than 3 ranked points"
+        recoveryAction: "Sort manually by importance only. If extraction was too sparse, return all points without ranking."
+        handoffIfNeeded: null
+
+      - stepNumber: 4
+        title: Validate and format output
+        desc: Apply CP3 validation, format ranked key points into final deliverable with metadata.
+        whyThisMatters: Ensures key points are safe, properly formatted, and traceable before delivery.
+        inputNeeded: "RankedKeyPoints from step 3"
+        actionInstruction: "Call validateOutput(rankedPoints) from security.ts. Add timestamp via get_current_time. Compile final output."
+        promptToUse: null (mechanical step)
+        expectedOutput: "AnalysisResult { report: RankedKeyPoints, keyPoints: string[], metadata: { timestamp, totalExtracted, topCount } }"
+        validationRule: "CP3 passes, keyPoints array has 5-10 entries, metadata is complete"
+        failureSignal: "CP3 flags output or keyPoints array is empty"
+        recoveryAction: "Log CP3 warning, strip flagged content, deliver available points with disclaimer"
+        handoffIfNeeded: null
+
+    mainOutput: "Ranked list of 5-10 key points with importance scores, evidence citations, and composite ranking"
+    secondaryOutputs:
+      - "full_extraction_list: all candidate points before ranking"
+      - "scoring_breakdown: per-point importance, novelty, actionability scores"
+      - "deduplication_log: which points were merged and why"
+    DoD:
+      - "At least 5 key points extracted and ranked"
+      - "Each point has evidence citation from the original text"
+      - "Points ranked by composite score with transparent methodology"
+      - "CP3 executed on final output"
+    qaChecklist:
+      - "No fabricated points — all traceable to the original text"
+      - "Ranking methodology is transparent and reproducible"
+      - "Top points genuinely represent the text's most important content"
+      - "Evidence citations are accurate and verifiable"
+    raci:
+      responsible: analyst
+      accountable: pristino-orchestrator
+      consulted: []
+      informed: logger
+    kpis:
+      - "extraction_coverage: >= 90% of substantive points identified"
+      - "ranking_accuracy: top 3 points match expert judgment"
+      - "response_time_p95: < 15s"
+    cadence: "Per-request (when key points extraction is requested)"
+    errorHandling: "If text lacks substantive points (e.g., purely descriptive), note this and extract descriptive highlights instead"
+    fallbackRoute: "Return unranked list of extracted points with type labels"
+    escalationRoute: "Report to orchestrator if text content is outside analyst scope"

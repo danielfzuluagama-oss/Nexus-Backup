@@ -1,0 +1,351 @@
+/**
+  @license Copyleft
+  @copyright MetodologIA
+  @author Javier Montaño
+  @technology Antigravity | GoogleAI Studio | Gemini 3 Pro | Gemini 3 Flash
+  @poweredBy Pristino Agent
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME LANDING PAGE (Repo: index.html)
+   Specific Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Segment Switcher (Header UI - Home Specific) */
+.segment-switcher {
+    display: none;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+}
+
+@media (min-width: 1024px) {
+    .segment-switcher {
+        display: flex;
+    }
+}
+
+.segment-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.segment-btn:hover {
+    background: var(--brand-gold-glow);
+    color: var(--brand-gold);
+}
+
+.segment-btn.active {
+    background: hsla(var(--brand-gold-hsl), 0.15);
+    color: var(--brand-gold);
+    box-shadow: inset 0 0 0 1px hsla(var(--brand-gold-hsl), 0.3);
+}
+
+.segment-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.segment-btn:hover .segment-icon,
+.segment-btn.active .segment-icon {
+    opacity: 1;
+}
+
+
+
+/* Hero Layout */
+.hero-layout { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; }
+@media (min-width: 1024px) { .hero-layout { grid-template-columns: 5fr 7fr; } }
+.hero-visual-container { position: relative; display: flex; align-items: center; justify-content: center; min-height: 300px; }
+
+
+
+/* Floating Animations */
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes float-gentle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.animate-float-gentle { animation: float-gentle 2s ease-in-out infinite; }
+.animate-float { animation: float 6s ease-in-out infinite; }
+
+/* Micro-interactions */
+.section-reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+.section-reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Slides Layout */
+.slide {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Glass Enhanced (Specific to Index Hero) */
+.glass-enhanced {
+    background: rgba(15, 23, 42, 0.5);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GOLDEN MASTERY ICOSAHEDRON (3D Hero Element)
+   Extracted from Dossier v2
+   ═══════════════════════════════════════════════════════════════ */
+.mastery-icosahedron-container {
+    perspective: 1000px;
+    width: 200px;
+    height: 200px;
+    position: relative;
+    z-index: 0;
+}
+.mastery-icosahedron-shape {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotate-mastery 20s linear infinite;
+}
+.mastery-face {
+    position: absolute;
+    width: 80px;
+    height: 69.28px;
+    left: 50%;
+    top: 50%;
+    margin-left: -40px;
+    margin-top: -34.64px;
+    background: rgba(255, 215, 0, 0.05); /* Very subtle gold */
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    transform-origin: 50% 50% 0;
+    backface-visibility: visible;
+    box-shadow: inset 0 0 15px var(--brand-gold-glow);
+    transition: all 0.3s ease;
+}
+.mastery-face:hover {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.8);
+    box-shadow: 0 0 20px var(--brand-gold-glow);
+}
+
+/* Top Cap (1-5) */
+.m-face-1 { transform: rotateY(0deg) rotateX(52.62deg) translateZ(60px); }
+.m-face-2 { transform: rotateY(72deg) rotateX(52.62deg) translateZ(60px); }
+.m-face-3 { transform: rotateY(144deg) rotateX(52.62deg) translateZ(60px); }
+.m-face-4 { transform: rotateY(216deg) rotateX(52.62deg) translateZ(60px); }
+.m-face-5 { transform: rotateY(288deg) rotateX(52.62deg) translateZ(60px); }
+
+/* Middle Upper (6-10) - Point Down */
+.m-face-6 { transform: rotateY(36deg) rotateX(10.81deg) translateZ(60px) rotateZ(180deg); }
+.m-face-7 { transform: rotateY(108deg) rotateX(10.81deg) translateZ(60px) rotateZ(180deg); }
+.m-face-8 { transform: rotateY(180deg) rotateX(10.81deg) translateZ(60px) rotateZ(180deg); }
+.m-face-9 { transform: rotateY(252deg) rotateX(10.81deg) translateZ(60px) rotateZ(180deg); }
+.m-face-10 { transform: rotateY(324deg) rotateX(10.81deg) translateZ(60px) rotateZ(180deg); }
+
+/* Middle Lower (11-15) - Point Up */
+.m-face-11 { transform: rotateY(0deg) rotateX(-10.81deg) translateZ(60px); }
+.m-face-12 { transform: rotateY(72deg) rotateX(-10.81deg) translateZ(60px); }
+.m-face-13 { transform: rotateY(144deg) rotateX(-10.81deg) translateZ(60px); }
+.m-face-14 { transform: rotateY(216deg) rotateX(-10.81deg) translateZ(60px); }
+.m-face-15 { transform: rotateY(288deg) rotateX(-10.81deg) translateZ(60px); }
+
+/* Bottom Cap (16-20) - Point Down */
+.m-face-16 { transform: rotateY(36deg) rotateX(-52.62deg) translateZ(60px) rotateZ(180deg); }
+.m-face-17 { transform: rotateY(108deg) rotateX(-52.62deg) translateZ(60px) rotateZ(180deg); }
+.m-face-18 { transform: rotateY(180deg) rotateX(-52.62deg) translateZ(60px) rotateZ(180deg); }
+.m-face-19 { transform: rotateY(252deg) rotateX(-52.62deg) translateZ(60px) rotateZ(180deg); }
+.m-face-20 { transform: rotateY(324deg) rotateX(-52.62deg) translateZ(60px) rotateZ(180deg); }
+
+@keyframes rotate-mastery {
+    0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMMAND CENTER HERO (Disruptive Digital Aesthetic)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Hero Grid Overlay (Digital Map Pattern) */
+.hero-grid-overlay {
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+}
+
+/* KPI Glassmorphism Cards */
+.kpi-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate; /* Create new stacking context */
+}
+
+/* Ensure content stays above pseudo-elements */
+.kpi-card > * {
+    position: relative;
+    z-index: 2;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,215,0,0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* New GPU-Accelerated Border/Glow Layer */
+.kpi-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid var(--brand-gold-glow);
+    box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.4), 0 0 20px var(--brand-gold-glow);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px) scale(1.02);
+}
+
+.kpi-card:hover::before,
+.kpi-card:hover::after {
+    opacity: 1;
+}
+
+/* KPI Value (Large Number) */
+.kpi-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* KPI Label */
+.kpi-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.25rem;
+}
+
+/* Data Pulse Animation */
+@keyframes data-pulse {
+    0%, 100% { 
+        opacity: 0.5; 
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+    }
+    50% { 
+        opacity: 1; 
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.35);
+    }
+}
+
+.animate-data-pulse {
+    animation: data-pulse 3s ease-in-out infinite;
+}
+
+/* Counter Up Animation (for numbers) */
+@keyframes counter-glow {
+    0%, 100% { text-shadow: 0 0 10px var(--brand-gold-glow); }
+    50% { text-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+}
+
+.animate-counter-glow {
+    animation: counter-glow 2s ease-in-out infinite;
+}
+
+/* Staggered Reveal for KPI Cards */
+.kpi-card:nth-child(1) { animation-delay: 0.1s; }
+.kpi-card:nth-child(2) { animation-delay: 0.25s; }
+.kpi-card:nth-child(3) { animation-delay: 0.4s; }
+
+/* Command Center Hub Glow */
+.command-hub-glow {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    animation: hub-pulse 4s ease-in-out infinite;
+}
+
+@keyframes hub-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.95); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Data Stream SVG Lines */
+.data-stream-line {
+    stroke: var(--brand-gold-glow);
+    stroke-width: 1;
+    fill: none;
+    stroke-dasharray: 8 4;
+    animation: dash-flow 2s linear infinite;
+}
+
+@keyframes dash-flow {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -24; }
+}
+
+/* Orbital Ring Variants */
+.data-stream-orbit-outer {
+    stroke-dasharray: 4 8;
+}
+
+.data-stream-orbit-inner {
+    stroke-dasharray: 2 6;
+    animation-direction: reverse;
+}
+
+/* Responsive: Reduce motion on mobile */
+@media (prefers-reduced-motion: reduce) {
+    .animate-data-pulse,
+    .animate-counter-glow,
+    .command-hub-glow,
+    .data-stream-line {
+        animation: none;
+    }
+}
+
+/* Mobile KPI Stack */
+@media (max-width: 1023px) {
+    .kpi-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUNBOOK COMERCIAL UNIFICADO - MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1: #07101f;
+            --bg-2: #102346;
+            --surface: #f7f4ec;
+            --accent: #00cde8;
+            --gold: #ffd700;
+            --green: #2ca56f;
+            --red: #dc5f5f;
+            --font-head: "Poppins", sans-serif;
+            --font-body: "Montserrat", sans-serif;
+            --text-light: #e0e0e0;
+            --text-dark: #07101f;
+            --border-color: #1a3a52;
+            --hover-bg: #1a3a52;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-1);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* THEME TOGGLE */
+        body.light-mode {
+            background-color: #ffffff;
+            color: var(--text-dark);
+            --text-light: #333;
+            --bg-2: #f5f5f5;
+            --border-color: #e0e0e0;
+        }
+
+        body.light-mode .header,
+        body.light-mode .card,
+        body.light-mode .phase-card,
+        body.light-mode .sidebar,
+        body.light-mode .tab-content {
+            background-color: #f9f9f9;
+            color: var(--text-dark);
+        }
+
+        body.light-mode .tab-button.active {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            color: white;
+        }
+
+        /* HEADER / HERO */
+        .header {
+            background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-1) 100%);
+            border-bottom: 2px solid var(--accent);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 205, 232, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--surface), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .header .quote {
+            font-style: italic;
+            color: var(--gold);
+            margin: 20px 0;
+            font-size: 1rem;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: var(--font-head);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        /* BUTTON FILTERS */
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-family: var(--font-head);
+            font-weight: 600;
+            border: 2px solid var(--accent);
+            background-color: transparent;
+            color: var(--accent);
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--accent);
+            color: var(--bg-1);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            color: var(--bg-1);
+            border-color: var(--gold);
+        }
+
+        /* TAB NAVIGATION */
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin: 40px 20px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-1);
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        body.light-mode .tab-navigation {
+            background-color: #ffffff;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            font-family: var(--font-head);
+            font-weight: 600;
+            border: none;
+            background-color: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-button:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            color: var(--bg-1);
+        }
+
+        /* SEARCH BAR */
+        .search-container {
+            margin: 30px 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px 20px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            background-color: var(--bg-2);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 205, 232, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: rgba(224, 224, 224, 0.5);
+        }
+
+        body.light-mode .search-input {
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+        }
+
+        /* PHASE CARDS */
+        .phases-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .phase-card {
+            background-color: var(--bg-2);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .phase-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 205, 232, 0.2);
+        }
+
+        .phase-header {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
+            color: var(--bg-1);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+        }
+
+        .phase-header:hover {
+            opacity: 0.9;
+        }
+
+        .phase-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .phase-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .phase-body {
+            padding: 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .phase-body.open {
+            max-height: 3000px;
+        }
+
+        /* CONTENT SECTIONS */
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 20px 0 15px;
+            border-left: 4px solid var(--gold);
+            padding-left: 15px;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background-color: var(--bg-1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .checklist-item input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin-right: 15px;
+            accent-color: var(--accent);
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .checklist-item.checked label {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        /* DECISION TREE / FLOWCHART */
+        .decision-tree {
+            background-color: var(--bg-1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        /* NODE COLORS */
+        .node-advance {
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .node-stop {
+            color: var(--red);
+            font-weight: bold;
+        }
+
+        .node-decision {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        .node-action {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* ACCORDION */
+        .accordion {
+            margin: 20px 0;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background-color: var(--bg-1);
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--accent);
+        }
+
+        .accordion-header:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .accordion-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            padding: 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content.open {
+            max-height: 2000px;
+        }
+
+        /* RITUAL SECTION */
+        .ritual {
+            background-color: var(--bg-1);
+            border-left: 4px solid var(--green);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .ritual-title {
+            font-weight: 700;
+            color: var(--green);
+            font-family: var(--font-head);
+            margin-bottom: 10px;
+        }
+
+        .ritual-meta {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .ritual-steps {
+            margin-top: 10px;
+        }
+
+        .ritual-step {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        /* METRICS TABLE */
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .metrics-table th {
+            background-color: var(--accent);
+            color: var(--bg-1);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .metrics-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metrics-table tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 150px;
+            width: 300px;
+            background-color: var(--bg-2);
+            border-left: 2px solid var(--accent);
+            border-radius: 12px 0 0 12px;
+            padding: 20px;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+            z-index: 99;
+            display: none;
+        }
+
+        .sidebar.show {
+            display: block;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-head);
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: var(--bg-1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--hover-bg);
+            transform: translateX(-5px);
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            right: 20px;
+            top: 150px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent);
+            color: var(--bg-1);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 98;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar.show ~ .sidebar-toggle {
+            right: 320px;
+        }
+
+        /* THEME TOGGLE */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            color: var(--bg-1);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 97;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 205, 232, 0.3);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 205, 232, 0.5);
+        }
+
+        /* CARDS */
+        .card {
+            background-color: var(--bg-2);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 205, 232, 0.1);
+        }
+
+        .card-title {
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        /* TAB CONTENT */
+        .tab-content {
+            background-color: var(--bg-2);
+            padding: 30px 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* UTILITY */
+        .text-small {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .text-muted {
+            opacity: 0.7;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .stats-row {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .sidebar {
+                width: 250px;
+                top: 100px;
+            }
+
+            .sidebar-toggle {
+                top: 100px;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .filter-btn {
+                width: 100%;
+            }
+
+            .tab-navigation {
+                margin: 20px 0;
+                padding: 15px 10px;
+            }
+
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .phase-header {
+                font-size: 1rem;
+            }
+
+            .metrics-table {
+                font-size: 0.85rem;
+            }
+
+            .metrics-table th,
+            .metrics-table td {
+                padding: 8px;
+            }
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            .header,
+            .filter-buttons,
+            .tab-navigation,
+            .search-container,
+            .sidebar,
+            .sidebar-toggle,
+            .theme-toggle {
+                display: none;
+            }
+
+            .phase-body {
+                max-height: none;
+            }
+
+            .tab-content {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER / HERO -->
+    <header class="header">
+        <h1>RUNBOOK COMERCIAL UNIFICADO</h1>
+        <div class="subtitle">MetodologIA · Gobierno Operativo · v1.0</div>
+        <div class="quote">"Este runbook es tu copiloto operativo. Cuando no sepas qué hacer, abre esto."</div>
+
+        <div class="stats-row">
+            <div class="stat">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Verticales</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">13</div>
+                <div class="stat-label">SOPs</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">39</div>
+                <div class="stat-label">Rituales</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">34</div>
+                <div class="stat-label">Assets</div>
+            </div>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">Ver Todo</button>
+            <button class="filter-btn" data-filter="b2b">B2B</button>
+            <button class="filter-btn" data-filter="b2c">B2C</button>
+            <button class="filter-btn" data-filter="gtm">GTM/Partners</button>
+        </div>
+    </header>
+
+    <!-- QUICK SEARCH -->
+    <div class="search-container container">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Busca contenido... (ritual, checklist, decision tree, etc)">
+    </div>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tab-navigation container">
+        <button class="tab-button active" data-tab="tab-home">Inicio</button>
+        <button class="tab-button" data-tab="tab-b2b">B2B</button>
+        <button class="tab-button" data-tab="tab-b2c">B2C</button>
+        <button class="tab-button" data-tab="tab-gtm">GTM/Partners</button>
+        <button class="tab-button" data-tab="tab-emergency">Emergencias</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+        <!-- HOME TAB -->
+        <div id="tab-home" class="tab-content active">
+            <div class="card">
+                <div class="card-title">Cómo Usar Este Runbook</div>
+                <ol style="margin: 15px 0; margin-left: 20px;">
+                    <li><strong>Identifica tu SITUACIÓN</strong> → ¿Qué estás haciendo ahora mismo?</li>
+                    <li><strong>Ve a la VERTICAL correcta</strong> → B2B, B2C, o Aliados</li>
+                    <li><strong>Sigue el PLAYBOOK</strong> → De tu fase actual (Scouting, Discovery, Structuring, Success)</li>
+                    <li><strong>Usa los DECISION TREES</strong> → Para saber exactamente qué hacer</li>
+                    <li><strong>Consulta RAG Files</strong> → Si necesitas detalle profundo</li>
+                    <li><strong>Checklists operativas</strong> → Para no olvidar nada</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Principios Clave</div>
+                <ul style="margin: 15px 0; margin-left: 20px;">
+                    <li><strong>Sincrónico > Asincrónico</strong> → Prefiere reuniones en vivo</li>
+                    <li><strong>Señales de intención > Spray and pray</strong> → Detecta dolor antes de vender</li>
+                    <li><strong>Green lights explícitos</strong> → No avances sin confirmación de stakeholders</li>
+                    <li><strong>Operacionalidad > Perfección</strong> → Completa el ciclo, itera después</li>
+                    <li><strong>Documentación viva</strong> → Actualiza el CRM en tiempo real</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Mapa Visual del Ecosistema Comercial</div>
+                <div style="margin: 15px 0; font-size: 0.9rem;">
+                    <p style="margin: 10px 0;"><strong>EMPRESAS B2B</strong> - Venta Consulting (ACV: $50k-2M)</p>
+                    <p style="margin: 10px 0;"><strong>PERSONAS B2C</strong> - Formación Élite (ACV: $2k-20k)</p>
+                    <p style="margin: 10px 0;"><strong>ALIADOS GTM</strong> - Ecosistema Partners (Revenue Share: 20-30%)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- B2B TAB -->
+        <div id="tab-b2b" class="tab-content">
+            <div class="card">
+                <div class="card-title">Overview B2B</div>
+                <p><strong>Objetivo:</strong> Cerrar contratos de $50k-2M con empresas que necesitan transformación operativa.</p>
+                <p style="margin-top: 10px;"><strong>Ciclo de venta:</strong> 8-14 semanas (Scouting 1-2 + Discovery 2-4 + Structuring 2-3 + Cierre 2-5)</p>
+                <p style="margin-top: 10px;"><strong>Roles clave:</strong> SDR, AE, Pre-Sales Engineer, CSM, COO (aprobaciones)</p>
+                <p style="margin-top: 10px;"><strong>Spin:</strong> "Transformación operativa demostrada. ROI en 9-18 meses."</p>
+            </div>
+
+            <div class="phases-container">
+                <!-- SCOUTING PHASE -->
+                <div class="phase-card" data-vertical="b2b">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 1.1: SCOUTING B2B</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Nuevo target account identificado O señal de intención detectada</p>
+                        <p><strong>Duración estimada:</strong> 1-2 semanas</p>
+                        <p><strong>Responsable:</strong> SDR / AE</p>
+                        <p><strong>Objetivo:</strong> Mapear el stakeholder landscape, validar ICP fit, y agendar Discovery con un dolor articulado.</p>
+
+                        <div class="section-title">Decision Tree - Scouting B2B</div>
+                        <div class="decision-tree">┌─────────────────────────────────────────────────────────────────────┐
+│                      INICIO SCOUTING B2B                            │
+│         ¿Nuevo target account identificado?                         │
+└────────────────────────────┬────────────────────────────────────────┘
+                             ↓
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PASO 1: VALIDAR ICP FIT                          │
+│  ✓ Industria en lista de target                                    │
+│  ✓ Revenue: $10M-$500M annual revenue (mín)                       │
+│  ✓ Empleados: 50-5000 headcount                                  │
+│  ✓ Geografía: LATAM + España (preferred)                         │
+│  ✓ Pain: Operaciones manuales, scaling, compliance                │
+└────────────────────────────┬────────────────────────────────────────┘
+                             ↓
+                    <span class="node-decision">¿PASA ICP FIT?</span>
+                    /                    \
+        <span class="node-advance">SÍ</span>                      <span class="node-stop">NO</span>
+                  ↓                       ↓
+           [CONTINUAR]         [DESCARTAR o REFERIR]
+                  ↓
+┌─────────────────────────────────────────────────────────────────────┐
+│        PASO 2: MAPEAR STAKEHOLDERS (Mínimo 3 roles)                 │
+│  ↳ Económico (EB): CFO, Tesorero                                   │
+│  ↳ Técnico (TS): CTO, VP Engineering                               │
+│  ↳ Uso (UC): COO, VP Operations                                    │
+│  ↳ Sponsor Ejecutivo (bonus): CEO, VP Operations                   │
+└────────────────────────────┬────────────────────────────────────────┘
+                             ↓
+        <span class="node-decision">¿MAPEADOS 3+ STAKEHOLDERS?</span>
+                    /                    \
+        <span class="node-advance">SÍ</span>                      <span class="node-stop">NO</span>
+                  ↓                       ↓
+           [CONTINUAR]         [BUSCAR EN LINKEDIN]</div>
+
+                        <div class="section-title">Checklist Operativa: Scouting B2B</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-1">
+                                <label for="check-b2b-1">Target account en lista de ICP</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-2">
+                                <label for="check-b2b-2">Industria confirmada (SaaS/Fintech/Retail/etc)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-3">
+                                <label for="check-b2b-3">Revenue >= $10M verificado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-4">
+                                <label for="check-b2b-4">Headcount >= 50 verificado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-5">
+                                <label for="check-b2b-5">EB identificado (CFO/Tesorero) + Email validado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-6">
+                                <label for="check-b2b-6">TS identificado (CTO/VP Eng) + Email validado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-7">
+                                <label for="check-b2b-7">UC identificado (COO/VP Ops) + Email validado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-8">
+                                <label for="check-b2b-8">Crunchbase profile reviewed</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-9">
+                                <label for="check-b2b-9">LinkedIn: Company page + recent news reviewed</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-10">
+                                <label for="check-b2b-10">Pain statement draft creado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-11">
+                                <label for="check-b2b-11">Hook personalizado creado y validado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-12">
+                                <label for="check-b2b-12">Email personalizado enviado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-13">
+                                <label for="check-b2b-13">Discovery agendado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2b-14">
+                                <label for="check-b2b-14">BANT score completado (>= 70)</label>
+                            </li>
+                        </ul>
+
+                        <div class="section-title">Rituales Operativos</div>
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion(this)">
+                                    Ritual 1: Mapear Stakeholders
+                                    <span class="accordion-toggle">▼</span>
+                                </div>
+                                <div class="accordion-content">
+                                    <p><strong>Cuándo:</strong> Antes de enriquecer con IA</p>
+                                    <p><strong>Duración:</strong> 30-45 min</p>
+                                    <p><strong>Output:</strong> CRM actualizado con mapa de stakeholders</p>
+                                    <div style="margin-top: 15px;">
+                                        <strong>Steps:</strong>
+                                        <ol style="margin-left: 20px;">
+                                            <li>Abre Crunchbase / LinkedIn Company page</li>
+                                            <li>Identifica EB (CFO, Finance area) - mínimo 2 opciones</li>
+                                            <li>Identifica TS (CTO, Engineering) - mínimo 2 opciones</li>
+                                            <li>Identifica UC (COO, Operations) - mínimo 2 opciones</li>
+                                            <li>Para cada uno: Screenshot de LinkedIn, email, teléfono</li>
+                                            <li>Registra en CRM con "Account-Stakeholder" link</li>
+                                            <li>Flag sponsor ejecutivo si está disponible</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion(this)">
+                                    Ritual 2: Enriquecer con IA
+                                    <span class="accordion-toggle">▼</span>
+                                </div>
+                                <div class="accordion-content">
+                                    <p><strong>Cuándo:</strong> Después de mapear stakeholders</p>
+                                    <p><strong>Duración:</strong> 1-2 horas</p>
+                                    <p><strong>Output:</strong> Dossier compilado</p>
+                                    <div style="margin-top: 15px;">
+                                        <strong>Steps:</strong>
+                                        <ol style="margin-left: 20px;">
+                                            <li>Busca en Google News: [Company] operations | funding | expansion</li>
+                                            <li>Busca en Crunchbase: últimas 3 rondas, cambios C-suite</li>
+                                            <li>Busca en LinkedIn: job postings recientes</li>
+                                            <li>Revisa financial reports (si public)</li>
+                                            <li>Identifica 2-3 pain points específicos</li>
+                                            <li>Calcula ballpark ROI</li>
+                                            <li>Identifica win theme (expansion, cost, speed, compliance, risk)</li>
+                                            <li>Crea documento: "Company Name - Intelligence Brief"</li>
+                                            <li>Revisa con AE/Manager (5 min)</li>
+                                            <li>Archivo en Confluence y link en CRM</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion(this)">
+                                    Ritual 3: Agendar Discovery
+                                    <span class="accordion-toggle">▼</span>
+                                </div>
+                                <div class="accordion-content">
+                                    <p><strong>Cuándo:</strong> Después de personalizar hook</p>
+                                    <p><strong>Duración:</strong> 20-30 min por outreach</p>
+                                    <p><strong>Output:</strong> Zoom meeting + CRM updated</p>
+                                    <div style="margin-top: 15px;">
+                                        <strong>Email Template:</strong>
+                                        <div style="background-color: var(--bg-1); padding: 15px; border-radius: 6px; margin-top: 10px; font-family: monospace; font-size: 0.9rem;">
+Subject: [Observación específica] - [Company]
+
+Hi [Name],
+
+[Hook - 2 líneas max]
+
+¿Vale la pena una conversación rápida (20 min) para explorar?
+
+Disponible [3 opciones de horarios próxima semana]
+
+Cheers,
+[Tu nombre]
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion(this)">
+                                    Ritual 4: Calificar Oportunidad (BANT Score)
+                                    <span class="accordion-toggle">▼</span>
+                                </div>
+                                <div class="accordion-content">
+                                    <p><strong>Cuándo:</strong> Después de agendar</p>
+                                    <p><strong>Duración:</strong> 15-20 min</p>
+                                    <p><strong>Output:</strong> Score registrado en CRM, tier asignado</p>
+                                    <div style="margin-top: 15px;">
+                                        <p><strong>Criterios (0-20 puntos cada uno):</strong></p>
+                                        <ol style="margin-left: 20px;">
+                                            <li><strong>BUDGET:</strong> ¿Presupuesto asignado? (20=SÍ confirmado, 0=NO)</li>
+                                            <li><strong>TIMELINE:</strong> ¿Cuándo deciden? (20=Este mes, 0=No claro)</li>
+                                            <li><strong>AUTORIDAD:</strong> ¿Hay influenciador + aprobador? (20=Ambos mapeados, 0=NO)</li>
+                                            <li><strong>NECESIDAD:</strong> ¿Dolor > Status Quo? (20=Crítico, 0=NO claro)</li>
+                                            <li><strong>COMPETENCIA:</strong> ¿Somos opción viable? (20=Único vendor, 0=Ya decidieron otro)</li>
+                                        </ol>
+                                        <p style="margin-top: 15px;"><strong>Scoring:</strong></p>
+                                        <ul style="margin-left: 20px;">
+                                            <li>90-100 = TIER 1 (Prioridad máxima)</li>
+                                            <li>70-89 = TIER 2 (Trabajar, pero wait-and-see)</li>
+                                            <li>50-69 = TIER 3 (Nutrir, bajo priority)</li>
+                                            <li>&lt;50 = ARCHIVO</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DISCOVERY PHASE -->
+                <div class="phase-card" data-vertical="b2b">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 1.2: DISCOVERY B2B</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Reunión de exploración agendada</p>
+                        <p><strong>Duración estimada:</strong> 2-4 semanas</p>
+                        <p><strong>Responsable:</strong> AE / Pre-Sales Engineer</p>
+                        <p><strong>Objetivo:</strong> Validar que el pain es real, cuantificar impacto, diseñar solución preliminar, obtener green light para structuring.</p>
+
+                        <div class="section-title">Key Activities</div>
+                        <div class="card">
+                            <p><strong>Fase 0: PRE-CALL (24-48 horas antes de reunión)</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Elaborar Account Brief (2 páginas máx)</li>
+                                <li>Crear Anchor Statement (9:1 approach)</li>
+                                <li>Preparar Question Script (3 preguntas que duelen)</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <p><strong>Account Brief - Contenido</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>A. COMPANY OVERVIEW:</strong> Sector, tamaño, ubicaciones, últimas noticias</li>
+                                <li><strong>B. PAIN HYPOTHESIS:</strong> 2-3 painpoints presumibles, urgencia</li>
+                                <li><strong>C. POTENTIAL IMPACT:</strong> Rough numbers si solución funciona</li>
+                                <li><strong>D. RED FLAGS / CONCERNS:</strong> Competencia, problemas financieros</li>
+                                <li><strong>E. WIN STRATEGY:</strong> Cómo vencer, quién es champion, qué necesita escuchar cada uno</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">Pre-Call Prep Checklist</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-1">
+                                <label for="check-disco-1">Account Brief creado (2 pág máx)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-2">
+                                <label for="check-disco-2">Anchor Statement memorizado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-3">
+                                <label for="check-disco-3">3 preguntas que duelen preparadas</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-4">
+                                <label for="check-disco-4">Reunión confirmada (calendar invite + Zoom)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-5">
+                                <label for="check-disco-5">Agenda previa enviada a stakeholders</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-6">
+                                <label for="check-disco-6">Todos asistentes: EB, TS, UC confirmados</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-7">
+                                <label for="check-disco-7">Red flags / concerns documentados</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-disco-8">
+                                <label for="check-disco-8">Competitive intel revisada</label>
+                            </li>
+                        </ul>
+
+                        <div class="section-title">Durante la Discovery</div>
+                        <div class="card">
+                            <p><strong>Dinámica de Conversación (estructura 9:1):</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>90% escuchar (haz preguntas abiertas)</li>
+                                <li>10% hablar (valida hipótesis, aclara hechos)</li>
+                            </ul>
+                            <p style="margin-top: 15px;"><strong>Tus 3 Preguntas Clave:</strong></p>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Q1 (Exploración):</strong> "Cuéntame sobre cómo actualmente [process]. ¿Cuáles son los principales desafíos?"</li>
+                                <li><strong>Q2 (Impacto):</strong> "De esos desafíos, ¿cuál tiene el mayor impacto en [dinero/tiempo/riesgo]? ¿Cómo lo estás midiendo?"</li>
+                                <li><strong>Q3 (Urgencia):</strong> "¿Hay un timeframe dónde esto debe estar resuelto? ¿Qué pasaría si no?"</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STRUCTURING PHASE -->
+                <div class="phase-card" data-vertical="b2b">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 1.3: STRUCTURING B2B</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Pain validado, ROI cuantificado</p>
+                        <p><strong>Duración estimada:</strong> 2-3 semanas</p>
+                        <p><strong>Responsable:</strong> AE + Pre-Sales</p>
+                        <p><strong>Objetivo:</strong> Diseñar solución específica, obtener aprobación presupuestaria, cerrar acuerdo de términos.</p>
+
+                        <div class="section-title">Key Gates</div>
+                        <div class="card">
+                            <p><strong>Gate 1: Propuesta Técnica</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Alcance específico (qué incluimos, qué no)</li>
+                                <li>Timeline de implementación (fases)</li>
+                                <li>Equipo (quién es quién)</li>
+                                <li>Riesgos identificados + plan de mitigación</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <p><strong>Gate 2: Propuesta Económica</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Precio desglosado (professional services, licensing, travel, etc)</li>
+                                <li>ROI proyectado (basado en discovery)</li>
+                                <li>Opciones de pago (upfront, milestone-based, SaaS quarterly)</li>
+                                <li>Descuentos / incentivos aplicables</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <p><strong>Gate 3: Aprobación Legal / Procurement</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Review de MSA/SOW por su legal (si requerido)</li>
+                                <li>Sign-off de procurement authority</li>
+                                <li>Integración con procesos internos cliente</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">Structuring Checklist</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-1">
+                                <label for="check-struct-1">Propuesta técnica creada (scope, timeline, equipo, risks)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-2">
+                                <label for="check-struct-2">Propuesta económica creada (pricing, ROI, payment terms)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-3">
+                                <label for="check-struct-3">Ambas propuestas revisadas por manager/director</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-4">
+                                <label for="check-struct-4">Reunión de presentación agendada (EB + TS + UC)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-5">
+                                <label for="check-struct-5">Legal review completado (MSA/SOW)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-6">
+                                <label for="check-struct-6">Green light de EB (presupuesto + autoridad)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-7">
+                                <label for="check-struct-7">Green light de TS (solución técnica aceptable)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-8">
+                                <label for="check-struct-8">Green light de UC (impacto operacional validado)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-9">
+                                <label for="check-struct-9">Contrato firmado (eSignature o físico)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-struct-10">
+                                <label for="check-struct-10">Transición a Success/CSM iniciada</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SUCCESS PHASE -->
+                <div class="phase-card" data-vertical="b2b">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 1.4: SUCCESS B2B</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Contrato firmado</p>
+                        <p><strong>Duración estimada:</strong> Ongoing (primeros 90 días críticos)</p>
+                        <p><strong>Responsable:</strong> CSM + AE (revisión trimestral)</p>
+                        <p><strong>Objetivo:</strong> Entregar resultado prometido, generar referencias, identificar oportunidades de expansion.</p>
+
+                        <div class="section-title">First 90 Days</div>
+                        <div class="card">
+                            <ul style="margin-left: 20px;">
+                                <li><strong>Kickoff Meeting:</strong> Alineación de expectativas, timeline, equipo responsable</li>
+                                <li><strong>Weekly Sync:</strong> Proyecto + stakeholder alignment</li>
+                                <li><strong>Early Wins:</strong> Entrega rápida de valor (primeras 2-3 semanas)</li>
+                                <li><strong>Issue Management:</strong> Resolución rápida de blockers</li>
+                                <li><strong>Health Checks:</strong> Revisión de progreso vs plan</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">QBR (Quarterly Business Review)</div>
+                        <div class="card">
+                            <ul style="margin-left: 20px;">
+                                <li><strong>Revisión de resultados:</strong> ¿Cumplimos ROI prometido?</li>
+                                <li><strong>Identificar expansion opportunities:</strong> Nuevos pain points identificados</li>
+                                <li><strong>Obtener referencias:</strong> Case study / referrals</li>
+                                <li><strong>Renovación:</strong> Asegurar continuidad de contrato</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">Success Metrics</div>
+                        <table class="metrics-table">
+                            <thead>
+                                <tr>
+                                    <th>Métrica</th>
+                                    <th>Target</th>
+                                    <th>Medición</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Customer Health Score</td>
+                                    <td>Verde (>70)</td>
+                                    <td>Monthly</td>
+                                </tr>
+                                <tr>
+                                    <td>ROI Delivery</td>
+                                    <td>100%</td>
+                                    <td>Quarterly</td>
+                                </tr>
+                                <tr>
+                                    <td>NPS Score</td>
+                                    <td>50+</td>
+                                    <td>Quarterly</td>
+                                </tr>
+                                <tr>
+                                    <td>Expansion Opportunities</td>
+                                    <td>1-2</td>
+                                    <td>Per QBR</td>
+                                </tr>
+                                <tr>
+                                    <td>References / Case Studies</td>
+                                    <td>1-2</td>
+                                    <td>Per year</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- B2C TAB -->
+        <div id="tab-b2c" class="tab-content">
+            <div class="card">
+                <div class="card-title">Overview B2C</div>
+                <p><strong>Objetivo:</strong> Enrollar formación élite en programa transformacional para líderes y emprendedores.</p>
+                <p style="margin-top: 10px;"><strong>Ciclo de conversión:</strong> 4-12 semanas (Scouting 1-2 + Discovery 1-2 + Structuring+Nurturing 4-12 + Conversión)</p>
+                <p style="margin-top: 10px;"><strong>Roles clave:</strong> Growth Manager, Community Manager, Mentor, CSM</p>
+                <p style="margin-top: 10px;"><strong>Spin:</strong> "Transformación personal + professional. Network élite. Resultados verificables."</p>
+            </div>
+
+            <div class="phases-container">
+                <!-- SCOUTING B2C -->
+                <div class="phase-card" data-vertical="b2c">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 2.1: SCOUTING B2C</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Life event detectado o señal digital</p>
+                        <p><strong>Duración estimada:</strong> 1-2 semanas</p>
+                        <p><strong>Responsable:</strong> Growth Manager / Community</p>
+                        <p><strong>Objetivo:</strong> Detectar personas en momento de cambio, calificarlas, enrollarlas en conversación inicial.</p>
+
+                        <div class="section-title">Decision Tree - Scouting B2C</div>
+                        <div class="decision-tree">PERSONA CON SEÑAL DE INTERÉS
+    ↓
+<span class="node-decision">¿LIFE EVENT DETECTADO?</span>
+(career change, funding, new business, etc)
+    /                                    \
+<span class="node-advance">SÍ</span>                                      <span class="node-stop">NO</span>
+  ↓                                       ↓
+[CALIFICAR]                     [MONITOREAR]
+  ↓                              [Futuro rescate]
+  ↓
+<span class="node-decision">¿ENCAJA EN TARGET PROFILE?</span>
+(edad, industria, ambición, network)
+    /                                    \
+<span class="node-advance">SÍ</span>                                      <span class="node-stop">NO</span>
+  ↓                                       ↓
+[ENGANCHE]                      [ARCHIVO]
+  ↓                              [Posible referral]
+  ↓
+MENSAJE PERSONALIZADO
+(No pitch, valor primero)
+  ↓
+<span class="node-decision">¿ACEPTÓ CONVERSACIÓN INICIAL?</span>
+    /                                    \
+<span class="node-advance">SÍ</span>                                      <span class="node-stop">NO</span>
+  ↓                                       ↓
+[DISCOVERY CALL]                [NURTURE]
+                                [Secuencia 3-4 sem]</div>
+
+                        <div class="section-title">B2C Scouting Checklist</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-1">
+                                <label for="check-b2c-1">Life event identificado (career change, funding, etc)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-2">
+                                <label for="check-b2c-2">Encaja en target profile (edad, industria, ambición)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-3">
+                                <label for="check-b2c-3">Mensaje personalizado creado (no pitch)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-4">
+                                <label for="check-b2c-4">Contacto realizado (email, DM, o LinkedIn)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-5">
+                                <label for="check-b2c-5">Conversación inicial agendada</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-6">
+                                <label for="check-b2c-6">CRM actualizado con prospect data</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- DISCOVERY B2C -->
+                <div class="phase-card" data-vertical="b2c">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 2.2: DISCOVERY B2C</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Lead acepta exploración</p>
+                        <p><strong>Responsable:</strong> Mentor / Coach</p>
+                        <p><strong>Objetivo:</strong> Mapear ancla emocional, entender motivación real, presentar oportunidad.</p>
+
+                        <div class="card" style="margin-top: 20px;">
+                            <p><strong>Key Focus Areas:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Motivación Real:</strong> ¿Qué te trae aquí? ¿Qué cambio buscas?</li>
+                                <li><strong>Current State:</strong> ¿Dónde estás ahora (professionally, personally)?</li>
+                                <li><strong>Desired Future:</strong> ¿Cómo te ves en 2-3 años?</li>
+                                <li><strong>Blockers:</strong> ¿Qué te detiene? ¿Miedos?</li>
+                                <li><strong>Proof Points:</strong> ¿Qué prueba te haría creer en la transformación?</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">Discovery B2C Checklist</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-disco-1">
+                                <label for="check-b2c-disco-1">Llamada de descubrimiento confirmada</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-disco-2">
+                                <label for="check-b2c-disco-2">Motivación principal mapeada</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-disco-3">
+                                <label for="check-b2c-disco-3">Ancla emocional identificada</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-disco-4">
+                                <label for="check-b2c-disco-4">Blockers / miedos identificados</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-disco-5">
+                                <label for="check-b2c-disco-5">Oportunidad presentada (contexto program)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-b2c-disco-6">
+                                <label for="check-b2c-disco-6">Próximos pasos acordados</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- STRUCTURING + NURTURING B2C -->
+                <div class="phase-card" data-vertical="b2c">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 2.3: STRUCTURING + NURTURING B2C</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Ancla emocional mapeada</p>
+                        <p><strong>Objetivo:</strong> Remover fricción en journey, diseñar secuencia, cerrar conversión.</p>
+
+                        <div class="card" style="margin-top: 20px;">
+                            <p><strong>Friction Removal Tactics:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Social Proof:</strong> Testimonios, case studies de transformación similar</li>
+                                <li><strong>Risk Reversal:</strong> Garantías, dinero de vuelta, trial period</li>
+                                <li><strong>Community Tease:</strong> Invitar a eventos gratuitos, content drops</li>
+                                <li><strong>Personal Touch:</strong> Mentor 1:1 time, personalized roadmap</li>
+                                <li><strong>Payment Options:</strong> Flexible plans, installments</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <p><strong>Nurture Sequence (4-12 semanas):</strong></p>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Semana 1-2:</strong> Content relevante a su pain point (email/DM)</li>
+                                <li><strong>Semana 3-4:</strong> Invitation a live event o webinar</li>
+                                <li><strong>Semana 5-6:</strong> 1:1 conversation (mentor) para address concerns</li>
+                                <li><strong>Semana 7-8:</strong> Success story similar a su situation</li>
+                                <li><strong>Semana 9-10:</strong> Limited-time offer (scarcity + urgency)</li>
+                                <li><strong>Semana 11-12:</strong> Final conversation o enrollment close</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUCCESS B2C -->
+                <div class="phase-card" data-vertical="b2c">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 2.4: SUCCESS B2C</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Trigger:</strong> Cliente matriculado</p>
+                        <p><strong>Objetivo:</strong> Primeros resultados, engagement, activación de viralidad (referencias).</p>
+
+                        <div class="card" style="margin-top: 20px;">
+                            <p><strong>First Month Focus (Momentum Building):</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Welcome call (overview, expectations, roadmap)</li>
+                                <li>First module/cohort participation (high touch)</li>
+                                <li>Quick wins (homework, reflections, celebrations)</li>
+                                <li>Community integration (intro a otros miembros)</li>
+                                <li>Feedback checkpoint (¿qué está funcionando? ¿qué no?)</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <p><strong>Ongoing Engagement (Months 2-6):</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Regular touchpoints (mentorship sessions, group calls)</li>
+                                <li>Progress tracking (milestones, accountability)</li>
+                                <li>Peer connections (accountability buddy, group projects)</li>
+                                <li>Expansion into adjacent programs (upsell opportunities)</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <p><strong>Referral Activation (Month 3-6):</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Ask for referrals (cuando está satisfecho, no antes)</li>
+                                <li>Make it easy (provide talking points, referral form)</li>
+                                <li>Incentivize (discounts, free months, special bonuses)</li>
+                                <li>Track & celebrate (thank you email, public shoutout)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GTM/PARTNERS TAB -->
+        <div id="tab-gtm" class="tab-content">
+            <div class="card">
+                <div class="card-title">Overview GTM (Partners)</div>
+                <p><strong>Objetivo:</strong> Construir ecosistema de partners que co-venden y generan pipeline.</p>
+                <p style="margin-top: 10px;"><strong>Ciclo:</strong> Scouting 2-4 sem + Onboarding 2-4 sem + Co-selling Ongoing + Auditoría Trimestral</p>
+                <p style="margin-top: 10px;"><strong>Roles clave:</strong> Partner Manager, Sales director</p>
+                <p style="margin-top: 10px;"><strong>Spin:</strong> "Revenue share. Joint GTM. Win together."</p>
+            </div>
+
+            <div class="phases-container">
+                <!-- SCOUTING GTM -->
+                <div class="phase-card" data-vertical="gtm">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 3.1: SCOUTING GTM</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Objetivo:</strong> Identificar aliados potenciales → Evaluar fit → Proponer esquema → Formalizar</p>
+
+                        <div class="section-title">Partner Fit Criteria</div>
+                        <div class="card">
+                            <ul style="margin-left: 20px;">
+                                <li><strong>Market Access:</strong> ¿Acceso a clientes objetivo?</li>
+                                <li><strong>Solution Fit:</strong> ¿Complemenda nuestra solución?</li>
+                                <li><strong>Commercial Alignment:</strong> ¿Revenue share model viable?</li>
+                                <li><strong>Capability:</strong> ¿Pueden vender y soportar?</li>
+                                <li><strong>Reputation:</strong> ¿Buena reputación en mercado?</li>
+                                <li><strong>Financial Health:</strong> ¿Sostenibles?</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">Scouting Checklist</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-1">
+                                <label for="check-gtm-1">Partner candidato identificado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-2">
+                                <label for="check-gtm-2">Market access validado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-3">
+                                <label for="check-gtm-3">Solution fit confirmado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-4">
+                                <label for="check-gtm-4">Initial conversation agendada</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-5">
+                                <label for="check-gtm-5">Revenue share model propuesto</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-6">
+                                <label for="check-gtm-6">Interés preliminar confirmado</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ONBOARDING GTM -->
+                <div class="phase-card" data-vertical="gtm">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 3.2: ONBOARDING GTM</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Objetivo:</strong> Certificar → Transferir IQ → Habilitar para vender</p>
+
+                        <div class="card" style="margin-top: 20px;">
+                            <p><strong>Onboarding Program (2-4 semanas):</strong></p>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Kick-off Meeting:</strong> Roles, expectations, success metrics</li>
+                                <li><strong>Product Training:</strong> Deep dive en features, beneficios, use cases</li>
+                                <li><strong>Sales Enablement:</strong> Pitch deck, ROI calculator, case studies</li>
+                                <li><strong>Certification:</strong> Quiz o deal simulation (deben pasar)</li>
+                                <li><strong>Co-Selling Practice:</strong> Joint calls, role plays</li>
+                                <li><strong>Support Handoff:</strong> Technical training, escalation paths</li>
+                                <li><strong>Go-to-Market Alignment:</strong> Pipeline targets, compensation</li>
+                            </ol>
+                        </div>
+
+                        <div class="section-title">Onboarding Checklist</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-onb-1">
+                                <label for="check-gtm-onb-1">Partner agreement firmado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-onb-2">
+                                <label for="check-gtm-onb-2">Product training completado</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-onb-3">
+                                <label for="check-gtm-onb-3">Sales enablement materials entregados</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-onb-4">
+                                <label for="check-gtm-onb-4">Certification aprobada</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-onb-5">
+                                <label for="check-gtm-onb-5">Co-selling practice completada</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-onb-6">
+                                <label for="check-gtm-onb-6">Support contacts + escalation paths documentados</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-onb-7">
+                                <label for="check-gtm-onb-7">Pipeline targets acordados</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- CO-SELLING GTM -->
+                <div class="phase-card" data-vertical="gtm">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 3.3: CO-SELLING GTM</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Objetivo:</strong> Pipeline management → Priorización → Ejecución conjunta</p>
+
+                        <div class="card" style="margin-top: 20px;">
+                            <p><strong>Monthly Co-Selling Cadence:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Pipeline Review (1x mes):</strong> Deal status, target accounts, challenges</li>
+                                <li><strong>Joint Demos (ongoing):</strong> Showcase value, build confidence</li>
+                                <li><strong>Lead Routing:</strong> Claridad sobre quién lidera qué oportunidad</li>
+                                <li><strong>Commission Tracking:</strong> Pipeline attribution, revenue tracking</li>
+                                <li><strong>Issue Resolution:</strong> Escalation process, resolution SLAs</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">Co-Selling KPIs</div>
+                        <table class="metrics-table">
+                            <thead>
+                                <tr>
+                                    <th>KPI</th>
+                                    <th>Target</th>
+                                    <th>Medición</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Pipeline Generated</td>
+                                    <td>$X per month</td>
+                                    <td>Monthly</td>
+                                </tr>
+                                <tr>
+                                    <td>Win Rate</td>
+                                    <td>20%+</td>
+                                    <td>Monthly</td>
+                                </tr>
+                                <tr>
+                                    <td>Sales Cycle</td>
+                                    <td>&lt; 90 días</td>
+                                    <td>Per deal</td>
+                                </tr>
+                                <tr>
+                                    <td>Average Deal Size</td>
+                                    <td>$50k+</td>
+                                    <td>Monthly</td>
+                                </tr>
+                                <tr>
+                                    <td>Customer Health</td>
+                                    <td>Verde</td>
+                                    <td>Quarterly</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- AUDIT GTM -->
+                <div class="phase-card" data-vertical="gtm">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <span>PLAYBOOK 3.4: AUDIT GTM</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin: 15px 0;"><strong>Objetivo:</strong> Cumplimiento SLA → Decisión upgrade/maintain/downgrade</p>
+
+                        <div class="card" style="margin-top: 20px;">
+                            <p><strong>Quarterly Audit Framework:</strong></p>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Pipeline Review:</strong> Total generated, win rate, average deal size</li>
+                                <li><strong>SLA Compliance:</strong> Response time, lead quality, support</li>
+                                <li><strong>Certification Status:</strong> ¿Entrenamiento actualizado?</li>
+                                <li><strong>Customer Health:</strong> ¿Clientes satisfechos?</li>
+                                <li><strong>Relationship Health:</strong> Communication frequency, alignment</li>
+                                <li><strong>Financial Viability:</strong> ROI para ambas partes</li>
+                            </ol>
+                        </div>
+
+                        <div class="card">
+                            <p><strong>Audit Outcomes:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>UPGRADE:</strong> Incrementar targets, joint investments, exclusive territories</li>
+                                <li><strong>MAINTAIN:</strong> Continue actual model, reaffirm commitment</li>
+                                <li><strong>DOWNGRADE:</strong> Reduce targets, focus areas, or terminate if unviable</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-title">Audit Checklist</div>
+                        <ul class="checklist">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-audit-1">
+                                <label for="check-gtm-audit-1">Pipeline metrics reviewed (generated, won, lost)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-audit-2">
+                                <label for="check-gtm-audit-2">SLA compliance verified</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-audit-3">
+                                <label for="check-gtm-audit-3">Customer satisfaction assessed (NPS/feedback)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-audit-4">
+                                <label for="check-gtm-audit-4">Financial viability confirmed (ROI both sides)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-audit-5">
+                                <label for="check-gtm-audit-5">Upgrade/maintain/downgrade decision documented</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-audit-6">
+                                <label for="check-gtm-audit-6">Partner notificado de decisión</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="check-gtm-audit-7">
+                                <label for="check-gtm-audit-7">Next quarter targets establecidos</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMERGENCY TAB -->
+        <div id="tab-emergency" class="tab-content">
+            <div class="card">
+                <div class="card-title" style="color: var(--red);">⚠️ Protocolos de Emergencia</div>
+                <p style="margin-top: 10px;">Usar cuando las cosas no van según el plan. Acciones inmediatas + escalaciones.</p>
+            </div>
+
+            <div class="phases-container">
+                <!-- EMERGENCY 1 -->
+                <div class="phase-card" data-vertical="all">
+                    <div class="phase-header" style="background: linear-gradient(135deg, var(--red), #ff6b6b);" onclick="togglePhase(this)">
+                        <span>PROTOCOLO 1: Deal B2B Estancado (>3 semanas sin progreso)</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <div class="card" style="background-color: rgba(220, 95, 95, 0.1); border-left: 4px solid var(--red);">
+                            <p><strong>Trigger:</strong> Deal en limbo >3 semanas sin progreso</p>
+
+                            <div style="margin-top: 20px;">
+                                <p><strong>1. MAP Audit (24 horas)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Ejecuta audit de Metrics-Access-Process</li>
+                                    <li>Verifica health score (VERDE/AMBAR/ROJO)</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>2. Si ROJO → Escalar a Sales Director (24h)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Review con director</li>
+                                    <li>Decisión: Intensify, pivot, o kill</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>3. Identifica stakeholder faltante</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>¿Quién falta en mapa? ¿Blocker silencioso?</li>
+                                    <li>Plan para mapearlo/ganarlo</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>4. Re-validar dolor + presupuesto</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Call con EB: ¿Presupuesto aún asignado?</li>
+                                    <li>Call con UC: ¿Dolor aún crítico?</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>5. Plan de acción (7 días)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Qué haré (specific action)</li>
+                                    <li>Cuándo (deadline)</li>
+                                    <li>Cuál es resultado esperado</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMERGENCY 2 -->
+                <div class="phase-card" data-vertical="all">
+                    <div class="phase-header" style="background: linear-gradient(135deg, var(--red), #ff6b6b);" onclick="togglePhase(this)">
+                        <span>PROTOCOLO 2: Lead B2C No Convierte (>6 semanas)</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <div class="card" style="background-color: rgba(220, 95, 95, 0.1); border-left: 4px solid var(--red);">
+                            <p><strong>Trigger:</strong> Lead sin convertir >6 semanas</p>
+
+                            <div style="margin-top: 20px;">
+                                <p><strong>1. Diagnóstico Rápido (24h)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>¿Por qué no ha avanzado? (Fear, timing, price, wrong fit)</li>
+                                    <li>¿Cuál es el blocker principal?</li>
+                                    <li>¿Aún interesado o ha disminuido el interés?</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>2. Intervención Directa (48h)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Mentor 1:1 call: "Parece que algo cambió. ¿Qué pasó?"</li>
+                                    <li>Address específico concern (risk, timing, budget)</li>
+                                    <li>Offer solution (payment plan, delayed start, pilot program)</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>3. Si sigue "no"</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Archive con razón documentada</li>
+                                    <li>Solicitar referral (aún puedes ganar con su network)</li>
+                                    <li>Set reminder para future re-engagement (3-6 meses)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMERGENCY 3 -->
+                <div class="phase-card" data-vertical="all">
+                    <div class="phase-header" style="background: linear-gradient(135deg, var(--red), #ff6b6b);" onclick="togglePhase(this)">
+                        <span>PROTOCOLO 3: Partner No Genera Pipeline</span>
+                        <span class="phase-toggle">▼</span>
+                    </div>
+                    <div class="phase-body">
+                        <div class="card" style="background-color: rgba(220, 95, 95, 0.1); border-left: 4px solid var(--red);">
+                            <p><strong>Trigger:</strong> Partner en onboarding but cero pipeline después 4 semanas</p>
+
+                            <div style="margin-top: 20px;">
+                                <p><strong>1. Root Cause Analysis (1 semana)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>¿Entrenamiento insuficiente? (Repita training)</li>
+                                    <li>¿Falta de motivation? (Clarify incentives)</li>
+                                    <li>¿Mala fit de solución? (Reposition or pivot)</li>
+                                    <li>¿No tienen acceso a clientes objetivo? (Provide warm intros)</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>2. Joint Intervention (2 semanas)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Co-sell con partner junto a partner (build confidence)</li>
+                                    <li>Provide qualified leads si es necesario (ramp them up)</li>
+                                    <li>Increase support / handholding</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <p><strong>3. Go/No-Go Decision (30 días)</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Si hay traction → Continue con intensified support</li>
+                                    <li>Si sigue muerto → Downgrade o terminate relationship</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">≡</button>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-title">QUICK REFERENCE</div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title" style="font-size: 0.9rem; color: var(--gold);">Emergency Protocols</div>
+            <div class="sidebar-item" onclick="scrollToTab('tab-emergency'); scrollToPhase(0)">
+                Deal B2B Estancado
+            </div>
+            <div class="sidebar-item" onclick="scrollToTab('tab-emergency'); scrollToPhase(1)">
+                Lead B2C No Convierte
+            </div>
+            <div class="sidebar-item" onclick="scrollToTab('tab-emergency'); scrollToPhase(2)">
+                Partner Sin Pipeline
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title" style="font-size: 0.9rem; color: var(--gold);">Scoring Tools</div>
+            <div class="sidebar-item" onclick="alert('BANT Scoring (B2B):\n- Budget: 20 pts\n- Authority: 20 pts\n- Need: 20 pts\n- Timeline: 20 pts\n- Competition: 20 pts\n\nTotal: 90-100=Tier1, 70-89=Tier2, 50-69=Tier3, <50=Archive')">
+                BANT Scoring
+            </div>
+            <div class="sidebar-item" onclick="alert('Deal Health Scoring:\n- Momentum: +30\n- Stakeholder Alignment: +30\n- Budget: +20\n- Timeline: +20\n\nGreen (>60), Amber (40-60), Red (<40)')">
+                Deal Health
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title" style="font-size: 0.9rem; color: var(--gold);">Key Metrics</div>
+            <table class="metrics-table" style="font-size: 0.8rem;">
+                <tr>
+                    <td><strong>B2B Cycle</strong></td>
+                    <td>8-14 sem</td>
+                </tr>
+                <tr>
+                    <td><strong>B2B ACV</strong></td>
+                    <td>$50k-2M</td>
+                </tr>
+                <tr>
+                    <td><strong>B2C Cycle</strong></td>
+                    <td>4-12 sem</td>
+                </tr>
+                <tr>
+                    <td><strong>B2C ACV</strong></td>
+                    <td>$2k-20k</td>
+                </tr>
+                <tr>
+                    <td><strong>GTM Rev Share</strong></td>
+                    <td>20-30%</td>
+                </tr>
+            </table>
+        </div>
+    </aside>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">◐</button>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Checkbox persistence (session only)
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parent = this.closest('.checklist-item');
+                if (this.checked) {
+                    parent.classList.add('checked');
+                } else {
+                    parent.classList.remove('checked');
+                }
+            });
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+
+                // Hide all tabs
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                // Remove active from all buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Show selected tab
+                document.getElementById(tabId).classList.add('active');
+                this.classList.add('active');
+            });
+        });
+
+        // Phase toggle
+        function togglePhase(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        // Accordion toggle
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Load theme preference
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.phase-card, .card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (query === '' || text.includes(query)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // Filter implementation could be extended
+            });
+        });
+
+        // Scroll helpers
+        function scrollToTab(tabId) {
+            const tab = document.getElementById(tabId);
+            document.querySelectorAll('.tab-content').forEach(t => {
+                t.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(b => {
+                b.classList.remove('active');
+            });
+            tab.classList.add('active');
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            tab.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToPhase(index) {
+            const phases = document.querySelectorAll('.phase-card');
+            if (phases[index]) {
+                phases[index].scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        });
+
+        // Print optimization
+        window.addEventListener('beforeprint', function() {
+            document.querySelectorAll('.phase-body').forEach(body => {
+                body.classList.add('open');
+            });
+        });
+    </script>
+</body>
+</html>

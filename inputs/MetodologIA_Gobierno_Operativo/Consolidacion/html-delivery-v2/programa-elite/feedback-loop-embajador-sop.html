@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v2.0">
+    <meta name="description" content="Feedback Loop del Embajador — SOP — Proceso de Delivery MetodologIA">
+    <title>Feedback Loop del Embajador — SOP — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:#07101f; --bg-2:#102346; --surface:#f7f4ec;
+            --accent:#00cde8; --gold:#ffd700; --green:#2ca56f;
+            --red:#dc5f5f; --orange:#e8a000; --purple:#9b59b6;
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#e0e0e0; --text-secondary:#999;
+            --border:#1a3a52; --hover-bg:#1a3a52;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(0,205,232,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,205,232,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(0,205,232,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(0,205,232,.4);box-shadow:0 0 12px rgba(0,205,232,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(0,205,232,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(0,205,232,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(0,205,232,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(0,205,232,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(0,205,232,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(0,205,232,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(0,205,232,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Programa Elite</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">Feedback Loop del Embajador — SOP</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>Feedback Loop del Embajador — SOP</h1>
+        <div class="subtitle">MetodologIA — Gobierno Operativo</div>
+        <div class="meta">- Versión: 1.0 (10x Elevation Protocol)</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">17</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">5</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">3</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">9</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('metadata-ce2147')" aria-label="Ir a Metadata">Metadata</button>
+<button class="nav-btn" onclick="scrollToSection('propsito-fdec8e')" aria-label="Ir a Propósito">Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('1-supuestos-explcitos-9-pilares-2ac85d')" aria-label="Ir a 1. SUPUESTOS EXPLÍCITOS (9 pilares)">1. SUPUESTOS EXPLÍCITOS (9 pilares)</button>
+<button class="nav-btn" onclick="scrollToSection('2-lmites-93216c')" aria-label="Ir a 2. LÍMITES">2. LÍMITES</button>
+<button class="nav-btn" onclick="scrollToSection('3-criterios-de-aceptacin-tabla-de-pasofallo-cb97b0')" aria-label="Ir a 3. CRITERIOS DE ACEPTACIÓN (tabla de paso/fallo)">3. CRITERIOS DE ACEPTACIÓN (tabla d</button>
+<button class="nav-btn" onclick="scrollToSection('4-casos-borde-7-escenarios-crticos-34c83c')" aria-label="Ir a 4. CASOS BORDE (7 escenarios críticos)">4. CASOS BORDE (7 escenarios crític</button>
+<button class="nav-btn" onclick="scrollToSection('5-decisiones-de-diseo-5-pilares-arquitectnicos-b9757a')" aria-label="Ir a 5. DECISIONES DE DISEÑO (5 pilares arquitectónicos)">5. DECISIONES DE DISEÑO (5 pilares </button>
+<button class="nav-btn" onclick="scrollToSection('6-antipatterns-5-behaviors-a-evitar-1af3b3')" aria-label="Ir a 6. ANTI-PATTERNS (5 behaviors a evitar)">6. ANTI-PATTERNS (5 behaviors a evi</button>
+<button class="nav-btn" onclick="scrollToSection('7-fallbacks-5-escenarios-de-contingencia-879ee9')" aria-label="Ir a 7. FALLBACKS (5 escenarios de contingencia)">7. FALLBACKS (5 escenarios de conti</button>
+<button class="nav-btn" onclick="scrollToSection('workflows-6-uno-por-loop-c99113')" aria-label="Ir a Workflows (6 — uno por loop)">Workflows (6 — uno por loop)</button>
+<button class="nav-btn" onclick="scrollToSection('diagrama-de-flujo-los-6-loops-6e30d0')" aria-label="Ir a Diagrama de Flujo — Los 6 Loops">Diagrama de Flujo — Los 6 Loops</button>
+<button class="nav-btn" onclick="scrollToSection('mtricas-del-sistema-de-feedback-b063d7')" aria-label="Ir a Métricas del Sistema de Feedback">Métricas del Sistema de Feedback</button>
+<button class="nav-btn" onclick="scrollToSection('conexiones-con-otros-sops-bbf49e')" aria-label="Ir a Conexiones con otros SOPs">Conexiones con otros SOPs</button>
+<button class="nav-btn" onclick="scrollToSection('ecuacin-metodologia-feedback-loop-5a1654')" aria-label="Ir a Ecuación MetodologIA: Feedback Loop">Ecuación MetodologIA: Feedback Loop</button>
+<button class="nav-btn" onclick="scrollToSection('responsabilidades-por-rol-c4e23c')" aria-label="Ir a Responsabilidades por Rol">Responsabilidades por Rol</button>
+<button class="nav-btn" onclick="scrollToSection('escalamientos-f2ee9b')" aria-label="Ir a Escalamientos">Escalamientos</button>
+<button class="nav-btn" onclick="scrollToSection('implementacin-752834')" aria-label="Ir a Implementación">Implementación</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="metadata-ce2147" data-searchable aria-labelledby="head-metadata-ce2147">
+            <div class="phase-header" id="head-metadata-ce2147" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Metadata</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <div class="bullet-item"><strong>Vehículo:</strong> Sistema de Retroalimentación Bidireccional del Ecosistema MetodologIA</div>
+<div class="bullet-item"><strong>Proceso padre:</strong> Red de Embajadores × Todos los Procesos Operativos</div>
+<div class="bullet-item"><strong>Frecuencia:</strong> Continua (post-servicio) + Consolidada (mensual) + Estratégica (trimestral)</div>
+<div class="bullet-item"><strong>Owner:</strong> Germán (C-Level Ecosystem) con input de los 4 C-Levels</div>
+<div class="bullet-item"><strong>Última actualización:</strong> 2026-03-24</div>
+<div class="bullet-item"><strong>Vigencia:</strong> Indefinida — revisión trimestral obligatoria</div>
+<div class="bullet-item"><strong>Versión:</strong> 1.0 (10x Elevation Protocol)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="propsito-fdec8e" data-searchable aria-labelledby="head-propsito-fdec8e">
+            <div class="phase-header" id="head-propsito-fdec8e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Propósito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Define los 6 feedback loops del Embajador como responsable end-to-end del éxito del servicio. El Embajador no solo entrega — es el <strong>SENSOR más valioso</strong> del ecosistema MetodologIA porque está en contacto directo con el cliente final.</p>
+<p>Este SOP asegura que esa inteligencia fluya de vuelta al sistema de manera estructurada, bidireccional y con impacto verificable en decisiones de producto, contenido, comercial y estrategia.</p>
+<p class="key-value"><strong>Los 6 Feedback Loops:</strong></p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Loop Certificación → Red:</strong> Post-certificación, validación de calidad del proceso formativo</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Loop Servicio → Calidad:</strong> Post-delivery, NPS + mejoras operacionales</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Loop Cliente → Producto:</strong> Insights del mercado, necesidades no cubiertas</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Loop Embajador → Contenido:</strong> Mejoras al material, nuevos módulos sugeridos</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Loop Red → Estrategia:</strong> Tendencias agregadas, oportunidades de mercado</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Loop Embajador → Comercial:</strong> Leads generados, oportunidades de upsell/cross-sell</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="1-supuestos-explcitos-9-pilares-2ac85d" data-searchable aria-labelledby="head-1-supuestos-explcitos-9-pilares-2ac85d">
+            <div class="phase-header" id="head-1-supuestos-explcitos-9-pilares-2ac85d" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 1. SUPUESTOS EXPLÍCITOS (9 pilares)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p>Los siguientes supuestos DEBEN cumplirse para que el sistema funcione:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Cada servicio genera data:</strong> No existe servicio sin retroalimentación estructurada. Todo delivery es fuente de inteligencia.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Embajador tiene herramienta de captura:</strong> Formulario estandarizado, accesible, disponible 24/7. No hay barreras tecnológicas.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Tiempo de reporte &lt;48h post-servicio:</strong> La captura ocurre mientras la experiencia está fresca. Pasado este plazo, la data pierde valor.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>C-Levels revisan feedback consolidado mensualmente:</strong> No es opcional. Hay bloque de calendario reservado (primer viernes de cada mes, 16:00-17:00 UTC).</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Existe categorización estándar de feedback:</strong> 5 categorías (Bug, Mejora, Idea, Queja, Elogio). Sin ambigüedad en clasificación.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Feedback es bidireccional:</strong> El embajador RECIBE respuesta sobre qué se hizo con su feedback. El circuito se cierra.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">7</span><span><strong>Sistema permite anonimato del cliente cuando aplica:</strong> Si el cliente prefiere no ser identificado, se respeta. La idea tiene valor igual.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">8</span><span><strong>Hay SLA de respuesta a feedback crítico (&lt;72h):</strong> Bug que afecta al cliente, servicio degradado. Trigger automático de escalamiento.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">9</span><span><strong>Datos alimentan decisiones verificables:</strong> No es &quot;nice to have&quot;. Cada decisión de producto/contenido cita al menos 3 feedback points.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-lmites-93216c" data-searchable aria-labelledby="head-2-lmites-93216c">
+            <div class="phase-header" id="head-2-lmites-93216c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> 2. LÍMITES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Inicio:</strong> Primer servicio entregado por Embajador.</p>
+<p class="key-value"><strong>Fin:</strong> Desactivación del Embajador en el sistema.</p>
+<p class="key-value"><strong>NO cubre:</strong></p>
+<div class="bullet-item">Análisis de satisfacción interna de empleados (distinto canal)</div>
+<div class="bullet-item">Feedback de clientes directos de C-Levels (existe otro protocolo)</div>
+<div class="bullet-item">Desarrollo de nuevos productos desde cero (solo alimenta con data)</div>
+<div class="bullet-item">Retroalimentación sobre otros Embajadores (escalado a Talento)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-criterios-de-aceptacin-tabla-de-pasofallo-cb97b0" data-searchable aria-labelledby="head-3-criterios-de-aceptacin-tabla-de-pasofallo-cb97b0">
+            <div class="phase-header" id="head-3-criterios-de-aceptacin-tabla-de-pasofallo-cb97b0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 3. CRITERIOS DE ACEPTACIÓN (tabla de paso/fallo)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Criterio</th><th scope="col">Métrica</th><th scope="col">Target</th><th scope="col">Frecuencia</th><th scope="col">Pass/Fail</th></tr></thead><tbody><tr><td>Captura post-servicio</td><td>% servicios con feedback reportado</td><td>≥95%</td><td>Semanal</td><td>✓/✗</td></tr><tr><td>Tiempo de reporte</td><td>Horas entre servicio y reporte</td><td>&lt;48h</td><td>Por servicio</td><td>✓/✗</td></tr><tr><td>Completitud del formulario</td><td>Campos obligatorios completados</td><td>100%</td><td>Por reporte</td><td>✓/✗</td></tr><tr><td>Categorización correcta</td><td>Feedback asignado a loop correcto</td><td>≥98%</td><td>Mensual</td><td>✓/✗</td></tr><tr><td>Respuesta a críticos</td><td>Feedback crítico respondido</td><td>&lt;72h</td><td>Por incidente</td><td>✓/✗</td></tr><tr><td>Bidireccionalidad</td><td>Embajador recibe feedback de respuesta</td><td>≥90%</td><td>Mensual</td><td>✓/✗</td></tr><tr><td>Consolidación mensual</td><td>Reporte consolidado en día 5</td><td>100%</td><td>Mensual</td><td>✓/✗</td></tr><tr><td>Acción sobre feedback</td><td>% feedback que genera decisión</td><td>≥30%</td><td>Trimestral</td><td>✓/✗</td></tr><tr><td>Data quality</td><td>Feedback que requiere reformulación</td><td>&lt;5%</td><td>Mensual</td><td>✓/✗</td></tr><tr><td>Cierre del loop</td><td>Embajador informado de acción</td><td>≥85%</td><td>Mensual</td><td>✓/✗</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-casos-borde-7-escenarios-crticos-34c83c" data-searchable aria-labelledby="head-4-casos-borde-7-escenarios-crticos-34c83c">
+            <div class="phase-header" id="head-4-casos-borde-7-escenarios-crticos-34c83c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 4. CASOS BORDE (7 escenarios críticos)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="cb01-feedback-crtico-urgente-b4d356">CB-01: Feedback Crítico Urgente</h3>
+<p class="key-value"><strong>Escenario:</strong> Cliente en riesgo de churn inmediato. Servicio fallido, impacto económico directo.</p>
+<p class="key-value"><strong>Trigger:</strong> &quot;Crítico&quot; + &quot;Churn risk&quot; en categorización.</p>
+<p class="key-value"><strong>Respuesta:</strong> Escalamiento automático a Javier (C-Level Operaciones) en &lt;2h. Llamada cliente en &lt;24h.</p>
+<h3 class="subsection-title" id="cb02-feedback-contradictorio-entre-embajadores-57359e">CB-02: Feedback Contradictorio entre Embajadores</h3>
+<p class="key-value"><strong>Escenario:</strong> Dos embajadores reportan feedback conflictivo sobre el MISMO servicio/cliente.</p>
+<p class="key-value"><strong>Trigger:</strong> Match de cliente + servicio con feedback opuesto.</p>
+<p class="key-value"><strong>Respuesta:</strong> Revisión de ambos reportes por Germán. Investigación. Aclaración. Documentación de discrepancia.</p>
+<h3 class="subsection-title" id="cb03-volumen-supera-capacidad-de-procesamiento-327f48">CB-03: Volumen supera capacidad de procesamiento</h3>
+<p class="key-value"><strong>Escenario:</strong> Mes excepcional, 500+ reportes cuando promedio es 120.</p>
+<p class="key-value"><strong>Trigger:</strong> Dashboard muestra +300% volumen usual.</p>
+<p class="key-value"><strong>Respuesta:</strong> Activar &quot;modo crisis&quot; — consolidación se extiende a día 10. Prioridad: críticos y mejoras de alto impacto.</p>
+<h3 class="subsection-title" id="cb04-embajador-no-reporta-2-meses-consecutivos-f7de89">CB-04: Embajador no reporta (2 meses consecutivos)</h3>
+<p class="key-value"><strong>Escenario:</strong> Embajador activo pero sin feedback reportado.</p>
+<p class="key-value"><strong>Trigger:</strong> Contador automático llega a 60 días sin reporte.</p>
+<p class="key-value"><strong>Respuesta:</strong> Check-in de Germán con Embajador. ¿Hay servicios? ¿No hay herramienta? ¿Resistencia a proceso? Plan de acción.</p>
+<h3 class="subsection-title" id="cb05-feedback-revela-gap-sistmico-3587bf">CB-05: Feedback revela gap sistémico</h3>
+<p class="key-value"><strong>Escenario:</strong> Múltiples embajadores (≥5) reportan el MISMO problema con metodología/contenido.</p>
+<p class="key-value"><strong>Trigger:</strong> Clustering automático de feedback repetido.</p>
+<p class="key-value"><strong>Respuesta:</strong> Escalamiento a C-Level Contenido + C-Level Operaciones. Task force emergente. Revisión en &lt;7 días.</p>
+<h3 class="subsection-title" id="cb06-cliente-da-feedback-directamente-a-clevel-a02dde">CB-06: Cliente da feedback directamente a C-Level</h3>
+<p class="key-value"><strong>Escenario:</strong> Cliente contacta a Javier, Carlos, Andrea o Alejandra directo, bypassing Embajador.</p>
+<p class="key-value"><strong>Trigger:</strong> C-Level recibe feedback de cliente.</p>
+<p class="key-value"><strong>Respuesta:</strong> Redirigir a Embajador responsable. Copiar a Germán. El Embajador captura formalmente en el loop.</p>
+<h3 class="subsection-title" id="cb07-feedback-positivo-excepcional-2a98bf">CB-07: Feedback positivo excepcional</h3>
+<p class="key-value"><strong>Escenario:</strong> Cliente genera recomendación, caso de éxito publicable, referral generado.</p>
+<p class="key-value"><strong>Trigger:</strong> &quot;Elogio&quot; + métricas de impacto (NPS &gt;9, referral generado, publicable).</p>
+<p class="key-value"><strong>Respuesta:</strong> Promoción a canal de Marketing. Caso de éxito redactado por Germán + C-Level Contenido. Visibilidad pública.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-decisiones-de-diseo-5-pilares-arquitectnicos-b9757a" data-searchable aria-labelledby="head-5-decisiones-de-diseo-5-pilares-arquitectnicos-b9757a">
+            <div class="phase-header" id="head-5-decisiones-de-diseo-5-pilares-arquitectnicos-b9757a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> 5. DECISIONES DE DISEÑO (5 pilares arquitectónicos)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="dd01-formulario-nico-para-todos-los-loops-ced376">DD-01: Formulario único para todos los loops</h3>
+<p class="key-value"><strong>Decisión:</strong> NO crear 6 formularios diferentes. Un formulario estandarizado detecta automáticamente qué loop.</p>
+<p class="key-value"><strong>Rationale:</strong> Reduce fricción del Embajador. Un Embajador no sabe &quot;a cuál de los 6 loops reporto&quot;. El sistema lo detecta por tags.</p>
+<p class="key-value"><strong>Implementación:</strong> Dropdown con opciones múltiples: &quot;Servicios&quot;, &quot;Certificación&quot;, &quot;Clientes&quot;, &quot;Contenido&quot;, &quot;Oportunidades comerciales&quot;.</p>
+<h3 class="subsection-title" id="dd02-consolidacin-mensual-no-realtime-b03354">DD-02: Consolidación mensual, no real-time</h3>
+<p class="key-value"><strong>Decisión:</strong> Reportes consolidados cada mes (día 5) vs. alertas en tiempo real.</p>
+<p class="key-value"><strong>Rationale:</strong> Evita ruido. Permite pattern detection. Los críticos escalán auto (excepción). Permite C-Levels planificar revisión.</p>
+<p class="key-value"><strong>Implementación:</strong> Dashboard en tiempo real (para Germán). Reporte consolidado mensual para C-Levels.</p>
+<h3 class="subsection-title" id="dd03-categorizacin-obligatoria-fc0656">DD-03: Categorización obligatoria</h3>
+<p class="key-value"><strong>Decisión:</strong> Todo feedback DEBE clasificarse en: Bug, Mejora, Idea, Queja, Elogio.</p>
+<p class="key-value"><strong>Rationale:</strong> Sin taxonomía, los datos no son accionables.</p>
+<p class="key-value"><strong>Implementación:</strong> Campo dropdown. Si no se selecciona, formulario no se envía. Auto-detect option para embajadores muy ocupados (ML tag).</p>
+<h3 class="subsection-title" id="dd04-bidireccionalidad-explcita-16bbc1">DD-04: Bidireccionalidad explícita</h3>
+<p class="key-value"><strong>Decisión:</strong> Embajador recibe feedback sobre qué se hizo con su feedback.</p>
+<p class="key-value"><strong>Rationale:</strong> Cierra el loop. Refuerza la cultura de escucha. Embajador se siente valorado.</p>
+<p class="key-value"><strong>Implementación:</strong> Email automático &quot;Tu feedback sobre [tema] generó [acción]&quot; cuando C-Level toma decisión vinculada.</p>
+<h3 class="subsection-title" id="dd05-integracin-en-decisiones-de-producto-c9f09c">DD-05: Integración en decisiones de producto</h3>
+<p class="key-value"><strong>Decisión:</strong> Cada decisión de producto/contenido debe citar 3+ feedback points.</p>
+<p class="key-value"><strong>Rationale:</strong> Evita decisiones HiPPO (Highest Paid Person Opinion). Data-driven. Rastreable.</p>
+<p class="key-value"><strong>Implementación:</strong> Template obligatorio en PRD: &quot;Feedback drivers: [3 citas de feedback loop]&quot;.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-antipatterns-5-behaviors-a-evitar-1af3b3" data-searchable aria-labelledby="head-6-antipatterns-5-behaviors-a-evitar-1af3b3">
+            <div class="phase-header" id="head-6-antipatterns-5-behaviors-a-evitar-1af3b3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 6. ANTI-PATTERNS (5 behaviors a evitar)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap01-acumular-feedback-sin-actuar-8c7348">AP-01: Acumular feedback sin actuar</h3>
+<p class="key-value"><strong>Antídoto:</strong> KPI trimestral: ≥30% feedback genera acción verificable. Dashboard público de &quot;feedback → acción&quot;.</p>
+<h3 class="subsection-title" id="ap02-ignorar-feedback-negativo-1e756f">AP-02: Ignorar feedback negativo</h3>
+<p class="key-value"><strong>Antídoto:</strong> Reporte mensual con &quot;Top 5 Quejas&quot;. Presentación a C-Levels. Response plan obligatorio.</p>
+<h3 class="subsection-title" id="ap03-compartir-feedback-con-nombres-sin-consentimi-aa08c1">AP-03: Compartir feedback con nombres sin consentimiento</h3>
+<p class="key-value"><strong>Antídoto:</strong> Anonimato default. Nombres solo si cliente lo autoriza explícitamente (checkbox en formulario).</p>
+<h3 class="subsection-title" id="ap04-no-cerrar-el-loop-1c355f">AP-04: No cerrar el loop</h3>
+<p class="key-value"><strong>Antídoto:</strong> SLA de cierre &lt;10 días post-acción. Email automático a Embajador informando qué pasó.</p>
+<h3 class="subsection-title" id="ap05-tratar-todo-feedback-como-urgente-833356">AP-05: Tratar todo feedback como urgente</h3>
+<p class="key-value"><strong>Antídoto:</strong> Categorización de severidad. Solo &quot;Crítico&quot; genera urgencia. Mejoras se procesan en ciclo mensual normal.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-fallbacks-5-escenarios-de-contingencia-879ee9" data-searchable aria-labelledby="head-7-fallbacks-5-escenarios-de-contingencia-879ee9">
+            <div class="phase-header" id="head-7-fallbacks-5-escenarios-de-contingencia-879ee9" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 7. FALLBACKS (5 escenarios de contingencia)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fb01-sistema-cado-31f8de">FB-01: Sistema caído</h3>
+<p class="key-value"><strong>Trigger:</strong> Platform de feedback inaccesible &gt;30 minutos.</p>
+<p class="key-value"><strong>Fallback:</strong> Activar Google Forms backup. Formulario simplificado. Capturar en sheet manual. Consolidar luego.</p>
+<p class="key-value"><strong>Responsable:</strong> Germán. Comunicación a red de embajadores en &lt;15 minutos.</p>
+<h3 class="subsection-title" id="fb02-consolidacin-retrasada-6d6b2a">FB-02: Consolidación retrasada</h3>
+<p class="key-value"><strong>Trigger:</strong> Reporte consolidado no listo en día 5.</p>
+<p class="key-value"><strong>Fallback:</strong> Extensión automática hasta día 8. Dashboard muestra estado en tiempo real (% completitud).</p>
+<p class="key-value"><strong>Responsable:</strong> Operaciones. Alert a C-Levels si se excede día 8.</p>
+<h3 class="subsection-title" id="fb03-feedback-crtico-sin-respuesta-en-72h-71102c">FB-03: Feedback crítico sin respuesta en 72h</h3>
+<p class="key-value"><strong>Trigger:</strong> Crítico reportado pero sin respuesta/acción en 72 horas.</p>
+<p class="key-value"><strong>Fallback:</strong> Escalamiento automático a Javier + Germán. Email diario de recordatorio.</p>
+<p class="key-value"><strong>Responsable:</strong> Sistema automático. Escalamiento manual si falla.</p>
+<h3 class="subsection-title" id="fb04-embajador-bloqueado-para-reportar-22a64a">FB-04: Embajador bloqueado para reportar</h3>
+<p class="key-value"><strong>Trigger:</strong> Embajador no puede acceder a platform (perdió credenciales, cuenta bloqueada, etc).</p>
+<p class="key-value"><strong>Fallback:</strong> Canal alterno: Email directo a feedback@metodologia.io. Subject: &quot;FEEDBACK [embajador-name]&quot;. Captura manual.</p>
+<p class="key-value"><strong>Responsable:</strong> Asistente de Germán. Procesa mail y entra en sistema.</p>
+<h3 class="subsection-title" id="fb05-clevels-no-revisan-en-30-das-758b7c">FB-05: C-Levels no revisan en 30 días</h3>
+<p class="key-value"><strong>Trigger:</strong> Reporte consolidado sin revisión de los 4 C-Levels después de 15 días.</p>
+<p class="key-value"><strong>Fallback:</strong> Alerta automática a Germán. Reminder en Slack. Scheduling obligatorio de revisión para día 20.</p>
+<p class="key-value"><strong>Responsable:</strong> Germán. Follow-up directo si no se reasigna.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="workflows-6-uno-por-loop-c99113" data-searchable aria-labelledby="head-workflows-6-uno-por-loop-c99113">
+            <div class="phase-header" id="head-workflows-6-uno-por-loop-c99113" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Workflows (6 — uno por loop)</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="wf01-capturar-feedback-postservicio-13f890">WF-01: Capturar Feedback Post-Servicio</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Pre-requisito: Servicio completado. Cliente entregable recibido.
+1. Embajador accede a formulario (SMS, email, dashboard)
+2. Completa: [Cliente] [Servicio] [Loop] [Feedback] [Categoría] [Severidad]
+3. Opcional: Adjunta evidencia (screenshot, audio, documento)
+4. Submit antes de 48h post-servicio
+5. Confirmación recibida. Ticket ID generado.
+Post-acción: Dashboard muestra reporte en estado &quot;Capturado&quot;
+SLA: &lt;1 minuto de procesamiento automático</code></pre>
+<h3 class="subsection-title" id="wf02-procesar-y-categorizar-d21d1c">WF-02: Procesar y Categorizar</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Trigger: Feedback capturado.
+1. Sistema valida completitud (campos obligatorios)
+2. Auto-tag por palabras clave (ML)
+3. Humano revisa si hay duda en categorización
+4. Asigna a responsable del loop (Germán → C-Levels)
+5. Status actualiza a &quot;Procesado&quot;
+Post-acción: Feedback disponible en dashboard consolidado
+SLA: &lt;4 horas (validación humana en horas de negocio)</code></pre>
+<h3 class="subsection-title" id="wf03-consolidar-mensualmente-963c28">WF-03: Consolidar Mensualmente</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Trigger: Cierra mes calendario.
+1. Sistema genera reporte automático (día 1-5):
+   - Total feedback por loop
+   - Distribuición por categoría
+   - Top 5 por severidad
+   - Trends vs. mes anterior
+   - Data quality report
+2. Germán revisa, agrega narrativa estratégica
+3. Reporte enviado a 4 C-Levels (día 5)
+Post-acción: C-Levels reciben reporte consolidado
+SLA: Día 5 del mes. Máximo extensión a día 10 en modo crisis.</code></pre>
+<h3 class="subsection-title" id="wf04-distribuir-a-responsables-1bf392">WF-04: Distribuir a Responsables</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Trigger: Reporte consolidado finalizado.
+1. Germán asigna feedback a dueños:
+   - Loop Certificación → C-Level Operaciones
+   - Loop Servicio/Calidad → C-Level Operaciones + Germán
+   - Loop Cliente/Producto → C-Level Contenido
+   - Loop Contenido → C-Level Contenido
+   - Loop Estrategia → Todos (briefing trimestral)
+   - Loop Comercial → C-Level Comercial
+2. Email con contexto y datos de soporte
+3. Responsable confirma recepción
+Post-acción: Dueño tiene feedback asignado con acción recomendada
+SLA: &lt;1 día post-consolidación</code></pre>
+<h3 class="subsection-title" id="wf05-cerrar-loop-feedback-accin-31c35a">WF-05: Cerrar Loop (Feedback → Acción)</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Trigger: Responsable toma decisión basada en feedback.
+1. Responsable documenta acción: qué, por qué, fecha implementación
+2. Germán verifica y aprueba
+3. Email automático a Embajador: &quot;Tu feedback sobre [tema] resultó en [acción]&quot;
+4. Status actualiza a &quot;Cerrado&quot;
+5. Link a PRD/documento de decisión compartido
+Post-acción: Embajador siente que fue escuchado. Loop completo.
+SLA: &lt;10 días post-decisión</code></pre>
+<h3 class="subsection-title" id="wf06-integrar-en-decisiones-estratgicas-trimestral-b79f86">WF-06: Integrar en Decisiones Estratégicas Trimestrales</h3>
+<pre class="code-block" role="region" aria-label="Bloque de código"><code>Trigger: Cierra trimestre.
+1. Germán + 4 C-Levels revisan:
+   - Patrones de 3 meses
+   - Gaps sistémicos identificados
+   - Oportunidades de mercado
+   - Prioridades de producto/contenido para Q siguiente
+2. Planning meeting (4 horas): definición de iniciativas
+3. Cada iniciativa cita 3+ feedback points como justificación
+4. Roadmap actualizado
+5. Comunicación a red de embajadores: &quot;Así impactaron en nuestra estrategia&quot;
+Post-acción: Feedback integrado en estrategia verificable
+SLA: Antes del 15 del mes 1 de cada trimestre</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="diagrama-de-flujo-los-6-loops-6e30d0" data-searchable aria-labelledby="head-diagrama-de-flujo-los-6-loops-6e30d0">
+            <div class="phase-header" id="head-diagrama-de-flujo-los-6-loops-6e30d0" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Diagrama de Flujo — Los 6 Loops</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>┌─────────────────────────────────────────────────────────────────────┐
+│                      SERVICIO COMPLETADO                            │
+│                        (Cliente Satisfecho)                          │
+└─────────────────┬───────────────────────────────────────────────────┘
+                  │
+                  ▼
+        ┌─────────────────────┐
+        │ CAPTURA FEEDBACK    │
+        │  (&lt;48h post-svc)    │
+        └────────┬────────────┘
+                 │
+        ┌────────▼────────┐
+        │  ¿QUÉ LOOP?     │
+        └────────┬────────┘
+    ┌───────────┼───────────┐
+    │           │           │
+    ▼           ▼           ▼
+  [1]         [2]         [3]
+  CERT→RED   SVC→CAL    CLIENT→PROD
+    │           │           │
+    └─────┬─────┴─────┬─────┘
+          │           │
+        [4]          [5]      [6]
+        EMBA→CNT     RED→EST  EMBA→COM
+          │           │         │
+          └─────┬─────┴────┬────┘
+                │          │
+          ┌─────▼──────┐ ┌─┴──────────┐
+          │ PROCESAR &amp; │ │ CONSOLIDAR │
+          │ CATEGORIZ. │ │ MENSUAL    │
+          └─────┬──────┘ └─┬──────────┘
+                │          │
+                └──────┬───┘
+                       ▼
+              ┌────────────────────┐
+              │ DISTRIBUIR A DUEÑOS│
+              │  (C-Levels + Dpto) │
+              └────────┬───────────┘
+                       ▼
+              ┌────────────────────┐
+              │  DECIDIR &amp; ACTUAR  │
+              │ (≥30% feedback)    │
+              └────────┬───────────┘
+                       ▼
+              ┌────────────────────┐
+              │  CERRAR LOOP       │
+              │(Notificar Embajador)
+              └────────┬───────────┘
+                       ▼
+        ┌──────────────────────────┐
+        │ INTEGRAR EN ESTRATEGIA   │
+        │   (Trimestral)           │
+        └──────────────────────────┘</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="mtricas-del-sistema-de-feedback-b063d7" data-searchable aria-labelledby="head-mtricas-del-sistema-de-feedback-b063d7">
+            <div class="phase-header" id="head-mtricas-del-sistema-de-feedback-b063d7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Métricas del Sistema de Feedback</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="mtricas-de-captura-870698">Métricas de Captura</h3>
+<div class="bullet-item"><strong>Tasa de captura:</strong> % servicios con feedback reportado (Target: ≥95%)</div>
+<div class="bullet-item"><strong>Tiempo promedio de reporte:</strong> Horas entre servicio y captura (Target: &lt;24h)</div>
+<div class="bullet-item"><strong>Completitud de formulario:</strong> % campos obligatorios completados (Target: 100%)</div>
+<h3 class="subsection-title" id="mtricas-de-procesamiento-fb2992">Métricas de Procesamiento</h3>
+<div class="bullet-item"><strong>Accuracy de categorización:</strong> % feedback en categoría correcta (Target: ≥98%)</div>
+<div class="bullet-item"><strong>Tiempo de procesamiento:</strong> Horas desde captura a categorización (Target: &lt;4h)</div>
+<div class="bullet-item"><strong>Data quality:</strong> % feedback que requiere reformulación (Target: &lt;5%)</div>
+<h3 class="subsection-title" id="mtricas-de-respuesta-864a97">Métricas de Respuesta</h3>
+<div class="bullet-item"><strong>SLA críticos:</strong> % feedback crítico respondido en &lt;72h (Target: 100%)</div>
+<div class="bullet-item"><strong>SLA no-críticos:</strong> % feedback procesado en &lt;10 días (Target: ≥90%)</div>
+<div class="bullet-item"><strong>Bidireccionalidad:</strong> % embajadores que reciben notificación de acción (Target: ≥85%)</div>
+<h3 class="subsection-title" id="mtricas-de-impacto-2ac6e6">Métricas de Impacto</h3>
+<div class="bullet-item"><strong>Action rate:</strong> % feedback que genera decisión verificable (Target: ≥30%)</div>
+<div class="bullet-item"><strong>Consolidación puntual:</strong> % reportes en día 5 (Target: 100%)</div>
+<div class="bullet-item"><strong>Citation rate:</strong> % decisiones de producto que citan feedback (Target: 100%)</div>
+<h3 class="subsection-title" id="mtricas-de-satisfaccin-621696">Métricas de Satisfacción</h3>
+<div class="bullet-item"><strong>NPS Embajadores:</strong> Satisfacción con el sistema (Target: ≥8)</div>
+<div class="bullet-item"><strong>Feedback loop satisfaction:</strong> ¿Se sintió escuchado? (Target: ≥80% &quot;Sí&quot;)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="conexiones-con-otros-sops-bbf49e" data-searchable aria-labelledby="head-conexiones-con-otros-sops-bbf49e">
+            <div class="phase-header" id="head-conexiones-con-otros-sops-bbf49e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Conexiones con otros SOPs</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">SOP Relacionado</th><th scope="col">Punto de Conexión</th><th scope="col">Responsable</th></tr></thead><tbody><tr><td>SOP-Embajador-General</td><td>Embajador captura feedback de su rol</td><td>Germán + Embajador</td></tr><tr><td>SOP-Entrega-Servicios</td><td>Post-delivery es trigger de captura</td><td>C-Level Operaciones</td></tr><tr><td>SOP-Certificación</td><td>Feedback post-certificación alimenta mejoras</td><td>C-Level Contenido</td></tr><tr><td>SOP-Resolución-Casos</td><td>Casos críticos generan feedback automático</td><td>C-Level Operaciones</td></tr><tr><td>SOP-Escalamientos</td><td>Feedback crítico → escalamiento automático</td><td>Javier</td></tr><tr><td>SOP-Revisión-Trimestral</td><td>Planning estratégico usa feedback aggregado</td><td>Todos C-Levels</td></tr><tr><td>SOP-Marketing</td><td>Feedback positivo → casos de éxito</td><td>C-Level Marketing</td></tr><tr><td>SOP-Talento</td><td>Embajadores no-reporting → check-in</td><td>Germán + Talento</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="ecuacin-metodologia-feedback-loop-5a1654" data-searchable aria-labelledby="head-ecuacin-metodologia-feedback-loop-5a1654">
+            <div class="phase-header" id="head-ecuacin-metodologia-feedback-loop-5a1654" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Ecuación MetodologIA: Feedback Loop</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>VALOR_EMBAJADOR = (Servicios × Feedback_Capturado × Accuracy × Bidireccionalidad) / Tiempo_Respuesta
+
+Donde:
+- Servicios = Número de servicios entregados (mes)
+- Feedback_Capturado = % captura (0-1)
+- Accuracy = % categorización correcta (0-1)
+- Bidireccionalidad = % embajadores que reciben respuesta (0-1)
+- Tiempo_Respuesta = Días promedio de respuesta
+
+IMPACTO_LOOP = Σ (Feedback_Loops × Action_Rate × Visibility)
+
+El Embajador es el SENSOR. El Feedback Loop es el CIRCUITO.
+Sin circuito cerrado, el sensor no tiene valor.
+
+MÁXIMA OPERATIVA:
+&quot;Cada servicio es una oportunidad de inteligencia.
+Cada feedback sin acción es inteligencia desperdiciada.&quot;</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="responsabilidades-por-rol-c4e23c" data-searchable aria-labelledby="head-responsabilidades-por-rol-c4e23c">
+            <div class="phase-header" id="head-responsabilidades-por-rol-c4e23c" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Responsabilidades por Rol</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Rol</th><th scope="col">Actividades</th><th scope="col">SLA</th></tr></thead><tbody><tr><td><strong>Embajador</strong></td><td>Captura feedback en &lt;48h. Categoriza. Proporción evidencia.</td><td>&lt;48h post-servicio</td></tr><tr><td><strong>Germán</strong></td><td>Valida, procesa, consolida. Asigna a dueños. Cierra loops.</td><td>&lt;10 días cierre</td></tr><tr><td><strong>C-Levels</strong></td><td>Revisan consolidado. Toman decisiones. Notifican acción.</td><td>Día 5 revisión</td></tr><tr><td><strong>Operaciones</strong></td><td>Mantiene sistema, validación de datos, fallbacks.</td><td>Continua</td></tr><tr><td><strong>Marketing</strong></td><td>Casos de éxito desde feedback excepcional.</td><td>&lt;14 días publicación</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="escalamientos-f2ee9b" data-searchable aria-labelledby="head-escalamientos-f2ee9b">
+            <div class="phase-header" id="head-escalamientos-f2ee9b" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Escalamientos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>CRÍTICO (Churn risk, servicio fallido):
+  → Javier (C-Level Ops) en &lt;2h
+  → Client call en &lt;24h
+
+SISTÉMICO (Gap en metodología, ≥5 reportes):
+  → C-Level Contenido + C-Level Ops en &lt;24h
+  → Task force en &lt;7 días
+
+COMERCIAL (Lead, oportunidad alta):
+  → C-Level Comercial en &lt;4 horas
+  → Follow-up en &lt;2 días
+
+NO-RESPUESTA (&gt;30 días sin cierre):
+  → Germán escalada a C-Level responsable
+  → Redefinición de plan en &lt;5 días</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="implementacin-752834" data-searchable aria-labelledby="head-implementacin-752834">
+            <div class="phase-header" id="head-implementacin-752834" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> Implementación</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Fase 1 (Semana 1):</strong> Setup del formulario único. Capacitación embajadores.</p>
+<p class="key-value"><strong>Fase 2 (Semana 2-3):</strong> Piloto con 5 embajadores. Validación de flujos.</p>
+<p class="key-value"><strong>Fase 3 (Semana 4):</strong> Rollout a toda la red. Go-live del dashboard.</p>
+<p class="key-value"><strong>Fase 4 (Mes 2):</strong> Primer consolidado mensual. Ajustes.</p>
+<p class="key-value"><strong>Fase 5 (Mes 3):</strong> Integración en decisiones estratégicas. Trimestral.</p>
+<hr class="divider">
+<p class="key-value"><strong>SOP Aprobado:</strong> Germán, Javier, Carlos, Andrea, Alejandra</p>
+<p class="key-value"><strong>Vigencia:</strong> 2026-03-24 → 2027-03-24 (revisión anual)</p>
+<p class="key-value"><strong>Contacto:</strong> feedback@metodologia.io | Germán (C-Level Ecosystem)</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>MetodologIA © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v2.0 Excellence Edition — Generado: 2026-03-24 13:53</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

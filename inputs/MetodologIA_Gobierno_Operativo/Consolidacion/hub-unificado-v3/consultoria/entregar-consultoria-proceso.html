@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="PROCESO: Entregar Consultoría — Proceso de Delivery MetodologIA">
+    <title>PROCESO: Entregar Consultoría — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Consultoria</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">PROCESO: Entregar Consultoría</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>PROCESO: Entregar Consultoría</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta">Versión: 2.0 | Fecha: 2026-03-24 | Certif. Moat: CON-2401-V20 | Clasificación: Operacional Crítica</div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">17</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">7</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">1</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">9</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('visin-vitamina-e25a54')" aria-label="Ir a VISIÓN &amp; VITAMINA">VISIÓN &amp; VITAMINA</button>
+<button class="nav-btn" onclick="scrollToSection('informacin-ejecutiva-a03814')" aria-label="Ir a INFORMACIÓN EJECUTIVA">INFORMACIÓN EJECUTIVA</button>
+<button class="nav-btn" onclick="scrollToSection('estructura-general-3-tiers-69b5aa')" aria-label="Ir a ESTRUCTURA GENERAL: 3 TIERS">ESTRUCTURA GENERAL: 3 TIERS</button>
+<button class="nav-btn" onclick="scrollToSection('tier-1-diagnstico-8886fd')" aria-label="Ir a TIER 1: DIAGNÓSTICO">TIER 1: DIAGNÓSTICO</button>
+<button class="nav-btn" onclick="scrollToSection('tier-2-traccin-3ea5e3')" aria-label="Ir a TIER 2: TRACCIÓN">TIER 2: TRACCIÓN</button>
+<button class="nav-btn" onclick="scrollToSection('tier-3-evolucin-e21162')" aria-label="Ir a TIER 3: EVOLUCIÓN">TIER 3: EVOLUCIÓN</button>
+<button class="nav-btn" onclick="scrollToSection('handoff-comercial-ac0f9a')" aria-label="Ir a HANDOFF COMERCIAL">HANDOFF COMERCIAL</button>
+<button class="nav-btn" onclick="scrollToSection('crisis-management-862f30')" aria-label="Ir a CRISIS MANAGEMENT">CRISIS MANAGEMENT</button>
+<button class="nav-btn" onclick="scrollToSection('slas-compromisos-6cda29')" aria-label="Ir a SLAs &amp; COMPROMISOS">SLAs &amp; COMPROMISOS</button>
+<button class="nav-btn" onclick="scrollToSection('documentacin-de-referencia-16d4e7')" aria-label="Ir a DOCUMENTACIÓN DE REFERENCIA">DOCUMENTACIÓN DE REFERENCIA</button>
+<button class="nav-btn" onclick="scrollToSection('supuestos-explcitos-c648d8')" aria-label="Ir a SUPUESTOS EXPLÍCITOS">SUPUESTOS EXPLÍCITOS</button>
+<button class="nav-btn" onclick="scrollToSection('lmites-89f0a8')" aria-label="Ir a LÍMITES">LÍMITES</button>
+<button class="nav-btn" onclick="scrollToSection('criterios-de-aceptacin-354d6e')" aria-label="Ir a CRITERIOS DE ACEPTACIÓN">CRITERIOS DE ACEPTACIÓN</button>
+<button class="nav-btn" onclick="scrollToSection('casos-borde-25ff81')" aria-label="Ir a CASOS BORDE">CASOS BORDE</button>
+<button class="nav-btn" onclick="scrollToSection('decisiones-de-diseo-8b0284')" aria-label="Ir a DECISIONES DE DISEÑO">DECISIONES DE DISEÑO</button>
+<button class="nav-btn" onclick="scrollToSection('antipatterns-d84484')" aria-label="Ir a ANTI-PATTERNS">ANTI-PATTERNS</button>
+<button class="nav-btn" onclick="scrollToSection('fallbacks-operativos-a840ab')" aria-label="Ir a FALLBACKS OPERATIVOS">FALLBACKS OPERATIVOS</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="visin-vitamina-e25a54" data-searchable aria-labelledby="head-visin-vitamina-e25a54">
+            <div class="phase-header" id="head-visin-vitamina-e25a54" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> VISIÓN &amp; VITAMINA</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <blockquote class="quote-block" role="note"><strong>La consultoría no es dar consejos; es co-crear el modelo operativo del futuro.</strong></blockquote>
+<p>&gt;</p>
+<blockquote class="quote-block" role="note">Trabajamos codo a codo con clientes para diagnosticar, activar quick wins, e institucionalizar transformaciones que perduran. No dejamos consultores; dejamos capacidad interna, ownership, y cambio medible.</blockquote>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="informacin-ejecutiva-a03814" data-searchable aria-labelledby="head-informacin-ejecutiva-a03814">
+            <div class="phase-header" id="head-informacin-ejecutiva-a03814" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> INFORMACIÓN EJECUTIVA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Atributo</th><th scope="col">Descripción</th></tr></thead><tbody><tr><td><strong>Responsable General</strong></td><td>Director de Consultoría</td></tr><tr><td><strong>Tiers de Servicio</strong></td><td>3: Diagnóstico (gratuito B2B) \</td><td>Tracción (18M COP, 4-8 sem) \</td><td>Evolución (35M COP, 12-24 sem)</td></tr><tr><td><strong>Duración Típica</strong></td><td>2-24 semanas (depende tier)</td></tr><tr><td><strong>Equipo Típico</strong></td><td>1-2 consultores + especialistas temáticos</td></tr><tr><td><strong>Eligibilidad Startup</strong></td><td>&lt;10 empleados, &lt;3 años = B2C rates (descuento 40%)</td></tr><tr><td><strong>Tasa Éxito</strong></td><td>87% proyectos alcanzan 80%+ de objetivos</td></tr><tr><td><strong>Input Comercial</strong></td><td>Handoff de Discovery, descalificados de Élite</td></tr><tr><td><strong>Output Comercial</strong></td><td>Recompra (upgrade tier, nueva área) + Referrals</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="estructura-general-3-tiers-69b5aa" data-searchable aria-labelledby="head-estructura-general-3-tiers-69b5aa">
+            <div class="phase-header" id="head-estructura-general-3-tiers-69b5aa" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> ESTRUCTURA GENERAL: 3 TIERS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <pre class="code-block" role="region" aria-label="Bloque de código"><code>┌─ DIAGNÓSTICO (2-4 semanas, Gratuito B2B)
+│  │ Evaluación digital maturity | Hallazgos | Recomendaciones
+│  │ [Gate: Recompra a Tracción o Evolución?]
+│  ▼
+├─ TRACCIÓN (4-8 semanas, $18M COP)
+│  │ Sprints de quick wins | Implementación | Medición impacto
+│  │ [Gate: Valor probado, recompra?]
+│  │ [Output: Referral loop]
+│  ▼
+└─ EVOLUCIÓN (12-24 semanas, $35M COP)
+   │ Co-diseño modelo operativo | Change management | Transfer
+   │ QBR trimestral | Knowledge transfer
+   │ [Output: Sostenibilidad, Recompra, Referrals]</code></pre>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="tier-1-diagnstico-8886fd" data-searchable aria-labelledby="head-tier-1-diagnstico-8886fd">
+            <div class="phase-header" id="head-tier-1-diagnstico-8886fd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> TIER 1: DIAGNÓSTICO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="objetivo-d31a58">Objetivo</h3>
+<p>Evaluación holística de madurez digital del cliente. Hallazgos claros, recomendaciones accionables, propuesta de siguiente paso.</p>
+<h3 class="subsection-title" id="duracin-91a0cf">Duración</h3>
+<p>2-4 semanas (típicamente 3)</p>
+<h3 class="subsection-title" id="costo-93d559">Costo</h3>
+<p>Gratuito (B2B empresas). B2C startups: evaluación directa a Tracción.</p>
+<h3 class="subsection-title" id="responsable-d7c40c">Responsable</h3>
+<p>Consultor Senior + Analista de Datos</p>
+<h3 class="subsection-title" id="fases-4fc34b">Fases</h3>
+<p class="key-value"><strong>FASE 1: DISCOVERY (Sem 1)</strong></p>
+<div class="bullet-item">Entrevistas: Liderazgo (CEO, CTO, CMO, COO), 3-4 personas</div>
+<div class="bullet-item">Audit técnico: Stack, infraestructura, seguridad, data</div>
+<div class="bullet-item">Audit organizacional: Procesos, roles, capacidades digitales</div>
+<div class="bullet-item">Relevamiento: Documentación, sistemas, pain points</div>
+<p class="key-value"><strong>FASE 2: ANÁLISIS (Sem 2)</strong></p>
+<div class="bullet-item">Gap analysis: Estado actual vs best practice</div>
+<div class="bullet-item">Madurez digital scoring (0-100 por dimensión: Tech, People, Process, Culture)</div>
+<div class="bullet-item">Identificación de palancas: ¿Dónde está el mayor potencial de impacto?</div>
+<div class="bullet-item">ROI potencial: ¿Cuánto valor hay en la mesa?</div>
+<p class="key-value"><strong>FASE 3: RECOMENDACIONES (Sem 2-3)</strong></p>
+<div class="bullet-item">3-5 recomendaciones estratégicas (prioridad 1 = impacto máximo)</div>
+<div class="bullet-item">Roadmap posible: 12-24 meses</div>
+<div class="bullet-item">Estimación esfuerzo + inversión</div>
+<div class="bullet-item">Propuesta de siguiente paso (Tracción vs Evolución)</div>
+<p class="key-value"><strong>FASE 4: PRESENTACIÓN EJECUTIVA (Sem 3)</strong></p>
+<div class="bullet-item">Presentation (90 min): Hallazgos, gráficos, ROI</div>
+<div class="bullet-item">Q&amp;A: Sponsor + leadership</div>
+<div class="bullet-item">Decision: ¿Avanzan a siguiente tier?</div>
+<h3 class="subsection-title" id="entregables-18407e">Entregables</h3>
+<div class="bullet-item">Reporte ejecutivo (20-30 páginas): executive summary + análisis detallado</div>
+<div class="bullet-item">Scorecards de madurez (visual dashboard)</div>
+<div class="bullet-item">Roadmap propuesto (visual timeline)</div>
+<div class="bullet-item">Propuesta de Tracción o Evolución (si interesados)</div>
+<h3 class="subsection-title" id="kpis-23e099">KPIs</h3>
+<div class="bullet-item">Clarity de recomendaciones: ¿Leadership siente claridad sobre próximos pasos?</div>
+<div class="bullet-item">NPS de diagnóstico: ¿Cuánto recomendarían seguir con nosotros?</div>
+<div class="bullet-item">Conversión a Tracción/Evolución: % que avanzan (target ≥40%)</div>
+<h3 class="subsection-title" id="sop-referencia-568e85">SOP Referencia</h3>
+<p>→ <code class="inline-code">/consultoria/references/sop/sop-diagnostico/diagnostico-sop.md</code></p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="tier-2-traccin-3ea5e3" data-searchable aria-labelledby="head-tier-2-traccin-3ea5e3">
+            <div class="phase-header" id="head-tier-2-traccin-3ea5e3" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> TIER 2: TRACCIÓN</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="objetivo-d31a58">Objetivo</h3>
+<p>Generar resultados rápidos y medibles en 4-8 semanas. Prueba de concepto, quick wins, capacidad de cambio en vivo.</p>
+<h3 class="subsection-title" id="duracin-91a0cf">Duración</h3>
+<p>4-8 semanas (típicamente 6)</p>
+<h3 class="subsection-title" id="costo-93d559">Costo</h3>
+<p>$18M COP (negociable con volumen)</p>
+<h3 class="subsection-title" id="modelo-4b3358">Modelo</h3>
+<p>Sprint-based. 1-2 sprints de 2-3 semanas c/u.</p>
+<h3 class="subsection-title" id="responsable-d7c40c">Responsable</h3>
+<p>Consultor Senior (líder del proyecto) + 1-2 especialistas temáticos</p>
+<h3 class="subsection-title" id="fases-4fc34b">Fases</h3>
+<p class="key-value"><strong>FASE 1: SPRINT PLANNING (Día 1-3)</strong></p>
+<div class="bullet-item">Kick-off con stakeholders clave</div>
+<div class="bullet-item">Identificación de 2-3 objetivos SMART (4-8 semanas)</div>
+<div class="bullet-item">Definición de equipo de cambio (3-5 personas internas)</div>
+<div class="bullet-item">Planificación de sprints: qué se logra cada semana</div>
+<p class="key-value"><strong>FASE 2: IMPLEMENTACIÓN (Sem 1-5, sprints iterativos)</strong></p>
+<div class="bullet-item">Sprint A (Sem 1-2): Quick win 1 (ej: nuevo proceso, herramienta, capacitación)</div>
+<div class="bullet-item">Sprint B (Sem 3-4): Quick win 2 (ej: reingeniería área, integración sistemas)</div>
+<div class="bullet-item">Sprint C (Sem 5-6, opcional): Quick win 3 o profundización de impacto</div>
+<div class="bullet-item">Cada sprint: Stand-up diario, demo al final, retrospectiva</div>
+<p class="key-value"><strong>FASE 3: MEDICIÓN &amp; COMUNICACIÓN (Sem 6-8)</strong></p>
+<div class="bullet-item">Medición de impacto: ¿Qué cambió? (métricas establecidas en planning)</div>
+<div class="bullet-item">Business case: Ahorro de tiempo, costo, calidad, velocidad</div>
+<div class="bullet-item">Comunicación interna: Celebración de logros, evangelización</div>
+<div class="bullet-item">Documentación: Qué se implementó, cómo replicar</div>
+<p class="key-value"><strong>FASE 4: HANDOFF &amp; DECISIÓN (Sem 8)</strong></p>
+<div class="bullet-item">Handoff a equipo interno: ¿Quién sostiene el cambio?</div>
+<div class="bullet-item">Capacitación de usuarios finales</div>
+<div class="bullet-item">Decisión cliente: ¿Recompran Evolución? ¿Otra Tracción en área diferente?</div>
+<h3 class="subsection-title" id="entregables-18407e">Entregables</h3>
+<div class="bullet-item">Sprint reports (semanal)</div>
+<div class="bullet-item">Business case: ROI, métricas, impacto (executive summary)</div>
+<div class="bullet-item">Documentación de procesos (playbooks, checklists)</div>
+<div class="bullet-item">Sesión de capacitación (2-3 horas)</div>
+<div class="bullet-item">Propuesta de recompra (si cliente quiere escalar)</div>
+<h3 class="subsection-title" id="kpis-23e099">KPIs</h3>
+<div class="bullet-item">Time-to-value: ¿Cuándo se vio impacto? (target: Sem 2-3)</div>
+<div class="bullet-item">ROI delivered: Ahorro/revenue generado vs costo consultoría (target: ≥2x)</div>
+<div class="bullet-item">NPS cliente: Satisfacción con velocidad, calidad, impacto</div>
+<div class="bullet-item">Recompra rate: % que avanzan a Evolución o next Tracción</div>
+<h3 class="subsection-title" id="sop-referencia-568e85">SOP Referencia</h3>
+<p>→ <code class="inline-code">/consultoria/references/sop/sop-traccion/traccion-sop.md</code></p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="tier-3-evolucin-e21162" data-searchable aria-labelledby="head-tier-3-evolucin-e21162">
+            <div class="phase-header" id="head-tier-3-evolucin-e21162" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> TIER 3: EVOLUCIÓN</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="objetivo-d31a58">Objetivo</h3>
+<p>Transformación estratégica profunda de modelo operativo. Co-diseño, change management, transferencia de capacidad, sostenibilidad de largo plazo.</p>
+<h3 class="subsection-title" id="duracin-91a0cf">Duración</h3>
+<p>12-24 semanas (típicamente 16)</p>
+<h3 class="subsection-title" id="costo-93d559">Costo</h3>
+<p>$35M COP (negociable según scope)</p>
+<h3 class="subsection-title" id="modelo-4b3358">Modelo</h3>
+<p>Engagement de larga duración, embedded con equipo cliente.</p>
+<h3 class="subsection-title" id="responsable-d7c40c">Responsable</h3>
+<p>Director de Consultoría (oversight) + Consultor Senior (day-to-day) + Especialistas temáticos</p>
+<h3 class="subsection-title" id="fases-4fc34b">Fases</h3>
+<p class="key-value"><strong>FASE 1: DIAGNÓSTICO PROFUNDO (Sem 1-2)</strong></p>
+<div class="bullet-item">Deep-dive interviews (20-30 personas)</div>
+<div class="bullet-item">Process mapping (end-to-end)</div>
+<div class="bullet-item">Análisis de data, sistemas, capacidades</div>
+<div class="bullet-item">Identificación de &quot;pain points&quot; raíz vs síntomas</div>
+<div class="bullet-item">Visión de futuro: &quot;Modelo operativo ideal en 2-3 años&quot;</div>
+<p class="key-value"><strong>FASE 2: CO-DISEÑO (Sem 3-6)</strong></p>
+<div class="bullet-item">Workshops de diseño (2-3 días intensivos)</div>
+<div class="bullet-item">Co-crear modelo operativo nuevo</div>
+<div class="bullet-item">Definición de roles, procesos, tecnología, cultura</div>
+<div class="bullet-item">Prototipado: Pilotos en 1-2 áreas antes de escala</div>
+<div class="bullet-item">Validación con leadership</div>
+<p class="key-value"><strong>FASE 3: CHANGE MANAGEMENT &amp; IMPLEMENTACIÓN (Sem 7-18)</strong></p>
+<div class="bullet-item">Comunicación de cambio (cascade, storytelling, ritmo)</div>
+<div class="bullet-item">Capacitación estructurada (3-5 sesiones por grupo)</div>
+<div class="bullet-item">Mentoría de &quot;change champions&quot; internos</div>
+<div class="bullet-item">Ajustes iterativos (weekly pulse checks, retrospectivas)</div>
+<div class="bullet-item">Resolución de resistencia, conflictos</div>
+<p class="key-value"><strong>FASE 4: KNOWLEDGE TRANSFER (Sem 15-22)</strong></p>
+<div class="bullet-item">Documentación completa (playbooks, decision frameworks, KPIs)</div>
+<div class="bullet-item">Transferencia de metodología a equipo interno</div>
+<div class="bullet-item">Desarrollo de &quot;internal consultants&quot; (2-3 personas)</div>
+<div class="bullet-item">Capstone proyecto: Equipo interno lidera cambio sin nosotros</div>
+<p class="key-value"><strong>FASE 5: HANDOFF &amp; SOSTENIBILIDAD (Sem 20-24)</strong></p>
+<div class="bullet-item">QBR trimestral: Cómo va el nuevo modelo?</div>
+<div class="bullet-item">Monitoreo de KPIs (6 meses post-engagement)</div>
+<div class="bullet-item">Ajustes necesarios (soporte limitado, pago por hora)</div>
+<div class="bullet-item">Documentación de aprendizajes, escalabilidad</div>
+<h3 class="subsection-title" id="entregables-18407e">Entregables</h3>
+<div class="bullet-item">Diagnóstico + Reporte (30-40 páginas)</div>
+<div class="bullet-item">Modelo Operativo Diseñado (visual + descripción detallada)</div>
+<div class="bullet-item">Change plan (comunicación, capacitación, timeline)</div>
+<div class="bullet-item">Playbooks &amp; documentación (10-20 documentos)</div>
+<div class="bullet-item">Change champion handbook</div>
+<div class="bullet-item">Post-implementation support (QBR 3 meses)</div>
+<div class="bullet-item">Propuesta de sostenibilidad (support ongoing, 0-$500k/trim)</div>
+<h3 class="subsection-title" id="kpis-23e099">KPIs</h3>
+<div class="bullet-item">Completación de diagnóstico: ¿Entendimiento común del futuro? (Clarity ≥8/10)</div>
+<div class="bullet-item">Adopción del nuevo modelo: % personas usando nuevo proceso (target ≥80% Sem 8)</div>
+<div class="bullet-item">Impacto medido: Métricas definidas en Fase 1 en progreso positivo</div>
+<div class="bullet-item">Knowledge transfer: # internal consultants trained (target ≥2-3)</div>
+<div class="bullet-item">Sostenibilidad: ¿Modelo persiste 6 meses post-consultoría? (target 90%+)</div>
+<div class="bullet-item">NPS cliente: Satisfacción general con transformación y soporte</div>
+<h3 class="subsection-title" id="sop-referencia-568e85">SOP Referencia</h3>
+<p>→ <code class="inline-code">/consultoria/references/sop/sop-evolucion/evolucion-sop.md</code></p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="handoff-comercial-ac0f9a" data-searchable aria-labelledby="head-handoff-comercial-ac0f9a">
+            <div class="phase-header" id="head-handoff-comercial-ac0f9a" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> HANDOFF COMERCIAL</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="input-de-discovery-4ab2e1">Input: De Discovery</h3>
+<p class="key-value"><strong>Trigger:</strong> Cliente pasó descubrimiento, necesidad clara de Consultoría (no Élite)</p>
+<p class="key-value"><strong>Transición:</strong></p>
+<div class="bullet-item">Account Manager → Director Consultoría (hand-off kick-off)</div>
+<div class="bullet-item">Email de confirmación: Propuesta, timeline, equipo</div>
+<div class="bullet-item">Primer call (Sem -1): Kick-off con cliente</div>
+<h3 class="subsection-title" id="output-a-recompra-referral-bff4bb">Output: A Recompra &amp; Referral</h3>
+<p class="key-value"><strong>Loop 1: Dentro del Engagement (Tracción/Evolución)</strong></p>
+<div class="bullet-item">Mes 2-4: Identificación de oportunidades de expansión (otra área, otro proyecto)</div>
+<div class="bullet-item">Propuesta: &quot;Vimos [X], podríamos [Y]&quot; (upsize)</div>
+<p class="key-value"><strong>Loop 2: Post-Engagement</strong></p>
+<div class="bullet-item">Mes 1 post: Check-in de sostenibilidad</div>
+<div class="bullet-item">Mes 3 post: Oferta de soporte continuado (QBR, coaching, troubleshooting)</div>
+<div class="bullet-item">Mes 6 post: Evaluación de impacto, propuesta de nueva iniciativa</div>
+<p class="key-value"><strong>Loop 3: Referral</strong></p>
+<div class="bullet-item">Post-éxito: &quot;¿A quién conoces que enfrenta desafío similar?&quot;</div>
+<div class="bullet-item">Incentivo: Crédito de horas o descuento en próximo proyecto</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="crisis-management-862f30" data-searchable aria-labelledby="head-crisis-management-862f30">
+            <div class="phase-header" id="head-crisis-management-862f30" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> CRISIS MANAGEMENT</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="crisis-1-sponsor-abandonment-o-cambio-de-prioridad-bc356b">Crisis 1: Sponsor ABANDONMENT o Cambio de Prioridades</h3>
+<p class="key-value"><strong>Trigger:</strong> Sponsor se va, nueva prioridad organizacional, presupuesto cortado</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">Director contacta CEO/CFO inmediatamente (24h)</div>
+<div class="bullet-item">Diagnóstico: ¿Es pausa o cancelación?</div>
+<div class="bullet-item">Si pausa: renegociar timeline, scope</div>
+<div class="bullet-item">Si cancelación: transición ordenada, documentación, opción de recompra</div>
+<h3 class="subsection-title" id="crisis-2-team-resistance-adoption-baja-f63d32">Crisis 2: Team Resistance / Adoption Baja</h3>
+<p class="key-value"><strong>Trigger:</strong> Equipo no adopta cambio, resistencia silenciosa</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">Investigación rápida (entrevistas anónimas)</div>
+<div class="bullet-item">Identificación de root cause (miedo, falta de clarity, mal leadership)</div>
+<div class="bullet-item">Intervención: Aumento de capacitación, mentoría, comunicación, cambio de líderes si aplica</div>
+<h3 class="subsection-title" id="crisis-3-scope-creep-80f78b">Crisis 3: Scope Creep</h3>
+<p class="key-value"><strong>Trigger:</strong> Cliente pide &quot;un cambio pequeño más&quot; (scope no planeada)</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">Evaluación: ¿Es dentro de scope? ¿Requiere inversión extra?</div>
+<div class="bullet-item">Comunicación clara: &quot;Esto es fuera de scope, cuesta [X]&quot;</div>
+<div class="bullet-item">Opción: Agregar como fase 2, o pausar para renegociar</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="slas-compromisos-6cda29" data-searchable aria-labelledby="head-slas-compromisos-6cda29">
+            <div class="phase-header" id="head-slas-compromisos-6cda29" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> SLAs &amp; COMPROMISOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Elemento</th><th scope="col">SLA</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>Kick-off inicial</td><td>5 días post-contrato</td><td>Director Consultoría</td></tr><tr><td>Presentation of plan (Diagnóstico)</td><td>2 semanas</td><td>Consultor</td></tr><tr><td>Execution reports (Tracción)</td><td>Semanal</td><td>Consultor</td></tr><tr><td>Monthly reports (Evolución)</td><td>Mes 1, 2, 3 post-inicio</td><td>Consultor + Director</td></tr><tr><td>Crisis response</td><td>24h diagnóstico, 48h plan</td><td>Director</td></tr><tr><td>QBR post-implementación</td><td>30, 60, 90 días post</td><td>Consultor</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="documentacin-de-referencia-16d4e7" data-searchable aria-labelledby="head-documentacin-de-referencia-16d4e7">
+            <div class="phase-header" id="head-documentacin-de-referencia-16d4e7" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> DOCUMENTACIÓN DE REFERENCIA</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">SOP-Diagnóstico: <code class="inline-code">/consultoria/references/sop/sop-diagnostico/diagnostico-sop.md</code></div>
+<div class="bullet-item">SOP-Tracción: <code class="inline-code">/consultoria/references/sop/sop-traccion/traccion-sop.md</code></div>
+<div class="bullet-item">SOP-Evolución: <code class="inline-code">/consultoria/references/sop/sop-evolucion/evolucion-sop.md</code></div>
+<div class="bullet-item">SOP-Handoff Success: <code class="inline-code">/consultoria/references/sop/sop-handoff-success/handoff-success-sop.md</code></div>
+<div class="bullet-item">Catálogo Intervenciones: <code class="inline-code">/consultoria/catalogo-intervenciones.md</code></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="supuestos-explcitos-c648d8" data-searchable aria-labelledby="head-supuestos-explcitos-c648d8">
+            <div class="phase-header" id="head-supuestos-explcitos-c648d8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> SUPUESTOS EXPLÍCITOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Sponsor corporativo existe y es accesible:</strong> El cliente tiene un patrocinador ejecutivo (CEO, CFO, CXO) con presupuesto y autoridad. Si sponsor es coordinator/manager, proceso escala a 2-3 semanas extra.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Datos y documentación existen, aunque desorganizados:</strong> Asumimos que existen procesos, sistemas, métricas, aunque no estén centralizados. Si cliente está en &quot;caos total&quot; (sin docs, sin procesos), diagnóstico requiere +50% esfuerzo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Cliente desea transformación, no validación de status quo:</strong> Entramos con asunción de que hay voluntad de cambio. Si entrada es &quot;solo auditoría defensiva&quot;, reframing obligatorio en Fase 1.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Equipo interno tendrá 20-30% disponibilidad:</strong> Dedicamos recursos internos al proyecto. Si cliente no libera gente, ejecución cae y entregables se comprometer. Trigger de crisis.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Métricas de éxito son medibles post-implementación:</strong> Asumimos que cambio deja rastro (horas ahorradas, costo reducido, NPS, velocidad). Si cliente no puede medir impacto, valor se diluye.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="lmites-89f0a8" data-searchable aria-labelledby="head-lmites-89f0a8">
+            <div class="phase-header" id="head-lmites-89f0a8" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge limit">LÍMITES</span> LÍMITES</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>FUERA DE SCOPE:</strong></p>
+<div class="bullet-item">Desarrollo de software/código: Solo diseño de soluciones, no implementación técnica.</div>
+<div class="bullet-item">Cambios tecnológicos complejos (migración data, refactor arquitectura): Se recomienda, no ejecutamos.</div>
+<div class="bullet-item">Competencias de RR.HH. profundas (selección, despidos, reestructura nómina): Consultoría apunta a roles y procesos, no decisiones de personal.</div>
+<div class="bullet-item">Sustituir management permanente: Somos mentores/coaches, no reemplazo de equipo interno.</div>
+<div class="bullet-item">Procesos multi-año: Evolución máx 24 semanas, después cliente debe mantener.</div>
+<p class="key-value"><strong>NO APLICA A:</strong></p>
+<div class="bullet-item">Clientes en crisis aguda (insolvencia, colapso operativo): Primero stabilizar, después transformar.</div>
+<div class="bullet-item">Contextos donde leadership está dividida (conflicto accionista, merger pending): Posponer hasta claridad.</div>
+<div class="bullet-item">Industrias con regulación prohibitiva donde cambio es ilegal: Consultoría no sale adelante.</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="criterios-de-aceptacin-354d6e" data-searchable aria-labelledby="head-criterios-de-aceptacin-354d6e">
+            <div class="phase-header" id="head-criterios-de-aceptacin-354d6e" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> CRITERIOS DE ACEPTACIÓN</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="diagnstico-123c0c">DIAGNÓSTICO</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Reporte entregado con ≥3 recomendaciones accionables, cada una con ROI estimado</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Leadership expresa &quot;clarity&quot; ≥7/10 en próximos pasos</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Conversión decidida: Cliente elige Tracción, Evolución, o ambas (o pausa explícita)</div>
+<h3 class="subsection-title" id="traccin-d0d73b">TRACCIÓN</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> ≥2 de 3 objetivos SMART completados con métrica medible</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Business case documentado (ROI ≥2x inversión)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Equipo interno capacitado y handoff completado</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Cliente puede operar cambio sin consultor (test: &quot;¿pueden ustedes sostener esto?&quot;)</div>
+<h3 class="subsection-title" id="evolucin-2fe761">EVOLUCIÓN</h3>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> Modelo operativo nuevo diseñado, documentado, validado por leadership</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> ≥80% del equipo usando nuevo proceso (sem 8)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> ≥2-3 internal consultants entrenados (pueden liderar cambio sin nosotros)</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> KPIs definidos en Fase 1 mostrando progreso positivo a Sem 20+</div>
+<div class="bullet-item"><span class="status-ok" aria-label="Completado">✅</span> QBR 3-meses post: Modelo persiste, NPS ≥7</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="casos-borde-25ff81" data-searchable aria-labelledby="head-casos-borde-25ff81">
+            <div class="phase-header" id="head-casos-borde-25ff81" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> CASOS BORDE</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-borde-1-sponsor-abandonment-19fde0">Caso Borde 1: SPONSOR ABANDONMENT</h3>
+<p class="key-value"><strong>Trigger:</strong> Sponsor se va, cambia de empresa, pierde poder político, o nuevas prioridades lo desplazan</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">24h: Director contacta CEO/CFO directamente (no email)</div>
+<div class="bullet-item">48h: Diagnóstico causa raíz (pausa, cancelación, o shift de sponsor)</div>
+<div class="bullet-item">Si pausa: Renegociar timeline, scope, nuevo sponsor</div>
+<div class="bullet-item">Si cancelación: Documentación ordenada, opción right-to-return (6 meses descuento)</div>
+<p class="key-value"><strong>Fallback:</strong> Si contacto ejecutivo fracasa, escalar a Co-founder MetodologIA (señal de cliente en riesgo máximo)</p>
+<h3 class="subsection-title" id="caso-borde-2-equipo-cliente-no-disponible-b02a14">Caso Borde 2: EQUIPO CLIENTE NO DISPONIBLE</h3>
+<p class="key-value"><strong>Trigger:</strong> Cliente promete 20% dedicación, realidad es 5% (urgencias, vacaciones, presupuesto cortado)</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">Sem 1: Detectar en kick-off que timeline está en riesgo</div>
+<div class="bullet-item">Diagnóstico rápido: ¿Es temporal (vacaciones) o crónico (estructura)?</div>
+<div class="bullet-item">Si temporal: Pausar engagement 2-4 semanas, extender fecha</div>
+<div class="bullet-item">Si crónico: Renegociar scope (eliminar iniciativas que requieren dedicación alta) o pausar indefinida</div>
+<p class="key-value"><strong>Fallback:</strong> Continuar con equipo reducido pero rebajar expectativas de impacto (documentado en acta de cambio)</p>
+<h3 class="subsection-title" id="caso-borde-3-deliverable-quality-dispute-708d84">Caso Borde 3: DELIVERABLE QUALITY DISPUTE</h3>
+<p class="key-value"><strong>Trigger:</strong> Cliente rechaza reporte/propuesta/playbook (&quot;Esto no es lo que pedimos&quot;, &quot;Calidad baja&quot;, &quot;Esto no se aplica&quot;)</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">24h: Sesión 1:1 (Director + Cliente) de 60 min, sin defensiva</div>
+<div class="bullet-item">Diagnóstico: ¿Es malentendido de expectativa? ¿Cambió el problema? ¿Realidad diferente?</div>
+<div class="bullet-item">Opción A: Iterar y mejorar (si es razonable, 1-2 rondas sin costo)</div>
+<div class="bullet-item">Opción B: Reconocer cambio de scope, formalizar in writing, ajustar contrato</div>
+<div class="bullet-item">Opción C: Desescalate ordenado, cliente elige continuar o pausar</div>
+<p class="key-value"><strong>Fallback:</strong> Arbitraje: Tercera parte (mentor o partner reconocido) evalúa calidad vs estándar MetodologIA</p>
+<h3 class="subsection-title" id="caso-borde-4-scope-creep-sin-fin-d0cef1">Caso Borde 4: SCOPE CREEP SIN FIN</h3>
+<p class="key-value"><strong>Trigger:</strong> Cliente solicita &quot;un pequeño cambio&quot; cada semana (agregar métrica, otra entrevista, nuevo proceso, nueva área)</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">Sem 1: Aceptar 1-2 cambios menores (mantiene relación)</div>
+<div class="bullet-item">Sem 2+: Cambios requieren decisión explícita (en scope, costo extra, o posponer)</div>
+<div class="bullet-item">Comunicación: &quot;Esto amplía scope. Opciones: (A) agregar a Fase 2 y presupuesto, (B) posponer, (C) eliminar otra cosa&quot;</div>
+<div class="bullet-item">Documentar TODAS las solicitudes en tracker visible (cliente ve el volumen)</div>
+<p class="key-value"><strong>Fallback:</strong> Si cliente insiste sin presupuesto, pausar y renegociar contrato (no avanzar indefinidamente)</p>
+<h3 class="subsection-title" id="caso-borde-5-key-stakeholder-sale-f8ca8b">Caso Borde 5: KEY STAKEHOLDER SALE</h3>
+<p class="key-value"><strong>Trigger:</strong> Persona clave que defendía transformación se va o pierde poder (es ascendido, se jubila, se va a competencia)</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">Detectar en weekly pulse check (preguntar &quot;¿cómo te sientes con esto?&quot;)</div>
+<div class="bullet-item">Si poder político reducido: Acelerar resultados tangibles (quick win en Sem 2, no Sem 4)</div>
+<div class="bullet-item">Re-sponsoring: Identifica nuevo champion interno que domine contexto</div>
+<div class="bullet-item">Si champion sale completamente: Pausa y re-evaluación (puede recuperarse si equipo internaliza cambio)</div>
+<p class="key-value"><strong>Fallback:</strong> Intensificar mentoría a equipo interno (hacerlos menos dependientes del champion)</p>
+<h3 class="subsection-title" id="caso-borde-6-budget-cut-midengagement-51acea">Caso Borde 6: BUDGET CUT MID-ENGAGEMENT</h3>
+<p class="key-value"><strong>Trigger:</strong> Cliente recibe presión financiera, presupuesto se corta 30-50% mid-proyecto (crisis, rotación inversión, decision CFO)</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">48h: Conversación Cliente + Director (diagnóstico de situación)</div>
+<div class="bullet-item">Opciones: (A) Reducir scope pero mantener quality (eliminar iniciativa 3), (B) Extender timeline (mismo scope, menos horas/semana), (C) Pausa ordenada (documentación, right-to-return)</div>
+<div class="bullet-item">Comunicar claramente: &quot;¿Qué es más importante: tiempo, costo, o impacto? Escoge 2 de 3&quot;</div>
+<p class="key-value"><strong>Fallback:</strong> Oferta de soporte degradado (1 consultor part-time, reducción de especialistas, SLAs menos agresivos)</p>
+<h3 class="subsection-title" id="caso-borde-7-consultant-burnout-3140ef">Caso Borde 7: CONSULTANT BURNOUT</h3>
+<p class="key-value"><strong>Trigger:</strong> Consultor lleva 12+ semanas de dedicación alta, métricas de stress suben (calidad baja, tardanzas, tension con cliente)</p>
+<p class="key-value"><strong>Protocolo:</strong></p>
+<div class="bullet-item">Manager detecta en 1:1s (pregunta pro-activa: &quot;¿Cómo está el nivel de energía?&quot;)</div>
+<div class="bullet-item">Rotación obligatoria: Traer especialista o segundo consultor (no es debilidad, es rigor)</div>
+<div class="bullet-item">Cliente comunica como &quot;traemos persona X para acelerar Y&quot; (positivo frame)</div>
+<div class="bullet-item">Consultor principal pasa a oversight, reduce dedicación 50%</div>
+<p class="key-value"><strong>Fallback:</strong> Pausa de 1 semana (cliente entiende, es costo de transformación)</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="decisiones-de-diseo-8b0284" data-searchable aria-labelledby="head-decisiones-de-diseo-8b0284">
+            <div class="phase-header" id="head-decisiones-de-diseo-8b0284" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge design">DISEÑO</span> DECISIONES DE DISEÑO</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p><strong>¿Por qué 3 tiers (no 2, no 5)?</strong></p>
+<div class="bullet-item">Diagnóstico: Convierte a Tracción (40%+) sin costo. Tracción: Genera ROI claro rápido, convierte a Evolución (30%+). Evolución: Transformación profunda, sostenible. Esto es curva de pendiente accesible (no pedir $35M a empresa que no conoces).</div>
+<div class="bullet-item">Tradeoff: Más tiers = más opciones pero confusión cliente. 3 es estándar consulting (McKinsey, Deloitte pattern).</div>
+<p><strong>¿Por qué Diagnóstico gratuito a empresas?</strong></p>
+<div class="bullet-item">Asimetría de información: Empresa no sabe qué busca, nosotros sí. Diagnóstico gratis es filtro de calidad + entry drug.</div>
+<div class="bullet-item">Tradeoff: Costo bajo en Diagnóstico pero requiere conversión alta (40%+) para ROI. Si conversión &lt;30%, revisar cómo se vende.</div>
+<p><strong>¿Por qué duración 4-8 semanas Tracción (no 12)?</strong></p>
+<div class="bullet-item">Velocidad de cambio organizacional: &gt;8 semanas y cambio empieza a dilucidarse sin momentum. &lt;4 semanas no hay tiempo de impacto real.</div>
+<div class="bullet-item">Tradeoff: Tight timeline requiere equipo dedicado cliente + urgencia. No funciona en contextos burocráticos.</div>
+<p><strong>¿Por qué QBR trimestral en Evolución (no mensual)?</strong></p>
+<div class="bullet-item">Ritmo sostenible: Mensual = gestión overhead. Trimestral = tiempo de consolidar cambio + reflexión real.</div>
+<div class="bullet-item">Tradeoff: Riesgo de desalineación si 3 meses es long en industria fast-moving.</div>
+<p><strong>¿Por qué SLAs duros (no soft commitments)?</strong></p>
+<div class="bullet-item">Credibilidad: Cliente necesita saber que somos serios. SLAs públicos = accountability.</div>
+<div class="bullet-item">Tradeoff: Fuerza a equipo a ser disciplinado, pero si crisis imprevista, SLA se rompe (comunicación rápida es crítica).</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="antipatterns-d84484" data-searchable aria-labelledby="head-antipatterns-d84484">
+            <div class="phase-header" id="head-antipatterns-d84484" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> ANTI-PATTERNS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="antipattern-1-diagnstico-que-no-convierte-b57505">Anti-pattern 1: &quot;DIAGNÓSTICO QUE NO CONVIERTE&quot;</h3>
+<p class="key-value"><strong>Señal:</strong> Diagnóstico completado, cliente dice &quot;muy interesante, pero pasamos&quot; (o no responde a propuesta de Tracción)</p>
+<p class="key-value"><strong>Problema Raíz:</strong> Reporte muy académico, recomendaciones no accionables, CEO no vio ROI, consultor no vendió próxima fase</p>
+<p class="key-value"><strong>Corrección:</strong></p>
+<div class="bullet-item">En Fase 4 (Presentación), antes de ir solo a leadership: Alineación con sponsor 1:1 (prueba de concepto de venta)</div>
+<div class="bullet-item">Recomendaciones deben tener costo/ROI/timeline claros (no vagas)</div>
+<div class="bullet-item">Propuesta de Tracción debe estar LISTA para firma en Sem 3, no vaga</div>
+<h3 class="subsection-title" id="antipattern-2-traccin-sin-equipo-dedicado-interno-a8cbc3">Anti-pattern 2: &quot;TRACCIÓN SIN EQUIPO DEDICADO INTERNO&quot;</h3>
+<p class="key-value"><strong>Señal:</strong> Cliente promete 3 personas dedicadas, en realidad presta 0.5 FTE distribuido entre 4 proyectos</p>
+<p class="key-value"><strong>Problema Raíz:</strong> Falta de ownership cliente, no hay peso político consultor</p>
+<p class="key-value"><strong>Corrección:</strong></p>
+<div class="bullet-item">Kick-off Fase 1: Escribir en pizarra &quot;Equipo Cambio = [Nombre 1, Nombre 2, Nombre 3]&quot; y pedir sponsor que confirme</div>
+<div class="bullet-item">Si no hay dedicación: Escalar a sponsor Y replantear scope (no avanzar con equipo fantasma)</div>
+<h3 class="subsection-title" id="antipattern-3-evolucin-sin-change-management-5ca1f0">Anti-pattern 3: &quot;EVOLUCIÓN SIN CHANGE MANAGEMENT&quot;</h3>
+<p class="key-value"><strong>Señal:</strong> Modelo operativo bello y documentado, pero equipo no lo adopta (baja velocidad Sem 8-12)</p>
+<p class="key-value"><strong>Problema Raíz:</strong> Consultor asumir que good design = automatic adoption. Olvidar que 70% de change es behavioral.</p>
+<p class="key-value"><strong>Corrección:</strong></p>
+<div class="bullet-item">Fase 3 (Change Mgmt) requiere mínimo 50% del presupuesto. No shortcut.</div>
+<div class="bullet-item">Change champions deben estar nombrados Sem 2 (no Sem 7)</div>
+<div class="bullet-item">Weekly pulse checks (not monthly) detectan resistencia temprano</div>
+<h3 class="subsection-title" id="antipattern-4-knowledge-transfer-que-no-transfiere-e162ba">Anti-pattern 4: &quot;KNOWLEDGE TRANSFER QUE NO TRANSFIERE&quot;</h3>
+<p class="key-value"><strong>Señal:</strong> Documentación creada, capacitación dada, pero 2 meses post-consultor equipo está perdido</p>
+<p class="key-value"><strong>Problema Raíz:</strong> &quot;Documentación&quot; fue PDF de procesos, no mentoría viva. Internal consultants nunca lideraron solo.</p>
+<p class="key-value"><strong>Corrección:</strong></p>
+<div class="bullet-item">Capstone project en Sem 18: Equipo interno lidera cambio MIENTRAS consultor está ahí pero no interviene</div>
+<div class="bullet-item">Documentation debe ser &quot;job aids&quot; operacionales, no manuales teóricos</div>
+<div class="bullet-item">Internal consultants entrenan con clientes reales (no simulaciones)</div>
+<h3 class="subsection-title" id="antipattern-5-crisis-ignored-until-too-late-dd8f86">Anti-pattern 5: &quot;CRISIS IGNORED UNTIL TOO LATE&quot;</h3>
+<p class="key-value"><strong>Señal:</strong> Sponsor cambió en Sem 3, equipo muy resistente Sem 6, scope explota Sem 9. Consultor reportó pero no escaló.</p>
+<p class="key-value"><strong>Problema Raíz:</strong> Falta de governance en detección. Weekly check-in con Director (no solo con cliente)</p>
+<p class="key-value"><strong>Corrección:</strong></p>
+<div class="bullet-item">Cada viernes: Health check (sponsor status, adoption %, scope creep, team energy)</div>
+<div class="bullet-item">Red flags (scope +20%, adoption &lt;50%, sponsor no accesible) = Director toma call con Cliente</div>
+<div class="bullet-item">No esperar a Sem 8 para saber que hay problema</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="fallbacks-operativos-a840ab" data-searchable aria-labelledby="head-fallbacks-operativos-a840ab">
+            <div class="phase-header" id="head-fallbacks-operativos-a840ab" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> FALLBACKS OPERATIVOS</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <p class="key-value"><strong>Si DIAGNÓSTICO se daña (cliente rechaza reporte):</strong></p>
+<div class="bullet-item">Iterar 1 ronda (24-48h): Preguntar qué falta, ajustar análisis</div>
+<div class="bullet-item">Si 2da ronda igual rechazo: Oferta alternativa = Tracción directa (skip Diagnóstico), cliente paga $10M de Diagnóstico como descuento a Tracción</div>
+<p class="key-value"><strong>Si TRACCIÓN pierde momentum (adoption &lt;50% Sem 6):</strong></p>
+<div class="bullet-item">Pausa 1 semana (no extensión de timeline, pausa real)</div>
+<div class="bullet-item">Diagnóstico causa raíz (encuestas anónimas, entrevistas rápidas)</div>
+<div class="bullet-item">Intensificar change: Más change champions, comunicación doble-frecuencia, mentoría 1:1</div>
+<div class="bullet-item">Si causa es scope creep: Elimina initiativa 3, mantén 2 wins claros</div>
+<p class="key-value"><strong>Si EVOLUCIÓN mentor ausente (internal consultant incapacitado/partió):</strong></p>
+<div class="bullet-item">Escalada inmediata: Entrenar 2do internal consultant en paralelelo</div>
+<div class="bullet-item">Consultor extiende un mes más (pagado) para entrenar replacement</div>
+<div class="bullet-item">Si tiempo crítico: Ofrecer coach externo post-engagement (soporte degradado)</div>
+<p class="key-value"><strong>Si SPONSOR LOSS mid-engagement:</strong></p>
+<div class="bullet-item">Director asume comunicación con CEO/CFO (escalada de urgencia)</div>
+<div class="bullet-item">Propuesta rápida: Nueva sponsor + nuevo champion, o pausa ordenada</div>
+<div class="bullet-item">Opción pausa: Documentación actual, cliente puede reactivar en 6 meses (right-to-return)</div>
+<p class="key-value"><strong>Si BUDGET CUT requiere rescope:</strong></p>
+<div class="bullet-item">Opciones transparentes: (A) Reduce initiatives, mismo timeline, (B) Extend timeline, mismo scope, (C) Pausa indefinida</div>
+<div class="bullet-item">Si A elegida: Eliminar iniciativa 3 con acta formal (cliente firma)</div>
+<div class="bullet-item">Si B elegida: Extender 4-8 semanas, reduce horas/semana (menos cost, menos impacto)</div>
+<div class="bullet-item">Si C elegida: Documentación actual, opción de reactivación con crédito</div>
+<p class="key-value"><strong>Si TEAM ADOPCIÓN muy baja (&lt;40% Sem 8, Evolución):</strong></p>
+<div class="bullet-item">Intensificación: Trainer adicional, aumentar sesiones capacitación, CEO steering comite</div>
+<div class="bullet-item">Diagnóstico: ¿Es miedo? ¿Falta de clarity? ¿Mal leadership? Intervenir en causa raíz</div>
+<div class="bullet-item">Última opción: Extender Fase 3 (change mgmt) 4 semanas, pero sin costo adicional (absorber horas)</div>
+<hr class="divider">
+<p class="key-value"><strong>Fin del Documento: Entregar Consultoría</strong></p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>

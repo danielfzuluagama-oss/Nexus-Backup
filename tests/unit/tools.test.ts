@@ -9,7 +9,7 @@
 //   knowledge.readCoreKnowledge: happy path, file not found, path traversal guard
 // ============================================================================
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import fs from "fs/promises";
 import path from "path";
 
@@ -507,26 +507,32 @@ describe("delegate.ts — module-level wrappers (default registry)", () => {
 // We need to import the real module to test readCoreKnowledge
 // Reset the mock for knowledge.js and import the actual file
 describe("knowledge.readCoreKnowledge", () => {
+  const originalCwd = process.cwd();
+
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
+  });
+
+  afterEach(() => {
+    process.chdir(originalCwd);
   });
 
   it("reads the metodologia_core.md file and returns content", async () => {
-    vi.mocked(fs.readFile).mockResolvedValueOnce("# Core Knowledge\n\nTeam identity..." as never);
+    vi.doUnmock("fs/promises");
 
-    // Import the actual module (not the mocked one used by registry)
-    const knowledgeModule = await import("../../src/tools/knowledge.js?real");
-    // Since we can't do query params in ESM, import directly
     const { readCoreKnowledge } = await vi.importActual<typeof import("../../src/tools/knowledge.js")>(
       "../../src/tools/knowledge.js"
     );
 
     const result = await readCoreKnowledge({ topic: "identity" });
-    expect(result).toBe("# Core Knowledge\n\nTeam identity...");
+    expect(result).toContain("Base de Conocimiento Core");
+    expect(result).toContain("MetodologIA");
   });
 
   it("returns error string when file does not exist", async () => {
-    vi.mocked(fs.readFile).mockRejectedValueOnce(new Error("ENOENT: no such file or directory") as never);
+    vi.doUnmock("fs/promises");
+    process.chdir("/tmp");
 
     const { readCoreKnowledge } = await vi.importActual<typeof import("../../src/tools/knowledge.js")>(
       "../../src/tools/knowledge.js"
@@ -545,13 +551,14 @@ describe("knowledge.readCoreKnowledge", () => {
   });
 
   it("works without a topic argument", async () => {
-    vi.mocked(fs.readFile).mockResolvedValueOnce("Content here" as never);
+    vi.doUnmock("fs/promises");
 
     const { readCoreKnowledge } = await vi.importActual<typeof import("../../src/tools/knowledge.js")>(
       "../../src/tools/knowledge.js"
     );
 
     const result = await readCoreKnowledge({});
-    expect(result).toBe("Content here");
+    expect(result).toContain("Base de Conocimiento Core");
+    expect(result).toContain("MetodologIA");
   });
 });

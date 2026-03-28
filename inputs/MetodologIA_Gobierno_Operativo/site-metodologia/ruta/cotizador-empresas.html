@@ -1,0 +1,1623 @@
+<!--
+  @license Copyleft
+  @copyright MetodologIA
+  @author Javier Montaño
+  @technology Antigravity | GoogleAI Studio | Gemini 3 Pro | Gemini 3 Flash
+  @poweredBy Pristino Agent
+-->
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora ROI Corporativa | Consultoría IA Equipos | MetodologIA</title>
+    <meta name="description" content="Proyecta la eficiencia de tu equipo con IA. Consultoría de alto rendimiento y automatización de procesos para empresas.">
+    <link rel="canonical" href="https://metodologia.info/ruta/cotizador-empresas.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../estilos/variables.css">
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/components.css">
+    
+    <!-- Tailwind (Local Build) -->
+    <link rel="stylesheet" href="../dist/output.css">
+
+    <!-- Nav styles provided by components.css (Skill 119: No Inline Styles) -->
+    
+    <!-- Icons -->
+    <script src="../js/icons.js" defer></script>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <!-- JSON-LD (AEO: Service) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Consultoría IA para Equipos",
+        "provider": { "@type": "Organization", "name": "MetodologIA" },
+        "description": "Soluciones de automatización y High Performance Teams potenciados con IA.",
+        "serviceType": "B2B Consulting",
+        "audience": { "@type": "BusinessAudience", "audienceType": "Empresas y Equipos de Operaciones" }
+    }
+    </script>
+    <script src="../components/SiteHeader.js" defer></script>
+    <script src="../components/SiteFooter.js" defer></script>
+
+    <style>
+        .cotizador-container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
+        .glass-modal { background: var(--bg-elevated); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid var(--border-subtle); }
+        .glass-card { background: rgba(255, 255, 255, 0.03); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid var(--border-subtle); }
+        .step-card { background: var(--bg-elevated); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid var(--border-subtle); }
+        .range-slider { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 4px; background: linear-gradient(to right, var(--brand-gold-dark), var(--bg-surface)); }
+        .range-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--brand-gold-dark); cursor: pointer; box-shadow: 0 0 10px var(--brand-gold-glow); }
+        .range-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--brand-gold-dark); cursor: pointer; border: none; }
+        .step-indicator { transition: all 0.3s ease; }
+        .step-indicator.active { background: var(--gradient-gold); color: #000; }
+        .step-indicator.completed { background: var(--brand-emerald); color: white; }
+        .result-card { background: linear-gradient(135deg, var(--brand-gold-glow), rgba(255, 215, 0, 0.02)); border: 1px solid var(--brand-gold-glow); }
+        .modal-overlay { position: fixed; inset: 0; background: var(--bg-body); opacity: 0.95; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .modal-content { transform: scale(0.95); transition: all 0.3s ease; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+    </style>
+</head>
+<body class="bg-[var(--bg-body)] text-[var(--text-primary)] font-sans antialiased">
+
+<!-- PREMIUM NAVIGATION -->
+<site-header base-path=".."></site-header>
+
+<!-- HERO -->
+<section class="pt-24 pb-8 bg-[var(--bg-body)]">
+    <div class="cotizador-container">
+        <!-- Golden Standard Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="container-max mx-auto px-6 mb-8 animate-fade-in-down">
+            <ol class="flex items-center space-x-2 text-xs md:text-sm text-slate-200 font-mono tracking-wide">
+                <li>
+                    <a href="../index.html" class="hover:text-brand-gold transition-colors flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 12 12 15 22"/></svg>
+                        Inicio
+                    </a>
+                </li>
+                <li><span class="text-slate-700">/</span></li>
+                <li><a href="index.html" class="hover:text-brand-gold transition-colors">Ruta</a></li>
+                <li><span class="text-slate-700">/</span></li>
+                <li class="text-slate-100 font-medium" aria-current="page">Calculadora ROI</li>
+            </ol>
+        </nav>
+        
+        <!-- Personas / Empresas Toggle -->
+        <!-- Personas / Empresas Toggle (Hardcoded for B2B) -->
+        <div class="flex justify-center mb-6">
+            <div class="inline-flex items-center p-1 rounded-full bg-slate-800/50 border border-white/10 shadow-lg">
+                <!-- Personas (Inactive Link) -->
+                <a href="cotizador-personas.html" 
+                    class="px-5 py-2 rounded-full text-xs font-bold text-slate-100 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2">
+                    <i data-lucide="user" class="w-3 h-3"></i> Para Personas
+                </a>
+                <!-- Empresas (Active) -->
+                <div class="px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-brand-gold to-yellow-600 text-slate-950 shadow-md cursor-default flex items-center gap-2">
+                    <i data-lucide="briefcase" class="w-3 h-3"></i> Para Empresas
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Smart Stepper System -->
+        <div id="smart-stepper" class="w-full max-w-4xl mx-auto mb-16 px-4">
+            
+            <!-- Mobile View: Progress & Context -->
+            <div class="md:hidden">
+                <div class="flex justify-between items-end mb-2">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Progreso</span>
+                        <span class="text-sm text-white font-bold flex items-center gap-1">
+                            Paso <span id="mobile-step-num" class="text-brand-gold">1</span> <span class="text-slate-100">/</span> 5
+                        </span>
+                    </div>
+                    <span id="mobile-step-name" class="text-xs text-brand-gold font-bold text-right">Inicio</span>
+                </div>
+                <div class="h-1.5 bg-[var(--bg-surface)] rounded-full overflow-hidden shadow-inner border border-white/5">
+                    <div id="mobile-progress-bar" class="h-full bg-brand-gold transition-all duration-700 ease-out relative w-0" title="Barra de progreso móvil">
+                        <div class="absolute right-0 top-0 h-full w-2 bg-white/50 blur-[2px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop View: Node Connector -->
+            <div class="hidden md:flex items-center justify-between relative px-2">
+                <!-- Background Line -->
+                <div class="absolute top-1/2 left-2 right-2 h-0.5 bg-[var(--bg-surface)] -z-10 rounded-full"></div>
+                <!-- Active Line -->
+                <div id="desktop-progress-line" class="absolute top-1/2 left-2 h-0.5 bg-brand-gold -z-10 transition-all duration-700 ease-out w-0" title="Línea de progreso"></div>
+                
+                <!-- Nodes -->
+                <button onclick="goToStep(0)" class="step-node group relative" data-step="0">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <!-- Static SVG to ensure visibility -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-slate-200 transition-colors group-hover:text-brand-gold">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Contexto</span>
+                </button>
+
+                <button onclick="goToStep(1)" class="step-node group relative" data-step="1">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">1</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Línea Base</span>
+                </button>
+
+                <button onclick="goToStep(2)" class="step-node group relative" data-step="2">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">2</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Diagnóstico</span>
+                </button>
+
+                <button onclick="goToStep(3)" class="step-node group relative" data-step="3">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">3</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Niveles</span>
+                </button>
+
+                <button onclick="goToStep(4)" class="step-node group relative" data-step="4">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">4</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">ROI</span>
+                </button>
+
+                <button onclick="goToStep(5)" class="step-node group relative" data-step="5">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center transition-all duration-300 group-hover:border-brand-gold z-10 shadow-lg shadow-black/50">
+                        <span class="text-xs font-bold text-slate-200 group-hover:text-brand-gold">5</span>
+                    </div>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-200 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Final</span>
+                </button>
+            </div>
+        </div>
+
+        <style>
+            /* Active State Styles */
+            .step-node.active div {
+                background: var(--brand-gold);
+                border-color: var(--brand-gold);
+                box-shadow: 0 0 15px var(--brand-gold-glow);
+                transform: scale(1.1);
+            }
+            .step-node.active i, .step-node.active span {
+                color: #000;
+            }
+            .step-node.completed div {
+                background: var(--bg-primary);
+                border-color: var(--brand-gold);
+            }
+            .step-node.completed span {
+                color: var(--brand-gold-dark);
+            }
+        </style>
+
+        <div class="text-center mb-12 relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/20 text-brand-gold text-xs font-bold uppercase tracking-widest mb-6">
+                    <span class="w-2 h-2 rounded-full bg-brand-gold animate-pulse"></span>
+                    Sistema B2B
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight" data-ruta-content="heroTitle">
+                    Tu Ruta Personal hacia la Soberanía Digital, Profesional y Estratégica
+                </h1>
+                <p id="step-subtitle" class="text-slate-100 text-lg max-w-2xl mx-auto leading-relaxed" data-ruta-content="heroSubtitle">
+                    Descubre el <strong>High Performance Consultive Workshop</strong>. Toma el control de tu productividad con IA.
+                </p>
+            </div>
+
+            <!-- STEP 0: Línea Base Corporativa (Data Gate) -->
+            <div id="step-0" class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden mb-12 animate-fade-in shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-gold to-transparent z-10 opacity-70"></div>
+                
+                <div class="mb-10 text-center">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-slate-700 text-[10px] tracking-widest uppercase font-bold text-slate-100 mb-6 shadow-inner">
+                        <i data-lucide="info" class="w-3 h-3 text-brand-gold"></i> 
+                        <span class="text-brand-gold/80">Contexto Previo</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight font-heading">Antes de comenzar</h2>
+                    <p class="text-slate-100 font-medium">Transparencia y propósito de esta herramienta</p>
+                </div>
+
+                <!-- Consent Content -->
+                <div class="space-y-4 text-slate-100 text-sm leading-relaxed bg-slate-950/50 p-6 rounded-2xl border border-white/5 mt-8">
+                    <p>
+                        Esta herramienta es un <strong class="text-white">simulador estratégico</strong> diseñado para ilustrar el potencial de la metodología.
+                    </p>
+                    <ul class="space-y-3 mt-4">
+                        <li class="flex items-start gap-3">
+                            <div class="mt-0.5 p-1 rounded-full bg-emerald-500/10">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                            </div>
+                            <span><strong>Privacidad Total:</strong> No guardamos los datos financieros que ingresas aquí. Todo el cálculo ocurre localmente en tu navegador.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="mt-0.5 p-1 rounded-full bg-brand-gold/10">
+                                <i data-lucide="alert-circle" class="w-4 h-4 text-brand-gold"></i>
+                            </div>
+                            <span><strong>Simulación:</strong> Los resultados son proyecciones basadas en estándares de industria, no garantías contractuales de servicio.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 flex justify-center">
+                    <button onclick="goToStep(1)" class="group w-full md:w-auto px-8 py-4 bg-white text-slate-950 font-bold rounded-xl hover:bg-brand-gold transition-all flex items-center justify-center gap-2 shadow-lg shadow-white/5">
+                        <span>Entendido, Continuar</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- MODAL: Suggest Personas (Startup Gate) -->
+            <div id="startup-modal" class="hidden absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-sm p-4">
+                <div class="flex items-center justify-center w-full h-full">
+                <div class="bg-slate-900 border border-white/10 p-8 rounded-2xl max-w-sm text-center shadow-2xl">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🚀</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Modo Founder Recomendado</h3>
+                    <p class="text-sm text-slate-100 mb-6">
+                        Para empresas de < 3 años, recomendamos la ruta "Personas" enfocada en la productividad del fundador y equipo core (Sujeto a validación).
+                    </p>
+                    <div class="space-y-3">
+                        <a href="cotizador-personas.html" class="block w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors">
+                            Ir a Cotizador Personas
+                        </a>
+                        <button onclick="closeStartupModal()" class="block w-full py-3 text-slate-100 hover:text-white text-sm">
+                            Continuar aquí (Soy Scaleup)
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Paso 1: Tu Línea Base (Unified Inputs) -->
+            <div id="step-1" class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-brand-gold opacity-70"></div>
+                
+                <div class="mb-8 flex items-center justify-between">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/20 text-[10px] font-bold text-brand-gold mb-2 tracking-wider">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse"></span>
+                            PASO 1
+                        </div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Datos de la Organización</h2>
+                    </div>
+                     <div class="w-10 h-10 rounded-xl bg-brand-gold/10 flex items-center justify-center border border-brand-gold/20">
+                        <i data-lucide="briefcase" class="w-5 h-5 text-brand-gold"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    
+                    <!-- SME Notification Banner -->
+                    <div id="sme-alert" class="hidden p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 mb-6 animate-fade-in-up">
+                        <div class="flex items-start gap-3">
+                            <div class="p-2 rounded-lg bg-blue-500/20 text-blue-400">
+                                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-blue-100 text-sm">¿Eres una Startup o PyME?</h3>
+                                <p class="text-xs text-blue-300 mt-1 mb-2 leading-relaxed">
+                                    Detectamos un equipo ágil (&lt; 10 pax). Podrías calificar para nuestra <strong>Tarifa de Implementación por Usuario</strong> (Ruta Personas), diseñada para founders (Sujeto a validación).
+                                </p>
+                                <a href="cotizador-personas.html" class="inline-flex items-center gap-1 text-xs font-bold text-blue-400 hover:text-white transition-colors">
+                                    Ver Ruta Personas <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Antigüedad (Gate) -->
+                    <div>
+                        <label class="flex items-center text-xs font-black text-slate-100 uppercase tracking-widest mb-4 ml-1">
+                            Etapa de la Empresa
+                            <span class="tooltip-trigger ml-2">
+                                <i data-lucide="info" class="w-3 h-3 text-slate-100 hover:text-white transition-colors cursor-help"></i>
+                                <span class="tooltip-content">Define el tipo de estrategia de adopción. Startups requieren agilidad extrema; Corps requieren gobernanza.</span>
+                            </span>
+                        </label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="cursor-pointer relative group">
+                                <input type="radio" name="company_age" value="startup" class="peer sr-only" onchange="checkCompanyAge()">
+                                <div class="p-4 rounded-xl bg-slate-900 border border-slate-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all hover:border-slate-500">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                                            <i data-lucide="rocket" class="w-4 h-4"></i>
+                                        </div>
+                                        <span class="font-bold text-white text-sm">Emergente</span>
+                                    </div>
+                                    <p class="text-[10px] text-slate-100 leading-tight">Agilidad total. &lt; 3 años operando.</p>
+                                    <div class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity">
+                                        <i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="cursor-pointer relative group">
+                                <input type="radio" name="company_age" value="scaleup" class="peer sr-only" checked onchange="checkCompanyAge()">
+                                <div class="p-4 rounded-xl bg-slate-900 border border-slate-700 peer-checked:border-brand-gold peer-checked:bg-brand-gold/10 transition-all hover:border-slate-500">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-8 h-8 rounded-lg bg-brand-gold/20 flex items-center justify-center text-brand-gold">
+                                            <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                        </div>
+                                        <span class="font-bold text-white text-sm">Consolidada</span>
+                                    </div>
+                                    <p class="text-[10px] text-slate-100 leading-tight">Estructura definida. > 3 años.</p>
+                                    <div class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity">
+                                        <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-gold"></i>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Industria -->
+                        <div class="col-span-1">
+                            <label class="block text-xs font-black text-slate-100 uppercase tracking-widest mb-3 ml-1">Industria</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i data-lucide="briefcase" class="w-4 h-4 text-slate-200 group-focus-within:text-brand-gold transition-colors"></i>
+                                </div>
+                                <select id="industry" title="Industria de la empresa" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl pl-11 pr-4 py-4 text-white font-bold appearance-none focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 transition-all text-sm">
+                                    <option value="tech">Tecnología / Software</option>
+                                    <option value="services" selected>Servicios Profesionales</option>
+                                    <option value="finance">Finanzas / Legal</option>
+                                    <option value="health">Salud / Pharma</option>
+                                    <option value="retail">Retail / E-commerce</option>
+                                    <option value="other">Otro</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i data-lucide="arrow-down" class="w-4 h-4 text-slate-200"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Business Model -->
+                        <div class="col-span-1">
+                            <label class="block text-xs font-black text-slate-100 uppercase tracking-widest mb-3 ml-1">Modelo de Negocio</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i data-lucide="boxes" class="w-4 h-4 text-slate-200 group-focus-within:text-brand-gold transition-colors"></i>
+                                </div>
+                                <select id="biz-model" title="Modelo de negocio de la empresa" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl pl-11 pr-4 py-4 text-white font-bold appearance-none focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 transition-all text-sm">
+                                    <option value="b2b" selected>B2B (Empresas)</option>
+                                    <option value="b2c">B2C (Consumidor Final)</option>
+                                    <option value="hybrid">Híbrido</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i data-lucide="arrow-down" class="w-4 h-4 text-slate-200"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                        <div class="col-span-1 md:col-span-2 text-left mb-2">
+                            <h3 class="text-white font-bold">Métricas de Equipo</h3>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="flex items-center text-xs font-black text-slate-100 uppercase tracking-widest mb-3 ml-1">
+                                Equipo (Personas)
+                                <span class="tooltip-trigger ml-2">
+                                    <i data-lucide="info" class="w-3 h-3 text-slate-100"></i>
+                                    <span class="tooltip-content">Número total de colaboradores a impactar directamenente.</span>
+                                </span>
+                            </label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i data-lucide="users" class="w-4 h-4 text-slate-200 group-focus-within:text-brand-gold transition-colors"></i>
+                                </div>
+                                <input type="number" id="headcount" value="15" min="2" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl pl-11 pr-4 py-4 text-white font-bold placeholder-slate-600 focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 transition-all" placeholder="Ej: 11 - 100+" oninput="checkSMEContext()">
+                            </div>
+                        </div>
+                        <div class="col-span-1">
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="flex items-center text-xs font-bold text-slate-100 uppercase tracking-wide mb-3 ml-1">
+                                    Antigüedad (Años)
+                                    <span class="tooltip-trigger ml-2">
+                                        <i data-lucide="info" class="w-3 h-3 text-slate-200"></i>
+                                        <span class="tooltip-content">Años de operación continua en el mercado.</span>
+                                    </span>
+                                </label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i data-lucide="clock" class="w-4 h-4 text-slate-200 group-focus-within:text-brand-gold transition-colors"></i>
+                                    </div>
+                                    <input type="number" id="years-business" value="5" min="1" 
+                                        class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-11 pr-4 py-4 text-white font-bold focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all shadow-inner"
+                                        placeholder="Ej: 5">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="flex items-center text-xs font-black text-slate-100 uppercase tracking-widest mb-3 ml-1">
+                                Duración Ciclo de Venta
+                                <span class="tooltip-trigger ml-2">
+                                    <i data-lucide="info" class="w-3 h-3 text-slate-100"></i>
+                                    <span class="tooltip-content">Tiempo promedio desde el primer contacto hasta el cierre del negocio.</span>
+                                </span>
+                            </label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i data-lucide="clock" class="w-4 h-4 text-slate-200 group-focus-within:text-brand-gold transition-colors"></i>
+                                </div>
+                                <input type="number" id="pipeline-months" value="6" min="1" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl pl-11 pr-12 py-4 text-white font-bold placeholder-slate-600 focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 transition-all" placeholder="Meses">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-100 uppercase tracking-wider">Meses</span>
+                            </div>
+                        </div>
+
+                        <!-- Disposición estudio (Formación) -->
+                        <div class="col-span-1 md:col-span-2 p-5 rounded-2xl bg-slate-900/50 border border-white/5">
+                            <label class="text-sm font-black uppercase tracking-wider text-white mb-4 flex justify-between">
+                                <span class="flex items-center">
+                                    Intensidad de Formación (H/Sem)
+                                    <span class="tooltip-trigger ml-2">
+                                        <i data-lucide="help-circle" class="w-3 h-3"></i>
+                                        <span class="tooltip-content">Horas semanales que el equipo dedicará a aprender y adoptar estas herramientas. Recomendamos 6-8h.</span>
+                                    </span>
+                                </span>
+                                <span id="estudio-display" class="text-brand-gold font-bold bg-brand-gold/10 px-2 py-0.5 rounded text-xs">8h</span>
+                            </label>
+                            <input type="range" id="horas-estudio" min="2" max="15" value="8" 
+                                class="w-full range-slider mb-2" oninput="updateEstudioDisplay()" title="Horas para formación">
+                            <div class="flex justify-between text-[10px] text-slate-100 font-mono">
+                                <span>2h</span>
+                                <span class="text-emerald-400 font-bold">8h ideal</span>
+                                <span>15h</span>
+                            </div>
+                        </div>
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="flex items-center text-xs font-black text-slate-100 uppercase tracking-widest mb-3 ml-1">
+                                Facturación Mensual (Promedio)
+                                <span class="tooltip-trigger ml-2">
+                                    <i data-lucide="info" class="w-3 h-3 text-slate-100"></i>
+                                    <span class="tooltip-content">Ingresos recurrentes o promedio mensual para proyectar impacto financiero.</span>
+                                </span>
+                            </label>
+                            <div class="relative group">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-200 text-lg group-focus-within:text-brand-gold transition-colors">$</span>
+                                <!-- Changed type to text for currency masking -->
+                                <input type="text" id="revenue" value="150.000.000" class="currency-input w-full bg-slate-900/50 border border-slate-700 rounded-xl pl-10 pr-4 py-4 text-white font-mono text-xl md:text-2xl font-bold tracking-tight focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 transition-all placeholder-slate-700" placeholder="Sin límite">
+                            </div>
+                        </div>
+                        <!-- Nómina is derived or secondary, let's keep it here for ROI accuracy -->
+                        <div class="col-span-1 md:col-span-2 opacity-80 hover:opacity-100 transition-opacity">
+                             <label class="flex items-center text-xs font-black text-slate-200 uppercase tracking-widest mb-3 ml-1">
+                                Nómina Mensual (Total)
+                                <span class="tooltip-trigger ml-2">
+                                    <i data-lucide="info" class="w-3 h-3 text-slate-100"></i>
+                                    <span class="tooltip-content">Costo total del equipo humano. Base para calcular recuperación de eficiencia.</span>
+                                </span>
+                             </label>
+                             <div class="relative group">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-100 text-lg group-focus-within:text-white transition-colors">$</span>
+                                <input type="text" id="payroll" value="50.000.000" class="currency-input w-full bg-slate-900/30 border border-slate-800 rounded-xl pl-10 pr-4 py-4 text-slate-100 font-mono text-xl font-medium tracking-tight focus:outline-none focus:border-slate-600 focus:text-white focus:ring-1 focus:ring-slate-600 transition-all" placeholder="Total Nómina">
+                            </div>
+                            <p class="text-[10px] text-slate-100 mt-2 ml-1 font-medium tracking-wide">Base para cálculo de eficiencia operativa.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-center">
+                    <div class="mt-12 flex justify-center">
+                        <button onclick="goToStep(2)" class="group w-full md:w-auto px-10 py-4 bg-brand-gold text-slate-950 font-black text-lg rounded-2xl hover:scale-[1.02] hover:shadow-2xl hover:shadow-brand-gold/30 transition-all flex items-center justify-center gap-3 shadow-xl shadow-brand-gold/10">
+                            <span>Siguiente Paso</span>
+                            <i data-lucide="arrow-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform stroke-[3]"></i>
+                        </button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- STEP 2: Diagnóstico Organizacional -->
+        <div id="step-2" class="step-content hidden">
+            <div class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 opacity-70"></div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black text-white">Diagnóstico</h2>
+                        <p class="text-sm text-slate-100">¿Cómo se distribuye la nómina actual?</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 mb-6">
+                    <p class="text-sm text-blue-300">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                        Estime el % de tiempo del equipo dedicado a cada categoría:
+                    </p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Carga Operativa -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-white">Carga Operativa / Repetitiva</label>
+                            <span id="simples-display" class="text-emerald-400 font-bold">60%</span>
+                        </div>
+                        <input type="range" id="tareas-simples" min="0" max="100" step="5" value="60" class="w-full accent-brand-gold" oninput="updateTareasDistribucion()" title="Carga Operativa">
+                        <p class="text-xs text-slate-200 mt-1">Soporte, data entry, reportes manuales, logística, "apagar fuegos"</p>
+                    </div>
+
+                    <!-- Gestión -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-white">Gestión / Supervisión</label>
+                            <span id="medias-display" class="text-yellow-400 font-bold">30%</span>
+                        </div>
+                        <input type="range" id="tareas-medias" min="0" max="100" step="5" value="30" class="w-full accent-brand-gold" oninput="updateTareasDistribucion()" title="Carga Gestión">
+                        <p class="text-xs text-slate-200 mt-1">Coordinación, reuniones de estatus, revisión de entregables</p>
+                    </div>
+
+                    <!-- Estrategia -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-white">Estrategia / Innovación</label>
+                            <label class="text-sm font-medium text-white">Estratégicas (alto valor)</label>
+                            <span id="altas-display" class="text-red-400 font-bold">25%</span>
+                        </div>
+                        <input type="range" id="tareas-altas" min="0" max="100" step="5" value="10" class="w-full accent-brand-gold" oninput="updateTareasDistribucion()" title="Distribución Tareas Altas">
+                        <p class="text-xs text-slate-200 mt-1">Estrategia, negociación, creatividad, decisiones críticas</p>
+                    </div>
+
+                    <!-- Validación -->
+                    <div id="validation-msg" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                        <span class="text-sm text-emerald-400">✓ Total: 100%</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button onclick="prevStep()" class="flex-1 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all">
+                        Atrás
+                    </button>
+                    <button onclick="nextStep()" class="flex-1 py-4 rounded-xl bg-brand-gold text-black font-bold hover:bg-brand-gold-dark transition-all flex items-center justify-center gap-2">
+                        Continuar
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Elegir Niveles -->
+        <div id="step-3" class="step-content hidden">
+            <div class="step-card max-w-3xl mx-auto rounded-[2rem] p-10 relative overflow-hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-purple-500 opacity-70"></div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                        <i data-lucide="layers" class="w-6 h-6 text-purple-400"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black text-white">Elige tu Ruta</h2>
+                        <p class="text-sm text-slate-100">Selecciona los niveles que te interesan</p>
+                    </div>
+                </div>
+
+                <!-- Nivel 0 -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-3">Diagnóstico Inicial</h3>
+                    <div class="grid gap-3">
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-brand-gold/30 cursor-pointer transition-all flex items-start gap-3 opacity-75">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="basic" data-mejora="5" data-price="1200000" data-study-cost="4" data-name="N0: Auditoría de Procesos (Squad)">
+                            <div>
+                                <div class="font-bold text-white">N0: Auditoría de Procesos</div>
+                                <div class="text-xs text-slate-100">Mapeo de ineficiencias y fugas de capital</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Consultoría Estratégica -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-purple-400 uppercase tracking-wider mb-3">Estrategia Corporativa</h3>
+                    <div class="grid gap-3">
+                         <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="program" data-mejora="25" data-price="4500000" data-study-cost="30" data-name="N7: AI Governance Framework">
+                            <div>
+                                <div class="font-bold text-white">N7: AI Governance Framework</div>
+                                <div class="text-xs text-slate-100">Políticas, seguridad y ética corporativa</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="program" data-mejora="50" data-price="8000000" data-study-cost="40" data-name="N9: Digital Transformation Lead">
+                            <div>
+                                <div class="font-bold text-white">N9: Digital Transformation Lead</div>
+                                <div class="text-xs text-slate-100">Acompañamiento directivo para el cambio</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Capacitación de Equipos -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Capacitación de Equipos (Squads)</h3>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="15" data-price="3500000" data-study-cost="12" data-name="N2: Automatización Administrativa">
+                            <div>
+                                <div class="font-bold text-white">N2: Automatización Admin</div>
+                                <div class="text-xs text-slate-100">Reportes y comunicaciones automáticas</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="20" data-price="3500000" data-study-cost="12" data-name="N3: Pipeline B2B Automatizado" data-category="commercial">
+                            <div>
+                                <div class="font-bold text-white">N3: Pipeline B2B Auto</div>
+                                <div class="text-xs text-slate-100">Prospección y seguimiento inteligente</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="15" data-price="3500000" data-study-cost="10" data-name="N4: Gestión del Conocimiento">
+                            <div>
+                                <div class="font-bold text-white">N4: Gestión Conocimiento</div>
+                                <div class="text-xs text-slate-100">Cerebro digital corporativo</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="25" data-price="4000000" data-study-cost="15" data-name="N5: Workforce Augmentation">
+                            <div>
+                                <div class="font-bold text-white">N5: Workforce Augmentation</div>
+                                <div class="text-xs text-slate-100">Implementación de Agentes IA</div>
+                            </div>
+                        </label>
+                        <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="15" data-price="3500000" data-study-cost="12" data-name="N6: Liderazgo de Sistemas IA">
+                            <div>
+                                <div class="font-bold text-white">N6: Liderazgo Sistemas IA</div>
+                                <div class="text-xs text-slate-100">Gestión de equipos híbridos (Humano/IA)</div>
+                            </div>
+                        </label>
+                         <label class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 cursor-pointer transition-all flex items-start gap-3">
+                            <input type="checkbox" class="mt-1 level-checkbox" data-type="bootcamp" data-mejora="20" data-price="3500000" data-study-cost="20" data-name="N8: Desarrollo Low-Code Corp">
+                            <div>
+                                <div class="font-bold text-white">N8: Low-Code Corp</div>
+                                <div class="text-xs text-slate-100">Creación de herramientas internas</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button onclick="prevStep()" class="flex-1 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all">
+                        Atrás
+                    </button>
+                    <button onclick="nextStep()" class="flex-1 py-4 rounded-xl bg-brand-gold text-black font-bold hover:bg-brand-gold-dark transition-all flex items-center justify-center gap-2">
+                        Calcular ROI Corporativo
+                        <i data-lucide="calculator" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: Resultados ROI -->
+        <div id="step-4" class="step-content hidden">
+            <div class="max-w-3xl mx-auto">
+                <!-- ROI Cards -->
+                <!-- ROI Cards -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Horas Liberables -->
+                    <div class="result-card rounded-2xl p-4 sm:p-8 relative group overflow-hidden border border-white/10 bg-gradient-to-br from-slate-900/50 to-slate-900/80 backdrop-blur-xl">
+                        <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i data-lucide="clock" class="w-16 h-16 sm:w-24 sm:h-24 text-emerald-400 transform rotate-12"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="text-xs sm:text-sm font-bold text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Capacidad Liberada
+                            </div>
+                            <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tighter break-words" id="result-horas">0h</div>
+                            <div class="text-sm text-slate-100 font-medium">
+                                Horas/semana delegables a IA <br>
+                                <span class="text-xs text-slate-200">(Basado en techo de delegación)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mejora Productividad -->
+                    <div class="result-card rounded-2xl p-4 sm:p-8 relative group overflow-hidden border border-white/10 bg-gradient-to-br from-slate-900/50 to-slate-900/80 backdrop-blur-xl">
+                        <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i data-lucide="trending-up" class="w-16 h-16 sm:w-24 sm:h-24 text-brand-gold transform rotate-12"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="text-xs sm:text-sm font-bold text-brand-gold uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-brand-gold animate-pulse"></span>
+                                Impulso Productivo
+                            </div>
+                            <div class="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-gold mb-2 tracking-tighter break-words" id="result-mejora">0%</div>
+                            <div class="text-sm text-slate-100 font-medium">
+                                Incremento en capacidad de output <br>
+                                <span class="text-xs text-slate-200">(Acumulado por programas)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desglose -->
+                <div class="step-card rounded-[2rem] p-10 mb-8 shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-black text-white flex items-center gap-3">
+                            <i data-lucide="pie-chart" class="w-6 h-6 text-slate-100"></i>
+                            Desglose de tu ROI
+                        </h3>
+                        <button onclick="openMethodologyModal()" class="text-xs font-bold text-brand-gold hover:text-white uppercase tracking-wider flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white/5 transition-all">
+                            <i data-lucide="info" class="w-4 h-4"></i> Ver metodología
+                        </button>
+                    </div>
+                    
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <!-- Cálculos -->
+                        <div class="lg:col-span-2">
+                            <div id="roi-breakdown" class="space-y-4 text-sm text-slate-100">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Inversión Summary -->
+                        <div class="lg:col-span-1">
+                            <div class="p-4 sm:p-6 rounded-2xl bg-gradient-to-b from-slate-800/50 to-slate-900/50 border border-brand-gold/20 h-full flex flex-col justify-center text-center shadow-lg shadow-black/30 overflow-hidden">
+                                <span class="text-[10px] sm:text-xs font-bold text-slate-100 uppercase tracking-widest mb-2">Inversión Total Estimada</span>
+                                <span class="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-black text-brand-gold tracking-tighter mb-4 break-words leading-none" id="result-inversion">$0</span>
+                                <div class="text-[10px] sm:text-xs text-slate-200 font-medium px-4 py-2 bg-slate-950/50 rounded-lg inline-block mx-auto" id="result-payback">
+                                    <!-- Payback calc -->
+                                </div>
+                                <div class="text-[10px] text-slate-200 mt-3 italic max-w-[200px] mx-auto leading-tight">
+                                    * los meses, son contados a partir del cierre del ultimo entrenamiento.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-6">
+                    <button onclick="prevStep()" class="flex-1 py-5 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all text-sm uppercase tracking-wider">
+                        Ajustar Selección
+                    </button>
+                    <button onclick="nextStep()" class="flex-[2] py-5 rounded-2xl bg-brand-gold text-slate-950 font-black text-lg hover:scale-[1.02] hover:shadow-2xl hover:shadow-brand-gold/20 transition-all flex items-center justify-center gap-3">
+                        SOLICITAR COTIZACIÓN
+                        <i data-lucide="arrow-right" class="w-6 h-6 stroke-[3]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 5: Cotizar -->
+        <div id="step-5" class="step-content hidden">
+            <div class="step-card max-w-2xl mx-auto rounded-[2rem] p-10 relative overflow-hidden shadow-2xl shadow-black/80 border border-white/5 backdrop-blur-xl">
+                <div class="absolute top-0 left-0 w-full h-1 bg-brand-gold opacity-70"></div>
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-gold/10 rounded-full mb-6">
+                    <i data-lucide="sparkles" class="w-8 h-8 text-brand-gold"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Propuesta Estratégica</h2>
+                <p class="text-slate-100 mb-8">Confirma los datos para agendar tu Entendimiento Corporativo.</p>
+
+                <div class="p-6 rounded-xl bg-slate-900/50 border border-white/5 mb-8 text-left">
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-100 uppercase mb-2">Empresa</label>
+                            <input type="text" id="final-company" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-brand-gold focus:outline-none" placeholder="Nombre Empresa">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-100 uppercase mb-2">Cargo de Contacto</label>
+                            <input type="text" id="final-role" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-brand-gold focus:outline-none" placeholder="Ej: Gerente Operaciones">
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider">Tu Selección</h3>
+                    <div id="final-summary" class="space-y-2 text-sm">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-end">
+                        <span class="text-slate-100">Inversión Estimada:</span>
+                        <span class="text-2xl font-black text-brand-gold" id="final-price">$0</span>
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <a href="https://calendar.app.google/7bej429CR93ueSHE8" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center p-6 rounded-xl bg-brand-gold text-slate-950 font-bold hover:bg-[var(--brand-gold-dark)] group">
+                        <i data-lucide="calendar" class="w-8 h-8 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <span>Agendar Sesión Viabilidad</span>
+                    </a>
+                    <a id="mailto-cta" href="#" data-cta="bootcamp-propuesta" class="flex flex-col items-center justify-center p-6 rounded-xl bg-brand-gold/10 border border-brand-gold/40 text-brand-gold font-bold hover:bg-brand-gold hover:text-slate-950 group">
+                        <i data-lucide="mail" class="w-8 h-8 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <span>Solicitar Propuesta</span>
+                    </a>
+                </div>
+
+                <button onclick="prevStep()" class="mt-6 text-sm text-slate-100 hover:text-white transition-colors">
+                    ← Volver a ajustar
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- METHODOLOGY MODAL -->
+<div id="methodology-modal" class="modal-overlay opacity-0 pointer-events-none">
+    <div class="step-card modal-content max-w-xl rounded-2xl p-8 mx-4 relative">
+        <button onclick="closeMethodologyModal()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-slate-100 hover:text-white" title="Cerrar modal de metodología">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-brand-gold/10 rounded-full mb-4">
+                <i data-lucide="calculator" class="w-6 h-6 text-brand-gold"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">Metodología de Cálculo ROI</h2>
+            <p class="text-sm text-slate-100">Transparencia en nuestra evaluación</p>
+        </div>
+        
+        <div class="space-y-4 text-sm">
+            <div class="p-4 rounded-xl bg-white/5">
+                <h3 class="font-bold text-white mb-2">Techo de Delegación a IA</h3>
+                <p class="text-slate-100 mb-3">Basado en investigación de adopción de IA, definimos límites realistas:</p>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="p-2 rounded-lg bg-emerald-500/10">
+                        <div class="text-emerald-400 font-bold text-lg">80%</div>
+                        <div class="text-xs text-slate-200">Operativas</div>
+                    </div>
+                    <div class="p-2 rounded-lg bg-yellow-500/10">
+                        <div class="text-yellow-400 font-bold text-lg">33%</div>
+                        <div class="text-xs text-slate-200">Analíticas</div>
+                    </div>
+                    <div class="p-2 rounded-lg bg-red-500/10">
+                        <div class="text-red-400 font-bold text-lg">20%</div>
+                        <div class="text-xs text-slate-200">Estratégicas</div>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
+                    <h4 class="text-[10px] font-black text-indigo-300 uppercase mb-1">Inversión de Tiempo (Equipo)</h4>
+                    <p class="text-[10px] text-slate-200 leading-relaxed">
+                        La adopción corporativa requiere un compromiso de tiempo. El ROI considera el costo de nómina dedicado a la formación como una inversión inicial estratégica.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="p-4 rounded-xl bg-white/5">
+                <h3 class="font-bold text-white mb-2">Mejora de Productividad</h3>
+                <p class="text-slate-100 mb-2">Incremento acumulable por programa:</p>
+                <ul class="space-y-1 text-slate-100">
+                    <li>• <span class="text-amber-400">Bootcamp:</span> 10-20% mejora</li>
+                    <li>• <span class="text-blue-400">Coaching:</span> 20% mejora</li>
+                    <li>• <span class="text-purple-400">Programa Élite:</span> 30-50% mejora</li>
+                </ul>
+            </div>
+            
+            <div class="p-4 rounded-xl bg-white/5">
+                <h3 class="font-bold text-white mb-2">Human in the Loop</h3>
+                <p class="text-slate-100">Las tareas analíticas y estratégicas siempre requieren supervisión humana. La IA amplifica, no reemplaza tu criterio.</p>
+            </div>
+        </div>
+        
+        <button onclick="closeMethodologyModal()" class="w-full mt-6 py-3 bg-brand-gold text-black font-bold rounded-xl hover:bg-[var(--brand-gold-dark)]">
+            Entendido
+        </button>
+    </div>
+</div>
+
+<!-- JOURNEY MODAL (Learning Philosophy) -->
+<div id="journey-modal" class="modal-overlay opacity-0 pointer-events-none">
+    <div class="step-card modal-content max-w-xl rounded-2xl p-8 mx-4 relative max-h-[90vh] overflow-y-auto">
+        <button onclick="closeJourneyModal()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-slate-100 hover:text-white" title="Cerrar modal de viaje">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-500/10 rounded-full mb-4">
+                <i data-lucide="route" class="w-6 h-6 text-emerald-400"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">El Viaje del Aprendizaje</h2>
+            <p class="text-sm text-slate-100">De estudiante a creador de aceleradores</p>
+        </div>
+        
+        <div class="space-y-4 text-sm">
+            <!-- Phase 1 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-transparent border border-blue-500/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">1</div>
+                    <h3 class="font-bold text-white">Desarrollas Competencia</h3>
+                </div>
+                <p class="text-slate-100 ml-11">El tiempo invertido en aprender construye habilidades reales. Paulatinamente, tus entregables empiezan a ser mejores.</p>
+            </div>
+            
+            <!-- Phase 2 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-transparent border border-purple-500/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-xs font-bold">2</div>
+                    <h3 class="font-bold text-white">Resultados Destacados</h3>
+                </div>
+                <p class="text-slate-100 ml-11">Tu trabajo empieza a sobresalir. No solo haces más, sino que lo que haces tiene mayor impacto y reconocimiento.</p>
+            </div>
+            
+            <!-- Phase 3 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-brand-gold/10 to-transparent border border-brand-gold/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center text-brand-gold text-xs font-bold">3</div>
+                    <h3 class="font-bold text-white">Creas tus Aceleradores</h3>
+                </div>
+                <p class="text-slate-100 ml-11">Aprendes a construir tus propias herramientas: prompts especializados, asistentes IA, workflows automatizados.</p>
+            </div>
+            
+            <!-- Phase 4 -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs font-bold">4</div>
+                    <h3 class="font-bold text-white">Nueva Relación con el Trabajo</h3>
+                </div>
+                <p class="text-slate-100 ml-11">Deja de preocupar la <em>velocidad</em>. Ahora importa la <span class="text-emerald-400 font-semibold">calidad</span>, la <span class="text-emerald-400 font-semibold">escala</span> y el <span class="text-emerald-400 font-semibold">impacto</span>.</p>
+            </div>
+            
+            <!-- Final insight -->
+            <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                <p class="text-slate-100 italic">
+                    "Operativamente apalancado en IA generativa como infraestructura para tus procesos, que van en best practices."
+                </p>
+            </div>
+        </div>
+        
+        <button onclick="closeJourneyModal()" class="w-full mt-6 py-3 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400">
+            Entendido
+        </button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<site-footer base-path=".."></site-footer>
+
+<script>
+// State
+let currentStep = 0; // Force start at Step 0 (Context)
+const totalSteps = 5;
+
+// Navigation
+// Navigation
+function goToStep(step) {
+    // Note: Step 0 is Consent, Step 1 is Organization Data. Logic is now standard.
+
+    // ... (rest of logic)
+    [0, 1, 2, 3, 4, 5].forEach(i => {
+        const el = document.getElementById(`step-${i}`);
+        if(el) el.classList.add('hidden');
+    });
+    
+    // Show target step
+    const target = document.getElementById(`step-${step}`);
+    if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('animate-fade-in');
+    }
+    
+    // --- SMART STEPPER LOGIC ---
+    const stepNames = {
+        0: 'Contexto',
+        1: 'Línea Base',
+        2: 'Diagnóstico',
+        3: 'Niveles',
+        4: 'Retorno (ROI)',
+        5: 'Confirmación'
+    };
+    
+    const mobileNum = document.getElementById('mobile-step-num');
+    const mobileName = document.getElementById('mobile-step-name');
+    if (mobileNum) mobileNum.textContent = step === 0 ? 'i' : step;
+    if (mobileName) mobileName.textContent = stepNames[step] || 'Paso ' + step;
+    
+    const percent = (step / 5) * 100;
+    
+    const mobileBar = document.getElementById('mobile-progress-bar');
+    const desktopLine = document.getElementById('desktop-progress-line');
+    
+    if (mobileBar) mobileBar.style.width = `${Math.max(5, percent)}%`; 
+    if (desktopLine) desktopLine.style.width = `${percent}%`;
+
+    document.querySelectorAll('.step-node').forEach((el) => {
+        const nodeStep = parseInt(el.dataset.step);
+        
+        el.classList.remove('active', 'completed');
+        
+        if (nodeStep === step) {
+            el.classList.add('active');
+        } else if (nodeStep < step) {
+            el.classList.add('completed');
+        }
+    });
+    
+    const subtitles = {
+        0: 'Contexto y Disclaimer',
+        1: 'Datos de la Organización',
+        2: 'Distribución de Carga del Equipo',
+        3: 'Niveles de Intervención',
+        4: 'Proyección de Eficiencia',
+        5: 'Confirmación'
+    };
+    const subEl = document.getElementById('step-subtitle');
+    if (subEl) subEl.textContent = subtitles[step];
+    
+    currentStep = step;
+    
+    if (step === 4) calculateROI();
+    if (step === 5) prepareFinalSummary();
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep() { goToStep(currentStep + 1); }
+function prevStep() { goToStep(currentStep - 1); }
+
+// Frictionless Currency Handling
+function parseCurrency(str) {
+    if (!str) return 0;
+    // Remove dots, commas, spaces, symbols
+    return parseInt(str.toString().replace(/[^0-9]/g, '')) || 0;
+}
+
+function formatCurrencyInput(val) {
+    if (!val) return '';
+    const num = parseCurrency(val);
+    return num.toLocaleString('es-CO');
+}
+
+// Auto-masking listeners
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.currency-input').forEach(input => {
+        // Init format
+        input.value = formatCurrencyInput(input.value);
+        
+        input.addEventListener('input', (e) => {
+            const val = parseCurrency(e.target.value);
+            e.target.value = val.toLocaleString('es-CO');
+            saveToSession(); // Save raw number implied? No, saving logic needs adjustment
+        });
+    });
+});
+
+// UI Updates
+function updateTareasDistribucion() {
+    const simples = parseInt(document.getElementById('tareas-simples').value);
+    const medias = parseInt(document.getElementById('tareas-medias').value);
+    const altas = parseInt(document.getElementById('tareas-altas').value);
+    
+    document.getElementById('simples-display').textContent = simples + '%';
+    document.getElementById('medias-display').textContent = medias + '%';
+    document.getElementById('altas-display').textContent = altas + '%';
+    
+    const total = simples + medias + altas;
+    const msg = document.getElementById('validation-msg');
+    const nextBtn = document.querySelector('#step-2 button[onclick*="nextStep"]');
+    
+    if (total === 100) {
+        msg.className = 'p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center';
+        msg.innerHTML = '<span class="text-sm text-emerald-400">✓ Total: 100%</span>';
+        if (nextBtn) nextBtn.disabled = false;
+        if (nextBtn) nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    } else {
+        msg.className = 'p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-center';
+        msg.innerHTML = `<span class="text-sm text-red-400">Total: ${total}% (debe ser 100%)</span>`;
+        if (nextBtn) nextBtn.disabled = true;
+        if (nextBtn) nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+    saveToSession();
+}
+
+// B2B ROI Calculation
+// Update Study Hours Display
+function updateEstudioDisplay() {
+    const val = document.getElementById('horas-estudio').value;
+    document.getElementById('estudio-display').textContent = val + 'h';
+    calculateROI();
+}
+
+function calculateROI() {
+    // Get B2B inputs with Adversarial Clamping (Min defaults)
+    let headcount = parseInt(document.getElementById('headcount').value) || 0;
+    headcount = Math.max(1, headcount); // Prevent div/0 by forcing at least 1 employee
+    
+    // Parse currency inputs (remove formatting)
+    let payroll = parseCurrency(document.getElementById('payroll').value) || 0;
+    payroll = Math.max(0, payroll); // Prevent negative cost
+    
+    let revenue = parseCurrency(document.getElementById('revenue').value) || 0;
+    revenue = Math.max(0, revenue);
+    
+    let pipelineMonths = parseFloat(document.getElementById('pipeline-months').value) || 0;
+    pipelineMonths = Math.max(0.1, pipelineMonths); // Prevent 0 or negative months
+
+    // Percentage Clamping (0-100)
+    let simples = parseInt(document.getElementById('tareas-simples').value) || 0;
+    let medias = parseInt(document.getElementById('tareas-medias').value) || 0;
+    let altas = parseInt(document.getElementById('tareas-altas').value) || 0;
+    
+    // Normalize to 0-1 range
+    simples = Math.max(0, Math.min(100, simples)) / 100;
+    medias = Math.max(0, Math.min(100, medias)) / 100;
+    altas = Math.max(0, Math.min(100, altas)) / 100;
+    
+    // Constants
+    const WEEKS_MONTH = 4;
+    const HOURS_WEEK_PER_EMP = 40;
+    const TOTAL_TEAM_HOURS_MONTH = headcount * HOURS_WEEK_PER_EMP * WEEKS_MONTH;
+    const COST_PER_HOUR = payroll / TOTAL_TEAM_HOURS_MONTH;
+    
+    // 1. Calculate Weighted Delegable Potential (Team Level)
+    const horasSimples = TOTAL_TEAM_HOURS_MONTH * simples * 0.80; 
+    const horasMedias = TOTAL_TEAM_HOURS_MONTH * medias * 0.33;   
+    const horasAltas = TOTAL_TEAM_HOURS_MONTH * altas * 0.20;     
+    const potencialDelegableMensual = horasSimples + horasMedias + horasAltas;
+    
+    // 2. Calculate Selection Data
+    const checkboxes = document.querySelectorAll('.level-checkbox:checked');
+    let totalMejora = 0;
+    let totalInversionDinero = 0;
+    let totalHorasEstudioPerCapita = 0;
+    let impactSales = false;
+    
+    checkboxes.forEach(cb => {
+        totalMejora += parseInt(cb.dataset.mejora);
+        totalInversionDinero += parseInt(cb.dataset.price); 
+        totalHorasEstudioPerCapita += parseInt(cb.dataset.studyCost || 0);
+        
+        // Check for Commercial Impact
+        if (cb.dataset.category === 'commercial' || cb.dataset.name.includes('Ventas') || cb.dataset.name.includes('Pipeline')) {
+            impactSales = true;
+        }
+    });
+
+    const factorLiberacion = Math.min(totalMejora, 100) / 100;
+    
+    const horasLiberadasMensual = potencialDelegableMensual * factorLiberacion;
+    const ahorroMensualEficiencia = horasLiberadasMensual * COST_PER_HOUR;
+    
+    // 3. Pipeline Acceleration Impact
+    let revenueUplift = 0;
+    if (impactSales) {
+        // Assume 8% efficiency gain in velocity -> 8% revenue uplift proxy (Conservative)
+        const velocityGain = 0.08; 
+        revenueUplift = revenue * velocityGain;
+    }
+
+    const totalMonthlyImpact = ahorroMensualEficiencia + revenueUplift;
+    
+    // --- TIMELINE & STUDY IMPACT ---
+    const horasEstudioSemanaInput = parseInt(document.getElementById('horas-estudio').value) || 8;
+    const totalHorasEstudioEquipo = totalHorasEstudioPerCapita * headcount;
+    const costoOportunidadEquipo = totalHorasEstudioEquipo * COST_PER_HOUR;
+    const inversionTotalConsolidada = totalInversionDinero + costoOportunidadEquipo;
+
+    const semanasEstudioFull = Math.ceil(totalHorasEstudioPerCapita / horasEstudioSemanaInput) || 1;
+    const mesesEstudioProx = Math.round((semanasEstudioFull / 4.3) * 10) / 10;
+
+    // --- FINANCIAL MODELING ---
+    // Year 1 (Accounting for learning months)
+    const effectiveMonthsY1 = Math.max(0, 11.5 - mesesEstudioProx);
+    const grossBenefitY1 = totalMonthlyImpact * effectiveMonthsY1;
+    const netBenefitY1 = grossBenefitY1 - inversionTotalConsolidada;
+    const roiY1 = inversionTotalConsolidada > 0 ? (netBenefitY1 / inversionTotalConsolidada) * 100 : 0;
+
+    // Year 2 (Steady State)
+    const grossBenefitY2 = totalMonthlyImpact * 12;
+    const roiY2 = inversionTotalConsolidada > 0 ? (grossBenefitY2 / inversionTotalConsolidada) * 100 : 0;
+
+    // Payback
+    const paybackMesesDinero = inversionTotalConsolidada > 0 && totalMonthlyImpact > 0 
+        ? Math.ceil(inversionTotalConsolidada / totalMonthlyImpact) 
+        : 0;
+
+    // --- UPDATE UI ---
+    const resultValue = document.getElementById('result-horas');
+    if (resultValue) {
+        resultValue.textContent = Math.round(horasLiberadasMensual).toLocaleString() + 'h/mes';
+    }
+
+    document.getElementById('result-mejora').textContent = totalMejora + '%';
+    document.getElementById('result-inversion').textContent = formatCurrency(totalInversionDinero);
+    
+    const breakdown = document.getElementById('roi-breakdown');
+    if (breakdown) {
+        breakdown.innerHTML = `
+            <div class="space-y-6 animate-fade-in">
+                 <!-- Financial ROI Summary -->
+                <div class="grid grid-cols-2 gap-4 mb-2">
+                    <div class="p-5 bg-gradient-to-br from-indigo-900/40 to-indigo-900/10 rounded-2xl border border-indigo-500/20 text-center relative overflow-hidden">
+                         <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500/30"></div>
+                         <div class="text-[10px] text-indigo-300 uppercase font-bold tracking-wider mb-2">ROI Año 1 (Launch)</div>
+                        <div class="text-3xl font-black ${roiY1 > 0 ? 'text-indigo-400' : 'text-slate-200'} tracking-tight">
+                            ${roiY1 > 0 ? '+' + Math.round(roiY1) + '%' : 'Calculando...'}
+                        </div>
+                        <div class="text-[10px] text-slate-200 mt-2 font-medium">Curva de adopción (${mesesEstudioProx}m)</div>
+                    </div>
+                    <div class="p-5 bg-gradient-to-br from-brand-gold/20 to-brand-gold/5 rounded-2xl border border-brand-gold/20 text-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-brand-gold/50"></div>
+                        <div class="text-[10px] text-brand-gold uppercase font-bold tracking-wider mb-2">ROI Año 2 (Recurrente)</div>
+                        <div class="text-3xl font-black ${roiY2 > 0 ? 'text-brand-gold' : 'text-slate-200'} tracking-tight">
+                            ${roiY2 > 0 ? Math.round(roiY2) + '%' : '--'}
+                        </div>
+                         <div class="text-[10px] text-slate-200 mt-2 font-medium">Eficiencia plena (12m)</div>
+                    </div>
+                </div>
+
+                <!-- 1. Investment Layer -->
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors">
+                    <div class="mb-5 flex items-center gap-3 border-b border-white/5 pb-4">
+                        <div class="w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center border border-slate-700 shadow-inner">
+                            <span class="text-xs font-bold text-slate-100">1</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-lg tracking-tight">Análisis de Inversión Inicial</div>
+                            <div class="text-[10px] text-slate-200 uppercase tracking-widest font-bold">CAPEX + OPEX (Setup)</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div class="p-4 rounded-xl bg-slate-950/30 border border-slate-800/50">
+                            <span class="block text-[10px] font-bold text-slate-200 uppercase tracking-wider mb-1">Inversión Directa</span>
+                            <span class="text-white font-mono text-base">${formatCurrency(totalInversionDinero)}</span>
+                            <span class="block text-[9px] text-slate-400 mt-1">Servicios y Licencias</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950/30 border border-slate-800/50">
+                            <span class="block text-[10px] font-bold text-indigo-300 uppercase tracking-wider mb-1">Costo Oportunidad</span>
+                            <span class="text-indigo-400 font-mono text-base">${formatCurrency(costoOportunidadEquipo)}</span>
+                            <span class="block text-[9px] text-slate-400 mt-1">${Math.round(totalHorasEstudioEquipo)}h equipo formación</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center font-bold text-white">
+                        <span>Inversión Total Consolidada:</span>
+                        <span class="text-xl text-indigo-400">${formatCurrency(inversionTotalConsolidada)}</span>
+                    </div>
+                </div>
+
+                <!-- 2. Business Impact Layer -->
+                <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-950/40 to-emerald-900/20 border border-emerald-500/20 relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                    <div class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="mb-5 flex items-center gap-3 border-b border-emerald-500/10 pb-4 relative z-10">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-900/50 flex items-center justify-center border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                            <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-emerald-400 text-lg tracking-tight flex items-center gap-2">
+                                 Impacto Mensual en Negocio
+                                 <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-wider">Flujo de Valor</span>
+                            </div>
+                            <div class="text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold">Retorno Recurrente</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 relative z-10">
+                        <div class="flex flex-col justify-center p-5 rounded-xl bg-slate-900/60 border border-emerald-500/10 backdrop-blur-sm">
+                             <span class="text-[10px] text-emerald-200/50 uppercase tracking-widest font-bold mb-2">Eficiencia Operativa / Mes</span>
+                            <div class="flex items-baseline gap-1">
+                                <span class="font-mono text-2xl text-emerald-300 font-bold tracking-tight">+${formatCurrency(ahorroMensualEficiencia)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col justify-center p-5 rounded-xl bg-slate-900/60 border border-emerald-500/10 backdrop-blur-sm ${impactSales ? 'border-brand-gold/20' : ''}">
+                            <span class="text-[10px] ${impactSales ? 'text-brand-gold/70' : 'text-slate-200'} uppercase tracking-widest font-bold mb-2">
+                                Aceleración Pipeline
+                            </span>
+                            <span class="font-mono text-2xl ${impactSales ? 'text-brand-gold font-bold tracking-tight' : 'text-slate-100'}">
+                                ${impactSales ? '+' + formatCurrency(revenueUplift) : '$0'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- Net Impact Footer -->
+                 <div class="mt-2 text-center">
+                    <span class="text-[10px] text-slate-200 uppercase tracking-widest font-bold bg-slate-950/50 px-3 py-1 rounded-full border border-white/5">
+                         Payback (Tiempo + Dinero) en ~${paybackMesesDinero} meses. Curva de aprendizaje estimada: ${mesesEstudioProx} meses.
+                    </span>
+                 </div>
+            </div>
+        `;
+        
+        if (typeof icons !== 'undefined') icons.createIcons();
+    }
+    
+    const paybackDisplay = document.getElementById('result-payback');
+    if (paybackDisplay) {
+        if (inversionTotalConsolidada > 0 && totalMonthlyImpact > 0) {
+            paybackDisplay.innerHTML = `<span class="text-emerald-400 text-sm font-bold">⚡ Punto de Equilibrio: ~${paybackMesesDinero} meses</span><br><span class="text-[10px] text-slate-200 font-normal mt-1 block">* Incluye costo de oportunidad del equipo</span>`;
+        } else {
+            paybackDisplay.textContent = 'Selecciona niveles para calcular el retorno';
+        }
+    }
+}
+
+
+// Age Gate & Dynamic Pricing
+function checkCompanyAge() {
+    const age = document.querySelector('input[name="company_age"]:checked').value;
+    const headcount = parseInt(document.getElementById('headcount').value) || 15;
+    const modal = document.getElementById('startup-modal');
+    
+    // 1. Suggest Personas Route
+    if (age === 'startup') {
+        modal.classList.remove('hidden');
+    } else {
+        modal.classList.add('hidden');
+    }
+    
+    // 2. Dynamic Pricing Rule (Headcount <= 10 & Age < 3)
+    // Applies if they stay in the B2B tool
+    updatePricingTier(age, headcount);
+}
+
+function updatePricingTier(age, headcount) {
+    const checkboxes = document.querySelectorAll('.level-checkbox');
+    const isStartupTier = (age === 'startup' && headcount <= 10);
+    
+    checkboxes.forEach(cb => {
+        // Store original price if not stored
+        if (!cb.dataset.basePrice) {
+            cb.dataset.basePrice = cb.dataset.price;
+        }
+        
+        const basePrice = parseInt(cb.dataset.basePrice);
+        let finalPrice = basePrice;
+        let label = '';
+        
+        if (isStartupTier) {
+            // Apply ~15% of B2B price (simulating Personas rate)
+            // Or use a fixed mapping. Let's use a logic factor.
+            // B2B N2 is 3.5M. Personas is ~400k. Ratio ~0.12.
+            finalPrice = Math.round(basePrice * 0.12);
+            label = ' (Tarifa Emergente)';
+        }
+        
+        // Update Metadata
+        cb.dataset.price = finalPrice;
+        
+        // Update UI Text (Find the sibling div containing the name)
+        // Since the HTML structure is Checkbox -> Div -> [Title, Desc]
+        // We need to find where the price/name is shown if we want to show "$400k"
+        // Current Step 3 HTML doesn't show Price explicitly on the card face, only in breakdown.
+        // We will add a badge if needed, or just rely on the Breakdown calculation.
+        
+        // Visual Feedback
+        const card = cb.closest('label');
+        if (isStartupTier) {
+            card.classList.add('border-brand-gold/50');
+            if(!card.querySelector('.startup-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'startup-badge ml-auto text-[10px] bg-brand-gold text-black px-1.5 py-0.5 rounded font-bold';
+                badge.textContent = 'Emergente';
+                card.querySelector('div').appendChild(badge); // Append to the text container
+            }
+        } else {
+            card.classList.remove('border-brand-gold/50');
+            const badge = card.querySelector('.startup-badge');
+            if(badge) badge.remove();
+        }
+    });
+}
+
+function closeStartupModal() {
+    document.getElementById('startup-modal').classList.add('hidden');
+    // If they close, we DO NOT revert the radio. allow them to be "Startup" to keep the pricing.
+    // Ensure pricing is set
+    const age = document.querySelector('input[name="company_age"]:checked').value;
+    const headcount = parseInt(document.getElementById('headcount').value) || 15;
+    updatePricingTier(age, headcount);
+}
+
+
+// SME Context Logic
+function checkSMEContext() {
+    const headcount = parseInt(document.getElementById('headcount').value) || 0;
+    // We check radio button state too
+    const ageRadio = document.querySelector('input[name="company_age"]:checked');
+    const isStartup = ageRadio ? ageRadio.value === 'startup' : false;
+    
+    // Logic: < 10 employees AND is Startup -> Show Banner
+    const alert = document.getElementById('sme-alert');
+    
+    if (headcount > 0 && headcount < 10 && isStartup) {
+        alert.classList.remove('hidden');
+    } else {
+        alert.classList.add('hidden');
+    }
+    
+    // Also update pricing legacy
+    if(ageRadio) updatePricingTier(ageRadio.value, headcount);
+}
+
+// Add listener to headcount to re-evaluate pricing
+document.getElementById('headcount').addEventListener('input', () => {
+    checkSMEContext();
+});
+
+
+function prepareFinalSummary() {
+    const checkboxes = document.querySelectorAll('.level-checkbox:checked');
+    const container = document.getElementById('final-summary');
+    const headcount = parseInt(document.getElementById('headcount').value) || 1;
+    let totalInversionDinero = 0;
+    let totalHorasEstudioPerCapita = 0;
+    let html = '';
+    
+    checkboxes.forEach(cb => {
+        const price = parseInt(cb.dataset.price);
+        totalInversionDinero += price;
+        totalHorasEstudioPerCapita += parseInt(cb.dataset.studyCost || 0);
+        html += `<div class="flex justify-between text-slate-100 mb-1">
+            <span>${cb.dataset.name}</span>
+            <span class="font-mono text-xs">${formatCurrency(price)}</span>
+        </div>`;
+    });
+    
+    // Add Time Investment line
+    if (totalHorasEstudioPerCapita > 0) {
+        html += `<div class="mt-3 pt-3 border-t border-white/5 flex justify-between text-indigo-300 font-bold">
+            <span>Compromiso de Formación</span>
+            <span>~${totalHorasEstudioPerCapita}h/pax</span>
+        </div>
+        <div class="flex justify-between text-[10px] text-slate-100">
+            <span>Carga horaria total equipo</span>
+            <span>${totalHorasEstudioPerCapita * headcount}h</span>
+        </div>`;
+    }
+    
+    if (html === '') {
+        html = '<div class="text-slate-200 italic">No has seleccionado ningún nivel</div>';
+    }
+    
+    container.innerHTML = html;
+    document.getElementById('final-price').textContent = formatCurrency(totalInversionDinero);
+    
+    // Update mailto with complete B2B data
+    const mejora = document.getElementById('result-mejora').textContent;
+    const payroll = formatCurrency(parseInt(document.getElementById('payroll').value));
+    const hEstudioSemana = document.getElementById('horas-estudio').value;
+    
+    // New Fields
+    const company = document.getElementById('final-company')?.value || 'No especificada';
+    const role = document.getElementById('final-role')?.value || 'No especificado';
+    
+    const subject = encodeURIComponent(`Solicitud Empresarial - ${company} - MetodologIA`);
+    const body = encodeURIComponent(`Hola equipo MetodologIA,
+
+Me interesa la Implementación Corporativa para mi organización.
+
+PERFIL DE EMPRESA:
+• Organización: ${company}
+• Contacto: ${role}
+• Tamaño del Equipo: ${headcount} empleados
+• Nómina Base: ${payroll}
+
+SELECCIÓN ESTRATÉGICA:
+${Array.from(checkboxes).map(cb => '- ' + cb.dataset.name).join('\n')}
+
+MÉTRICAS DEL BUSINESS CASE:
+• Mejora de productividad buscada: ${mejora}
+• Compromiso de Tiempo (Estudio): ${totalHorasEstudioPerCapita}h/persona
+• Intensidad Formativa: ${hEstudioSemana}h/semana
+• Esfuerzo Total Equipo: ${totalHorasEstudioPerCapita * headcount}h laborales
+
+Solicito contacto para confirmar viabilidad y agendar sesión diagnóstica.`);
+    
+    document.getElementById('mailto-cta').href = `mailto:contacto@metodologia.info?subject=${subject}&body=${body}`;
+    
+    document.getElementById('mailto-cta').href = `mailto:contacto@metodologia.info?subject=${subject}&body=${body}`;
+}
+
+function formatCurrency(value) {
+    return '$' + Math.round(value).toLocaleString('es-CO');
+}
+
+// Session Storage
+function saveToSession() {
+    const data = {
+        headcount: document.getElementById('headcount').value,
+        payroll: document.getElementById('payroll').value,
+        tareasSimples: document.getElementById('tareas-simples').value,
+        tareasMedias: document.getElementById('tareas-medias').value,
+        tareasAltas: document.getElementById('tareas-altas').value,
+        company: document.getElementById('final-company')?.value,
+        role: document.getElementById('final-role')?.value,
+        selectedLevels: Array.from(document.querySelectorAll('.level-checkbox:checked')).map(cb => cb.dataset.name)
+    };
+    sessionStorage.setItem('metodologia_b2b_data', JSON.stringify(data));
+}
+
+function loadFromSession() {
+    const saved = sessionStorage.getItem('metodologia_b2b_data');
+    if (!saved) return;
+    
+    try {
+        const data = JSON.parse(saved);
+        if (data.headcount) document.getElementById('headcount').value = data.headcount;
+        if (data.payroll) document.getElementById('payroll').value = data.payroll;
+        
+        if (data.tareasSimples) document.getElementById('tareas-simples').value = data.tareasSimples;
+        if (data.tareasMedias) document.getElementById('tareas-medias').value = data.tareasMedias;
+        if (data.tareasAltas) document.getElementById('tareas-altas').value = data.tareasAltas;
+        
+        if (data.company) document.getElementById('final-company').value = data.company;
+        if (data.role) document.getElementById('final-role').value = data.role;
+        
+        updateTareasDistribucion();
+        
+        if (data.selectedLevels && data.selectedLevels.length > 0) {
+            document.querySelectorAll('.level-checkbox').forEach(cb => {
+                if (data.selectedLevels.includes(cb.dataset.name)) {
+                    cb.checked = true;
+                }
+            });
+        }
+    } catch(e) { console.warn('Restore error:', e); }
+}
+
+// Methodology Modal
+function openMethodologyModal() {
+    const modal = document.getElementById('methodology-modal');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100');
+    if (typeof icons !== 'undefined') icons.createIcons();
+}
+
+function closeMethodologyModal() {
+    const modal = document.getElementById('methodology-modal');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    modal.classList.remove('opacity-100');
+}
+
+// Journey Modal
+function openJourneyModal() {
+    const modal = document.getElementById('journey-modal');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100');
+    if (typeof icons !== 'undefined') icons.createIcons();
+}
+
+function closeJourneyModal() {
+    const modal = document.getElementById('journey-modal');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    modal.classList.remove('opacity-100');
+}
+
+document.getElementById('methodology-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'methodology-modal') closeMethodologyModal();
+});
+document.getElementById('journey-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'journey-modal') closeJourneyModal();
+});
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof icons !== 'undefined') icons.createIcons();
+    loadFromSession();
+    
+    // Force UI sync with currentStep (0)
+    console.log('[DEBUG] Initializing at Step:', currentStep);
+    goToStep(currentStep);
+    
+    // Safety check: ensure Step 0 indicator is active if currentStep is 0
+    if (currentStep === 0) {
+        const step0Node = document.querySelector('.step-node[data-step="0"]');
+        if (step0Node && !step0Node.classList.contains('active')) {
+            console.log('[DEBUG] Forcing Step 0 Active state');
+            step0Node.classList.add('active');
+        }
+    }
+    
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('change', saveToSession);
+    });
+});
+</script>
+
+<!-- Logic Script -->
+<script src="js/cotizador-empresas.js"></script>
+
+</body>
+</html>

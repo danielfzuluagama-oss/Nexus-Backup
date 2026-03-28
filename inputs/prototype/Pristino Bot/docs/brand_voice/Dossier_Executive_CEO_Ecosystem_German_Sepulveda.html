@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dossier Ejecutivo | Germán Sepúlveda | Chief Ecosystem Officer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0A122A', // Azul MetodologIA
+                            surface: '#1E293B',
+                            empower: '#A855F7', // Purple-500 for Ecosystem
+                            sovereign: '#A855F7',
+                            gold: '#A855F7', // Replaced gold with purple
+                            text: '#F8FAFC',
+                            muted: '#64748B'
+                        }
+                    },
+                    animation: {
+                        'morph': 'morph 8s ease-in-out infinite',
+                        'beam': 'beam 5s linear infinite',
+                    },
+                    keyframes: {
+                        morph: {
+                            '0%, 100%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+                            '50%': { borderRadius: '30% 60% 70% 30% / 50% 60% 30% 50%' },
+                        },
+                        beam: {
+                            '0%': { transform: 'translateX(-100%) skew(-45deg)' },
+                            '100%': { transform: 'translateX(200%) skew(-45deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0A122A;
+            color: #F8FAFC;
+        }
+
+        .gradient-mesh {
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+        }
+
+        .glass-panel, .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-panel:hover, .glass-card:hover {
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 8px 32px rgba(168, 85, 247, 0.1);
+            transform: scale(1.01);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .disruptive-skew {
+            transform: skewY(-2deg);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .disruptive-skew-inner {
+            transform: skewY(2deg);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #F1F5F9 0%, #A855F7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+
+        .exp-tab.active {
+            background-color: rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
+        }
+        .exp-pane {
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.2); border-radius: 10px; }
+        
+        .text-brand-empower { color: #A855F7; }
+        .bg-brand-surface { background-color: #1E293B; }
+        
+        @keyframes beam {
+            0% { transform: translateX(-100%) skew(-45deg); }
+            100% { transform: translateX(200%) skew(-45deg); }
+        }
+        .animate-beam { animation: beam 5s linear infinite; }
+    </style>
+
+    <script>
+        function switchExp(id) {
+            document.querySelectorAll('.exp-tab').forEach(t => t.classList.remove('active', 'bg-brand-surface/40'));
+            document.querySelectorAll('.exp-tab').forEach(t => t.classList.add('bg-brand-surface/20'));
+            
+            const activeTab = document.querySelector(`[data-id="${id}"]`);
+            activeTab.classList.add('active', 'bg-brand-surface/40');
+            activeTab.classList.remove('bg-brand-surface/20');
+            
+            document.querySelectorAll('.exp-pane').forEach(p => p.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+    </script>
+</head>
+
+<body class="font-sans">
+    <div class="fixed inset-0 gradient-mesh z-[-1]"></div>
+
+    <!-- Interactive Navigation -->
+    <header class="fixed top-0 w-full z-50 border-b border-white/5 bg-brand-dark/20 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-8 h-24 flex justify-between items-center">
+            <div class="flex items-center gap-6">
+                <a href="#" class="flex items-center gap-3 group transition-all duration-500">
+                    <svg width="42" height="42" viewBox="0 0 36 36" class="drop-shadow-[0_0_12px_rgba(168,85,247,0.3)] group-hover:rotate-[15deg] transition-transform duration-500">
+                        <path fill="#A855F7" d="M18 2L3 9v18l15 7 15-7V9L18 2zm13 24.1L18 32.2l-13-6.1V10.9L18 4.8l13 6.1v15.2z"/>
+                        <circle fill="#A855F7" cx="18" cy="18" r="4">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite" />
+                        </circle>
+                    </svg>
+                    <div class="h-10 w-[1px] bg-white/10 mx-1"></div>
+                    <div class="leading-none">
+                        <h1 class="text-xl font-heading font-black tracking-tighter uppercase">GERMÁN <span class="text-brand-empower">SEPÚLVEDA</span></h1>
+                        <span class="text-[10px] text-brand-empower font-bold tracking-[0.2em] uppercase">CEO | Ecosistemas Digitales</span>
+                    </div>
+                </a>
+            </div>
+            <nav class="hidden md:flex gap-10 font-bold text-[10px] tracking-[0.2em] uppercase">
+                <a href="#perfil" class="hover:text-brand-empower transition-all hover:tracking-[0.3em]">Soberanía</a>
+                <a href="#trayectoria" class="hover:text-brand-empower transition-all hover:tracking-[0.3em]">Evolución</a>
+                <a href="#formacion" class="hover:text-brand-empower transition-all hover:tracking-[0.3em]">Maestría</a>
+                <a href="mailto:german@metodologia.info" class="px-6 py-3 bg-brand-empower text-white rounded-sm hover:shadow-[0_0_25px_rgba(168,85,247,0.4)] transition-all">CONECTAR</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-40">
+        <!-- Hero: Sovereign Portrait -->
+        <section id="perfil" class="px-8 max-w-7xl mx-auto mb-40">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="relative group">
+                    <!-- Photo with Morphing Background -->
+                    <div class="absolute -inset-10 bg-brand-empower/10 animate-morph z-0"></div>
+                    <div class="relative z-10 w-full aspect-[4/5] rounded-3xl overflow-hidden border-2 border-white/10 glass-panel">
+                        <img src="https://github.com/ejemplo-deo-repo/img/blob/main/german-sepulveda.png?raw=true" alt="Germán Sepúlveda" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000">
+                        <div class="absolute inset-x-0 bottom-0 p-8 bg-black/60 backdrop-blur-md">
+                            <span class="text-xs font-bold text-brand-empower tracking-[0.3em] uppercase mb-2 block">Filosofía Empresarial</span>
+                            <p class="text-lg text-white/90 font-light leading-relaxed mb-6">
+                        <strong class="text-white font-semibold">Integrador de Sistemas.</strong> Experto en conectar puntos, personas y plataformas para crear ecosistemas digitales que florecen de manera autónoma.
+                    </p>
+                    <p class="text-base text-brand-empower/90 font-medium leading-relaxed italic">
+                        "La tecnología no es el fin, es el tejido conectivo. El verdadero ecosistema integra visión, operación y cultura en un solo organismo vivo."
+                    </p>    </div>
+                    </div>
+                    <!-- Stats Floating Card -->
+                    <div class="absolute -bottom-10 -right-10 glass-panel p-8 rounded-2xl w-64 neo-brutal">
+                        <div class="mb-4">
+                            <span class="text-3xl font-black text-white">+8</span>
+                            <span class="text-xs text-brand-muted font-bold block">Años en Salud & Datos</span>
+                        </div>
+                        <div class="h-[1px] w-full bg-white/10 mb-4"></div>
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <span class="block text-2xl font-bold text-brand-sovereign">360°</span>
+                                <span class="text-[9px] text-brand-muted uppercase tracking-wider font-extrabold">Visión Holística</span>
+                            </div>
+                            <div class="w-8 h-8 rounded-full border border-brand-empower flex items-center justify-center text-brand-empower">↑</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-6xl md:text-8xl font-heading font-black leading-[0.9] text-glow mb-12">
+                        Chief <span class="italic text-brand-empower">Ecosystem.</span>
+                    </h2>
+                    <p class="text-xl text-brand-muted mb-10 leading-relaxed font-light">
+                        Médico Toxicólogo y Data Scientist. Mi rol como <strong class="text-white">Chief Ecosystem Officer</strong> conecta el rigor clínico con la potencia analítica. Diseño ecosistemas donde la <span class="text-brand-sovereign font-bold">Evidencia del Mundo Real (RWE)</span> y los datos se transforman en decisiones estratégicas. Integro sistemas complejos para que funcionen como organismos vivos y eficientes.
+                    </p>
+                    <div class="flex flex-wrap gap-6">
+                        <div class="px-6 py-4 glass-panel border-l-4 border-brand-empower">
+                            <h4 class="text-[10px] font-bold text-brand-empower tracking-widest uppercase mb-1">ENFOQUE</h4>
+                            <p class="font-bold">Evidence Based</p>
+                        </div>
+                        <div class="px-6 py-4 glass-panel border-l-4 border-brand-sovereign">
+                            <h4 class="text-[10px] font-bold text-brand-sovereign tracking-widest uppercase mb-1">META</h4>
+                            <p class="font-bold">Systemic Health</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trayectoria Integral 360° -->
+        <section id="trayectoria" class="py-32 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-end gap-8 mb-20">
+                    <div class="max-w-2xl">
+                        <span class="text-xs font-bold text-brand-empower tracking-[0.3em] uppercase mb-4 block">Evolución Profesional</span>
+                        <h2 class="text-5xl font-heading font-black leading-tight">CRONOLOGÍA DE <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-empower to-white">IMPACTO</span></h2>
+                    </div>
+                    <p class="text-brand-muted max-w-sm text-sm leading-relaxed">Una carrera dedicada a construir puentes entre tecnología, negocio y personas.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-12">
+                    <!-- Tabs Navigation -->
+                    <div class="lg:col-span-4 space-y-4" id="exp-tabs">
+                        <button onclick="switchExp('metodologia')" class="exp-tab active w-full p-6 bg-brand-surface/40 border border-white/5 rounded-2xl text-left hover:border-brand-empower/30 transition-all group" data-id="metodologia">
+                            <span class="block text-[10px] font-bold text-brand-empower tracking-widest uppercase mb-2">2025 - Presente</span>
+                            <span class="text-xl font-heading font-bold group-hover:text-brand-empower transition-colors">MetodologIA</span>
+                            <span class="block text-[11px] text-white/40 mt-1">Founder | Chief Ecosystem Officer</span>
+                        </button>
+                        <button onclick="switchExp('carisma')" class="exp-tab w-full p-6 bg-brand-surface/20 border border-white/5 rounded-2xl text-left hover:border-brand-empower/30 transition-all group" data-id="carisma">
+                            <span class="block text-[10px] font-bold text-white/40 tracking-widest uppercase mb-2">2022 - 2025</span>
+                            <span class="text-xl font-heading font-bold group-hover:text-brand-empower transition-colors">Hospital Carisma</span>
+                            <span class="block text-[11px] text-white/40 mt-1">Toxicólogo Clínico & Epidemiólogo</span>
+                        </button>
+                        <button onclick="switchExp('docencia')" class="exp-tab w-full p-6 bg-brand-surface/20 border border-white/5 rounded-2xl text-left hover:border-brand-empower/30 transition-all group" data-id="docencia">
+                            <span class="block text-[10px] font-bold text-white/40 tracking-widest uppercase mb-2">2023 - Presente</span>
+                            <span class="text-xl font-heading font-bold group-hover:text-brand-empower transition-colors">Docencia Universitaria</span>
+                            <span class="block text-[11px] text-white/40 mt-1">U. San Martín & U. de Antioquia</span>
+                        </button>
+                    </div>
+
+                    <!-- Content Display -->
+                    <div class="lg:col-span-8">
+                        <div id="exp-content" class="glass-card p-12 rounded-[2.5rem] relative overflow-hidden h-full">
+                            <!-- MetodologIA -->
+                            <div id="metodologia" class="exp-pane space-y-8">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-3xl font-heading font-black mb-2">Chief Ecosystem Officer</h3>
+                                        <p class="text-brand-empower font-bold tracking-widest uppercase text-sm">Founder • MetodologIA</p>
+                                    </div>
+                                    <div class="px-4 py-2 bg-brand-empower/10 border border-brand-empower/20 rounded-lg text-[10px] font-black text-brand-empower uppercase tracking-tighter">Founder</div>
+                                </div>
+                                <div class="prose prose-invert max-w-none">
+                                    <p class="text-lg text-white font-light italic leading-relaxed mb-6">
+                                        "Diseño los cimientos sobre los que la innovación escala. Mi misión es orquestar tecnologías, metodologías y talento para crear un ecosistema digital sin fricciones."
+                                    </p>
+                                    <h4 class="text-xl font-heading font-bold text-white mb-4">Ecosystem Architecture</h4>
+                                    <ul class="space-y-4 mt-4 list-none p-0">
+                                        <li class="flex gap-4">
+                                            <span class="text-brand-empower font-bold">▹</span>
+                                            <span class="text-brand-muted">Diseño y orquestación de <strong>Arquitecturas de Solución</strong> basadas en datos.</span>
+                                        </li>
+                                        <li class="flex gap-4">
+                                            <span class="text-brand-empower font-bold">▹</span>
+                                            <span class="text-brand-muted">Integración de <strong>Evidencia del Mundo Real (RWE)</strong> en la estrategia de negocio.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Hospital Carisma -->
+                            <div id="carisma" class="exp-pane hidden space-y-8">
+                                <h3 class="text-3xl font-heading font-black mb-2">Epidemiólogo & Toxicólogo</h3>
+                                <p class="text-brand-empower font-bold tracking-widest uppercase text-sm">E.S.E. Hospital Carisma</p>
+                                <div class="prose prose-invert max-w-none">
+                                    <ul class="space-y-4 mt-4 list-none p-0">
+                                        <li class="flex gap-4">
+                                            <span class="text-brand-empower font-bold">▹</span>
+                                            <span class="text-brand-muted">Liderazgo en la actualización del <strong>protocolo de metadona</strong> con normativa ICH GCP.</span>
+                                        </li>
+                                        <li class="flex gap-4">
+                                            <span class="text-brand-empower font-bold">▹</span>
+                                            <span class="text-brand-muted">Desarrollo de <strong>Dashboards Epidemiológicos</strong> con Python y SQL para toma de decisiones.</span>
+                                        </li>
+                                        <li class="flex gap-4">
+                                            <span class="text-brand-empower font-bold">▹</span>
+                                            <span class="text-brand-muted">Optimización de procesos de vigilancia aumentando reportes de seguridad.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Docencia -->
+                            <div id="docencia" class="exp-pane hidden space-y-8">
+                                <h3 class="text-3xl font-heading font-black mb-2">Profesor Universitario</h3>
+                                <p class="text-brand-empower font-bold tracking-widest uppercase text-sm">Academia</p>
+                                <div class="prose prose-invert max-w-none">
+                                    <ul class="space-y-4 mt-4 list-none p-0">
+                                        <li class="flex gap-4">
+                                            <span class="text-brand-empower font-bold">▹</span>
+                                            <span class="text-brand-muted">Innovación educativa mediante <strong>simulaciones y análisis de datos</strong> en toxicología clínica.</span>
+                                        </li>
+                                        <li class="flex gap-4">
+                                            <span class="text-brand-empower font-bold">▹</span>
+                                            <span class="text-brand-muted">Diseño de currículos basados en farmacovigilancia y RWE.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formación Integral 360° -->
+        <section id="formacion" class="py-32 bg-brand-dark/30">
+            <div class="max-w-7xl mx-auto px-8">
+                <div class="text-center mb-20">
+                    <span class="text-[10px] font-bold text-brand-empower tracking-[0.5em] uppercase mb-4 block">Base de Conocimiento</span>
+                    <h2 class="text-4xl font-heading font-black">MAESTRÍA & <span class="text-brand-empower">CERTIFICACIONES</span></h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="glass-card p-10 rounded-3xl">
+                        <h3 class="text-xl font-bold mb-8 flex items-center gap-4">
+                            <span class="w-10 h-10 rounded-lg bg-brand-empower/10 flex items-center justify-center text-brand-empower font-black">01</span>
+                            Nivel Experto
+                        </h3>
+                        <div class="space-y-6">
+                            <div class="flex gap-4 group">
+                                <div class="w-2 h-2 rounded-full bg-brand-empower mt-2 shadow-[0_0_10px_rgba(168,85,247,0.5)] group-hover:scale-150 transition-transform"></div>
+                                <div>
+                                    <p class="font-bold text-white leading-tight">Master en Epidemiología</p>
+                                    <p class="text-[10px] text-brand-muted uppercase tracking-widest mt-1">Salud Pública (2024)</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 group">
+                                <div class="w-2 h-2 rounded-full bg-brand-empower mt-2 shadow-[0_0_10px_rgba(168,85,247,0.5)] group-hover:scale-150 transition-transform"></div>
+                                <div>
+                                    <p class="font-bold text-white leading-tight">Toxicología Clínica</p>
+                                    <p class="text-[10px] text-brand-muted uppercase tracking-widest mt-1">Especialización (2022)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-10 rounded-3xl">
+                        <h3 class="text-xl font-bold mb-8 flex items-center gap-4">
+                            <span class="w-10 h-10 rounded-lg bg-brand-empower/10 flex items-center justify-center text-brand-empower font-black">02</span>
+                            Data Science
+                        </h3>
+                         <div class="space-y-4">
+                            <div class="p-4 border border-white/5 rounded-xl bg-white/5">
+                                <p class="text-sm font-bold text-white">IBM Data Science</p>
+                                <p class="text-[9px] text-brand-empower uppercase tracking-widest">Professional Certificate (Python/SQL)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lado Humano 360° -->
+        <section id="humano" class="py-32 px-8 overflow-hidden relative">
+            <div class="max-w-7xl mx-auto px-4 md:px-0">
+                <div class="glass-card p-10 md:p-20 rounded-[3rem] relative z-10">
+                    <div class="grid md:grid-cols-2 items-center gap-16">
+                        <div>
+                            <span class="text-xs font-bold text-brand-empower tracking-[0.5em] uppercase mb-6 block">Beyond the Bio</span>
+                            <h2 class="text-4xl font-heading font-black mb-8 leading-tight">CULTURA DE <span class="text-brand-empower">EVIDENCIA</span></h2>
+                            <p class="text-xl text-white font-light italic mb-10 leading-relaxed max-w-lg">"Creo en la tecnología que sirve a la vida. Mi enfoque combina la ética médica con la precisión del dato para construir sistemas que no solo funcionan, sino que sanan y evolucionan."</p>
+                            <div class="flex flex-wrap gap-6">
+                                <div class="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/5 border border-white/10">
+                                    <span class="text-2xl">📊</span>
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-brand-empower">Data-Driven</span>
+                                </div>
+                                <div class="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/5 border border-white/10">
+                                    <span class="text-2xl">🌱</span>
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-brand-empower">Systemic Growth</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-0 bg-brand-empower/20 blur-[100px] animate-pulse"></div>
+                            <div class="relative glass-card aspect-video rounded-3xl flex items-center justify-center border-white/10 bg-brand-dark/20 backdrop-blur-3xl overflow-hidden group">
+                                <div class="text-center">
+                                    <span class="text-brand-empower/40 font-heading font-black text-6xl opacity-20 block group-hover:scale-110 transition-transform duration-700">360°</span>
+                                    <span class="text-[10px] text-brand-empower font-bold uppercase tracking-[0.5em]">ECOSYSTEM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Equation Section -->
+        <section class="py-24 px-6 relative overflow-hidden">
+            <div class="max-w-4xl mx-auto glass-card p-12 md:p-20 rounded-[3rem] text-center disruptive-skew">
+                <div class="disruptive-skew-inner">
+                    <h2 class="text-3xl md:text-5xl font-heading font-black mb-12">LA ECUACIÓN DEL ÉXITO</h2>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-8 text-4xl md:text-6xl font-bold">
+                        <div class="group">
+                            <span class="text-brand-empower">RWE</span>
+                            <div class="h-1 w-0 bg-brand-empower group-hover:w-full transition-all duration-500"></div>
+                        </div>
+                        <span class="text-brand-muted">+</span>
+                        <div class="group">
+                            <span class="text-white">ESTRATEGIA</span>
+                            <div class="h-1 w-0 bg-white group-hover:w-full transition-all duration-500"></div>
+                        </div>
+                        <span class="text-brand-muted">=</span>
+                        <div class="glass-card px-8 py-4 rounded-3xl border-brand-empower shadow-[0_0_30px_rgba(168,85,247,0.15)] scale-110">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-empower to-white">ECOSISTEMA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-24 px-8 border-t border-white/5 bg-[#070b1a] relative overflow-hidden">
+        <!-- Subtle Background Logo -->
+        <svg width="250" height="250" viewBox="0 0 36 36" class="absolute -left-20 -bottom-20 opacity-[0.03] text-brand-empower" fill="currentColor">
+            <path d="M18 2L3 9v18l15 7 15-7V9L18 2zm13 24.1L18 32.2l-13-6.1V10.9L18 4.8l13 6.1v15.2z"/>
+        </svg>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 relative z-10">
+            <div class="text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-4 mb-6">
+                    <svg width="32" height="32" viewBox="0 0 36 36" fill="#A855F7" class="opacity-80">
+                        <path d="M18 2L3 9v18l15 7 15-7V9L18 2zm13 24.1L18 32.2l-13-6.1V10.9L18 4.8l13 6.1v15.2z"/>
+                    </svg>
+                    <div class="h-6 w-[1px] bg-white/20"></div>
+                    <span class="font-heading font-black tracking-tighter text-2xl uppercase text-white">METODOLOG<span class="text-brand-empower">IA</span></span>
+                </div>
+                <p class="text-[10px] text-brand-empower font-bold tracking-[0.3em] uppercase mb-4">Soberanía Estratégica apalancada en IA</p>
+                <p class="text-brand-muted max-w-sm text-xs leading-relaxed font-light">Dossier Ejecutivo de Alto Impacto. Propiedad intelectual de MetodologIA. © 2026 Success as a Service.</p>
+            </div>
+            <div class="flex gap-8">
+                <a href="https://metodologia.info" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl border border-white/10 flex items-center justify-center hover:border-brand-empower hover:bg-brand-empower/5 transition-all duration-300 text-xs font-bold tracking-widest uppercase text-white/60 hover:text-brand-empower">
+                    metodologia.info
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Reveal elements on scroll
+        const reveals = document.querySelectorAll('.glass-panel, .timeline-item, h2');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        reveals.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.8s ease-out';
+            revealObserver.observe(el);
+        });
+    </script>
+</body>
+
+</html>

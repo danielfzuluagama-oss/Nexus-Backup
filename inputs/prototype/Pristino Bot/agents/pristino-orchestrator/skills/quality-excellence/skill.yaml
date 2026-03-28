@@ -1,0 +1,227 @@
+# =============================================================================
+# Skill: quality-excellence
+# Agent: pristino-orchestrator
+# Purpose: Quality excellence framework with 16 dimensions and adversarial testing
+# Source: Pristino v1.0 09_QUALITY.md (migrated)
+# =============================================================================
+
+id: quality-excellence
+name: Excellence Quality Engine
+purpose: >
+  Enforce 10/10 quality across 16 dimensions using the Excellence Loop,
+  Adversarial+ testing, and production-readiness criteria.
+businessValue: >
+  Consistent excellence builds trust and differentiates MetodologIA
+  from competitors who deliver "good enough" outputs.
+triggerTypes:
+  - content_review
+  - pre_delivery_validation
+  - complex_output_generation
+owningAgent: pristino-orchestrator
+
+inputs:
+  - "artifact: string (content to evaluate)"
+  - "artifactType: 'code' | 'document' | 'prompt' | 'plan' | 'analysis'"
+  - "criticalLevel: 'standard' | 'high' | 'critical' (triggers more rigorous validation)"
+
+outputs:
+  - "qualityScore: number (0-10 across dimensions)"
+  - "dimensionScores: Map<string, number>"
+  - "adversarialResults: AdversarialReport (if critical)"
+  - "recommendations: string[] (improvement suggestions)"
+
+# ── 16 Quality Dimensions ──
+
+qualityDimensions:
+  # Structural
+  - id: completeness
+    name: "Completud"
+    question: "¿Cubre todos los aspectos requeridos sin huecos?"
+    target: 10
+
+  - id: coherence
+    name: "Coherencia"
+    question: "¿Las partes se conectan lógicamente sin contradicciones?"
+    target: 10
+
+  - id: clarity
+    name: "Claridad"
+    question: "¿Se entiende sin ambigüedades en primera lectura?"
+    target: 10
+
+  - id: conciseness
+    name: "Concisión"
+    question: "¿Cada frase justifica su existencia? ¿Sin relleno?"
+    target: 10
+
+  # Functional
+  - id: accuracy
+    name: "Precisión"
+    question: "¿Los datos, referencias y afirmaciones son correctos?"
+    target: 10
+
+  - id: applicability
+    name: "Aplicabilidad"
+    question: "¿Se puede usar directamente? ¿Hay pasos accionables?"
+    target: 10
+
+  - id: traceability
+    name: "Trazabilidad"
+    question: "¿Cada afirmación tiene origen verificable?"
+    target: 10
+
+  - id: robustness
+    name: "Robustez"
+    question: "¿Maneja casos borde, errores y escenarios adversos?"
+    target: 10
+
+  # Stylistic
+  - id: brandVoice
+    name: "Brand Voice"
+    question: "¿Aplica voz MetodologIA consistentemente?"
+    target: 10
+
+  - id: tone
+    name: "Tono"
+    question: "¿Directo, empoderador, honesto?"
+    target: 10
+
+  - id: formatting
+    name: "Formato"
+    question: "¿Estructura visual facilita el escaneo y lectura?"
+    target: 10
+
+  - id: readability
+    name: "Legibilidad"
+    question: "¿Fluye naturalmente? ¿Lectura ágil?"
+    target: 10
+
+  # Strategic
+  - id: valueAdded
+    name: "Valor Agregado"
+    question: "¿Aporta insights, ideas o perspectivas nuevas?"
+    target: 10
+
+  - id: innovation
+    name: "Innovación"
+    question: "¿Va más allá de lo obvio?"
+    target: 10
+
+  - id: alignment
+    name: "Alineamiento"
+    question: "¿Alineado con valores y misión MetodologIA?"
+    target: 10
+
+  - id: impact
+    name: "Impacto"
+    question: "¿Genera cambio real en el usuario?"
+    target: 10
+
+# ── Excellence Loop ──
+
+excellenceLoop:
+  description: "Ciclo iterativo de refinamiento hasta alcanzar 10/10"
+  maxIterations: 2
+  steps:
+    - "Generate: Crear artifact con mejores capacidades disponibles"
+    - "Score: Evaluar contra 16 dimensiones"
+    - "Refine: Si < 9/10 en alguna dimensión, mejorar (max 2 iteraciones)"
+    - "Adversarial: Testear contra 5 categorías adversariales"
+    - "Certify: Marcar como production-ready si pasa todas las pruebas"
+  exitCriteria: ">= 9/10 en todas las dimensiones O 2 iteraciones completadas"
+
+# ── Adversarial+ Testing ──
+
+adversarialTesting:
+  description: "5 categorías de testing adversarial para outputs críticos"
+  categories:
+    - id: ambiguity
+      name: "Ambigüedad"
+      test: "¿Hay frases que pueden interpretarse de múltiples formas?"
+      action: "Reformular para eliminar ambigüedad"
+
+    - id: edgeCases
+      name: "Casos Borde"
+      test: "¿Qué pasa con inputs vacíos, extremos, o inesperados?"
+      action: "Agregar handling explícito para cada caso borde"
+
+    - id: contradictions
+      name: "Contradicciones"
+      test: "¿Alguna parte contradice a otra?"
+      action: "Resolver inconsistencias, priorizar la versión correcta"
+
+    - id: stress
+      name: "Estrés"
+      test: "¿Funciona bajo carga, con datos malos, o con contexto mínimo?"
+      action: "Agregar degradación graceful y fallbacks"
+
+    - id: security
+      name: "Seguridad"
+      test: "¿Es vulnerable a inyección, leakage, o manipulación?"
+      action: "Aplicar sanitización y validación adicional"
+
+# ── Production Readiness ──
+
+productionReadiness:
+  criteria:
+    - "Quality >= 9/10 en todas las dimensiones"
+    - "Adversarial+ testing pasado (5/5 categorías)"
+    - "Brand voice validated (8-item checklist si user-facing)"
+    - "No forbidden words en output"
+    - "Edge cases documentados y manejados"
+
+dependencies:
+  - "brand-voice skill (dimension: brandVoice)"
+  - "security.ts (adversarial: security testing)"
+
+wowCriteria:
+  - "Every critical output achieves 10/10"
+  - "Adversarial tests catch issues before the user does"
+  - "Quality is felt, not just measured"
+
+safeCriteria:
+  - "Excellence Loop never exceeds 2 iterations (prevents infinite loops)"
+  - "Quality scoring is honest, not inflated"
+  - "Adversarial testing applied proportionally to criticality"
+
+assumptions:
+  - "Quality dimensions are weighted by output type. Not all 22 dimensions apply equally to every artifact."
+  - "Excellence Loop is automatic for all non-trivial outputs. Simple factual answers skip the loop."
+  - "Adversarial+ testing intensity scales with criticality: low for internal notes, maximum for client deliverables."
+  - "A 10/10 score means the artifact meets all applicable dimension thresholds — not absolute perfection."
+
+limits:
+  - "Cannot guarantee factual accuracy beyond framework-level validation. Domain expertise remains the user's responsibility."
+  - "Excellence Loop is capped at 2 iterations. If 10/10 is not achieved in 2 passes, flag for manual review rather than looping indefinitely."
+  - "Quality scoring is self-assessed by the generating agent. No external oracle validates scores."
+  - "Adversarial+ cannot test for real-world deployment issues (e.g., API downtime, user misuse)."
+
+edge_cases:
+  - scenario: "Output achieves 10/10 on v1 but requires minor formatting fixes."
+    handling: "Apply formatting fix directly. Do not count formatting-only changes as an Excellence Loop iteration."
+  - scenario: "Excellence Loop v2 scores lower than v1 on one dimension."
+    handling: "Revert to v1. Flag the regression with dimension-specific analysis. Never ship a regression."
+  - scenario: "All 22 dimensions score 10/10 but the output 'feels wrong' subjectively."
+    handling: "Trust the framework. Subjective discomfort may indicate a missing dimension — propose adding it to the framework."
+  - scenario: "Trivial output (e.g., 'OK, noted.') triggers the Excellence Loop."
+    handling: "Skip the loop. Trivial outputs are exempt. Define trivial as: <20 words AND no actionable content."
+
+trade_offs:
+  - decision: "22-dimension framework over simpler 5-dimension scoring."
+    justification: "22 dimensions catch blind spots that 5 dimensions miss. The cost is evaluation time (~3s per artifact)."
+  - decision: "2-iteration cap over unlimited refinement."
+    justification: "Diminishing returns after 2 iterations. The cap prevents perfectionism paralysis while still achieving 10/10 in >95% of cases."
+  - decision: "Self-assessed scoring over external validation."
+    justification: "External validation introduces latency and dependency. Self-assessment with adversarial testing provides sufficient quality assurance for real-time systems."
+
+evaluation:
+  acceptance_criteria:
+    - "Excellence Loop applied to all non-trivial outputs (verifiable in output metadata)."
+    - "10/10 achieved within 2 iterations on ≥95% of outputs."
+    - "Adversarial+ testing applied to all client-facing deliverables."
+    - "Zero regressions shipped (v2 worse than v1)."
+    - "Quality scoring dimensions are appropriate for the output type (not all 22 applied to every artifact)."
+  success_metrics:
+    - "≥95% of outputs achieve 10/10 within 2 Excellence Loop iterations."
+    - "Zero regressions (v2 < v1) shipped to users."
+    - "100% of client-facing deliverables pass Adversarial+ testing."

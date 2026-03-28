@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="MetodologIA HTML Converter v3.0">
+    <meta name="description" content="SOP: Certificar Aliado — Proceso de Delivery MetodologIA">
+    <title>SOP: Certificar Aliado — MetodologIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1:hsl(222,29%,12%); --bg-2:hsl(220,34%,18%); --surface:hsl(220,30%,23%);
+            --accent:#FFD700; --gold:#FFD700; --gold-dark:#FFA000; --green:#34d399;
+            --red:#ef4444; --orange:#F97316; --purple:#a855f7; --cyan:hsl(189,94%,53%);
+            --font-head:"Poppins",sans-serif; --font-body:"Montserrat",sans-serif;
+            --text-primary:#FFFFFF; --text-secondary:#e2e8f0; --text-muted:#cbd5e1;
+            --border:rgba(255,255,255,0.15); --hover-bg:hsla(220,30%,28%,1);
+            --gold-glow:rgba(255,215,0,0.2); --border-subtle:rgba(255,255,255,0.08);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font-body);background:var(--bg-1);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+
+        /* ── Light Mode ── */
+        body.light{
+            --bg-1:#ffffff;--bg-2:#f5f7fa;--text-primary:#1a1a2e;--text-secondary:#666;
+            --border:#e2e8f0;--hover-bg:#edf2f7;
+        }
+        body.light .header{background:linear-gradient(135deg,#f5f7fa,#e2e8f0)}
+        body.light .header h1{background:linear-gradient(90deg,#1a1a2e,var(--accent));-webkit-background-clip:text;background-clip:text}
+        body.light .phase-card{background:#fff;border-color:#e2e8f0}
+        body.light .phase-header{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.03));color:var(--text-primary)}
+        body.light .phase-body{background:#fafbfc}
+        body.light .search-input{background:#f5f7fa;color:var(--text-primary);border-color:#e2e8f0}
+        body.light .nav-btn{background:#edf2f7;color:#333}
+        body.light .code-block{background:#f0f4f8;color:#1a1a2e}
+        body.light .code-block code{color:#1a1a2e}
+        body.light .checklist-item{background:#f5f7fa}
+        body.light .breadcrumb a{color:var(--accent)}
+        body.light .breadcrumb .bc-current{color:var(--text-primary)}
+        body.light .scroll-top{background:#e2e8f0;color:#333}
+        body.light .controls-bar{background:#fff;border-color:#e2e8f0}
+
+        /* ── Theme Toggle ── */
+        .theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;padding:8px 14px;border-radius:50px;border:2px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-family:var(--font-head);font-weight:600;font-size:.8rem;transition:all .3s}
+        .theme-toggle:hover{background:var(--accent);color:var(--bg-1)}
+
+        /* ── Breadcrumb ── */
+        .breadcrumb{max-width:1000px;margin:0 auto;padding:12px 20px;font-size:.82rem;font-family:var(--font-head)}
+        .breadcrumb a{color:var(--accent);text-decoration:none;font-weight:500}
+        .breadcrumb a:hover{text-decoration:underline}
+        .bc-sep{margin:0 6px;color:var(--text-secondary);font-weight:300}
+        .bc-current{color:var(--text-secondary)}
+
+        /* ── Header ── */
+        .header{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border-bottom:2px solid var(--accent);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);border-radius:50%}
+        .header h1{font-family:var(--font-head);font-size:2.2rem;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,var(--surface),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .subtitle{font-size:.95rem;color:var(--accent);margin-bottom:4px;font-weight:500}
+        .header .meta{font-size:.8rem;color:var(--text-secondary)}
+        .stats-row{display:flex;justify-content:center;gap:24px;margin:18px 0 4px;flex-wrap:wrap}
+        .stat{display:flex;flex-direction:column;align-items:center;min-width:60px}
+        .stat-number{font-size:1.5rem;font-weight:700;color:var(--accent);font-family:var(--font-head)}
+        .stat-label{font-size:.72rem;color:var(--text-secondary);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+        /* ── Search ── */
+        .search-container{max-width:700px;margin:16px auto;padding:0 20px}
+        .search-input{width:100%;padding:12px 18px;font-family:var(--font-body);font-size:.95rem;background:var(--bg-2);border:2px solid var(--border);border-radius:50px;color:var(--text-primary);transition:all .3s}
+        .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgba(255,215,0,.25)}
+        .search-input::placeholder{color:rgba(224,224,224,.4)}
+
+        /* ── Controls Bar ── */
+        .controls-bar{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:8px auto;padding:6px 20px;gap:10px;flex-wrap:wrap}
+        .ctrl-btn{padding:5px 12px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:16px;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .ctrl-btn:hover{background:var(--accent);color:var(--bg-1);border-color:var(--accent)}
+        .progress-bar{flex:1;max-width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--accent);transition:width .3s;width:0%}
+        .progress-label{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-head)}
+
+        /* ── Navigation ── */
+        .nav-scroll{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;position:sticky;top:0;background:var(--bg-1);z-index:100;border-bottom:1px solid var(--border)}
+        body.light .nav-scroll{background:#fff}
+        .nav-btn{padding:7px 14px;font-family:var(--font-head);font-weight:600;font-size:.7rem;border:1px solid var(--border);background:transparent;color:var(--text-primary);cursor:pointer;border-radius:18px;white-space:nowrap;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+        .nav-btn:hover,.nav-btn:focus{background:var(--accent);color:var(--bg-1);border-color:var(--accent);outline:none}
+
+        /* ── Phase Cards ── */
+        .content-container{max-width:1000px;margin:16px auto;padding:0 20px}
+        .phase-card{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;transition:all .3s}
+        .phase-card:hover{border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.1)}
+        .phase-card.hidden{display:none}
+        .phase-header{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.06));color:var(--text-primary);padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-family:var(--font-head);font-size:1.05rem;user-select:none}
+        .phase-header:hover{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,215,0,.1))}
+        .phase-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+        .phase-toggle{font-size:1.1rem;transition:transform .3s}
+        .phase-toggle.open{transform:rotate(180deg)}
+        .phase-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+        .phase-body.open{max-height:none;padding:18px 22px 26px}
+
+        /* ── Content Styles ── */
+        .subsection-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--accent);margin:18px 0 8px;border-left:4px solid var(--gold);padding-left:12px}
+        .h4-title{font-family:var(--font-head);font-size:.95rem;font-weight:600;color:var(--gold);margin:12px 0 6px}
+        p{margin:7px 0;line-height:1.7}
+        .key-value strong{color:var(--accent)}
+        .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+        .quote-block{border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;background:rgba(255,215,0,.04);font-style:italic;color:var(--gold);border-radius:0 8px 8px 0}
+
+        .numbered-item{display:flex;gap:10px;padding:5px 0;align-items:flex-start}
+        .numbered-item .num{background:var(--accent);color:var(--bg-1);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;font-family:var(--font-head);flex-shrink:0}
+        .bullet-item{padding:3px 0 3px 12px;border-left:2px solid rgba(255,215,0,.25);margin:3px 0}
+
+        .checklist-item{display:flex;align-items:center;padding:8px 10px;margin:5px 0;background:rgba(0,0,0,.15);border-radius:8px;cursor:pointer;transition:all .2s;gap:8px}
+        .checklist-item:hover{background:var(--hover-bg)}
+        .checklist-item input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+        .checklist-item input:checked+span{text-decoration:line-through;opacity:.55}
+
+        .code-block{background:rgba(0,0,0,.35);padding:14px;border-radius:8px;font-family:"Fira Code","Courier New",monospace;font-size:.82rem;overflow-x:auto;margin:10px 0;white-space:pre;line-height:1.4}
+        .code-block code{color:var(--accent)}
+        .inline-code{background:rgba(255,215,0,.1);padding:1px 5px;border-radius:4px;font-size:.88em;color:var(--accent)}
+
+        /* ── Tables ── */
+        .table-wrapper{overflow-x:auto;margin:10px 0;border-radius:8px}
+        table{width:100%;border-collapse:collapse;font-size:.87rem}
+        th{background:rgba(255,215,0,.12);color:var(--accent);padding:9px 11px;text-align:left;font-family:var(--font-head);font-weight:600;border-bottom:2px solid var(--accent)}
+        td{padding:9px 11px;border-bottom:1px solid var(--border)}
+        tr:hover td{background:rgba(255,215,0,.04)}
+
+        /* ── Section Badges ── */
+        .section-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-right:6px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+        .section-badge.assumption{background:rgba(155,89,182,.18);color:#bb86fc}
+        .section-badge.limit{background:rgba(232,160,0,.18);color:var(--orange)}
+        .section-badge.criteria{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.edge{background:rgba(220,95,95,.18);color:var(--red)}
+        .section-badge.anti{background:rgba(220,95,95,.22);color:#ff6b6b}
+        .section-badge.fallback{background:rgba(44,165,111,.18);color:var(--green)}
+        .section-badge.design{background:rgba(255,215,0,.18);color:var(--gold)}
+        .section-badge.gate{background:rgba(255,215,0,.18);color:var(--accent)}
+        .section-badge.tradeoff{background:rgba(232,160,0,.18);color:var(--orange)}
+
+        /* ── Scroll to Top ── */
+        .scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);color:var(--accent);font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .scroll-top:hover{background:var(--accent);color:var(--bg-1)}
+        .scroll-top.visible{display:flex}
+
+        /* ── Footer ── */
+        .footer{text-align:center;padding:24px 20px;font-size:.78rem;color:var(--text-secondary);border-top:1px solid var(--border);margin-top:30px;font-family:var(--font-body)}
+        .footer a{color:var(--accent);text-decoration:none}
+        .footer a:hover{text-decoration:underline}
+        .footer .version{font-family:var(--font-head);font-size:.68rem;margin-top:4px;opacity:.6}
+
+        /* ── Print ── */
+        @media print{
+            body{background:#fff!important;color:#000!important}
+            .theme-toggle,.scroll-top,.search-container,.nav-scroll,.controls-bar{display:none!important}
+            .phase-body{max-height:none!important;padding:12px 0!important;overflow:visible!important}
+            .phase-card{border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+            .header{background:#f5f5f5!important;border-bottom:2px solid #333!important}
+            .header h1{-webkit-text-fill-color:#000!important;color:#000!important}
+            .code-block{background:#f5f5f5!important;border:1px solid #ccc!important}
+            .code-block code{color:#000!important}
+            a{color:#000!important;text-decoration:underline!important}
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem}
+            .stats-row{gap:12px}
+            .stat-number{font-size:1.2rem}
+            .phase-header{font-size:.92rem;padding:12px}
+            .controls-bar{flex-direction:column;align-items:stretch}
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">☀️ / 🌙</button>
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+    
+    <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+        <a href="../index.html">Hub Delivery</a>
+        <span class="bc-sep">›</span>
+        <a href="../index.html">Aliados Comercial</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current">SOP: Certificar Aliado</span>
+    </nav>
+
+    <header class="header" role="banner">
+        <h1>SOP: Certificar Aliado</h1>
+        <div class="subtitle">Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> — Gobierno Operativo</div>
+        <div class="meta"></div>
+        <div class="stats-row">
+            <div class="stat"><span class="stat-number">11</span><span class="stat-label">Secciones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Edge Cases</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Anti-Patterns</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Fallbacks</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Supuestos</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Decisiones</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Gates</span></div>
+            <div class="stat"><span class="stat-number">0</span><span class="stat-label">Total 10x</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="search" class="search-input" placeholder="🔍 Buscar en este documento..." oninput="searchContent(this.value)" aria-label="Buscar contenido">
+    </div>
+
+    <div class="controls-bar">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="ctrl-btn" onclick="expandAll()">▼ Abrir Todo</button>
+            <button class="ctrl-btn" onclick="collapseAll()">▲ Cerrar Todo</button>
+            <button class="ctrl-btn" onclick="window.print()">🖨 Imprimir</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="progress-label" id="progress-text">0%</span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <nav class="nav-scroll" role="navigation" aria-label="Secciones del documento">
+        <button class="nav-btn" onclick="scrollToSection('1-propsito-dec948')" aria-label="Ir a 1. Propósito">1. Propósito</button>
+<button class="nav-btn" onclick="scrollToSection('2-supuestos-explcitos-637d08')" aria-label="Ir a 2. Supuestos Explícitos">2. Supuestos Explícitos</button>
+<button class="nav-btn" onclick="scrollToSection('3-mbito-a3bb02')" aria-label="Ir a 3. Ámbito">3. Ámbito</button>
+<button class="nav-btn" onclick="scrollToSection('4-fases-y-responsabilidades-390d64')" aria-label="Ir a 4. Fases y Responsabilidades">4. Fases y Responsabilidades</button>
+<button class="nav-btn" onclick="scrollToSection('5-certificacin-rbrica-ca8c70')" aria-label="Ir a 5. Certificación Rúbrica">5. Certificación Rúbrica</button>
+<button class="nav-btn" onclick="scrollToSection('6-casos-borde-6ef54f')" aria-label="Ir a 6. Casos Borde">6. Casos Borde</button>
+<button class="nav-btn" onclick="scrollToSection('7-criterios-de-aceptacin-binarios-8ffd16')" aria-label="Ir a 7. Criterios de Aceptación Binarios">7. Criterios de Aceptación Binarios</button>
+<button class="nav-btn" onclick="scrollToSection('8-antipatterns-d25ecd')" aria-label="Ir a 8. Anti-Patterns">8. Anti-Patterns</button>
+<button class="nav-btn" onclick="scrollToSection('9-fallbacks-0a9456')" aria-label="Ir a 9. Fallbacks">9. Fallbacks</button>
+<button class="nav-btn" onclick="scrollToSection('10-postcertification-b64a86')" aria-label="Ir a 10. Post-Certification">10. Post-Certification</button>
+<button class="nav-btn" onclick="scrollToSection('11-referencias-3d0650')" aria-label="Ir a 11. Referencias">11. Referencias</button>
+
+    </nav>
+
+    <main class="content-container" role="main">
+        
+        <section class="phase-card" id="1-propsito-dec948" data-searchable aria-labelledby="head-1-propsito-dec948">
+            <div class="phase-header" id="head-1-propsito-dec948" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 1. Propósito</span>
+                <span class="phase-toggle open" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body open" role="region">
+                <p>Transferir sistemáticamente la metodología, sales playbooks, y delivery processes de MetodologIA a aliado, asegurando que partner puede ejecutar sin supervisión a nivel de &gt;80% quality. Resultado: Certificado formal que habilita co-selling y revenue.</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="2-supuestos-explcitos-637d08" data-searchable aria-labelledby="head-2-supuestos-explcitos-637d08">
+            <div class="phase-header" id="head-2-supuestos-explcitos-637d08" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge assumption">SUPUESTOS</span> 2. Supuestos Explícitos</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="numbered-item"><span class="num" aria-hidden="true">1</span><span><strong>Transferencia de IQ requiere 40-60 horas de inmersión estructurada</strong>: No es posible aprender metodología MetodologIA mediante autodidacta o documentos solos; requiere aprendizaje activo + feedback iterativo.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span><strong>Certificación es binaria</strong>: Aliado es certificado o no certificado; no hay &quot;partial certification&quot; que permite co-selling. Gray area resuelto mediante &quot;supervised deals&quot; hasta pasar.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span><strong>Cuatro módulos son necesarios y suficientes</strong>: Metodología core, sales playbook, delivery execution, compliance/governance. Omitir uno = introducir riesgo en otra parte.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span><strong>Las exámenes deben tener pass rate de 70-80%</strong>: Si aliado group tiene &lt;70% pass rate, módulo está mal diseñado; si &gt;80%, es demasiado fácil. Iteración on difficulty.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span><strong>Co-ejecución de 1+ deal en vivo es requerida</strong>: Pasar examen no garantiza que aliado puede ejecutar; necesitamos evidencia de ejecución real, no simulated.</span></div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span><strong>Certificación es predicate para Gate H-01 (Delivery Handoff)</strong>: Si aliado no está certificado, cliente handoff is blocked. Sin excepciones.</span></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="3-mbito-a3bb02" data-searchable aria-labelledby="head-3-mbito-a3bb02">
+            <div class="phase-header" id="head-3-mbito-a3bb02" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 3. Ámbito</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="incluido-debba4">Incluido</h3>
+<div class="bullet-item">4 módulos de transferencia de IQ (16+12+16+4 = 48h)</div>
+<div class="bullet-item">Exámenes de conocimiento</div>
+<div class="bullet-item">Shadow + co-ejecución de deals</div>
+<div class="bullet-item">Feedback + coaching</div>
+<div class="bullet-item">Certificado emitido</div>
+<div class="bullet-item">Documentation de aprobación</div>
+<h3 class="subsection-title" id="excluido-fdce89">Excluido</h3>
+<div class="bullet-item">Ongoing training (post-certification)</div>
+<div class="bullet-item">Technical tool training (e.g., Salesforce, Slack)</div>
+<div class="bullet-item">Marketing/brand co-development</div>
+<div class="bullet-item">Deal-specific coaching (that&#x27;s VP Ventas job)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="4-fases-y-responsabilidades-390d64" data-searchable aria-labelledby="head-4-fases-y-responsabilidades-390d64">
+            <div class="phase-header" id="head-4-fases-y-responsabilidades-390d64" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 4. Fases y Responsabilidades</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="prerequisito-fit-evaluation-passed-fc352e">Pre-Requisito: Fit Evaluation PASSED</h3>
+<p class="key-value"><strong>Entrada</strong>: Aliado with score ≥70% from evaluar-fit-aliado-sop</p>
+<p class="key-value"><strong>Without this</strong>: Do not start onboarding</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-1-mdulo-1-metodologa-core-16h-semana-12-0bc838">Fase 1: MÓDULO 1 - METODOLOGÍA CORE (16h, Semana 1-2)</h3>
+<p class="key-value"><strong>Propietario</strong>: Delivery Manager | <strong>Format</strong>: 4 x 4h sessions (weekly)</p>
+<p class="key-value"><strong>Contenido</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>MetodologIA origin story &amp; philosophy (1h)</span></div>
+<div class="bullet-item">Why we built it; differentiation vs market</div>
+<div class="bullet-item">Core principles: customer-centric, data-driven, iterative</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>5 Core pillars of methodology (3h deep dive each):</span></div>
+<div class="bullet-item">Pilar 1: Discovery &amp; Scoping (customer outcomes, scope definition, success metrics)</div>
+<div class="bullet-item">Pilar 2: Strategy &amp; Alignment (organizational buy-in, leadership alignment, governance)</div>
+<div class="bullet-item">Pilar 3: Execution &amp; Change Management (team enablement, process design, adoption)</div>
+<div class="bullet-item">Pilar 4: Measurement &amp; Iteration (KPIs, feedback loops, optimization)</div>
+<div class="bullet-item">Pilar 5: Sustainability (scaling, documentation, knowledge transfer)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Vertical-specific adaptations (3h)</span></div>
+<div class="bullet-item">How methodology adapts to different industries/company sizes</div>
+<div class="bullet-item">Case studies: 2-3 successful engagements per vertical</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Q&amp;A + discussion (2h)</span></div>
+<p class="key-value"><strong>Assessment</strong>:</p>
+<div class="bullet-item"><strong>Attendance</strong>: 100% (must attend all 4 sessions)</div>
+<div class="bullet-item"><strong>Participation</strong>: Notes, questions, case study discussions documented</div>
+<div class="bullet-item"><strong>Exam</strong>: Theoretical exam (40 questions, 30min, &gt;70% pass)</div>
+<div class="bullet-item">Mix of definition, scenario, application questions</div>
+<div class="bullet-item">No open-book</div>
+<p class="key-value"><strong>Output</strong>: Exam score + attendance record + feedback from Delivery Manager</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-2-mdulo-2-sales-playbook-12h-semana-23-247e5d">Fase 2: MÓDULO 2 - SALES PLAYBOOK (12h, Semana 2-3)</h3>
+<p class="key-value"><strong>Propietario</strong>: VP Ventas + Delivery Manager | <strong>Format</strong>: 3 x 4h sessions</p>
+<p class="key-value"><strong>Contenido</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Sales conversation framework (2h)</span></div>
+<div class="bullet-item">How to discover MetodologIA-fit opportunities</div>
+<div class="bullet-item">Qualification criteria (what is/isn&#x27;t a fit for us)</div>
+<div class="bullet-item">Discovery conversation structure &amp; key questions</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Proposal development &amp; positioning (2h)</span></div>
+<div class="bullet-item">How to structure proposal using MetodologIA methodology</div>
+<div class="bullet-item">Pricing + packaging logic</div>
+<div class="bullet-item">Objection handling: budget, timeline, in-house capability</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Sales playbook by vertical (6h)</span></div>
+<div class="bullet-item">Vertical 1: Target customers, pain points, success stories (2h)</div>
+<div class="bullet-item">Vertical 2: (2h)</div>
+<div class="bullet-item">Vertical 3: (2h)</div>
+<div class="bullet-item">[Adapt based on aliado&#x27;s focus verticals]</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Tools &amp; templates walkthrough (2h)</span></div>
+<div class="bullet-item">Proposal templates, discovery decks, ROI calculator</div>
+<div class="bullet-item">CRM integration for pipeline tracking</div>
+<p class="key-value"><strong>Assessment</strong>:</p>
+<div class="bullet-item"><strong>Attendance</strong>: 100%</div>
+<div class="bullet-item"><strong>Role-play exercise</strong>: 2x simulated sales conversations (discovery + proposal), graded by VP Ventas</div>
+<div class="bullet-item">Criteria: Proper qualification, listening, positioning, handling objections</div>
+<div class="bullet-item">Score: Pass/Fail per conversation (Fail = repeat role-play)</div>
+<div class="bullet-item"><strong>Knowledge exam</strong>: 30 questions on playbook, &gt;70% pass</div>
+<p class="key-value"><strong>Output</strong>: Role-play score + exam score</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-3-mdulo-3-delivery-process-16h-semana-35-c9c786">Fase 3: MÓDULO 3 - DELIVERY PROCESS (16h, Semana 3-5)</h3>
+<p class="key-value"><strong>Propietario</strong>: Delivery Manager | <strong>Format</strong>: 4 x 4h sessions + shadow + co-exec</p>
+<p class="key-value"><strong>Contenido</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Delivery end-to-end workflow (4h)</span></div>
+<div class="bullet-item">Phase 1: Kickoff &amp; Planning (customer alignment, team setup, success metrics)</div>
+<div class="bullet-item">Phase 2: Execution (design/build/test cycles, quality gates)</div>
+<div class="bullet-item">Phase 3: Enablement &amp; Handoff (training, documentation, support transition)</div>
+<div class="bullet-item">Phase 4: Post-delivery (measurement, expansion opportunities)</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Quality standards &amp; SLAs (2h)</span></div>
+<div class="bullet-item">Delivery quality framework (what constitutes &quot;done&quot;)</div>
+<div class="bullet-item">Service level agreements: response time, escalation, support hours</div>
+<div class="bullet-item">Risk management: what to escalate to MetodologIA</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Tools &amp; processes (2h)</span></div>
+<div class="bullet-item">Project management tool (Asana, Monday, etc)</div>
+<div class="bullet-item">Document management &amp; templating</div>
+<div class="bullet-item">Communication &amp; reporting cadence</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Case study deep-dives (2h)</span></div>
+<div class="bullet-item">2x full case studies walked through step-by-step</div>
+<div class="bullet-item">Lessons learned, common pitfalls, best practices</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">5</span><span>Shadow phase (variable, 8-16h over 2-3 weeks)</span></div>
+<div class="bullet-item">Aliado shadows 1-2 active engagements</div>
+<div class="bullet-item">Observes kickoff, execution sessions, stakeholder calls</div>
+<div class="bullet-item">Documents observations, asks questions</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">6</span><span>Co-execution phase (variable, 8-16h over 2-3 weeks)</span></div>
+<div class="bullet-item">Aliado leads 1 engagement with Delivery Manager shadowing/coaching</div>
+<div class="bullet-item">Weekly retrospectives on execution quality</div>
+<p class="key-value"><strong>Assessment</strong>:</p>
+<div class="bullet-item"><strong>Attendance</strong>: 100%</div>
+<div class="bullet-item"><strong>Shadow report</strong>: Written summary of 2-3 observations from shadowing (min 500 words)</div>
+<div class="bullet-item"><strong>Co-execution evaluation</strong>: Delivery Manager scores aliado on execution (1-5 scale)</div>
+<div class="bullet-item">Criteria: Quality of work, customer communication, timeline management, problem-solving</div>
+<div class="bullet-item">Score ≥4/5 = Pass</div>
+<div class="bullet-item"><strong>Exam</strong>: Practical scenario exam (2 complex delivery scenarios, write delivery plan for each, &gt;75% eval score)</div>
+<p class="key-value"><strong>Output</strong>: Co-execution score + exam score + Delivery Manager sign-off</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-4-mdulo-4-compliance-governance-4h-semana-5-ea891f">Fase 4: MÓDULO 4 - COMPLIANCE &amp; GOVERNANCE (4h, Semana 5)</h3>
+<p class="key-value"><strong>Propietario</strong>: Legal + VP Aliados | <strong>Format</strong>: 1 x 4h session</p>
+<p class="key-value"><strong>Contenido</strong>:</p>
+<div class="numbered-item"><span class="num" aria-hidden="true">1</span><span>Partner policies &amp; governance (1h)</span></div>
+<div class="bullet-item">Revenue sharing &amp; commission terms</div>
+<div class="bullet-item">Approved use of MetodologIA branding</div>
+<div class="bullet-item">IP ownership (deliverables, templates, customer data)</div>
+<div class="bullet-item">Confidentiality &amp; NDA enforcement</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">2</span><span>Security &amp; compliance requirements (1h)</span></div>
+<div class="bullet-item">Data protection (GDPR, SOC2, etc) - what aliado must ensure</div>
+<div class="bullet-item">Customer data handling &amp; security standards</div>
+<div class="bullet-item">Incident reporting &amp; escalation</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">3</span><span>Conflict resolution &amp; escalation (1h)</span></div>
+<div class="bullet-item">When/how to escalate customer issues</div>
+<div class="bullet-item">When/how to escalate inter-partner conflicts</div>
+<div class="bullet-item">Dispute resolution process</div>
+<div class="numbered-item"><span class="num" aria-hidden="true">4</span><span>Q&amp;A + scenario walkthroughs (1h)</span></div>
+<p class="key-value"><strong>Assessment</strong>:</p>
+<div class="bullet-item"><strong>Attendance</strong>: 100%</div>
+<div class="bullet-item"><strong>Compliance quiz</strong>: 20 questions on policies, &gt;80% pass (no exceptions; this is legal)</div>
+<p class="key-value"><strong>Output</strong>: Quiz score + Legal/VP Aliados sign-off</p>
+<hr class="divider">
+<h3 class="subsection-title" id="fase-5-consolidation-final-signoff-semana-6-6e680e">Fase 5: CONSOLIDATION &amp; FINAL SIGN-OFF (Semana 6)</h3>
+<p class="key-value"><strong>Propietario</strong>: Delivery Manager + VP Aliados</p>
+<p class="key-value"><strong>Final checklist</strong>:</p>
+<label class="checklist-item" for="chk-module-1-exam-passed-70-12c0e3"><input type="checkbox" id="chk-module-1-exam-passed-70-12c0e3" ><span>Module 1 exam passed (≥70%)</span></label>
+<label class="checklist-item" for="chk-module-2-roleplays-passed-22-9481b9"><input type="checkbox" id="chk-module-2-roleplays-passed-22-9481b9" ><span>Module 2 role-plays passed (2/2)</span></label>
+<label class="checklist-item" for="chk-module-2-exam-passed-70-1c1939"><input type="checkbox" id="chk-module-2-exam-passed-70-1c1939" ><span>Module 2 exam passed (≥70%)</span></label>
+<label class="checklist-item" for="chk-module-3-coexecution-scored-45-by-delivery-manager-a4fb4e"><input type="checkbox" id="chk-module-3-coexecution-scored-45-by-delivery-manager-a4fb4e" ><span>Module 3 co-execution scored ≥4/5 by Delivery Manager</span></label>
+<label class="checklist-item" for="chk-module-3-practical-exam-passed-75-747c55"><input type="checkbox" id="chk-module-3-practical-exam-passed-75-747c55" ><span>Module 3 practical exam passed (≥75%)</span></label>
+<label class="checklist-item" for="chk-module-4-compliance-quiz-passed-80-926e7a"><input type="checkbox" id="chk-module-4-compliance-quiz-passed-80-926e7a" ><span>Module 4 compliance quiz passed (≥80%)</span></label>
+<label class="checklist-item" for="chk-attendance-100-across-all-modules-6e5359"><input type="checkbox" id="chk-attendance-100-across-all-modules-6e5359" ><span>Attendance 100% across all modules</span></label>
+<label class="checklist-item" for="chk-no-unresolved-concerns-from-instructors-211d7e"><input type="checkbox" id="chk-no-unresolved-concerns-from-instructors-211d7e" ><span>No unresolved concerns from instructors</span></label>
+<p class="key-value"><strong>If all pass</strong>: Issue Certificate of Completion</p>
+<p class="key-value"><strong>If any fail</strong>:</p>
+<div class="bullet-item"><strong>For exams</strong>: Retake within 2 weeks; if fail again = Remedial + repeat exam</div>
+<div class="bullet-item"><strong>For role-plays</strong>: Repeat with coaching; if still fail = Downgrade to &quot;Comisión Pura&quot; (no co-execution)</div>
+<div class="bullet-item"><strong>For co-execution score &lt;4/5</strong>: Remedial coaching for 2 weeks, then re-score on different deal</div>
+<div class="bullet-item"><strong>For compliance</strong>: Mandatory retake (compliance is non-negotiable)</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="5-certificacin-rbrica-ca8c70" data-searchable aria-labelledby="head-5-certificacin-rbrica-ca8c70">
+            <div class="phase-header" id="head-5-certificacin-rbrica-ca8c70" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 5. Certificación Rúbrica</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Módulo</th><th scope="col">Assessment</th><th scope="col">Pass Criteria</th><th scope="col">Weight</th></tr></thead><tbody><tr><td>Metodología Core</td><td>Theory exam</td><td>≥70%</td><td>20%</td></tr><tr><td>Sales Playbook</td><td>2x Role-plays</td><td>Both Pass (2/2)</td><td>20%</td></tr><tr><td>Sales Playbook</td><td>Knowledge exam</td><td>≥70%</td><td>10%</td></tr><tr><td>Delivery</td><td>Co-execution eval</td><td>≥4/5</td><td>25%</td></tr><tr><td>Delivery</td><td>Practical exam</td><td>≥75%</td><td>15%</td></tr><tr><td>Compliance</td><td>Governance quiz</td><td>≥80%</td><td>10%</td></tr></tbody></table></div>
+<p class="key-value"><strong>Final Score</strong>: Weighted average of all assessments</p>
+<div class="bullet-item"><strong>≥80%</strong>: Certificate issued</div>
+<div class="bullet-item"><strong>70-79%</strong>: Pass with conditions (note areas for improvement)</div>
+<div class="bullet-item"><strong>&lt;70%</strong>: Fail → Remedial required</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="6-casos-borde-6ef54f" data-searchable aria-labelledby="head-6-casos-borde-6ef54f">
+            <div class="phase-header" id="head-6-casos-borde-6ef54f" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge edge">EDGE CASES</span> 6. Casos Borde</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="caso-1-aliado-fails-module-3-coexecution-on-first--14f4a0">Caso 1: Aliado fails Module 3 co-execution on first try</h3>
+<p class="key-value"><strong>Escenario</strong>: Delivery Manager scores aliado 3/5 on co-execution; quality issues</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Identify specific gaps (customer management? technical skill? time management?)</div>
+<div class="bullet-item">2-week remedial coaching with same/different deal</div>
+<div class="bullet-item">Re-score on new engagement</div>
+<div class="bullet-item">If still &lt;4/5: Downgrade to &quot;Comisión Pura&quot; model (no co-execution, higher fees)</div>
+<h3 class="subsection-title" id="caso-2-aliado-passes-all-exams-but-has-personality-c2d63e">Caso 2: Aliado passes all exams but has personality conflict with Delivery Manager</h3>
+<p class="key-value"><strong>Escenario</strong>: Module 3 evaluation is biased due to interpersonal conflict</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Escalate to VP Aliados + alternative Delivery Manager</div>
+<div class="bullet-item">Re-score Module 3 (co-execution) with neutral party</div>
+<div class="bullet-item">Document conflict and lesson-learned</div>
+<h3 class="subsection-title" id="caso-3-aliado-team-has-50-turnover-during-certific-0486d9">Caso 3: Aliado team has 50% turnover during certification; original team incomplete</h3>
+<p class="key-value"><strong>Escenario</strong>: Certificated team members leave during 6-week program</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">New team members must retake Modules 1-2 (minimum)</div>
+<div class="bullet-item">Skip Module 3 shadow/co-exec if new member; they can apprentice on first deal post-cert</div>
+<div class="bullet-item">Original certified members can execute; new members execute under supervision</div>
+<h3 class="subsection-title" id="caso-4-aliado-finds-erroroutdated-content-in-modul-259582">Caso 4: Aliado finds error/outdated content in Module 2 playbook</h3>
+<p class="key-value"><strong>Escenario</strong>: Case study or market positioning in playbook is wrong</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">Pause certification for that module</div>
+<div class="bullet-item">VP Ventas + Delivery Manager fix content</div>
+<div class="bullet-item">Aliado retakes updated module</div>
+<div class="bullet-item">Extend timeline but don&#x27;t compromise integrity</div>
+<h3 class="subsection-title" id="caso-5-aliado-refuses-to-sign-compliance-agreement-87a12d">Caso 5: Aliado refuses to sign compliance agreements before Module 4</h3>
+<p class="key-value"><strong>Escenario</strong>: Partner wants to test before signing IP/confidentiality terms</p>
+<p class="key-value"><strong>Resolución</strong>:</p>
+<div class="bullet-item">No certification issued until all legal docs signed</div>
+<div class="bullet-item">Offer to let aliado review documents before Modules 1-3, but signature required for Module 4</div>
+<div class="bullet-item">If aliado refuses: Exit partnership</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="7-criterios-de-aceptacin-binarios-8ffd16" data-searchable aria-labelledby="head-7-criterios-de-aceptacin-binarios-8ffd16">
+            <div class="phase-header" id="head-7-criterios-de-aceptacin-binarios-8ffd16" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge criteria">CRITERIOS</span> 7. Criterios de Aceptación Binarios</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="table-wrapper" role="region" aria-label="Tabla de datos"><table><thead><tr><th scope="col">Hito</th><th scope="col">Evidencia</th><th scope="col">Owner</th></tr></thead><tbody><tr><td>Module 1 Passed</td><td>Exam score ≥70% + 100% attendance</td><td>Delivery Manager</td></tr><tr><td>Module 2 Passed</td><td>2/2 role-plays passed + exam ≥70%</td><td>VP Ventas</td></tr><tr><td>Module 3 Passed</td><td>Co-exec ≥4/5 + practical exam ≥75%</td><td>Delivery Manager</td></tr><tr><td>Module 4 Passed</td><td>Compliance quiz ≥80%</td><td>Legal</td></tr><tr><td>Certificate Issued</td><td>All 4 modules passed + final checklist completed</td><td>VP Aliados</td></tr><tr><td>Documentation</td><td>Certificate + transcripts stored in partner file</td><td>VP Aliados</td></tr></tbody></table></div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="8-antipatterns-d25ecd" data-searchable aria-labelledby="head-8-antipatterns-d25ecd">
+            <div class="phase-header" id="head-8-antipatterns-d25ecd" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge anti">ANTI-PATTERNS</span> 8. Anti-Patterns</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ap1-close-enough-on-exam-score-80ac45">AP1: &quot;Close enough on exam score&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Passing aliado with 68% on final exam &quot;because they tried hard&quot;</p>
+<p class="key-value"><strong>Prevention</strong>: Strict 70% threshold; retake required if below</p>
+<h3 class="subsection-title" id="ap2-coexecution-quality-is-subjective-d4882d">AP2: &quot;Co-execution quality is subjective&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: No rubric for co-exec score; Delivery Manager uses gut feel</p>
+<p class="key-value"><strong>Prevention</strong>: Use 1-5 scale with explicit criteria per level</p>
+<h3 class="subsection-title" id="ap3-certification-is-checkthebox-1d979f">AP3: &quot;Certification is check-the-box&quot;</h3>
+<p class="key-value"><strong>Anti-pattern</strong>: Issue certificate as formality after modules complete, regardless of performance</p>
+<p class="key-value"><strong>Prevention</strong>: Final checklist + VP Aliados review required before issuing</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="9-fallbacks-0a9456" data-searchable aria-labelledby="head-9-fallbacks-0a9456">
+            <div class="phase-header" id="head-9-fallbacks-0a9456" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span><span class="section-badge fallback">FALLBACKS</span> 9. Fallbacks</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="fb1-aliado-fails-module-2-roleplay-refuses-to-repe-4d9e4f">FB1: Aliado fails Module 2 role-play, refuses to repeat</h3>
+<p class="key-value"><strong>Fallback</strong>: Document refusal; offer remedial coaching; if still refuse = Conditional Go (sales support from MetodologIA, lower margins)</p>
+<h3 class="subsection-title" id="fb2-delivery-manager-overloaded-cant-supervise-coe-be928c">FB2: Delivery Manager overloaded; can&#x27;t supervise co-execution</h3>
+<p class="key-value"><strong>Fallback</strong>: Hire external coach (consultant) to supervise co-exec; Delivery Manager spot-checks</p>
+<h3 class="subsection-title" id="fb3-aliado-needs-certificate-but-is-1-week-away-fr-85f4a0">FB3: Aliado needs certificate but is 1 week away from live customer deal</h3>
+<p class="key-value"><strong>Fallback</strong>: Issue &quot;Provisional Certificate&quot; if 5/6 modules passed; require final module within 30 days; escalate to CEO</p>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="10-postcertification-b64a86" data-searchable aria-labelledby="head-10-postcertification-b64a86">
+            <div class="phase-header" id="head-10-postcertification-b64a86" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 10. Post-Certification</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <h3 class="subsection-title" id="ongoing-quality-assurance-bd3e49">Ongoing Quality Assurance</h3>
+<div class="bullet-item">First 3 deals post-cert: 100% shadowing/review by MetodologIA</div>
+<div class="bullet-item">Deals 4-6: 50% spot-check review</div>
+<div class="bullet-item">Deals 7+: Risk-based review (high-value, new verticals, escalated issues)</div>
+<div class="bullet-item">Annual re-certification: Partner retakes compliance module + delivers 1 full engagement reviewed by Delivery Manager</div>
+<h3 class="subsection-title" id="recertification-triggers-5aa902">Recertification Triggers</h3>
+<div class="bullet-item">NPS &lt;40 on 2+ consecutive customer surveys</div>
+<div class="bullet-item">Major delivery quality issue (scope creep, missed milestones, customer complaint)</div>
+<div class="bullet-item">&gt;1 year since last certification: Refresh Module 1 + 4</div>
+<div class="bullet-item">Change of key delivery personnel: New person retakes Modules 1-3</div>
+<hr class="divider">
+            </div>
+        </section>
+        
+        <section class="phase-card" id="11-referencias-3d0650" data-searchable aria-labelledby="head-11-referencias-3d0650">
+            <div class="phase-header" id="head-11-referencias-3d0650" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection(this)}">
+                <span> 11. Referencias</span>
+                <span class="phase-toggle" aria-hidden="true">▼</span>
+            </div>
+            <div class="phase-body" role="region">
+                <div class="bullet-item">Process: <code class="inline-code">gestionar-aliados-gtm-proceso.md</code></div>
+<div class="bullet-item">SOP: <code class="inline-code">evaluar-fit-aliado-sop.md</code> (prerequisite)</div>
+<div class="bullet-item">SOP: <code class="inline-code">ejecutar-coselling-sop.md</code> (next step post-cert)</div>
+<div class="bullet-item">Template: Certification Rúbrica (shared drive)</div>
+<div class="bullet-item">Gate: H-01 (Delivery Handoff requires certification)</div>
+<hr class="divider">
+<p class="key-value"><strong>Aprobado por</strong>: Delivery Manager + VP Aliados | <strong>Próxima revisión</strong>: Q2 2026</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div>Metodolog<span style="background:linear-gradient(135deg,#FFD700,#FFA000);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span> © 2026 | <a href="../index.html">← Volver al Hub</a></div>
+        <div class="version">v3.0 Excellence Edition — Generado: 2026-03-24 19:59</div>
+    </footer>
+
+    <script>
+        // ── Section Toggle ──
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.phase-toggle');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+            header.setAttribute('aria-expanded', !isOpen);
+            updateProgress();
+        }
+
+        // ── Expand / Collapse All ──
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+            updateProgress();
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const body = card.querySelector('.phase-body');
+                const toggle = card.querySelector('.phase-toggle');
+                const header = card.querySelector('.phase-header');
+                if (body && body.classList.contains('open')) {
+                    body.classList.remove('open');
+                    toggle.classList.remove('open');
+                    header.setAttribute('aria-expanded', 'false');
+                }
+            });
+            updateProgress();
+        }
+
+        // ── Theme ──
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('metodologia-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        }
+        // Restore theme
+        if (localStorage.getItem('metodologia-theme') === 'light') document.body.classList.add('light');
+
+        // ── Scroll to Section ──
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.phase-body');
+                const toggle = el.querySelector('.phase-toggle');
+                const header = el.querySelector('.phase-header');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    toggle.classList.add('open');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+                updateProgress();
+            }
+        }
+
+        // ── Search ──
+        function searchContent(query) {
+            const cards = document.querySelectorAll('.phase-card');
+            const q = query.toLowerCase().trim();
+            cards.forEach(card => {
+                if (!q) { card.classList.remove('hidden'); return; }
+                const text = card.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    card.classList.remove('hidden');
+                    const body = card.querySelector('.phase-body');
+                    const toggle = card.querySelector('.phase-toggle');
+                    const header = card.querySelector('.phase-header');
+                    if (body && !body.classList.contains('open')) {
+                        body.classList.add('open');
+                        toggle.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const total = document.querySelectorAll('.phase-card:not(.hidden)').length;
+            const open = document.querySelectorAll('.phase-body.open').length;
+            const pct = total ? Math.round((open / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = pct + '%';
+        }
+
+        // ── Scroll-to-top visibility ──
+        window.addEventListener('scroll', () => {
+            document.querySelector('.scroll-top').classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ── Keyboard Navigation ──
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            const cards = [...document.querySelectorAll('.phase-card:not(.hidden)')];
+            const current = cards.findIndex(c => {
+                const rect = c.getBoundingClientRect();
+                return rect.top >= 0 && rect.top < window.innerHeight / 2;
+            });
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = Math.min(current + 1, cards.length - 1);
+                if (cards[next]) cards[next].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'k' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = Math.max(current - 1, 0);
+                if (cards[prev]) cards[prev].scrollIntoView({ behavior:'smooth', block:'start' });
+            }
+            if (e.key === 'e') expandAll();
+            if (e.key === 'c') collapseAll();
+        });
+
+        // ── Init ──
+        updateProgress();
+    </script>
+</body>
+</html>
