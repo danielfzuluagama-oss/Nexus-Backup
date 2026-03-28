@@ -34,11 +34,12 @@
 - [ ] T005 Write unit tests for circuit breaker state machine in tests/unit/circuit-breaker.test.ts [TS-044, TS-045]
 - [ ] T006 Implement circuit breaker in src/circuit-breaker.ts with per-(provider,model,key) isolation, 3-failure threshold, 60s cooldown [TS-044, TS-045]
 - [ ] T007 [P] Write unit tests for token budget calculation in tests/unit/tokens.test.ts [TS-060, TS-061]
-- [ ] T008 [P] Implement token budget calculator and history trimming in src/tokens.ts [TS-060, TS-061]
+- [ ] T008 Implement token budget calculator and history trimming in src/tokens.ts (depends on T007) [TS-060, TS-061]
 - [ ] T009 Write contract tests for LLM provider cascade in tests/contract/llm-provider.test.ts [TS-046]
 - [ ] T010 Implement 2D cascading LLM provider in src/config/llm-providers.ts with circuit breaker integration [TS-040, TS-046]
 - [ ] T011 [P] Implement AgentRuntime per-instance container in src/runtime.ts with isolated state fields
 - [ ] T012 [P] Implement tool registry dispatcher in src/tools/registry.ts
+- [ ] T092 [P] Implement sub-agent delegation registry in src/tools/delegate.ts with depth tracking state
 - [ ] T013 [P] Configure Express webhook server in src/index.ts with POST /webhook/:botName and GET /health [TS-062, TS-063]
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
@@ -63,7 +64,7 @@
 
 - [ ] T017 [US4] Implement CP1 sanitizeInput in src/security.ts: injection detection, control char stripping, length enforcement (depends on T014)
 - [ ] T018 [US4] Implement CP2 buildSecurePrompt in src/security.ts: anti-jailbreak suffix, credential redaction, idempotency (depends on T015)
-- [ ] T019 [US4] Implement CP3 validateOutput in src/security.ts: prompt leak detection, soft-pass logging (depends on T016)
+- [ ] T019 [US4] Implement CP3 validateOutput in src/security.ts: prompt leak detection, forbidden term detection (warn only, no replacement — replacement handled by format.ts), soft-pass logging (depends on T016)
 - [ ] T020 [US4] Implement user allowlist authorization with silent drop for unauthorized users in src/bot.ts [TS-003, TS-017]
 
 **Checkpoint**: Security pipeline complete. All 3 checkpoints active with 100% test coverage.
@@ -108,8 +109,8 @@
 - [ ] T029 [US1] Implement routeRequest with tiebreaker hierarchy in src/ecosystem/router.ts (depends on T026, T027) [TS-001, TS-002, TS-006]
 - [ ] T030 [US1] Implement executeRouting with mode dispatch (single/terna/committee) in src/ecosystem/router.ts [TS-007]
 - [ ] T031 [US1] Implement routing decision audit logging with mode, agents, reason, timestamp [TS-004]
-- [ ] T032 [US1] Implement recursion depth enforcement (max 3) in src/tools/delegate.ts [TS-005]
-- [ ] T033 [US1] Implement agent cognition loop (identify-decide-act) in src/agent.ts with tool-use iteration
+- [ ] T032 [US1] Implement recursion depth enforcement (max 3) in src/tools/delegate.ts (depends on T092) [TS-005]
+- [ ] T033 [US1] Implement agent cognition loop iteration control in src/agent.ts: LLM call → tool parse → execute → repeat (max 3 iterations), using prompt-composer and tool-registry
 - [ ] T034 [US1] Implement prompt composition with security pipeline integration in src/ecosystem/prompt-composer.ts
 
 **Checkpoint**: Core routing operational. Messages routed to agents, responses delivered within 60s.
@@ -132,7 +133,7 @@
 - [ ] T037 [US3] Implement Minto structure enforcement in src/format.ts: conclusion-first, MECE supports, CTA (depends on T035) [TS-021]
 - [ ] T038 [US3] Implement forbidden term detection and replacement in src/format.ts [TS-024]
 - [ ] T039 [US3] Implement formatting artifact stripping (bold, italic, emojis, markdown lists) in src/format.ts [TS-023]
-- [ ] T040 [US3] Implement 16-dimension excellence framework scoring in src/format.ts with 8/10 standard and 9/10 critical thresholds [TS-022, TS-069]
+- [ ] T040 [US3] Implement 16-dimension excellence framework scoring in src/format.ts via LLM-based evaluation prompt (not programmatic scorers), with 8/10 standard and 9/10 critical thresholds [TS-022, TS-069]
 - [ ] T041 [US3] Implement excellence enforcement loop (max 2 iterations) in src/format.ts [TS-070]
 
 **Checkpoint**: Brand voice pipeline enforces Minto, strips artifacts, scores deliverables.
@@ -330,7 +331,6 @@
 - [ ] T089 [P] Run vitest coverage report and fix gaps to reach 80% global, 100% on security/router/circuit-breaker [SC-011]
 - [ ] T090 [P] Implement all-providers-unavailable fallback message in src/config/llm-providers.ts [TS-064]
 - [ ] T091 [P] Add Markdown-to-Telegram-HTML conversion in src/format.ts
-- [ ] T092 Implement sub-agent delegation registry in src/tools/delegate.ts with depth tracking
 - [ ] T093 Run all .feature scenario tags against test suite to verify full TS-xxx traceability
 
 ---
@@ -350,7 +350,7 @@ Phase 7 (US2 Terna) ← Phase 5
 Phase 8 (US6 Committee) ← Phase 7
 Phase 9 (US7 Voice) ← Phase 5
 Phase 10 (US8 Memory) ← Phase 2
-Phase 11 (US9 Resilience) ← Phase 2
+Phase 11 (US9 Resilience) ← Phase 2, Phase 8 (Committee, for mode degradation)
 Phase 12 (US10 Skills) ← Phase 4
 Phase 13 (US11 Mirror) ← Phase 2
 Phase 14 (US12 Deliverables) ← Phase 6
@@ -385,3 +385,14 @@ Phases 1-7 deliver the MVP: setup, foundational, security, ecosystem, routing, b
 - Each user story is independently completable and testable
 - Total: 93 tasks across 16 phases
 - TS-IDs reference scenarios in specs/001-pristino-bot-v2/tests/features/*.feature
+
+## Clarifications
+
+### Session 2026-03-28
+
+- Q: Should T007 and T008 both be [P] given TDD requires test-first? -> A: No — removed [P] from T008, added explicit dependency on T007. Tests must fail before implementation begins. [T007, T008]
+- Q: Who owns forbidden term replacement — CP3 (security.ts) or brand voice (format.ts)? -> A: format.ts owns replacement. CP3 detects and warns only (soft pass). Avoids double-replacement and aligns with CP3's observational nature. [T019, T038]
+- Q: Should T092 (delegation registry) be in Polish or Foundational? -> A: Foundational — T032 (depth enforcement) depends on the registry existing. Moved T092 to Phase 2. [T092, T032]
+- Q: Does Phase 11 (Resilience) depend only on Phase 2? -> A: No — T069 (mode degradation) requires terna and committee to exist. Added Phase 8 dependency. [T069, Phase 11]
+- Q: Is T033 (cognition loop) too large for one task? -> A: Narrowed scope to iteration control flow only. Prompt composition is T034, tool dispatch is T012. [T033]
+- Q: Is T040 (excellence scoring) 16 programmatic functions? -> A: No — LLM-based evaluation prompt, not programmatic scorers. Clarified in task description. [T040]
