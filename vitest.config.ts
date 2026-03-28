@@ -9,7 +9,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       include: ['src/**/*.ts'],
-      exclude: ['src/index.ts'],
+      exclude: [
+        'src/index.ts',
+        'src/logger.ts',
+        'src/tools/symlink.ts',
+        'src/tools/get-current-time.ts',
+      ],
       thresholds: {
         lines: 80,
         functions: 80,

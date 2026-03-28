@@ -637,3 +637,80 @@ describe("getRouteRequestDefinition: tool definition schema", () => {
     expect(def.function.description).toContain("researcher");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Additional branch coverage: terna/committee with insufficient agents
+// ---------------------------------------------------------------------------
+
+describe("executeRouting — terna and committee with insufficient agents", () => {
+  let runner: SubAgentRunner;
+
+  beforeEach(() => {
+    runner = vi.fn().mockResolvedValue("fallback response");
+    vi.mocked(runTerna).mockResolvedValue("terna response");
+    vi.mocked(runCommittee).mockResolvedValue({
+      deliberations: [],
+      synthesis: "committee result",
+      tiebreaker: null,
+      finalResponse: "committee final",
+    });
+  });
+
+  it("terna mode with 0 resolvable agents returns error string", async () => {
+    const ecosystem = makeEcosystem(["analyst", "researcher", "synthesizer"]);
+    const executor = createRouteExecutor(ecosystem, runner);
+    // Pass unknown agent IDs so resolveAgents returns 0
+    const result = await executor({
+      mode: "terna",
+      agents: ["ghost1", "ghost2"],
+      task: "Do terna task",
+      reason: "test",
+    });
+    expect(result).toContain("Error");
+  });
+
+  it("terna mode with 1 resolvable agent falls back to single runner", async () => {
+    const ecosystem = makeEcosystem(["analyst", "researcher", "synthesizer"]);
+    const executor = createRouteExecutor(ecosystem, runner);
+    // Only 1 valid agent + 1 ghost
+    const result = await executor({
+      mode: "terna",
+      agents: ["analyst", "ghost_unknown"],
+      task: "Do fallback task",
+      reason: "test",
+    });
+    // Falls back to single: runner is called directly
+    expect(runner).toHaveBeenCalledWith(
+      "Do fallback task",
+      expect.any(String),
+      expect.any(Array)
+    );
+    expect(result).toBe("fallback response");
+  });
+
+  it("committee mode with 2 agents falls back to terna", async () => {
+    const ecosystem = makeEcosystem(["analyst", "researcher", "synthesizer"]);
+    const executor = createRouteExecutor(ecosystem, runner);
+    // Only 2 valid agents — committee needs 3
+    const result = await executor({
+      mode: "committee",
+      agents: ["analyst", "researcher"],
+      task: "Committee fallback task",
+      reason: "test",
+    });
+    // With 2 agents, committee falls back to terna (runTerna called)
+    expect(vi.mocked(runTerna)).toHaveBeenCalled();
+  });
+
+  it("committee mode with 0 agents falls back to terna which falls back to error", async () => {
+    const ecosystem = makeEcosystem(["analyst", "researcher", "synthesizer"]);
+    const executor = createRouteExecutor(ecosystem, runner);
+    const result = await executor({
+      mode: "committee",
+      agents: ["ghost1", "ghost2"],
+      task: "No agents",
+      reason: "test",
+    });
+    expect(result).toContain("Error");
+  });
+});
