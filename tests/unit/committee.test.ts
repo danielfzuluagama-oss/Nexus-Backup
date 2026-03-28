@@ -16,7 +16,7 @@ vi.mock("../../src/ecosystem/prompt-composer.js", () => ({
   ),
 }));
 
-import { runTerna } from "../../src/ecosystem/committee.js";
+import { runTerna, executeCommittee } from "../../src/ecosystem/committee.js";
 import type { AgentDefinition, SubAgentRunner } from "../../src/ecosystem/types.js";
 
 // ---------------------------------------------------------------------------
@@ -296,4 +296,419 @@ describe("TS-010: Preserve contradictory perspectives with attribution", () => {
     expect(result).toContain("expand now");
     expect(result).toContain("wait six months");
   });
+});
+
+// ============================================================================
+// T046 — Unit tests for committee execution (executeCommittee)
+// Covers: TS-011, TS-012, TS-013
+// ============================================================================
+
+// Five committee agents fixture
+function makeCommitteeAgents(): AgentDefinition[] {
+  return ["alpha", "beta", "gamma", "delta", "epsilon"].map((id) => ({
+    id,
+    name: `Agent-${id}`,
+    role: `Committee member ${id}`,
+    version: "1.0.0",
+    mission: `Deliberate on behalf of ${id}`,
+    mandate: [`Mandate for ${id}`],
+    scope: [`scope-${id}`],
+    nonGoals: [],
+    inputs: ["text"],
+    outputs: ["text"],
+    decisionRights: [],
+    allowedTools: [],
+    forbiddenTools: [],
+    memoryPolicy: "ephemeral",
+    securityPolicy: "standard",
+    orchestrationPolicy: "direct",
+    delegationRules: "no sub-delegation",
+    escalationRules: "escalate on error",
+    toneOutputStyle: "formal",
+    validationDiscipline: "strict",
+    failureHandling: "return error",
+    completionCriteria: "task done",
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// TS-011: 5 agents respond → result includes consensusStatus field
+// ---------------------------------------------------------------------------
+
+describe("TS-011: Five agents produce deliberation with consensusStatus", () => {
+  const VALID_STATUSES = ["strong", "majority", "split", "disagreement"] as const;
+
+  it("result includes a consensusStatus field", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation((): Promise<string> => {
+      callIndex++;
+      if (callIndex <= 5) {
+        // All 5 agents agree: recommend B
+        return Promise.resolve("I recommend B for this task.");
+      }
+      // Synthesis call
+      return Promise.resolve("All agents agree: recommend B.");
+    });
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "critical decision");
+
+    expect(result).toHaveProperty("consensusStatus");
+  });
+
+  it("consensusStatus is one of: strong, majority, split, disagreement", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation((): Promise<string> => {
+      callIndex++;
+      if (callIndex <= 5) {
+        return Promise.resolve("I recommend B for this task.");
+      }
+      return Promise.resolve("Synthesis: recommend B.");
+    });
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "critical decision");
+
+    expect(VALID_STATUSES).toContain(result.consensusStatus);
+  });
+
+  it("returns strong consensus when all 5 agents agree", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation((): Promise<string> => {
+      callIndex++;
+      if (callIndex <= 5) {
+        // All agents recommend B — same label, should produce "strong"
+        return Promise.resolve("I recommend B for this task.");
+      }
+      // Tiebreaker or synthesis call
+      return Promise.resolve("CONSENSUS_REACHED");
+    });
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "should we expand?");
+
+    expect(result.consensusStatus).toBe("strong");
+  });
+
+  it("returns majority consensus when 4 of 5 agents agree", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation((): Promise<string> => {
+      callIndex++;
+      if (callIndex === 1) return Promise.resolve("I recommend A.");
+      if (callIndex <= 5) return Promise.resolve("I recommend B for this task.");
+      return Promise.resolve("CONSENSUS_REACHED");
+    });
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "should we expand?");
+
+    // 4/5 = 80% → strong or majority depending on threshold
+    expect(["strong", "majority"]).toContain(result.consensusStatus);
+  });
+
+  it("result includes all 5 deliberations when all agents respond", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation((): Promise<string> => {
+      callIndex++;
+      if (callIndex <= 5) return Promise.resolve(`Agent ${callIndex} says recommend B.`);
+      return Promise.resolve("CONSENSUS_REACHED");
+    });
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "critical decision");
+
+    expect(result.deliberations).toHaveLength(5);
+  });
+
+  it("finalResponse is a non-empty string", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation((): Promise<string> => {
+      callIndex++;
+      if (callIndex <= 5) return Promise.resolve("I recommend B.");
+      return Promise.resolve("Final answer: B.");
+    });
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "critical decision");
+
+    expect(typeof result.finalResponse).toBe("string");
+    expect(result.finalResponse.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TS-012: 2 agents recommend A (factually stronger), 3 recommend B →
+//         tiebreaker picks A via "factual accuracy" criterion
+// ---------------------------------------------------------------------------
+
+describe("TS-012: Tiebreaker resolves split with documented factual accuracy criterion", () => {
+  it("tiebreaker runner receives a prompt referencing factual accuracy", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string, systemPrompt: string): Promise<string> => {
+        callIndex++;
+        if (callIndex === 1 || callIndex === 2) {
+          // Alpha and beta recommend A with strong factual backing
+          return Promise.resolve("I recommend A — it is factually supported by the data.");
+        }
+        if (callIndex <= 5) {
+          // Gamma, delta, epsilon recommend B (majority)
+          return Promise.resolve("I recommend B for this task.");
+        }
+        // Synthesis call
+        if (task.includes("Synthesize")) return Promise.resolve("Synthesis: majority recommend B.");
+        // Tiebreaker call — should reference factual accuracy
+        return Promise.resolve("A — factual accuracy supports the minority recommendation.");
+      }
+    );
+
+    await executeCommittee(runner, makeCommitteeAgents(), "choose A or B");
+
+    // Find the tiebreaker call: it's the one whose systemPrompt mentions "factual accuracy"
+    const calls = vi.mocked(runner).mock.calls;
+    const tiebreakerCall = calls.find(
+      ([, sysPrompt]) =>
+        typeof sysPrompt === "string" &&
+        sysPrompt.toLowerCase().includes("factual accuracy")
+    );
+
+    expect(tiebreakerCall).toBeDefined();
+  });
+
+  it("tiebreaker task includes the criterion label 'factual accuracy'", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        if (callIndex <= 2) return Promise.resolve("I recommend A — factual evidence supports A.");
+        if (callIndex <= 5) return Promise.resolve("I recommend B for this task.");
+        if (task.includes("Synthesize")) return Promise.resolve("Synthesis: B is preferred.");
+        return Promise.resolve("A — factual accuracy supports A.");
+      }
+    );
+
+    await executeCommittee(runner, makeCommitteeAgents(), "choose A or B");
+
+    const calls = vi.mocked(runner).mock.calls;
+    const tiebreakerCall = calls.find(([task]) =>
+      typeof task === "string" && task.toLowerCase().includes("factual accuracy")
+    );
+
+    expect(tiebreakerCall).toBeDefined();
+    const tiebreakerTask = tiebreakerCall![0] as string;
+    expect(tiebreakerTask.toLowerCase()).toContain("factual accuracy");
+  });
+
+  it("tiebreakerCriterion in result is 'factual accuracy'", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        if (callIndex <= 2) return Promise.resolve("I recommend A.");
+        if (callIndex <= 5) return Promise.resolve("I recommend B for this task.");
+        if (task.includes("Synthesize")) return Promise.resolve("Synthesis: majority B.");
+        // Tiebreaker returns A (overrides majority)
+        return Promise.resolve("Recommendation A — stronger factual grounding.");
+      }
+    );
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "choose A or B");
+
+    expect(result.tiebreakerCriterion).toBe("factual accuracy");
+  });
+
+  it("winning finalResponse is A when tiebreaker returns A", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        if (callIndex <= 2) return Promise.resolve("I recommend A.");
+        if (callIndex <= 5) return Promise.resolve("I recommend B for this task.");
+        // Synthesis call: task ends with "Synthesize these perspectives..."
+        if (task.includes("Synthesize these perspectives")) {
+          return Promise.resolve("Synthesis: majority prefer B.");
+        }
+        // Tiebreaker decides A (references factual accuracy criterion)
+        return Promise.resolve("Final recommendation: A");
+      }
+    );
+
+    const result = await executeCommittee(runner, makeCommitteeAgents(), "choose A or B");
+
+    expect(result.finalResponse).toContain("A");
+    expect(result.tiebreaker).not.toBeNull();
+  });
+
+  it("logger records 'factual accuracy' during tiebreaker execution", async () => {
+    const { logger } = await import("../../src/logger.js");
+    vi.mocked(logger.info).mockClear();
+
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        if (callIndex <= 2) return Promise.resolve("I recommend A.");
+        if (callIndex <= 5) return Promise.resolve("I recommend B for this task.");
+        if (task.includes("Synthesize")) return Promise.resolve("Synthesis.");
+        return Promise.resolve("Recommendation: A");
+      }
+    );
+
+    await executeCommittee(runner, makeCommitteeAgents(), "choose A or B");
+
+    // Check that logger.info was called with 'factual accuracy' somewhere
+    const logCalls = vi.mocked(logger.info).mock.calls;
+    const tiebreakerLog = logCalls.find(([msg, meta]) => {
+      if (typeof msg === "string" && msg.toLowerCase().includes("tiebreaker")) return true;
+      if (meta && typeof meta === "object" && JSON.stringify(meta).includes("factual accuracy")) return true;
+      return false;
+    });
+
+    expect(tiebreakerLog).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TS-013: Committee exceeds 60s → degrades to terna with first 3 responders,
+//         log records "committee timeout"
+// ---------------------------------------------------------------------------
+
+describe("TS-013: Committee degrades to terna on timeout", () => {
+  it("returns degradationReason 'committee timeout' in result", async () => {
+    // 3 fast agents resolve immediately; 2 slow agents never resolve within test timeout
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        // Synthesis call (post-degradation) — must resolve
+        if (task.includes("Synthesize these perspectives")) {
+          return Promise.resolve("Degraded synthesis.");
+        }
+        if (callIndex <= 3) {
+          // Fast agents — resolve as microtasks
+          return Promise.resolve(`Fast agent ${callIndex} response`);
+        }
+        // Slow agents — never resolve (hang forever)
+        return new Promise<string>(() => {/* intentionally never resolves */});
+      }
+    );
+
+    // Use very small timeoutMs so the timeout fires after fast agents resolve
+    // but while slow agents are still pending
+    const result = await executeCommittee(
+      runner,
+      makeCommitteeAgents(),
+      "critical decision",
+      50 // 50ms timeout
+    );
+
+    expect(result.degradationReason).toBe("committee timeout");
+  }, 10_000);
+
+  it("uses at most 3 agents when committee times out", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        if (task.includes("Synthesize these perspectives")) {
+          return Promise.resolve("Degraded synthesis.");
+        }
+        if (callIndex <= 3) {
+          return Promise.resolve(`Fast agent ${callIndex} response`);
+        }
+        return new Promise<string>(() => {/* never resolves */});
+      }
+    );
+
+    const result = await executeCommittee(
+      runner,
+      makeCommitteeAgents(),
+      "critical decision",
+      50
+    );
+
+    expect(result.deliberations.length).toBeLessThanOrEqual(3);
+    expect(result.deliberations.length).toBeGreaterThan(0);
+  }, 10_000);
+
+  it("logger records degradation reason 'committee timeout'", async () => {
+    const { logger } = await import("../../src/logger.js");
+    vi.mocked(logger.info).mockClear();
+    vi.mocked(logger.warn).mockClear();
+
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        if (task.includes("Synthesize these perspectives")) {
+          return Promise.resolve("Degraded synthesis.");
+        }
+        if (callIndex <= 3) return Promise.resolve(`Fast agent ${callIndex}`);
+        return new Promise<string>(() => {/* never resolves */});
+      }
+    );
+
+    await executeCommittee(runner, makeCommitteeAgents(), "critical decision", 50);
+
+    // warn log should mention timed out
+    const warnCalls = vi.mocked(logger.warn).mock.calls;
+    const timeoutWarn = warnCalls.find(([msg]) =>
+      typeof msg === "string" && msg.toLowerCase().includes("timed out")
+    );
+    expect(timeoutWarn).toBeDefined();
+
+    // info log should record "committee timeout" as degradation reason
+    const infoCalls = vi.mocked(logger.info).mock.calls;
+    const degradationLog = infoCalls.find(([msg, meta]) => {
+      if (typeof msg === "string" && msg.toLowerCase().includes("degraded")) return true;
+      if (meta && typeof meta === "object" && JSON.stringify(meta).includes("committee timeout")) return true;
+      return false;
+    });
+    expect(degradationLog).toBeDefined();
+  }, 10_000);
+
+  it("finalResponse is synthesized from the first 3 responders", async () => {
+    let callIndex = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callIndex++;
+        if (task.includes("Synthesize these perspectives")) {
+          return Promise.resolve("Synthesis of first 3 responders.");
+        }
+        if (callIndex <= 3) return Promise.resolve(`Fast agent ${callIndex} response`);
+        return new Promise<string>(() => {/* never resolves */});
+      }
+    );
+
+    const result = await executeCommittee(
+      runner,
+      makeCommitteeAgents(),
+      "critical decision",
+      50
+    );
+
+    expect(typeof result.finalResponse).toBe("string");
+    expect(result.finalResponse.length).toBeGreaterThan(0);
+  }, 10_000);
+
+  it("first 3 responders are the agents that resolved earliest", async () => {
+    // Only alpha, beta, gamma resolve in time; delta and epsilon hang
+    const agents = makeCommitteeAgents(); // alpha, beta, gamma, delta, epsilon
+    const fastIds = new Set(["alpha", "beta", "gamma"]);
+
+    let callNum = 0;
+    const runner: SubAgentRunner = vi.fn().mockImplementation(
+      (task: string): Promise<string> => {
+        callNum++;
+        if (task.includes("Synthesize these perspectives")) {
+          return Promise.resolve("Degraded synthesis result.");
+        }
+        // agents dispatched in order: alpha=1, beta=2, gamma=3, delta=4, epsilon=5
+        if (callNum <= 3) return Promise.resolve(`Agent ${callNum} fast response`);
+        return new Promise<string>(() => {/* slow - never resolves */});
+      }
+    );
+
+    const result = await executeCommittee(runner, agents, "critical decision", 50);
+
+    // Deliberations should be the first 3 agents in order
+    expect(result.deliberations.length).toBeLessThanOrEqual(3);
+    for (const d of result.deliberations) {
+      expect(fastIds).toContain(d.agentId);
+    }
+  }, 10_000);
 });

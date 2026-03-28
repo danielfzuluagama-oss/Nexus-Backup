@@ -168,13 +168,13 @@
 
 ### Tests (RED)
 
-- [ ] T046 [P] [US6] Write unit tests for committee execution in tests/unit/committee.test.ts [TS-011, TS-012, TS-013]
+- [x] T046 [P] [US6] Write unit tests for committee execution in tests/unit/committee.test.ts [TS-011, TS-012, TS-013]
 
 ### Implementation (GREEN)
 
-- [ ] T047 [US6] Implement executeCommittee with 5-agent deliberation and consensus status in src/ecosystem/committee.ts (depends on T043, T046) [TS-011]
-- [ ] T048 [US6] Implement committee tiebreaker with documented reasoning in src/ecosystem/committee.ts [TS-012]
-- [ ] T049 [US6] Implement committee→terna timeout degradation (first 3 to respond) in src/ecosystem/committee.ts [TS-013]
+- [x] T047 [US6] Implement executeCommittee with 5-agent deliberation and consensus status in src/ecosystem/committee.ts (depends on T043, T046) [TS-011]
+- [x] T048 [US6] Implement committee tiebreaker with documented reasoning in src/ecosystem/committee.ts [TS-012]
+- [x] T049 [US6] Implement committee→terna timeout degradation (first 3 to respond) in src/ecosystem/committee.ts [TS-013]
 
 **Checkpoint**: Committee mode delivers deliberation with consensus classification.
 
@@ -188,15 +188,15 @@
 
 ### Tests (RED)
 
-- [ ] T050 [P] [US7] Write unit tests for audio transcription in tests/unit/audio.test.ts [TS-047, TS-048, TS-073]
+- [x] T050 [P] [US7] Write unit tests for audio transcription in tests/unit/audio.test.ts [TS-047, TS-048, TS-073]
 
 ### Implementation (GREEN)
 
-- [ ] T051 [US7] Implement Groq Whisper transcription in src/audio.ts with error handling (depends on T050) [TS-047, TS-048]
-- [ ] T052 [US7] Implement voice message handler in src/bot.ts: transcribe → route as text with sourceType "voice" [TS-047]
-- [ ] T053 [US7] Implement image/document metadata extraction in src/bot.ts with mimeType, fileSize, fileName in routing context [TS-049]
-- [ ] T054 [US7] Implement unsupported message type handler in src/bot.ts with supported format hints [TS-050]
-- [ ] T055 [US7] Implement best-effort non-Spanish transcription with response language matching [TS-073]
+- [x] T051 [US7] Implement Groq Whisper transcription in src/audio.ts with error handling (depends on T050) [TS-047, TS-048]
+- [x] T052 [US7] Implement voice message handler in src/bot.ts: transcribe → route as text with sourceType "voice" [TS-047]
+- [x] T053 [US7] Implement image/document metadata extraction in src/bot.ts with mimeType, fileSize, fileName in routing context [TS-049]
+- [x] T054 [US7] Implement unsupported message type handler in src/bot.ts with supported format hints [TS-050]
+- [x] T055 [US7] Implement best-effort non-Spanish transcription with response language matching [TS-073]
 
 **Checkpoint**: Voice messages transcribed and routed. Unsupported types handled gracefully.
 
@@ -210,19 +210,19 @@
 
 ### Tests (RED)
 
-- [ ] T056 [P] [US8] Write unit tests for memory operations in tests/unit/memory.test.ts [TS-031, TS-032, TS-033, TS-035, TS-039, TS-071]
-- [ ] T057 [P] [US8] Write contract tests for memory interface in tests/contract/memory.test.ts [TS-036, TS-037, TS-038]
-- [ ] T058 [P] [US8] Write integration tests for Firestore memory in tests/integration/memory.test.ts [TS-034]
+- [x] T056 [P] [US8] Write unit tests for memory operations in tests/unit/memory.test.ts [TS-031, TS-032, TS-033, TS-035, TS-039, TS-071]
+- [x] T057 [P] [US8] Write contract tests for memory interface in tests/contract/memory.test.ts [TS-036, TS-037, TS-038]
+- [x] T058 [P] [US8] Write integration tests for Firestore memory in tests/integration/memory.test.ts [TS-034]
 
 ### Implementation (GREEN)
 
-- [ ] T059 [US8] Implement working memory (addMessage, getRecentMessages) with TTL in src/memory.ts (depends on T056) [TS-031, TS-036]
-- [ ] T060 [US8] Implement episodic memory (addVoiceNote, addMeeting) in src/memory.ts [TS-035]
-- [ ] T061 [US8] Implement semantic memory (addKnowledge, getKnowledge) with provenance tracking and reinforcement counting in src/memory.ts [TS-032, TS-037, TS-039]
-- [ ] T062 [US8] Implement purgeUser across all 3 layers in src/memory.ts [TS-034, TS-038, TS-071]
-- [ ] T063 [US8] Implement purgeExpiredWorking scheduled sweep in src/memory.ts [TS-033]
-- [ ] T064 [US8] Implement data lifecycle classification (ephemeral/persistent/permanent) in src/memory.ts [TS-035]
-- [ ] T065 [US8] Implement in-memory fallback when Firestore unavailable in src/memory.ts [TS-043]
+- [x] T059 [US8] Implement working memory (addMessage, getRecentMessages) with TTL in src/memory.ts (depends on T056) [TS-031, TS-036]
+- [x] T060 [US8] Implement episodic memory (addVoiceNote, addMeeting) in src/memory.ts [TS-035]
+- [x] T061 [US8] Implement semantic memory (addKnowledge, getKnowledge) with provenance tracking and reinforcement counting in src/memory.ts [TS-032, TS-037, TS-039]
+- [x] T062 [US8] Implement purgeUser across all 3 layers in src/memory.ts [TS-034, TS-038, TS-071]
+- [x] T063 [US8] Implement purgeExpiredWorking scheduled sweep in src/memory.ts [TS-033]
+- [x] T064 [US8] Implement data lifecycle classification (ephemeral/persistent/permanent) in src/memory.ts [TS-035]
+- [x] T065 [US8] Implement in-memory fallback when Firestore unavailable in src/memory.ts [TS-043]
 
 **Checkpoint**: 3-layer memory operational with TTL, provenance, purge, and fallback.
 

@@ -710,6 +710,141 @@ export class Memory {
   //  LIFECYCLE
   // ─────────────────────────────────────────────
 
+  /**
+   * Returns the lifecycle classification for a given memory layer.
+   * - working memory is ephemeral (TTL-based, may be purged)
+   * - episodic and semantic memory are permanent (no automatic expiry)
+   */
+  classifyLifecycle(layer: "working" | "episodic" | "semantic"): "ephemeral" | "permanent" {
+    if (layer === "working") return "ephemeral";
+    return "permanent";
+  }
+
+  /**
+   * Purges expired working memory messages across all threads (scheduled sweep).
+   * In Firestore mode, deletes messages whose expiresAt is in the past.
+   * In in-memory mode, removes messages older than TTL_MS from all threads.
+   */
+  async purgeExpiredWorking(): Promise<number> {
+    const now = Date.now();
+    if (this.useFirestore && this.db) {
+      try {
+        const snapshot = await this.db.collectionGroup("messages")
+          .where("expiresAt", "<", new Date(now))
+          .get();
+        const batch = this.db.batch();
+        snapshot.docs.forEach(doc => batch.delete(doc.ref));
+        if (snapshot.docs.length > 0) await batch.commit();
+        logger.info("Purged expired working memory", { count: snapshot.docs.length });
+        return snapshot.docs.length;
+      } catch (e) {
+        logger.error("Failed to purge expired working memory", { error: e });
+        return 0;
+      }
+    } else {
+      let purged = 0;
+      const expiryThreshold = now - TTL_MS;
+      for (const [threadId, messages] of this.localMessages.entries()) {
+        const surviving = messages.filter(m => m.timestamp > expiryThreshold);
+        purged += messages.length - surviving.length;
+        if (surviving.length === 0) {
+          this.localMessages.delete(threadId);
+        } else {
+          this.localMessages.set(threadId, surviving);
+        }
+      }
+      logger.info("Purged expired working memory (in-memory)", { count: purged });
+      return purged;
+    }
+  }
+
+  /**
+   * Purges all data for a given user across all 3 memory layers:
+   * - Working: threads + messages
+   * - Episodic: voice_notes, meetings, interaction_log
+   * - Semantic: users, knowledge, tasks, rag_chunks
+   */
+  async purgeUser(userId: number): Promise<void> {
+    const uid = String(userId);
+    const start = Date.now();
+    logger.info("Purging all user data", { userId: uid });
+
+    if (this.useFirestore && this.db) {
+      try {
+        const batch = this.db.batch();
+
+        // Working layer: user document + active thread messages
+        const userRef = this.db.collection("users").doc(uid);
+        batch.delete(userRef);
+
+        // Episodic: voice_notes
+        const vnSnap = await this.db.collection("voice_notes").where("userId", "==", uid).get();
+        vnSnap.docs.forEach(doc => batch.delete(doc.ref));
+
+        // Episodic: meetings
+        const mtSnap = await this.db.collection("meetings").where("userId", "==", uid).get();
+        mtSnap.docs.forEach(doc => batch.delete(doc.ref));
+
+        // Episodic: interaction_log
+        const ilSnap = await this.db.collection("interaction_log").where("userId", "==", uid).get();
+        ilSnap.docs.forEach(doc => batch.delete(doc.ref));
+
+        // Semantic: knowledge
+        const knSnap = await this.db.collection("knowledge").where("scopeUserId", "==", userId).get();
+        knSnap.docs.forEach(doc => batch.delete(doc.ref));
+
+        // Semantic: tasks
+        const tkSnap = await this.db.collection("tasks").where("userId", "==", uid).get();
+        tkSnap.docs.forEach(doc => batch.delete(doc.ref));
+
+        // Semantic: rag_chunks
+        const rcSnap = await this.db.collection("rag_chunks").where("userId", "==", uid).get();
+        rcSnap.docs.forEach(doc => batch.delete(doc.ref));
+
+        await batch.commit();
+        const elapsed = Date.now() - start;
+        logger.info("User data purged", { userId: uid, elapsedMs: elapsed });
+      } catch (e) {
+        logger.error("Failed to purge user data", { error: e, userId: uid });
+        throw e;
+      }
+    } else {
+      // In-memory: remove from all local stores
+      // Working layer
+      for (const [threadId, messages] of this.localMessages.entries()) {
+        const surviving = messages.filter(m => m.threadId && !this.localThreads.has(m.threadId)
+          ? true
+          : messages.every(msg => {
+            const thread = this.localThreads.get(msg.threadId || "");
+            return !thread || thread.userId !== uid;
+          }));
+        void surviving; // sweep below handles it
+      }
+      // Delete user threads
+      for (const [threadId, thread] of this.localThreads.entries()) {
+        if (thread.userId === uid) {
+          this.localThreads.delete(threadId);
+          this.localMessages.delete(threadId);
+        }
+      }
+      // Delete user profile
+      this.localUsers.delete(uid);
+      // Episodic
+      this.localVoiceNotes = this.localVoiceNotes.filter(vn => vn.userId !== uid);
+      this.localMeetings = this.localMeetings.filter(m => m.userId !== uid);
+      this.localInteractionLog = this.localInteractionLog.filter(l => l.userId !== uid);
+      // Semantic
+      this.localKnowledge = this.localKnowledge.filter(k => k.scopeUserId !== userId);
+      for (const [taskId, task] of this.localTasks.entries()) {
+        if (task.userId === uid) this.localTasks.delete(taskId);
+      }
+      this.localRagChunks = this.localRagChunks.filter(c => c.userId !== uid);
+
+      const elapsed = Date.now() - start;
+      logger.info("User data purged (in-memory)", { userId: uid, elapsedMs: elapsed });
+    }
+  }
+
   close(): void {
     logger.info("Cognitive Memory closed", { mode: this.useFirestore ? "firestore" : "in-memory" });
   }

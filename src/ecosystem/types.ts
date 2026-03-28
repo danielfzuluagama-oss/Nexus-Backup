@@ -132,12 +132,18 @@ export type PromptType =
   | "validation"
   | "fallback";
 
+/** Consensus status for a committee deliberation. */
+export type ConsensusStatus = "strong" | "majority" | "split" | "disagreement";
+
 /** Result from committee deliberation. */
 export interface CommitteeResult {
   deliberations: Array<{ agentId: string; response: string }>;
   synthesis: string;
   tiebreaker: string | null;
   finalResponse: string;
+  consensusStatus?: ConsensusStatus;
+  tiebreakerCriterion?: string;
+  degradationReason?: string;
 }
 
 /** Global ecosystem state — loaded at startup. */
