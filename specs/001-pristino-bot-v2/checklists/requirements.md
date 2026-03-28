@@ -38,8 +38,13 @@
   per-instance state, shared definitions
 - [x] Token management covered (FR-040 to FR-041):
   budget calculation, history trimming
+- [x] Token management has acceptance scenarios with
+  defined failure behavior (budget exhaustion, trimming)
 - [x] Async processing covered (FR-042 to FR-043):
   webhook ingress, message acknowledgment
+- [x] Async processing has acceptance scenarios with
+  defined failure behavior (queuing during startup,
+  acknowledgment before processing)
 
 ## Feature Readiness
 
@@ -54,5 +59,16 @@
   II (FR-020-023), III (FR-015-019), IV (FR-029-033),
   V (FR-037-039), VI (SC-011), VII (spec exists),
   VIII (FR-027-028)
+- [x] Edge cases cover critical failure modes across
+  all FR categories (orchestration, security, memory,
+  resilience, token, async)
 - [x] No NEEDS CLARIFICATION markers remaining
 - [x] Spec ready for /iikit-02-plan
+
+## Clarifications
+
+### Session 2026-03-28
+
+- Q: Should checklist add explicit checks for token management (FR-040/041) and async processing (FR-042/043) acceptance scenarios? -> A: Yes — all other FR categories have per-group validation lines; omitting these two breaks the audit pattern. Added explicit checks for acceptance scenario coverage. [Requirement Completeness, FR-040, FR-041, FR-042, FR-043]
+- Q: Should checklist items be prioritized as critical vs. nice-to-have? -> A: No — the checklist is a binary gate for spec readiness. All items are blocking by nature; adding priority tiers would dilute gate authority. Prioritization belongs in spec (P1/P2/P3) and tasks. [Feature Readiness]
+- Q: Should edge cases have explicit FR traceability checks? -> A: Yes, lightweight — one check verifying edge cases cover critical failure modes across all FR categories, without requiring per-FR mapping. [Feature Readiness, Edge Cases]
