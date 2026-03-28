@@ -1,13 +1,12 @@
 <!--
 Sync Impact Report
-- Version: 1.0.0 (initial ratification)
-- Modified principles: all (new)
-- Added sections: Core Principles (7), Quality Standards,
-  Development Workflow, Governance
+- Version: 1.1.0 (clarification via Socratic debate)
+- Modified principles: III (checkpoint hierarchy), VI (coverage
+  thresholds), added VIII (Data Lifecycle)
+- Added sections: Clarifications
 - Removed sections: none
 - Follow-up TODOs:
   - Run /iikit-01-specify to formalize features
-  - Define Excellence Loop thresholds per feature in spec
 -->
 
 # Pristino Bot Constitution
@@ -45,9 +44,13 @@ aspirational.
   signal to measure, data required)
 - Brand compliance is validated at the output checkpoint,
   not self-assessed by the producing agent
+- Real-time verification is best-effort (self-assessed
+  within the 60-second budget); post-hoc auditing via the
+  Validator agent is mandatory for critical deliverables
 - Rationale: brand consistency across four Chief Officers
   and all deliverable types requires machine-enforced rules,
-  not guidelines
+  not guidelines; real-time self-assessment trades accuracy
+  for latency, compensated by asynchronous audit
 
 ### III. Defense in Depth
 
@@ -61,11 +64,14 @@ trusted users.
   attempts, prevent credential exposure
 - Output checkpoint: scan for prompt leaks, role confusion,
   sensitive data exposure
-- Security findings at the output checkpoint are logged but
-  do not block delivery (availability over strict blocking)
+- Checkpoint hierarchy: CP1 and CP2 are preventive hard
+  blocks (reject before execution); CP3 is observational
+  soft pass (log always, deliver anyway)
+- This hierarchy resolves the tension with Principle IV:
+  prevention before execution, observation after execution
 - Rationale: the system processes strategic business content;
   a single compromised checkpoint must not expose the full
-  attack surface
+  attack surface; availability is preserved by soft CP3
 
 ### IV. Graceful Degradation
 
@@ -118,9 +124,13 @@ discipline. Tests define intent; code satisfies intent.
 - Assertion integrity hashes anchor test stability; hash
   mismatches must be resolved through re-specification,
   not manual override
+- Minimum 80% line coverage globally; 100% coverage
+  required for security checkpoints (CP1/CP2/CP3),
+  delegation routing, and circuit breaker logic
 - Rationale: the prototype has zero tests; formalization
   via TDD prevents regression as the codebase evolves from
-  prototype to production
+  prototype to production; critical paths demand total
+  coverage because failures there cascade system-wide
 
 ### VII. Specification Before Implementation
 
@@ -138,6 +148,26 @@ define how; code realizes the plan.
 - Rationale: the prototype was built exploration-first;
   formalization requires the inverse discipline to ensure
   every capability is intentional and testable
+
+### VIII. Data Lifecycle Integrity
+
+The three-layer memory system (working, episodic, semantic)
+must have explicit retention policies and purge capabilities.
+Data classification drives retention, not storage defaults.
+
+- Working memory must have a defined TTL; expired data must
+  be purged automatically, not left to accumulate
+- Episodic memory (voice notes, meetings) is permanent but
+  must support per-user purge on request
+- Semantic memory (knowledge, RAG chunks) must track
+  provenance (source, confidence, reinforcement count) and
+  support selective invalidation
+- No memory layer may store data without classification
+  (ephemeral, persistent, or permanent)
+- Rationale: the 3-layer memory is a core differentiator;
+  its integrity requires explicit lifecycle rules, not
+  implicit database defaults; per-user purge enables trust
+  even without regulatory mandate
 
 ## Quality Standards
 
@@ -227,4 +257,26 @@ conventions, and ad-hoc decisions.
 - If a task conflicts with a constitutional principle, work
   must stop and the conflict must be flagged for resolution
 
-**Version**: 1.0.0 | **Ratified**: 2026-03-28 | **Last Amended**: 2026-03-28
+**Version**: 1.1.0 | **Ratified**: 2026-03-28 | **Last Amended**: 2026-03-28
+
+## Clarifications
+
+### Session 2026-03-28
+
+- Q: What is the minimum test coverage threshold? -> A: 80%
+  global line coverage; 100% for security checkpoints,
+  delegation routing, and circuit breaker logic
+  [Principle VI]
+- Q: How is the tension between Principle III (Defense in
+  Depth) and Principle IV (Graceful Degradation) resolved?
+  -> A: CP1/CP2 are preventive hard blocks; CP3 is
+  observational soft pass. Prevention before execution,
+  observation after execution. [Principle III, Principle IV]
+- Q: Should there be a data retention/privacy principle?
+  -> A: Yes — Principle VIII (Data Lifecycle Integrity)
+  added. Driven by memory system integrity, not compliance.
+  [Principle VIII]
+- Q: How is brand voice verified if self-assessment is
+  circular? -> A: Best-effort in real-time (self-assessed),
+  mandatory post-hoc audit via Validator for critical
+  deliverables. [Principle II, Quality Standards]
