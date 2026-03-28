@@ -314,11 +314,11 @@
 
 **Purpose**: Webhook-based async message processing and bot gateway integration.
 
-- [ ] T084 Write integration tests for bot message handling in tests/integration/bot.test.ts [TS-062, TS-063, TS-065]
-- [ ] T085 Implement Pub/Sub async message dispatch in src/index.ts with HTTP 200 acknowledgment within 2 seconds [TS-062, TS-063]
-- [ ] T086 Implement message queuing during startup before ecosystem is loaded [TS-065]
-- [ ] T087 Implement Telegram bot gateway in src/bot.ts with Grammy middleware pipeline integrating CP1→agent→CP3→format→deliver
-- [ ] T088 Write integration test for full delegation chain in tests/integration/delegation.test.ts [TS-005]
+- [x] T084 Write integration tests for bot message handling in tests/integration/bot.test.ts [TS-062, TS-063, TS-065]
+- [x] T085 Implement Pub/Sub async message dispatch in src/index.ts with HTTP 200 acknowledgment within 2 seconds [TS-062, TS-063]
+- [x] T086 Implement message queuing during startup before ecosystem is loaded [TS-065]
+- [x] T087 Implement Telegram bot gateway in src/bot.ts with Grammy middleware pipeline integrating CP1→agent→CP3→format→deliver
+- [x] T088 Write integration test for full delegation chain in tests/integration/delegation.test.ts [TS-005]
 
 **Checkpoint**: Full async pipeline operational. Messages acknowledged, processed asynchronously.
 
@@ -328,10 +328,10 @@
 
 **Purpose**: Coverage enforcement, edge cases, and final hardening.
 
-- [ ] T089 [P] Run vitest coverage report and fix gaps to reach 80% global, 100% on security/router/circuit-breaker [SC-011]
-- [ ] T090 [P] Implement all-providers-unavailable fallback message in src/config/llm-providers.ts [TS-064]
-- [ ] T091 [P] Add Markdown-to-Telegram-HTML conversion in src/format.ts
-- [ ] T093 Run all .feature scenario tags against test suite to verify full TS-xxx traceability
+- [x] T089 [P] Run vitest coverage report and fix gaps to reach 80% global, 100% on security/router/circuit-breaker [SC-011]
+- [x] T090 [P] Implement all-providers-unavailable fallback message in src/config/llm-providers.ts [TS-064]
+- [x] T091 [P] Add Markdown-to-Telegram-HTML conversion in src/format.ts
+- [x] T093 Run all .feature scenario tags against test suite to verify full TS-xxx traceability
 
 ---
 

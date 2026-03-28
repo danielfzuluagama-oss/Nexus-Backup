@@ -316,23 +316,26 @@ function enforceHardEntrust(text: string): string {
  * https://core.telegram.org/bots/api#html-style
  */
 class TelegramRenderer extends Renderer {
-  heading({ text }: import("marked").Tokens.Heading): string {
+  heading(token: import("marked").Tokens.Heading): string {
     // Hard Entrust: headings rendered as plain text with newline separation
+    const text = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
     return `\n${text}\n`;
   }
 
-  strong({ text }: import("marked").Tokens.Strong): string {
-    // Hard Entrust: no bold formatting allowed
-    return text;
+  strong(token: import("marked").Tokens.Strong): string {
+    // Hard Entrust: no bold formatting allowed — render inner content only
+    return token.tokens ? this.parser.parseInline(token.tokens) : token.text;
   }
 
-  em({ text }: import("marked").Tokens.Em): string {
-    // Hard Entrust: no italic formatting allowed
-    return text;
+  em(token: import("marked").Tokens.Em): string {
+    // Hard Entrust: no italic formatting allowed — render inner content only
+    return token.tokens ? this.parser.parseInline(token.tokens) : token.text;
   }
 
-  del({ text }: import("marked").Tokens.Del): string {
-    return `<s>${text}</s>`;
+  del(token: import("marked").Tokens.Del): string {
+    // Use parseInline to correctly render nested inline tokens (marked v17+)
+    const inner = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+    return `<s>${inner}</s>`;
   }
 
   codespan({ text }: import("marked").Tokens.Codespan): string {
@@ -346,12 +349,15 @@ class TelegramRenderer extends Renderer {
     return `<pre><code>${text}</code></pre>\n`;
   }
 
-  blockquote({ text }: import("marked").Tokens.Blockquote): string {
-    return `<blockquote>${text}</blockquote>\n`;
+  blockquote(token: import("marked").Tokens.Blockquote): string {
+    // parseInline on the body tokens so nested inline elements render correctly
+    const inner = token.tokens ? this.parser.parse(token.tokens) : token.text;
+    return `<blockquote>${inner}</blockquote>\n`;
   }
 
-  link({ href, text }: import("marked").Tokens.Link): string {
-    return `<a href="${href}">${text}</a>`;
+  link(token: import("marked").Tokens.Link): string {
+    const inner = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+    return `<a href="${token.href}">${inner}</a>`;
   }
 
   list(token: import("marked").Tokens.List): string {
@@ -364,16 +370,19 @@ class TelegramRenderer extends Renderer {
 
   listitem(item: import("marked").Tokens.ListItem): string {
     // Hard Entrust: use dashes instead of bullets
-    return `- ${item.text}\n`;
+    const inner = item.tokens ? this.parser.parseInline(item.tokens) : item.text;
+    return `- ${inner}\n`;
   }
 
   hr(_token: import("marked").Tokens.Hr): string {
     return `\n—\n`;
   }
-  
-  paragraph({ text }: import("marked").Tokens.Paragraph): string {
-    // Return paragraphs, respecting marked spacing semantics
-    return `${text}\n\n`;
+
+  paragraph(token: import("marked").Tokens.Paragraph): string {
+    // marked v17+: paragraph token carries inline tokens; use parseInline so
+    // inline elements (code, links, strikethrough, etc.) are rendered correctly.
+    const inner = token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+    return `${inner}\n\n`;
   }
 
   image({ href, text }: import("marked").Tokens.Image): string {

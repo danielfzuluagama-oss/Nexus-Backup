@@ -9,6 +9,9 @@ import {
   renderDeliverable,
   chunkDeliverable,
   DELIVERABLE_TEMPLATES,
+  formatForTelegram,
+  splitMessageHtml,
+  stripHtml,
 } from "../../src/format.js";
 
 // ---------------------------------------------------------------------------
@@ -688,5 +691,160 @@ describe("TS-059: Oversized deliverable chunked with formatting preservation", (
   it("empty string returns an array with one empty string", () => {
     const chunks = chunkDeliverable("");
     expect(chunks).toEqual([""]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// T091 / TS-091: Markdown-to-Telegram-HTML conversion — formatForTelegram
+// ---------------------------------------------------------------------------
+
+describe("T091: formatForTelegram — Markdown-to-Telegram-HTML conversion", () => {
+  it("returns empty string for empty input", () => {
+    expect(formatForTelegram("")).toBe("");
+    expect(formatForTelegram("   ")).toBe("");
+  });
+
+  it("converts inline code to <code> tags", () => {
+    const result = formatForTelegram("Use `const x = 1` in your code.");
+    expect(result).toContain("<code>const x = 1</code>");
+  });
+
+  it("converts fenced code blocks to <pre><code> tags", () => {
+    const md = "```javascript\nconsole.log('hello');\n```";
+    const result = formatForTelegram(md);
+    expect(result).toContain("<pre><code");
+    expect(result).toContain("console.log");
+  });
+
+  it("converts strikethrough to <s> tags", () => {
+    const result = formatForTelegram("~~deprecated~~");
+    expect(result).toContain("<s>deprecated</s>");
+  });
+
+  it("renders links as <a href> tags", () => {
+    const result = formatForTelegram("[Pristino](https://example.com)");
+    expect(result).toContain('<a href="https://example.com">Pristino</a>');
+  });
+
+  it("converts blockquotes to <blockquote> tags", () => {
+    const result = formatForTelegram("> This is a quote");
+    expect(result).toContain("<blockquote>");
+  });
+
+  it("strips bold markdown (Hard Entrust: no bold allowed)", () => {
+    const result = formatForTelegram("**important text**");
+    expect(result).not.toContain("<b>");
+    expect(result).not.toContain("<strong>");
+    expect(result).toContain("important text");
+  });
+
+  it("strips italic markdown (Hard Entrust: no italic allowed)", () => {
+    const result = formatForTelegram("*italic text*");
+    expect(result).not.toContain("<i>");
+    expect(result).not.toContain("<em>");
+    expect(result).toContain("italic text");
+  });
+
+  it("strips markdown headers (Hard Entrust: no headings allowed)", () => {
+    const result = formatForTelegram("# Heading One");
+    expect(result).not.toMatch(/<h[1-6]/);
+  });
+
+  it("converts list items to dash-prefixed lines (Hard Entrust: no bullets)", () => {
+    const result = formatForTelegram("- item one\n- item two");
+    expect(result).toContain("- item one");
+    expect(result).toContain("- item two");
+  });
+
+  it("returns a non-empty string for plain prose input", () => {
+    const result = formatForTelegram(
+      "El equipo analizo los datos y concluyo que el enfoque es correcto."
+    );
+    expect(result.trim().length).toBeGreaterThan(0);
+  });
+
+  it("does not crash on input with tables (strips with placeholder)", () => {
+    const md = "| Col A | Col B |\n| ----- | ----- |\n| Val 1 | Val 2 |";
+    const result = formatForTelegram(md);
+    expect(typeof result).toBe("string");
+    // Table is stripped with a safe placeholder
+    expect(result).toContain("Table stripped");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// T091: splitMessageHtml — Telegram message chunking
+// ---------------------------------------------------------------------------
+
+describe("T091: splitMessageHtml — message chunking for Telegram 4096-char limit", () => {
+  it("returns single-element array for short text", () => {
+    const short = "Hello world";
+    const chunks = splitMessageHtml(short);
+    expect(chunks).toHaveLength(1);
+    expect(chunks[0]).toBe(short);
+  });
+
+  it("splits text exceeding 4096 characters into multiple chunks", () => {
+    // Generate text that is clearly over 4096 chars
+    const long = "a".repeat(500) + "\n\n" + "b".repeat(500) + "\n\n" + "c".repeat(500) +
+                 "\n\n" + "d".repeat(500) + "\n\n" + "e".repeat(500) + "\n\n" + "f".repeat(500) +
+                 "\n\n" + "g".repeat(500) + "\n\n" + "h".repeat(500) + "\n\n" + "i".repeat(500);
+    const chunks = splitMessageHtml(long);
+    expect(chunks.length).toBeGreaterThan(1);
+  });
+
+  it("each chunk is at most 4096 characters (excluding auto-closed tags)", () => {
+    const long = "word ".repeat(2000); // ~10000 chars
+    const chunks = splitMessageHtml(long);
+    // Allow a small buffer for auto-close tags added during splitting
+    for (const chunk of chunks) {
+      expect(chunk.length).toBeLessThanOrEqual(4200);
+    }
+  });
+
+  it("concatenating chunks preserves total content length roughly", () => {
+    const long = "paragraph text here. ".repeat(300);
+    const chunks = splitMessageHtml(long);
+    const totalLength = chunks.reduce((sum, c) => sum + c.length, 0);
+    // Allow ±100 characters for whitespace trimming
+    expect(Math.abs(totalLength - long.trim().length)).toBeLessThan(200);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// T091: stripHtml — plain text fallback
+// ---------------------------------------------------------------------------
+
+describe("T091: stripHtml — HTML tag removal for plain text fallback", () => {
+  it("strips simple tags", () => {
+    expect(stripHtml("<b>bold</b>")).toBe("bold");
+    expect(stripHtml("<code>code</code>")).toBe("code");
+    expect(stripHtml("<s>strike</s>")).toBe("strike");
+  });
+
+  it("strips nested tags", () => {
+    expect(stripHtml("<pre><code>fn()</code></pre>")).toBe("fn()");
+  });
+
+  it("strips anchor tags but preserves text content", () => {
+    const result = stripHtml('<a href="https://example.com">Click here</a>');
+    expect(result).toBe("Click here");
+  });
+
+  it("preserves plain text that has no HTML tags", () => {
+    const plain = "This has no tags at all.";
+    expect(stripHtml(plain)).toBe(plain);
+  });
+
+  it("returns empty string for empty input", () => {
+    expect(stripHtml("")).toBe("");
+  });
+
+  it("strips all tags from a multi-element HTML string", () => {
+    const html = "<blockquote>A quote.</blockquote>\n<code>code block</code>";
+    const result = stripHtml(html);
+    expect(result).not.toMatch(/<[^>]+>/);
+    expect(result).toContain("A quote.");
+    expect(result).toContain("code block");
   });
 });

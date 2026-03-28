@@ -31,6 +31,15 @@ import { logger } from "./logger.js";
 const MAX_DEPTH = 3;
 const MAX_TOOL_CALLS_PER_TURN = 5;
 
+/**
+ * TS-064: User-friendly message when all LLM providers (Groq tiers + OpenRouter) are exhausted.
+ * The message must acknowledge the outage and suggest retrying later — no technical error phrases.
+ */
+export const ALL_PROVIDERS_UNAVAILABLE_MESSAGE =
+  "En este momento todos los proveedores de IA estan temporalmente fuera de servicio. " +
+  "El sistema esta monitoreando la disponibilidad de forma continua. " +
+  "Por favor intenta de nuevo en unos minutos.";
+
 /** Fallback identity map for when Firestore user profiles are not yet seeded. */
 const FALLBACK_IDENTITIES: Record<number, string> = {
   18219468: "Contexto Identitario Impuesto: Asistes a Javier, Chief Empowerment Officer.",
@@ -294,7 +303,13 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
     return fallback;
   } catch (err) {
     // --- CATASTROPHIC FAILURE HANDLING ---
-    // If Groq/OpenAI triggers a 500 or timeout during tool execution loop
+    // TS-064: All LLM providers exhausted — surface a user-friendly outage message
+    const errMsg = err instanceof Error ? err.message : String(err);
+    if (errMsg.includes("All LLM providers exhausted")) {
+      logger.warn("All providers unavailable — returning fallback to user", { userId, error: errMsg });
+      return ALL_PROVIDERS_UNAVAILABLE_MESSAGE;
+    }
+    // Generic transient failure (Groq 500, network timeout, etc.)
     logger.error("Agent error", { userId, depth, error: err });
     return "Lo siento, la red neural ha experimentado un fallo transitorio. Por favor intenta de nuevo.";
   }

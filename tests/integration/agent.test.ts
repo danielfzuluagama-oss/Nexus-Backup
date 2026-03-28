@@ -622,3 +622,120 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
     expect(tsMs).toBeLessThanOrEqual(afterTest + 1000); // 1s tolerance
   });
 });
+
+// ---------------------------------------------------------------------------
+// T090 / TS-064: All LLM providers simultaneously unavailable
+// When all providers are exhausted, runAgent must return a user-friendly
+// fallback message that acknowledges the outage and suggests retrying.
+// ---------------------------------------------------------------------------
+
+import { ALL_PROVIDERS_UNAVAILABLE_MESSAGE } from "../../src/agent.js";
+
+describe("TS-064: All providers unavailable — user-friendly fallback message", () => {
+  beforeEach(() => {
+    vi.mocked(logger.info).mockClear();
+    vi.mocked(logger.warn).mockClear();
+    vi.mocked(logger.error).mockClear();
+  });
+
+  it("returns ALL_PROVIDERS_UNAVAILABLE_MESSAGE when LLM throws 'All LLM providers exhausted'", async () => {
+    const deps: AgentDeps = {
+      llm: {
+        chat: vi.fn().mockRejectedValue(
+          new Error("All LLM providers exhausted for pristino. No keys available.")
+        ),
+      } as any,
+      memory: {
+        addMessage: vi.fn().mockResolvedValue(undefined),
+        getRecentMessages: vi.fn().mockResolvedValue([]),
+        getUserProfile: vi.fn().mockResolvedValue(null),
+        getTeamPreferences: vi.fn().mockResolvedValue([]),
+        getSynergyFacts: vi.fn().mockResolvedValue([]),
+      } as any,
+      config: {
+        maxHistory: 10,
+        maxIterations: 3,
+        maxTokens: 4096,
+        modelContextWindow: 8192,
+      } as any,
+    };
+
+    const result = await runAgent(deps, 18219468, "What is 2 + 2?");
+
+    expect(result).toBe(ALL_PROVIDERS_UNAVAILABLE_MESSAGE);
+  });
+
+  it("fallback message acknowledges the outage without technical error phrases", () => {
+    // TS-064: message must not contain raw error text
+    const msg = ALL_PROVIDERS_UNAVAILABLE_MESSAGE;
+    expect(msg.toLowerCase()).not.toContain("error");
+    expect(msg.toLowerCase()).not.toContain("exception");
+    expect(msg.toLowerCase()).not.toContain("exhausted");
+    expect(msg.toLowerCase()).not.toContain("no keys");
+  });
+
+  it("fallback message suggests retrying later", () => {
+    const msg = ALL_PROVIDERS_UNAVAILABLE_MESSAGE;
+    // TS-064: message must suggest retrying
+    const mentionsRetry = /reint|retry|intenta/i.test(msg);
+    expect(mentionsRetry).toBe(true);
+  });
+
+  it("regular LLM errors (non-exhaustion) still return generic error message", async () => {
+    const deps: AgentDeps = {
+      llm: {
+        chat: vi.fn().mockRejectedValue(new Error("Internal server error 500")),
+      } as any,
+      memory: {
+        addMessage: vi.fn().mockResolvedValue(undefined),
+        getRecentMessages: vi.fn().mockResolvedValue([]),
+        getUserProfile: vi.fn().mockResolvedValue(null),
+        getTeamPreferences: vi.fn().mockResolvedValue([]),
+        getSynergyFacts: vi.fn().mockResolvedValue([]),
+      } as any,
+      config: {
+        maxHistory: 10,
+        maxIterations: 3,
+        maxTokens: 4096,
+        modelContextWindow: 8192,
+      } as any,
+    };
+
+    const result = await runAgent(deps, 18219468, "Test generic error path");
+
+    // Must NOT be the providers-unavailable message
+    expect(result).not.toBe(ALL_PROVIDERS_UNAVAILABLE_MESSAGE);
+    // Should be the generic transient failure message
+    expect(result).toContain("fallo transitorio");
+  });
+
+  it("warn log is emitted when all providers are exhausted", async () => {
+    const deps: AgentDeps = {
+      llm: {
+        chat: vi.fn().mockRejectedValue(
+          new Error("All LLM providers exhausted for pristino. No keys available.")
+        ),
+      } as any,
+      memory: {
+        addMessage: vi.fn().mockResolvedValue(undefined),
+        getRecentMessages: vi.fn().mockResolvedValue([]),
+        getUserProfile: vi.fn().mockResolvedValue(null),
+        getTeamPreferences: vi.fn().mockResolvedValue([]),
+        getSynergyFacts: vi.fn().mockResolvedValue([]),
+      } as any,
+      config: {
+        maxHistory: 10,
+        maxIterations: 3,
+        maxTokens: 4096,
+        modelContextWindow: 8192,
+      } as any,
+    };
+
+    await runAgent(deps, 18219468, "Trigger providers-unavailable path");
+
+    const warnLog = vi.mocked(logger.warn).mock.calls.find(
+      (c) => typeof c[0] === "string" && c[0].includes("providers unavailable")
+    );
+    expect(warnLog).toBeDefined();
+  });
+});
