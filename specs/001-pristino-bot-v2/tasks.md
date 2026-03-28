@@ -101,17 +101,17 @@
 
 ### Tests (RED)
 
-- [ ] T027 [P] [US1] Write unit tests for routing mode selection in tests/unit/router.test.ts [TS-001, TS-002, TS-005, TS-006, TS-007]
-- [ ] T028 [P] [US1] Write integration test for full cognition loop in tests/integration/agent.test.ts [TS-004]
+- [x] T027 [P] [US1] Write unit tests for routing mode selection in tests/unit/router.test.ts [TS-001, TS-002, TS-005, TS-006, TS-007]
+- [x] T028 [P] [US1] Write integration test for full cognition loop in tests/integration/agent.test.ts [TS-004]
 
 ### Implementation (GREEN)
 
-- [ ] T029 [US1] Implement routeRequest with tiebreaker hierarchy in src/ecosystem/router.ts (depends on T026, T027) [TS-001, TS-002, TS-006]
-- [ ] T030 [US1] Implement executeRouting with mode dispatch (single/terna/committee) in src/ecosystem/router.ts [TS-007]
-- [ ] T031 [US1] Implement routing decision audit logging with mode, agents, reason, timestamp [TS-004]
-- [ ] T032 [US1] Implement recursion depth enforcement (max 3) in src/tools/delegate.ts (depends on T092) [TS-005]
-- [ ] T033 [US1] Implement agent cognition loop iteration control in src/agent.ts: LLM call → tool parse → execute → repeat (max 3 iterations), using prompt-composer and tool-registry
-- [ ] T034 [US1] Implement prompt composition with security pipeline integration in src/ecosystem/prompt-composer.ts
+- [x] T029 [US1] Implement routeRequest with tiebreaker hierarchy in src/ecosystem/router.ts (depends on T026, T027) [TS-001, TS-002, TS-006]
+- [x] T030 [US1] Implement executeRouting with mode dispatch (single/terna/committee) in src/ecosystem/router.ts [TS-007]
+- [x] T031 [US1] Implement routing decision audit logging with mode, agents, reason, timestamp [TS-004]
+- [x] T032 [US1] Implement recursion depth enforcement (max 3) in src/tools/delegate.ts (depends on T092) [TS-005]
+- [x] T033 [US1] Implement agent cognition loop iteration control in src/agent.ts: LLM call → tool parse → execute → repeat (max 3 iterations), using prompt-composer and tool-registry
+- [x] T034 [US1] Implement prompt composition with security pipeline integration in src/ecosystem/prompt-composer.ts
 
 **Checkpoint**: Core routing operational. Messages routed to agents, responses delivered within 60s.
 
