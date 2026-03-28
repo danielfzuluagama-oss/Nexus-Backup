@@ -37,13 +37,18 @@ export async function runTerna(
     })
   );
 
-  // Collect successful responses
+  // Collect successful responses and track failed agent IDs
   const responses: Array<{ agentId: string; response: string }> = [];
-  for (const result of results) {
+  const unavailableAgentIds: string[] = [];
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
     if (result.status === "fulfilled") {
       responses.push(result.value);
     } else {
-      logger.warn("Terna agent failed", { error: result.reason });
+      const agentId = agents[i].id;
+      unavailableAgentIds.push(agentId);
+      logger.warn("Terna agent failed", { agentId, error: result.reason });
     }
   }
 
@@ -55,8 +60,8 @@ export async function runTerna(
     return responses[0].response;
   }
 
-  // Synthesize multiple responses
-  return synthesize(runner, responses, task);
+  // Synthesize multiple responses, passing unavailable agents for gap annotation
+  return synthesize(runner, responses, task, unavailableAgentIds);
 }
 
 // ---------------------------------------------------------------------------
@@ -94,11 +99,17 @@ export async function runCommittee(
   );
 
   const deliberations: Array<{ agentId: string; response: string }> = [];
-  for (const result of deliberationResults) {
+  const unavailableInCommittee: string[] = [];
+
+  for (let i = 0; i < deliberationResults.length; i++) {
+    const result = deliberationResults[i];
     if (result.status === "fulfilled") {
       deliberations.push(result.value);
     } else {
+      const agentId = agents[i].id;
+      unavailableInCommittee.push(agentId);
       logger.warn("Committee agent failed during deliberation", {
+        agentId,
         error: result.reason,
       });
     }
@@ -115,7 +126,7 @@ export async function runCommittee(
   }
 
   // Phase 2: Synthesis
-  const synthesis = await synthesize(runner, deliberations, task);
+  const synthesis = await synthesize(runner, deliberations, task, unavailableInCommittee);
 
   // Phase 3: Tiebreaker (only if 3+ agents and potential disagreement)
   let tiebreaker: string | null = null;
@@ -137,32 +148,58 @@ export async function runCommittee(
 // Internal helpers
 // ---------------------------------------------------------------------------
 
-/** Synthesize multiple agent responses into a single coherent answer. */
+/** Synthesize multiple agent responses into a single coherent answer.
+ *
+ * @param unavailableAgentIds - IDs of agents that failed / timed out.
+ *   When present, the synthesis task will include a gap annotation so the
+ *   Synthesizer LLM knows to note which agent was unavailable (TS-009).
+ */
 async function synthesize(
   runner: SubAgentRunner,
   responses: Array<{ agentId: string; response: string }>,
-  originalTask: string
+  originalTask: string,
+  unavailableAgentIds: string[] = []
 ): Promise<string> {
+  // Attribute each response to its agent (TS-010: preserves contradictions with agent name)
   const responseSummary = responses
     .map((r, i) => `## Expert ${i + 1} (${r.agentId})\n${r.response}`)
     .join("\n\n");
 
-  const synthesisTask = [
+  const taskLines = [
     `Original question: ${originalTask}`,
     "",
     "The following experts have provided their independent analyses:",
     "",
     responseSummary,
+  ];
+
+  // TS-009: annotate any missing agent responses so the synthesizer can note the gap
+  if (unavailableAgentIds.length > 0) {
+    taskLines.push("");
+    taskLines.push(
+      `Note: The following agent(s) did not respond and are unavailable: ${unavailableAgentIds.join(", ")}.`
+    );
+    taskLines.push(
+      "Your synthesized response MUST include an explicit note that one or more agent responses were unavailable."
+    );
+  }
+
+  taskLines.push(
     "",
     "Synthesize these perspectives into a single, coherent, and comprehensive response.",
     "Highlight areas of agreement and note any significant disagreements.",
-    "Do not attribute responses to specific experts — provide a unified answer.",
-  ].join("\n");
+    // TS-010: preserve attribution for contradictory conclusions
+    "When experts hold contradictory conclusions, preserve both perspectives and prefix each with the contributing agent's name (e.g. 'Agent-analyst: ...').",
+    "Where experts agree, provide a unified answer without redundant attribution."
+  );
+
+  const synthesisTask = taskLines.join("\n");
 
   const synthesisPrompt =
     "You are a skilled synthesizer. Your job is to combine multiple expert perspectives " +
     "into a single, coherent response. Be concise but thorough. Preserve key insights " +
-    "from each expert while eliminating redundancy.";
+    "from each expert. When perspectives contradict, preserve both with agent attribution. " +
+    "When an agent was unavailable, explicitly note this in your response.";
 
   return runner(synthesisTask, synthesisPrompt, []);
 }
