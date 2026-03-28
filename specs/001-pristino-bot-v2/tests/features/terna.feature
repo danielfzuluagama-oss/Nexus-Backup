@@ -12,21 +12,21 @@ Feature: Terna Delegation
 
   @TS-008 @FR-002 @SC-003 @P1 @acceptance
   Scenario: Three agents execute in parallel and synthesize
-    Given a query requiring multi-perspective analysis
-    When the orchestrator selects terna mode
-    Then three agents execute in parallel
-    And the Synthesizer produces a unified response within 30 seconds
+    Given the routing decision for query "evaluate three scenarios for market entry" is "terna"
+    When three agents execute in parallel
+    Then the Synthesizer is invoked with 3 agent responses
+    And produces a unified response within 30 seconds
 
   @TS-009 @FR-031 @P1 @acceptance
   Scenario: Degrade to two agents on single timeout
-    Given one of three terna agents times out
-    When the system detects the timeout
-    Then it degrades to the two available responses
-    And the Synthesizer notes the gap in the output
+    Given a terna delegation is in progress with agents "analyst", "researcher", "synthesizer"
+    When agent "researcher" times out after 30 seconds
+    Then the Synthesizer is invoked with 2 agent responses
+    And the synthesized output contains an explicit note that one agent response was unavailable
 
   @TS-010 @FR-002 @P1 @acceptance
   Scenario: Preserve contradictory perspectives with attribution
-    Given two of three terna agents produce contradictory conclusions
+    Given agent "analyst" responds with "expand now" and agent "researcher" responds with "wait six months"
     When the Synthesizer processes the outputs
-    Then it preserves both perspectives with attribution
-    And does not silently drop either conclusion
+    Then the synthesized output contains both perspectives
+    And each perspective is prefixed with the contributing agent's name

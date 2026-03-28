@@ -12,26 +12,28 @@ Feature: Three-Layer Memory Persistence
 
   @TS-031 @FR-024 @P2 @acceptance
   Scenario: Working memory loads thread history within token budget
-    Given a user has an active conversation thread
-    When the user sends a new message
-    Then the system loads the thread's history within the token budget
+    Given a user has an active conversation thread with 50 messages
+    And the available token budget is 4000 tokens
+    When getRecentMessages is called for the user's thread
+    Then the total token count of returned messages does not exceed 4000
 
   @TS-032 @FR-026 @P2 @acceptance
-  Scenario: Knowledge reinforcement count incremented on reference
-    Given a knowledge fact is stored with confidence and source provenance
-    When the fact is referenced later
-    Then its reinforcement count is incremented
+  Scenario: Knowledge reinforcement count incremented on retrieval
+    Given a knowledge fact "MetodologIA uses 4 Chief Officer roles" is stored with reinforcementCount 1
+    When getKnowledge is called and returns the fact
+    Then the fact's reinforcementCount is incremented to 2
 
   @TS-033 @FR-024 @P2 @acceptance
-  Scenario: Expired working memory purged automatically
-    Given working memory TTL has expired for a thread
-    When the system accesses the thread
-    Then the expired data is purged automatically
+  Scenario: Expired working memory purged by scheduled sweep
+    Given a thread with expiresAt timestamp in the past
+    When purgeExpiredWorking is called
+    Then the expired thread and its messages are deleted
+    And the purge count includes the deleted thread
 
   @TS-034 @FR-027 @SC-008 @P2 @acceptance
   Scenario: Per-user data purge across all three layers
-    Given a user requests deletion of their data
-    When the per-user purge is executed
+    Given a user has data in working, episodic, and semantic memory
+    When purgeUser is called with that userId
     Then all three memory layers are cleared for that user
     And the purge completes within 30 seconds
 
@@ -47,17 +49,23 @@ Feature: Three-Layer Memory Persistence
       | episodic | permanent      |
       | semantic | permanent      |
 
+  @TS-071 @FR-027 @FR-028 @P2 @acceptance
+  Scenario: Permanent classification does not prevent explicit purge
+    Given an episodic record with classification "permanent"
+    When purgeUser is called for that user
+    Then the record is deleted despite its permanent classification
+
   @TS-036 @FR-024 @P2 @contract
   Scenario: addMessage and getRecentMessages round-trip
-    Given a userId and message content
+    Given a userId and message content "hello from the test"
     When addMessage is called followed by getRecentMessages
-    Then the stored message appears in the returned list
+    Then the stored message appears in the returned list with matching content
 
   @TS-037 @FR-026 @P2 @contract
   Scenario: addKnowledge stores provenance metadata
-    Given a fact, confidence score, and source
+    Given a fact "Pristino uses 6 specialist agents", confidence 0.9, and source "internal"
     When addKnowledge is called
-    Then the stored knowledge includes confidence, source, and reinforcement count of 1
+    Then the stored knowledge includes confidence 0.9, source "internal", and reinforcementCount 1
 
   @TS-038 @FR-027 @P2 @contract
   Scenario: purgeUser removes data from all layers

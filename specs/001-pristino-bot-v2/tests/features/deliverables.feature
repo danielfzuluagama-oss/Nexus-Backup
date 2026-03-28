@@ -11,14 +11,16 @@ Feature: Template-Based Deliverables
   brand-compliant content and platform-appropriate chunking.
 
   @TS-058 @FR-033 @P3 @acceptance
-  Scenario: Deliverable rendered with template structure
-    Given a skill workflow produces a deliverable
+  Scenario: Deliverable rendered with all required template sections
+    Given a skill workflow produces a deliverable using the "assessment" template
     When the template engine renders it
-    Then the output matches the template's section structure and styling
+    Then the output contains all section headings defined in the template schema
+    And the section hierarchy matches the template's structure
 
   @TS-059 @FR-033 @P3 @acceptance
   Scenario: Oversized deliverable chunked with formatting preservation
     Given the messaging platform has a 4096 character limit
     When a deliverable exceeds the limit
-    Then it is chunked with formatting preservation
-    And each chunk is independently readable
+    Then it is split into chunks of at most 4096 characters each
+    And no chunk ends mid-sentence
+    And no chunk splits a section heading from its body

@@ -12,21 +12,21 @@ Feature: Committee Deliberation
 
   @TS-011 @FR-002 @P2 @acceptance
   Scenario: Five agents produce deliberation with consensus status
-    Given a query routed to committee mode
+    Given a query routed to committee mode with 5 agents
     When all five agents respond
-    Then the system produces a deliberation with consensus status
-    And the status is one of strong, majority, split, or disagreement
+    Then the result includes a "consensusStatus" field
+    And the value is one of "strong", "majority", "split", or "disagreement"
 
   @TS-012 @FR-003 @P2 @acceptance
   Scenario: Tiebreaker resolves split with documented reasoning
-    Given agents reach a split with no majority
+    Given 2 agents recommend "A" and 3 agents recommend "B" but the 2 are factually stronger
     When the orchestrator acts as tiebreaker
-    Then it applies the tiebreaker hierarchy
-    And documents the reasoning for the resolution
+    Then the winning recommendation is "A"
+    And the routing log records tiebreaker criterion "factual accuracy"
 
   @TS-013 @FR-031 @P2 @acceptance
   Scenario: Committee degrades to terna on timeout
-    Given committee deliberation exceeds 60 seconds
-    When the timeout triggers
-    Then the system degrades to terna with the top 3 responding agents
-    And delivers a response from the available agents
+    Given committee deliberation is in progress
+    When processing exceeds 60 seconds
+    Then the system uses the first 3 agents that responded before the timeout
+    And the routing log records degradation reason "committee timeout"

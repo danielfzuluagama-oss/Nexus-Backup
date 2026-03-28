@@ -14,25 +14,27 @@ Feature: Skill Workflow Execution
   Scenario: Skill workflow executes steps with per-step validation
     Given a user request matches a skill's trigger
     When the skill engine activates the workflow
-    Then it executes steps sequentially with timeouts
-    And validates each step before proceeding to the next
+    Then steps execute in the order defined by the workflow
+    And each step has a default timeout of 30 seconds
+    And each step is validated before proceeding to the next
 
   @TS-052 @FR-012 @P2 @acceptance
   Scenario: Failed step triggers recovery action before escalation
     Given a workflow step fails validation
     When the skill engine detects the failure
-    Then it attempts the recovery action
-    And escalates only if recovery also fails
+    Then it attempts the recovery action defined for that step
+    And if recovery fails, returns an error result to the orchestrator with reason "step-recovery-failed"
 
   @TS-053 @FR-013 @P2 @acceptance
-  Scenario: Mid-workflow handoff to another agent
+  Scenario: Mid-workflow handoff to another agent with context
     Given a workflow requires handoff to another agent
     When the handoff trigger fires
-    Then the engine delegates with accumulated context to the target agent
+    Then the delegate call includes a context object containing all prior step outputs
+    And the target agent receives the workflow's step history
 
-  @TS-054 @FR-014 @P2 @acceptance
+  @TS-054 @FR-014 @P2 @acceptance @catalog
   Scenario: System supports at least 24 skills with 96 workflows
-    Given the agent catalog is fully loaded
+    Given the full agent catalog is loaded from agent definition files
     When the system counts available skills and workflows
     Then at least 24 skills are registered
     And at least 96 workflows are available across the catalog

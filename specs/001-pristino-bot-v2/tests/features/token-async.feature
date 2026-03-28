@@ -13,52 +13,54 @@ Feature: Token Management and Async Processing
 
     @TS-060 @FR-040 @P2 @acceptance
     Scenario: Token budget calculated per request
-      Given a request with system prompt, reserved tokens, and safety margin
+      Given a model with total context 8192 tokens
+      And reserved tokens of 500, system prompt of 300 tokens, and safety margin of 10%
       When the token budget is calculated
-      Then the available budget equals total context minus reserved, system, and safety margin
+      Then the available budget is 6653 tokens
 
     @TS-061 @FR-041 @P2 @acceptance
     Scenario: History trimmed to fit available budget
-      Given conversation history exceeds the available token budget
+      Given conversation history totaling 5000 tokens
+      And the available token budget is 3000 tokens
       When the system trims the history
       Then oldest messages are removed first
-      And a 10% safety margin is preserved
+      And the trimmed history fits within the 3000 token budget
 
   Rule: Async message processing
 
     @TS-062 @FR-042 @P2 @acceptance
-    Scenario: Webhook ingress with async background processing
-      Given a message arrives via webhook
+    Scenario: Webhook ingress returns before processing completes
+      Given a message arrives via webhook POST
       When the server receives it
-      Then it dispatches to async background processing
-      And the webhook handler returns immediately
+      Then the webhook returns HTTP 200 within 2 seconds
+      And message processing continues in the background via Pub/Sub
 
     @TS-063 @FR-043 @P2 @acceptance
-    Scenario: Incoming message acknowledged before processing
-      Given a message is received from the messaging platform
+    Scenario: Incoming message acknowledged before platform timeout
+      Given a message is received from Telegram
       When the system begins processing
-      Then it acknowledges receipt before the platform timeout
+      Then it sends an HTTP 200 acknowledgment before the platform timeout
       And processes the message asynchronously
 
   Rule: Edge cases
 
     @TS-064 @FR-029 @P2 @acceptance
     Scenario: All LLM providers simultaneously unavailable
-      Given all LLM providers are simultaneously unavailable
+      Given all LLM providers return errors and all circuit breakers are open
       When the cascade exhausts all options
-      Then the system delivers a fallback message acknowledging the outage
-      And suggests retrying later
+      Then the user receives a fallback message acknowledging the outage
+      And the message suggests retrying later
 
     @TS-065 @FR-042 @P2 @acceptance
     Scenario: Message received during startup before agents loaded
-      Given the system is starting up and agents are not yet loaded
-      When a user sends a message
-      Then the message is queued via async processing
-      And handled once startup completes
+      Given the system is starting up and the ecosystem loader has not completed
+      When a user sends a message via webhook
+      Then the message is published to the Pub/Sub topic
+      And is processed once the ecosystem loader completes registration
 
     @TS-066 @FR-011 @P2 @acceptance
     Scenario: Skill workflow exceeds 60-second boundary
-      Given a skill workflow is executing
-      When processing exceeds 60 seconds
-      Then the system delivers a partial result
-      And notes that processing continues
+      Given a skill workflow is executing with multiple steps
+      When total processing time exceeds 60 seconds
+      Then the system sends the output from steps completed before the timeout
+      And appends a note indicating that processing will continue asynchronously

@@ -12,51 +12,51 @@ Feature: Resilient LLM Provider Cascade
 
   @TS-040 @FR-029 @SC-006 @P2 @acceptance
   Scenario: Cascade through credentials before falling to lower tier
-    Given the primary provider returns a rate limit error
-    When the cascade handler processes the error
-    Then it tries the next credential for the same model tier
-    And falls to a lower tier only after all credentials are exhausted
+    Given the primary tier has credentials ["key-1", "key-2"]
+    When key-1 returns a rate limit error
+    Then the provider is called with key-2 before attempting a lower tier
 
   @TS-041 @FR-030 @SC-009 @P2 @acceptance
   Scenario: Circuit breaker opens after 3 consecutive failures
-    Given a provider has 3 consecutive failures
-    When the circuit breaker opens
-    Then that provider/model/credential combination is skipped for 60 seconds
-    And probes with a single request before reopening
+    Given a provider/model/credential combination with 0 failures
+    When 3 consecutive failures occur
+    Then the circuit breaker state transitions to "open"
+    And that combination is skipped for subsequent requests
+
+  @TS-072 @FR-030 @SC-009 @P2 @acceptance
+  Scenario: Circuit breaker probes after cooldown
+    Given a circuit breaker in "open" state
+    And the system clock is advanced by 60 seconds
+    When a new request arrives for that provider
+    Then the circuit breaker transitions to "half-open"
+    And sends the pending user request as a single probe
 
   @TS-042 @FR-029 @SC-006 @P2 @acceptance
-  Scenario: Fallback tier delivers response with no visible degradation
+  Scenario: Fallback tier delivers response without error messages
     Given all primary tier providers are exhausted
     When the cascade reaches the fallback tier
-    Then the user receives a response with no visible degradation
+    Then the user receives a non-empty text response
+    And the response does not contain error phrases such as "service unavailable"
 
   @TS-043 @FR-032 @P2 @acceptance
   Scenario: In-memory fallback when persistence unavailable
     Given the Firestore persistence layer is unavailable
     When the system attempts to store data
     Then it falls back to in-memory storage
-    And logs the fallback explicitly
+    And a warning is logged with reason "persistence_unavailable"
 
   @TS-044 @FR-030 @P2 @contract
-  Scenario: Circuit breaker state transitions
-    Given a circuit breaker in closed state
-    When 3 consecutive failures occur
-    Then the state transitions to open
-    And after 60 seconds cooldown it transitions to half-open
-    And a successful probe transitions it back to closed
-
-  @TS-045 @FR-030 @P2 @validation
   Scenario Outline: Circuit breaker state machine transitions
     Given a circuit breaker in <initial_state> state
     When <event> occurs
     Then the state transitions to <final_state>
 
     Examples:
-      | initial_state | event                       | final_state |
-      | closed        | failure count reaches 3     | open        |
-      | open          | cooldown elapsed            | half-open   |
-      | half-open     | probe success               | closed      |
-      | half-open     | probe failure               | open        |
+      | initial_state | event                              | final_state |
+      | closed        | failure count reaches threshold 3  | open        |
+      | open          | system clock advanced by 60 seconds | half-open   |
+      | half-open     | probe request succeeds             | closed      |
+      | half-open     | probe request fails                | open        |
 
   @TS-046 @FR-029 @P2 @contract
   Scenario: LLM provider getProvider returns cascading provider
