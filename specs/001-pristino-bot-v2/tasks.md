@@ -125,16 +125,16 @@
 
 ### Tests (RED)
 
-- [ ] T035 [P] [US3] Write unit tests for brand voice enforcement in tests/unit/format.test.ts [TS-021, TS-023, TS-024, TS-070]
-- [ ] T036 [P] [US3] Write unit tests for excellence scoring in tests/unit/format.test.ts [TS-022, TS-069]
+- [x] T035 [P] [US3] Write unit tests for brand voice enforcement in tests/unit/format.test.ts [TS-021, TS-023, TS-024, TS-070]
+- [x] T036 [P] [US3] Write unit tests for excellence scoring in tests/unit/format.test.ts [TS-022, TS-069]
 
 ### Implementation (GREEN)
 
-- [ ] T037 [US3] Implement Minto structure enforcement in src/format.ts: conclusion-first, MECE supports, CTA (depends on T035) [TS-021]
-- [ ] T038 [US3] Implement forbidden term detection and replacement in src/format.ts [TS-024]
-- [ ] T039 [US3] Implement formatting artifact stripping (bold, italic, emojis, markdown lists) in src/format.ts [TS-023]
-- [ ] T040 [US3] Implement 16-dimension excellence framework scoring in src/format.ts via LLM-based evaluation prompt (not programmatic scorers), with 8/10 standard and 9/10 critical thresholds [TS-022, TS-069]
-- [ ] T041 [US3] Implement excellence enforcement loop (max 2 iterations) in src/format.ts [TS-070]
+- [x] T037 [US3] Implement Minto structure enforcement in src/format.ts: conclusion-first, MECE supports, CTA (depends on T035) [TS-021]
+- [x] T038 [US3] Implement forbidden term detection and replacement in src/format.ts [TS-024]
+- [x] T039 [US3] Implement formatting artifact stripping (bold, italic, emojis, markdown lists) in src/format.ts [TS-023]
+- [x] T040 [US3] Implement 16-dimension excellence framework scoring in src/format.ts via LLM-based evaluation prompt (not programmatic scorers), with 8/10 standard and 9/10 critical thresholds [TS-022, TS-069]
+- [x] T041 [US3] Implement excellence enforcement loop (max 2 iterations) in src/format.ts [TS-070]
 
 **Checkpoint**: Brand voice pipeline enforces Minto, strips artifacts, scores deliverables.
 
@@ -148,13 +148,13 @@
 
 ### Tests (RED)
 
-- [ ] T042 [P] [US2] Write unit tests for terna execution in tests/unit/committee.test.ts [TS-008, TS-009, TS-010]
+- [x] T042 [P] [US2] Write unit tests for terna execution in tests/unit/committee.test.ts [TS-008, TS-009, TS-010]
 
 ### Implementation (GREEN)
 
-- [ ] T043 [US2] Implement executeTerna with parallel agent execution in src/ecosystem/committee.ts (depends on T030, T042) [TS-008]
-- [ ] T044 [US2] Implement terna timeout degradation (3→2 agents) with gap annotation in src/ecosystem/committee.ts [TS-009]
-- [ ] T045 [US2] Implement contradiction preservation with agent attribution in src/ecosystem/committee.ts [TS-010]
+- [x] T043 [US2] Implement executeTerna with parallel agent execution in src/ecosystem/committee.ts (depends on T030, T042) [TS-008]
+- [x] T044 [US2] Implement terna timeout degradation (3→2 agents) with gap annotation in src/ecosystem/committee.ts [TS-009]
+- [x] T045 [US2] Implement contradiction preservation with agent attribution in src/ecosystem/committee.ts [TS-010]
 
 **Checkpoint**: Terna delegation produces multi-perspective synthesized responses.
 
