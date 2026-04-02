@@ -106,9 +106,7 @@ describe("TS-031: working memory loads within token budget", () => {
 
 // ---------------------------------------------------------------------------
 // TS-032: Knowledge reinforcement count incremented on retrieval
-// In in-memory mode, reinforceKnowledge is a no-op for local store
-// (Firestore-only operation). We test that it does not throw and that
-// addKnowledge sets the initial reinforcementCount to 1.
+// In in-memory mode, retrieval now reinforces the retrieved entry as well.
 // ---------------------------------------------------------------------------
 
 describe("TS-032: knowledge reinforcement count", () => {
@@ -123,12 +121,54 @@ describe("TS-032: knowledge reinforcement count", () => {
     const userId = 2001;
     await memory.addKnowledge("team_preference", userId, "We prefer async communication");
 
-    const facts = await memory.getKnowledge("team_preference", userId);
-    expect(facts).toContain("We prefer async communication");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const internal = memory as any;
+    const entry = internal.localKnowledge.find(
+      (k: { fact: string }) => k.fact === "We prefer async communication"
+    );
+    expect(entry).toBeDefined();
+    expect(entry.reinforcementCount).toBe(1);
   });
 
-  it("reinforceKnowledge does not throw in in-memory mode", async () => {
-    // In in-memory mode the method is a no-op (Firestore-only)
+  it("getKnowledge reinforces the returned fact in memory", async () => {
+    const userId = 2002;
+    await memory.addKnowledge("project_context", userId, "First fact", { confidence: 0.2 });
+    await memory.addKnowledge("project_context", userId, "Second fact", { confidence: 0.9 });
+
+    const facts = await memory.getKnowledge("project_context", userId, 2);
+    expect(facts[0]).toBe("Second fact");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const internal = memory as any;
+    const topEntry = internal.localKnowledge.find(
+      (k: { fact: string }) => k.fact === "Second fact"
+    );
+    const lowerEntry = internal.localKnowledge.find(
+      (k: { fact: string }) => k.fact === "First fact"
+    );
+    expect(topEntry).toBeDefined();
+    expect(lowerEntry).toBeDefined();
+    expect(topEntry.reinforcementCount).toBe(2);
+    expect(lowerEntry.reinforcementCount).toBe(2);
+  });
+
+  it("reinforceKnowledge increments a known local entry", async () => {
+    const userId = 2003;
+    await memory.addKnowledge("team_preference", userId, "Prefer short meetings");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const internal = memory as any;
+    const entry = internal.localKnowledge.find(
+      (k: { fact: string }) => k.fact === "Prefer short meetings"
+    );
+    expect(entry).toBeDefined();
+    expect(entry.reinforcementCount).toBe(1);
+
+    await expect(memory.reinforceKnowledge(entry.knowledgeId)).resolves.toBeUndefined();
+    expect(entry.reinforcementCount).toBe(2);
+  });
+
+  it("reinforceKnowledge does not throw for an unknown id in in-memory mode", async () => {
     await expect(memory.reinforceKnowledge("some-id")).resolves.toBeUndefined();
   });
 
@@ -284,6 +324,24 @@ describe("TS-039: knowledge confidence validation", () => {
     expect(facts).toContain("High confidence fact");
   });
 
+  it("rejects confidence below 0.0", async () => {
+    const userId = 50021;
+    await expect(
+      memory.addKnowledge("team_preference", userId, "Negative confidence fact", {
+        confidence: -0.1,
+      })
+    ).rejects.toThrow("Knowledge confidence must be between 0.0 and 1.0");
+  });
+
+  it("rejects confidence above 1.0", async () => {
+    const userId = 50022;
+    await expect(
+      memory.addKnowledge("team_preference", userId, "Too confident fact", {
+        confidence: 1.5,
+      })
+    ).rejects.toThrow("Knowledge confidence must be between 0.0 and 1.0");
+  });
+
   it("stores knowledge with confidence 0.5 (default)", async () => {
     const userId = 5003;
     await memory.addKnowledge("team_preference", userId, "Default confidence");
@@ -411,5 +469,59 @@ describe("TS-071: permanent memory can still be explicitly purged", () => {
 
     const notes = await memory.getVoiceNotes(userId);
     expect(notes.length).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TS-072: Thread memory snapshots expose structured state and summary context
+// ---------------------------------------------------------------------------
+
+describe("TS-072: structured thread memory snapshots", () => {
+  let memory: Memory;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    memory = new Memory();
+  });
+
+  it("persists recent turn metadata and proposal state in the thread snapshot", async () => {
+    const userId = 7201;
+    const threadId = await memory.getOrCreateActiveThread(userId, "pristino");
+
+    await memory.addMessage(userId, "user", "Necesito una propuesta comercial para Acme", threadId);
+    await memory.addMessage(
+      userId,
+      "assistant",
+      "Claro, confirmemos cliente, servicio, objetivo y cronograma.",
+      threadId,
+    );
+
+    await memory.updateThreadMemory(userId, threadId, {
+      conversationKind: "proposal",
+      proposalState: {
+        status: "clarification",
+        clientName: "Acme",
+        serviceName: "Ofimática con IA",
+        objective: "Acelerar la preventa",
+        missingRequired: ["Cronograma"],
+        openQuestions: ["¿Cuándo arranca el trabajo?"],
+        completenessScore: 42,
+      },
+    });
+
+    const snapshot = await memory.getThreadSnapshot(userId, threadId);
+    expect(snapshot).not.toBeNull();
+    expect(snapshot?.lastMessageRole).toBe("assistant");
+    expect(snapshot?.lastAssistantMessagePreview).toContain("confirmemos cliente");
+    expect(snapshot?.conversationKind).toBe("proposal");
+    expect(snapshot?.summary).toContain("aclaración en curso");
+    expect(snapshot?.proposalState?.status).toBe("clarification");
+    expect(snapshot?.summaryVersion).toBeGreaterThanOrEqual(1);
+
+    const context = await memory.describeThreadMemory(userId, threadId);
+    expect(context).toContain("Memoria persistida del hilo");
+    expect(context).toContain("Estado comercial: clarification");
+    expect(context).toContain("Cliente: Acme");
+    expect(context).toContain("Preguntas abiertas");
   });
 });

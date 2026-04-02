@@ -127,6 +127,9 @@ function makeConfig(): Config {
     groqModelVision: "llama-3.2-11b-vision-preview",
     openRouterApiKey: "or_test_shared",
     openRouterModel: "meta-llama/llama-3-8b-instruct",
+    geminiApiKey: "gemini_test_shared",
+    geminiModel: "gemini-2.5-flash",
+    geminiFallbackEnabled: true,
     dbPath: ":memory:",
     maxIterations: 10,
     maxHistory: 50,
@@ -143,6 +146,7 @@ function makeCredentials(suffix: string): AgentCredentials {
     telegramBotToken: `token-${suffix}`,
     groqApiKeys: [{ key: `gsk_${suffix}_key1`, owner: `owner-${suffix}-1` }],
     openRouterApiKeys: [{ key: `or_${suffix}_key1`, owner: `owner-${suffix}-1` }],
+    geminiApiKeys: [{ key: `gem_${suffix}_key1`, owner: `owner-${suffix}-1` }],
   };
 }
 
@@ -193,6 +197,7 @@ describe("TS-055: Credential isolation between runtime instances", () => {
       telegramBotToken: "token-pristino-rotated",
       groqApiKeys: [{ key: "gsk_pristino_key2", owner: "owner-pristino-2" }],
       openRouterApiKeys: [],
+      geminiApiKeys: [],
     };
     const runtimeARotated = new AgentRuntime("pristino", config, newCredsA);
     expect(runtimeARotated.credentials.groqApiKeys[0].key).toBe("gsk_pristino_key2");

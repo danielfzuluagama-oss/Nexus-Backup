@@ -1,4 +1,5 @@
 import { composeSystemPrompt } from "../ecosystem/prompt-composer.js";
+import { composeSkillPrompt } from "../ecosystem/skill-composer.js";
 import { logger } from "../logger.js";
 // ============================================================================
 // SubAgentRegistry class: per-instance sub-agent state for mirror sync.
@@ -35,7 +36,26 @@ export class SubAgentRegistry {
                 tools: agent.allowedTools,
             });
         }
+        for (const [agentId, skills] of ecosystem.skills) {
+            this.registerEcosystemSkills(agentId, skills);
+        }
         this.log.info("Ecosystem agents registered", { count: ecosystem.agents.size });
+    }
+    registerEcosystemSkills(agentId, skills) {
+        for (const skill of skills) {
+            if (this.agents.has(skill.id)) {
+                this.log.info("Overriding hardcoded agent with ecosystem skill", {
+                    agentId,
+                    skillId: skill.id,
+                });
+            }
+            this.agents.set(skill.id, {
+                name: skill.name,
+                description: skill.purpose || skill.businessValue || skill.id,
+                systemPrompt: skill.systemPrompt ?? composeSkillPrompt(skill),
+                tools: skill.toolUsage,
+            });
+        }
     }
     get(name) {
         return this.agents.get(name);

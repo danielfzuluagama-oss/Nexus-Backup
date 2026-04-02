@@ -1,6 +1,7 @@
 import type { ToolDefinition } from "./registry.js";
-import type { EcosystemState } from "../ecosystem/types.js";
+import type { EcosystemState, SkillDefinition } from "../ecosystem/types.js";
 import { composeSystemPrompt } from "../ecosystem/prompt-composer.js";
+import { composeSkillPrompt } from "../ecosystem/skill-composer.js";
 import { logger } from "../logger.js";
 import type { Logger } from "../logger.js";
 
@@ -71,7 +72,29 @@ export class SubAgentRegistry {
         tools: agent.allowedTools,
       });
     }
+
+    for (const [agentId, skills] of ecosystem.skills) {
+      this.registerEcosystemSkills(agentId, skills);
+    }
     this.log.info("Ecosystem agents registered", { count: ecosystem.agents.size });
+  }
+
+  private registerEcosystemSkills(agentId: string, skills: SkillDefinition[]): void {
+    for (const skill of skills) {
+      if (this.agents.has(skill.id)) {
+        this.log.info("Overriding hardcoded agent with ecosystem skill", {
+          agentId,
+          skillId: skill.id,
+        });
+      }
+
+      this.agents.set(skill.id, {
+        name: skill.name,
+        description: skill.purpose || skill.businessValue || skill.id,
+        systemPrompt: skill.systemPrompt ?? composeSkillPrompt(skill),
+        tools: skill.toolUsage,
+      });
+    }
   }
 
   get(name: string): SubAgent | undefined {

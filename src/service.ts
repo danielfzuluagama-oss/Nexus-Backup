@@ -20,6 +20,12 @@ import {
 } from "./ecosystem/router.js";
 import { logger } from "./logger.js";
 import { initializeOpenClawSymlinks } from "./tools/symlink.js";
+import {
+  claimTelegramUpdate,
+  markTelegramUpdateCompleted,
+  markTelegramUpdateFailed,
+} from "./telegram-update-guard.js";
+import { buildServiceStatus, type ServiceStatusReport } from "./service-status.js";
 
 export interface TaskPayload {
   botName: string;
@@ -53,6 +59,8 @@ interface ServiceContext {
   pollingStarted: boolean;
   server: Server | null;
   webhooksConfigured: boolean;
+  config: ReturnType<typeof loadConfig>;
+  ecosystem: ReturnType<typeof loadAllAgents>;
 }
 
 let contextPromise: Promise<ServiceContext> | null = null;
@@ -79,6 +87,19 @@ function resolveRegistryPath(): string {
 
 function normalizeBaseUrl(baseUrl: string): string {
   return baseUrl.replace(/\/+$/, "");
+}
+
+function resolveRuntimeRegion(): string {
+  return (process.env.FUNCTION_REGION ?? process.env.GCLOUD_REGION ?? "us-central1").trim();
+}
+
+function shouldAppendFunctionTarget(host: string | null | undefined): boolean {
+  const normalizedHost = host?.trim().toLowerCase() ?? "";
+  return normalizedHost.endsWith(".cloudfunctions.net");
+}
+
+function appendServicePath(baseUrl: string | undefined, pathname: "/healthz" | "/status"): string | null {
+  return baseUrl ? `${normalizeBaseUrl(baseUrl)}${pathname}` : null;
 }
 
 interface ResolveWebhookBaseUrlOptions {
@@ -114,6 +135,52 @@ export function resolveWebhookBaseUrl(options: ResolveWebhookBaseUrlOptions): st
 
   const region = options.region?.trim() || "us-central1";
   return normalizeBaseUrl(`https://${region}-${projectId}.cloudfunctions.net${targetSuffix}`);
+}
+
+export interface ServiceEndpointUrls {
+  requestBaseUrl: string | null;
+  officialBaseUrl: string | null;
+  requestHealthUrl: string | null;
+  requestStatusUrl: string | null;
+  officialHealthUrl: string | null;
+  officialStatusUrl: string | null;
+}
+
+export function resolveServiceEndpointUrls(request: {
+  get(name: string): string | undefined;
+  protocol?: string;
+}): ServiceEndpointUrls {
+  const forwardedHost = request.get("x-forwarded-host");
+  const host = request.get("host");
+  const requestHost = forwardedHost?.trim() || host?.trim() || null;
+
+  const requestBaseUrl = resolveWebhookBaseUrl({
+    explicitBaseUrl: process.env.WEBHOOK_URL,
+    forwardedHost,
+    host,
+    protocol: request.get("x-forwarded-proto") ?? request.protocol ?? "https",
+    functionTarget: "api",
+    projectId: process.env.GCLOUD_PROJECT,
+    region: resolveRuntimeRegion(),
+    appendFunctionTarget: shouldAppendFunctionTarget(requestHost),
+  });
+
+  const officialBaseUrl = resolveWebhookBaseUrl({
+    explicitBaseUrl: process.env.WEBHOOK_URL,
+    projectId: process.env.GCLOUD_PROJECT,
+    region: resolveRuntimeRegion(),
+    functionTarget: "api",
+    appendFunctionTarget: true,
+  }) ?? requestBaseUrl;
+
+  return {
+    requestBaseUrl: requestBaseUrl ?? null,
+    officialBaseUrl: officialBaseUrl ?? null,
+    requestHealthUrl: appendServicePath(requestBaseUrl, "/healthz"),
+    requestStatusUrl: appendServicePath(requestBaseUrl, "/status"),
+    officialHealthUrl: appendServicePath(officialBaseUrl, "/healthz"),
+    officialStatusUrl: appendServicePath(officialBaseUrl, "/status"),
+  };
 }
 
 function parseTaskPayload(raw: unknown): TaskPayload | null {
@@ -156,21 +223,41 @@ async function processTaskPayloadWithBots(
   bots: Map<string, Bot>,
   payload: TaskPayload,
 ): Promise<boolean> {
-  const targetBot = bots.get(payload.botName);
+  const resolvedBotName = resolveInternalBotName(payload.botName);
+  const targetBot = bots.get(resolvedBotName);
 
   if (!targetBot) {
     logger.error("Pub/Sub task invalid or targeted unknown bot", {
       botName: payload.botName,
+      resolvedBotName,
     });
     return false;
   }
 
   logger.info("Consuming task payload", {
-    botName: payload.botName,
+    botName: resolvedBotName,
+    requestedBotName: payload.botName,
     update_id: payload.update.update_id,
   });
 
-  await targetBot.handleUpdate(payload.update);
+  const claimResult = await claimTelegramUpdate(resolvedBotName, payload.update.update_id);
+  if (claimResult === "duplicate") {
+    logger.info("Skipping duplicate Telegram update", {
+      botName: resolvedBotName,
+      requestedBotName: payload.botName,
+      update_id: payload.update.update_id,
+    });
+    return true;
+  }
+
+  try {
+    await targetBot.handleUpdate(payload.update);
+    await markTelegramUpdateCompleted(resolvedBotName, payload.update.update_id);
+  } catch (error) {
+    await markTelegramUpdateFailed(resolvedBotName, payload.update.update_id, error);
+    throw error;
+  }
+
   return true;
 }
 
@@ -232,6 +319,9 @@ async function buildServiceContext(): Promise<ServiceContext> {
       openRouterApiKeys: config.openRouterApiKey
         ? [{ key: config.openRouterApiKey, owner: "LEGACY" }]
         : [],
+      geminiApiKeys: config.geminiApiKey
+        ? [{ key: config.geminiApiKey, owner: "LEGACY" }]
+        : [],
     });
     runtimes.push(runtime);
 
@@ -277,13 +367,48 @@ async function buildServiceContext(): Promise<ServiceContext> {
 
   const pubsub = new PubSub();
   const topicName = process.env.PUBSUB_TOPIC || "pristino-messages";
+  const context: ServiceContext = {
+    app,
+    bots,
+    runtimes,
+    pollingStarted: false,
+    server: null,
+    webhooksConfigured: false,
+    config,
+    ecosystem,
+  };
 
-  app.get("/healthz", (_req: Request, res: Response) => {
+  app.get("/healthz", (req: Request, res: Response) => {
+    const endpoints = resolveServiceEndpointUrls(req);
+
     res.status(200).json({
       ok: true,
       bots: [...bots.keys()].map(resolvePublicBotName),
-      mode: process.env.PORT ? "server" : "local",
+      mode:
+        context.server || process.env.PORT || process.env.FUNCTION_TARGET || process.env.K_SERVICE
+          ? "server"
+          : "local",
+      statusUrl: "/status",
+      runtimeCount: runtimes.length,
+      webhooksConfigured: context.webhooksConfigured,
+      endpoints,
     });
+  });
+
+  app.get("/status", async (req: Request, res: Response) => {
+    try {
+      const status = await buildServiceStatus(context);
+      res.status(200).json({
+        ...status,
+        endpoints: resolveServiceEndpointUrls(req),
+      });
+    } catch (error) {
+      logger.error("Failed to build service status", { error });
+      res.status(500).json({
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   });
 
   app.post("/webhook/:botName", async (req: Request, res: Response) => {
@@ -340,14 +465,7 @@ async function buildServiceContext(): Promise<ServiceContext> {
     }
   });
 
-  return {
-    app,
-    bots,
-    runtimes,
-    pollingStarted: false,
-    server: null,
-    webhooksConfigured: false,
-  };
+  return context;
 }
 
 export async function getServiceContext(): Promise<ServiceContext> {
@@ -359,6 +477,11 @@ export async function getServiceContext(): Promise<ServiceContext> {
   }
 
   return contextPromise;
+}
+
+export async function getServiceStatus(): Promise<ServiceStatusReport> {
+  const context = await getServiceContext();
+  return buildServiceStatus(context);
 }
 
 export async function ensureWebhookRegistration(baseUrl = process.env.WEBHOOK_URL): Promise<void> {

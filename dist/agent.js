@@ -1,8 +1,8 @@
 import { getAllToolDefinitions, executeTool, registerDelegateTool, } from "./tools/registry.js";
 import { getSubAgent } from "./tools/delegate.js";
 import { composeSystemPrompt } from "./ecosystem/prompt-composer.js";
-import { sanitizeInput, buildSecurePrompt, validateOutput } from "./security.js";
-import { calculateBudget, trimHistory } from "./tokens.js";
+import { sanitizeInput, buildSecurePrompt, validateOutput, SECURITY_INPUT_BLOCKED_MESSAGE, SECURITY_OUTPUT_BLOCKED_MESSAGE, } from "./security.js";
+import { fitMessagesToRequestBudget } from "./tokens.js";
 import { logger } from "./logger.js";
 /**
  * ARCHITECT OPERATOR MODULE: COGNITIVE EXECUTION ENGINE (PHASE 3)
@@ -20,6 +20,10 @@ import { logger } from "./logger.js";
  */
 const MAX_DEPTH = 3;
 const MAX_TOOL_CALLS_PER_TURN = 5;
+const REQUEST_TOKEN_LIMIT = 8_000;
+const REQUEST_SAFETY_TOKENS = 128;
+const MIN_RESPONSE_TOKENS = 256;
+const MAX_TOOL_RESULT_CHARS = 4_000;
 /**
  * TS-064: User-friendly message when all LLM providers (Groq tiers + OpenRouter) are exhausted.
  * The message must acknowledge the outage and suggest retrying later — no technical error phrases.
@@ -27,11 +31,42 @@ const MAX_TOOL_CALLS_PER_TURN = 5;
 export const ALL_PROVIDERS_UNAVAILABLE_MESSAGE = "En este momento todos los proveedores de IA estan temporalmente fuera de servicio. " +
     "El sistema esta monitoreando la disponibilidad de forma continua. " +
     "Por favor intenta de nuevo en unos minutos.";
+export const REQUEST_TOO_LARGE_MESSAGE = "Tu solicitud y el contexto acumulado quedaron demasiado grandes para procesarlos en una sola pasada. " +
+    "Reintenta con una version mas breve o dividela en pasos. " +
+    "Si quieres, tambien puedo ayudarte a compactarla primero.";
 /** Fallback identity map for when Firestore user profiles are not yet seeded. */
 const FALLBACK_IDENTITIES = {
     18219468: "Contexto Identitario Impuesto: Asistes a Javier, Chief Empowerment Officer.",
     1896434572: "Contexto Identitario Impuesto: Asistes a Kathe, Chief Enablement Officer.",
 };
+function compactToolResult(result) {
+    if (result.length <= MAX_TOOL_RESULT_CHARS) {
+        return result;
+    }
+    return [
+        result.slice(0, MAX_TOOL_RESULT_CHARS),
+        "",
+        `[tool-output-truncated original_chars=${result.length}]`,
+    ].join("\n");
+}
+function isPayloadTooLargeError(message) {
+    const normalized = message.toLowerCase();
+    const isQuota413 = normalized.includes("413")
+        && (normalized.includes("tokens per minute")
+            || normalized.includes("tokens per day")
+            || normalized.includes("tpm")
+            || normalized.includes("tpd")
+            || normalized.includes("requested"));
+    if (isQuota413) {
+        return false;
+    }
+    return (normalized.includes("413")
+        || normalized.includes("request too large")
+        || normalized.includes("request body is too large")
+        || normalized.includes("context_length_exceeded")
+        || normalized.includes("maximum context length")
+        || normalized.includes("context window"));
+}
 const BASE_SYSTEM_PROMPT = `Actuas como Nexus, arquitecto orquestador y consultor de alto calibre operativo. Tu nombre interno historico fue Pristino, pero hacia el usuario te presentas como Nexus. Todo tu ecosistema de pensamiento y comunicacion se rige por un estricto Hard Entrust de formato y tono. Tu comunicacion no usa emoticones. No usas negritas. No usas cursivas. No usas listas numeradas. No usas encabezados de markdown. Tu consistencia visual depende absolutamente de una prosa densa, bien hilada y del uso exhaustivo de la puntuacion formal, integrando comas, puntos y comas, dos puntos y puntos seguidos para estructurar tus secuencias logicas. Para crear jerarquias, estas forzado a usar unicamente guiones y sus niveles directos: -, --, ---.
 
 Tu estructura discursiva domina la Piramide Invertida de Minto y el Storytelling Estrategico. Cada intervencion tuya debe anclarse en este flujo mental:
@@ -87,17 +122,69 @@ export async function runAgent(deps, userId, userMessage, options = {}) {
         return "Recursion limit reached. Cannot delegate further.";
     }
     // === Security Checkpoint 1: Input sanitization ===
+    let mainThreadId;
+    let priorHistory = [];
+    let threadMemoryContext = "";
+    let semanticMemoryContext = "";
+    const memoryWithThreadContext = memory;
+    const describeThreadMemory = typeof memoryWithThreadContext.describeThreadMemory === "function"
+        ? memoryWithThreadContext.describeThreadMemory.bind(memoryWithThreadContext)
+        : async () => "";
+    const describeSemanticMemory = typeof memoryWithThreadContext.describeSemanticMemory === "function"
+        ? memoryWithThreadContext.describeSemanticMemory.bind(memoryWithThreadContext)
+        : async () => "";
+    const updateThreadMemory = typeof memoryWithThreadContext.updateThreadMemory === "function"
+        ? memoryWithThreadContext.updateThreadMemory.bind(memoryWithThreadContext)
+        : async () => { };
+    async function persistGeneralThreadMemory(assistantMessage) {
+        if (isSubAgent || !mainThreadId) {
+            return;
+        }
+        await updateThreadMemory(userId, mainThreadId, {
+            conversationKind: "general",
+            lastUserMessagePreview: trimmed,
+            lastAssistantMessagePreview: assistantMessage,
+        });
+    }
     const input = sanitizeInput(userMessage);
     const trimmed = input.cleaned.trim();
     if (!trimmed) {
         return "I received an empty message. Could you try again?";
     }
     if (!input.safe) {
-        logger.warn("Processing flagged input", { userId, reason: input.reason });
+        logger.warn("Blocked flagged input before LLM execution", { userId, reason: input.reason });
+        if (!isSubAgent) {
+            mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino");
+            await memory.addMessage(userId, "user", trimmed, mainThreadId);
+            await memory.addMessage(userId, "assistant", SECURITY_INPUT_BLOCKED_MESSAGE, mainThreadId);
+            await persistGeneralThreadMemory(SECURITY_INPUT_BLOCKED_MESSAGE).catch((error) => {
+                logger.warn("Failed to persist blocked-input thread memory", {
+                    userId,
+                    error: error instanceof Error ? error.message : String(error),
+                });
+            });
+        }
+        return SECURITY_INPUT_BLOCKED_MESSAGE;
     }
-    // V4 fix: await message save to prevent silent message loss
+    // Load history before persisting the current user turn so the active turn is not duplicated.
     if (!isSubAgent) {
-        await memory.addMessage(userId, "user", trimmed);
+        mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino");
+        priorHistory = await memory.getRecentMessages(userId, config.maxHistory - 1, mainThreadId);
+        threadMemoryContext = await describeThreadMemory(userId, mainThreadId, "pristino").catch((error) => {
+            logger.warn("Failed to load thread memory snapshot", {
+                userId,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            return "";
+        });
+        await memory.addMessage(userId, "user", trimmed, mainThreadId);
+        semanticMemoryContext = await describeSemanticMemory(userId, trimmed, mainThreadId, "pristino").catch((error) => {
+            logger.warn("Failed to load semantic memory snapshot", {
+                userId,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            return "";
+        });
     }
     // === Build system prompt with security hardening ===
     // Ecosystem hook: use composed prompt from agent.md when available
@@ -107,15 +194,24 @@ export async function runAgent(deps, userId, userMessage, options = {}) {
         if (orchestrator) {
             // composeSystemPrompt already applies CP2 (buildSecurePrompt)
             securePrompt = composeSystemPrompt(orchestrator);
+            if (options.responseContract) {
+                securePrompt += `\n\n${options.responseContract}`;
+            }
             logger.info("Using ecosystem-composed prompt", { agent: orchestrator.id });
         }
         else {
-            securePrompt = buildSecurePrompt(BASE_SYSTEM_PROMPT);
+            const rawPrompt = options.responseContract
+                ? `${BASE_SYSTEM_PROMPT}\n\n${options.responseContract}`
+                : BASE_SYSTEM_PROMPT;
+            securePrompt = buildSecurePrompt(rawPrompt);
         }
     }
     else {
         const rawPrompt = options.systemPrompt ?? BASE_SYSTEM_PROMPT;
-        securePrompt = buildSecurePrompt(rawPrompt);
+        const promptWithContract = options.responseContract
+            ? `${rawPrompt}\n\n${options.responseContract}`
+            : rawPrompt;
+        securePrompt = buildSecurePrompt(promptWithContract);
     }
     // === Load conversation history (main agent only) ===
     const messages = [{ role: "system", content: securePrompt }];
@@ -132,22 +228,17 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
     if (identityContext) {
         messages.push({ role: "system", content: identityContext });
     }
-    // V5 fix: inject synergy BEFORE trimHistory so token budget includes them
+    // Phase 2: inject semantic memory BEFORE trimHistory so the token budget includes it.
     if (!isSubAgent) {
-        const preferences = await memory.getTeamPreferences();
-        if (preferences.length > 0) {
-            const prefText = `CURRENT TEAM PREFERENCES:\n- ${preferences.join("\n- ")}`;
-            messages.push({ role: "system", content: prefText });
+        if (threadMemoryContext) {
+            messages.push({ role: "system", content: threadMemoryContext });
         }
-        const synergyFacts = await memory.getSynergyFacts();
-        if (synergyFacts.length > 0) {
-            const synText = `SHARED KNOWLEDGE / SYNERGY FACTS:\n- ${synergyFacts.join("\n- ")}`;
-            messages.push({ role: "system", content: synText });
+        if (semanticMemoryContext) {
+            messages.push({ role: "system", content: semanticMemoryContext });
         }
     }
     if (!isSubAgent) {
-        const history = await memory.getRecentMessages(userId, config.maxHistory - 1); // leave space for current msg
-        messages.push(...history.map((m) => ({
+        messages.push(...priorHistory.map((m) => ({
             role: m.role,
             content: m.content,
         })));
@@ -158,13 +249,6 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
         // Sub-agent gets only the delegated task
         messages.push({ role: "user", content: trimmed });
     }
-    // === Token optimization: trim history to fit context budget ===
-    // V5 fix: budget now accounts for identity + synergy injected above
-    const budget = calculateBudget(config, securePrompt + METODOLOGIA_SYSTEM_ADDENDUM + identityContext);
-    const historyMessages = messages.slice(1); // everything after system prompt
-    const trimmedHistory = trimHistory(historyMessages, budget.available);
-    messages.length = 1; // keep system prompt
-    messages.push(...trimmedHistory);
     // === Select tools (sub-agents get restricted set, no delegation) ===
     const excludeDelegate = isSubAgent;
     let tools = getAllToolDefinitions(excludeDelegate);
@@ -176,8 +260,44 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
     // === Agent loop ===
     try {
         for (let i = 0; i < config.maxIterations; i++) {
+            const requestFit = fitMessagesToRequestBudget(messages, tools, {
+                requestTokenLimit: REQUEST_TOKEN_LIMIT,
+                desiredResponseTokens: config.maxTokens,
+                minResponseTokens: MIN_RESPONSE_TOKENS,
+                safetyTokens: REQUEST_SAFETY_TOKENS,
+            });
+            if (requestFit.trimmed) {
+                logger.warn("Trimmed conversation to fit request budget", {
+                    userId,
+                    iteration: i,
+                    inputTokens: requestFit.inputTokens,
+                    toolTokens: requestFit.toolTokens,
+                    availableResponseTokens: requestFit.availableResponseTokens,
+                });
+            }
+            messages.length = 0;
+            messages.push(...requestFit.messages);
+            if (!requestFit.fits || requestFit.responseTokens < MIN_RESPONSE_TOKENS) {
+                logger.warn("Request exceeds safe provider budget", {
+                    userId,
+                    iteration: i,
+                    inputTokens: requestFit.inputTokens,
+                    toolTokens: requestFit.toolTokens,
+                    availableResponseTokens: requestFit.availableResponseTokens,
+                });
+                if (!isSubAgent) {
+                    await memory.addMessage(userId, "assistant", REQUEST_TOO_LARGE_MESSAGE, mainThreadId);
+                    await persistGeneralThreadMemory(REQUEST_TOO_LARGE_MESSAGE).catch((error) => {
+                        logger.warn("Failed to persist oversized-request thread memory", {
+                            userId,
+                            error: error instanceof Error ? error.message : String(error),
+                        });
+                    });
+                }
+                return REQUEST_TOO_LARGE_MESSAGE;
+            }
             logger.info("Cognition iteration started", { userId, iteration: i, historyLength: messages.length });
-            const response = await llm.chat(messages, tools);
+            const response = await llm.chat(messages, tools, { maxTokens: requestFit.responseTokens });
             logger.info("LLM responded", {
                 userId,
                 hasContent: !!response.content,
@@ -189,11 +309,27 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
                 // === Security Checkpoint 3: Output validation ===
                 const output = validateOutput(text);
                 if (!output.safe) {
-                    logger.warn("Output flagged by security", { userId });
+                    logger.warn("Output blocked by security", { userId, warnings: output.warnings });
+                    if (!isSubAgent) {
+                        await memory.addMessage(userId, "assistant", SECURITY_OUTPUT_BLOCKED_MESSAGE, mainThreadId);
+                        await persistGeneralThreadMemory(SECURITY_OUTPUT_BLOCKED_MESSAGE).catch((error) => {
+                            logger.warn("Failed to persist blocked-output thread memory", {
+                                userId,
+                                error: error instanceof Error ? error.message : String(error),
+                            });
+                        });
+                    }
+                    return SECURITY_OUTPUT_BLOCKED_MESSAGE;
                 }
                 // Only main agent persists to memory
                 if (!isSubAgent) {
                     await memory.addMessage(userId, "assistant", output.cleaned);
+                    await persistGeneralThreadMemory(output.cleaned).catch((error) => {
+                        logger.warn("Failed to persist final thread memory", {
+                            userId,
+                            error: error instanceof Error ? error.message : String(error),
+                        });
+                    });
                 }
                 logger.info("Cognition loop finalized (content)", { userId });
                 return output.cleaned;
@@ -227,12 +363,19 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
                 }
                 logger.info("Running tool", { userId, tool: toolCall.function.name });
                 const result = await executeTool(toolCall.function.name, args);
-                logger.info("Tool finished", { userId, tool: toolCall.function.name, resultPreview: result.slice(0, 100) });
+                const compactedResult = compactToolResult(result);
+                logger.info("Tool finished", {
+                    userId,
+                    tool: toolCall.function.name,
+                    resultPreview: compactedResult.slice(0, 100),
+                    resultChars: result.length,
+                    compactedChars: compactedResult.length,
+                });
                 messages.push({
                     role: "tool",
                     tool_call_id: toolCall.id,
                     name: toolCall.function.name,
-                    content: result,
+                    content: compactedResult,
                 });
             }
         }
@@ -240,6 +383,12 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
         const fallback = "I got stuck in a loop processing your request. Please try again.";
         if (!isSubAgent) {
             await memory.addMessage(userId, "assistant", fallback);
+            await persistGeneralThreadMemory(fallback).catch((error) => {
+                logger.warn("Failed to persist loop-exhausted thread memory", {
+                    userId,
+                    error: error instanceof Error ? error.message : String(error),
+                });
+            });
         }
         return fallback;
     }
@@ -250,6 +399,23 @@ Eres un Agente nativo del equipo MetodologIA. Tu voz de marca se basa en la cons
         if (errMsg.includes("All LLM providers exhausted")) {
             logger.warn("All providers unavailable — returning fallback to user", { userId, error: errMsg });
             return ALL_PROVIDERS_UNAVAILABLE_MESSAGE;
+        }
+        if (isPayloadTooLargeError(errMsg)) {
+            logger.warn("Payload too large — returning compaction fallback to user", {
+                userId,
+                depth,
+                error: errMsg,
+            });
+            if (!isSubAgent) {
+                await memory.addMessage(userId, "assistant", REQUEST_TOO_LARGE_MESSAGE, mainThreadId);
+                await persistGeneralThreadMemory(REQUEST_TOO_LARGE_MESSAGE).catch((persistError) => {
+                    logger.warn("Failed to persist payload-too-large thread memory", {
+                        userId,
+                        error: persistError instanceof Error ? persistError.message : String(persistError),
+                    });
+                });
+            }
+            return REQUEST_TOO_LARGE_MESSAGE;
         }
         // Generic transient failure (Groq 500, network timeout, etc.)
         logger.error("Agent error", { userId, depth, error: err });

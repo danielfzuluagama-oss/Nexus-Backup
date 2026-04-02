@@ -47,6 +47,15 @@ vi.mock("../../src/security.js", () => ({
 vi.mock("../../src/tokens.js", () => ({
   calculateBudget: vi.fn().mockReturnValue({ available: 100_000 }),
   trimHistory: vi.fn((msgs: unknown[]) => msgs),
+  fitMessagesToRequestBudget: vi.fn((msgs: unknown[], _tools: unknown[], options?: { desiredResponseTokens?: number }) => ({
+    messages: Array.isArray(msgs) ? [...msgs] : msgs,
+    inputTokens: 100,
+    toolTokens: 0,
+    responseTokens: options?.desiredResponseTokens ?? 4096,
+    availableResponseTokens: 4096,
+    trimmed: false,
+    fits: true,
+  })),
 }));
 
 // ---------------------------------------------------------------------------
@@ -71,6 +80,7 @@ function makeDeps(
     } as unknown as AgentDeps["llm"],
     memory: {
       addMessage: vi.fn().mockResolvedValue(undefined),
+      getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
       getRecentMessages: vi.fn().mockResolvedValue([]),
       getUserProfile: vi.fn().mockResolvedValue(null),
       getTeamPreferences: vi.fn().mockResolvedValue([]),

@@ -162,6 +162,19 @@ describe("service bot initialization", () => {
     expect(mockBotHandleUpdate).toHaveBeenCalledWith(update);
   });
 
+  it("accepts the public bot name when consuming queued updates", async () => {
+    const { processTaskPayload } = await import("../../src/service.js");
+    const update = { update_id: 1774733137155 } as never;
+
+    await processTaskPayload({
+      botName: "nexus",
+      update,
+    });
+
+    expect(mockBotInit).toHaveBeenCalledTimes(1);
+    expect(mockBotHandleUpdate).toHaveBeenCalledWith(update);
+  });
+
   it("derives a public cloud functions webhook base URL from forwarded host metadata", async () => {
     const { resolveWebhookBaseUrl } = await import("../../src/service.js");
 
@@ -186,5 +199,66 @@ describe("service bot initialization", () => {
         appendFunctionTarget: true,
       }),
     ).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api");
+  });
+
+  it("resolves both request and official endpoint URLs from a cloud functions host", async () => {
+    const { resolveServiceEndpointUrls } = await import("../../src/service.js");
+    const originalProjectId = process.env.GCLOUD_PROJECT;
+
+    process.env.GCLOUD_PROJECT = "nexus-5b9bb";
+
+    try {
+      const endpoints = resolveServiceEndpointUrls({
+        get(name: string) {
+          if (name === "x-forwarded-host") return "us-central1-nexus-5b9bb.cloudfunctions.net";
+          if (name === "x-forwarded-proto") return "https";
+          if (name === "host") return undefined;
+          return undefined;
+        },
+        protocol: "https",
+      });
+
+      expect(endpoints.requestBaseUrl).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api");
+      expect(endpoints.officialBaseUrl).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api");
+      expect(endpoints.officialHealthUrl).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api/healthz");
+      expect(endpoints.officialStatusUrl).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api/status");
+    } finally {
+      if (originalProjectId === undefined) {
+        delete process.env.GCLOUD_PROJECT;
+      } else {
+        process.env.GCLOUD_PROJECT = originalProjectId;
+      }
+    }
+  });
+
+  it("keeps the request URL for run.app but advertises cloudfunctions.net as the official base", async () => {
+    const { resolveServiceEndpointUrls } = await import("../../src/service.js");
+    const originalProjectId = process.env.GCLOUD_PROJECT;
+
+    process.env.GCLOUD_PROJECT = "nexus-5b9bb";
+
+    try {
+      const endpoints = resolveServiceEndpointUrls({
+        get(name: string) {
+          if (name === "x-forwarded-host") return "api-7bngy2juba-uc.a.run.app";
+          if (name === "x-forwarded-proto") return "https";
+          if (name === "host") return undefined;
+          return undefined;
+        },
+        protocol: "https",
+      });
+
+      expect(endpoints.requestBaseUrl).toBe("https://api-7bngy2juba-uc.a.run.app");
+      expect(endpoints.requestHealthUrl).toBe("https://api-7bngy2juba-uc.a.run.app/healthz");
+      expect(endpoints.officialBaseUrl).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api");
+      expect(endpoints.officialHealthUrl).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api/healthz");
+      expect(endpoints.officialStatusUrl).toBe("https://us-central1-nexus-5b9bb.cloudfunctions.net/api/status");
+    } finally {
+      if (originalProjectId === undefined) {
+        delete process.env.GCLOUD_PROJECT;
+      } else {
+        process.env.GCLOUD_PROJECT = originalProjectId;
+      }
+    }
   });
 });

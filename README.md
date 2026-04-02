@@ -23,5 +23,9 @@ cat workspace/knowledge/nexus-operational-kb.json.part-* > workspace/knowledge/n
 - `src/`: Código fuente del bot y herramientas.
 - `workspace/`: Espacio de trabajo para conocimiento y artefactos generados.
 
+## Operacion Firebase
+
+- Runbook del CLI: [docs/operations/firebase-cli-runbook.md](/Volumes/backup/Antigravity/Nexus/docs/operations/firebase-cli-runbook.md)
+
 ---
-*Backup realizado por Antigravity el 2026-03-28.*
+*Backup realizado por Antigravity el 2026-04-01 (Dossier v2026 + Core Bot).*

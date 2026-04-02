@@ -181,36 +181,49 @@ class MockStore {
 
   collectionGroup(collectionId: string): MockQuery {
     // Find all docs whose path ends with /<collectionId>/<docId>
-    const q = new MockQuery(this, `__collectionGroup__/${collectionId}`);
-    // Override get for collectionGroup to search all matching paths
     const store = this;
-    q.get = async () => {
-      const docs: Array<{ id: string; ref: MockDocRef; data: () => DocData }> = [];
-      for (const [key, data] of store.docs.entries()) {
-        const parts = key.split("/");
-        // collectionId is second-to-last segment, last is docId
-        if (parts.length >= 2 && parts[parts.length - 2] === collectionId) {
-          const docId = parts[parts.length - 1];
-          const collPath = parts.slice(0, parts.length - 1).join("/");
-          const ref = new MockDocRef(store, collPath, docId);
-          // Apply filters
-          const passesFilters = (q as unknown as { filters: Array<{ field: string; op: string; value: unknown }> }).filters.every(f => {
-            const val = (data as Record<string, unknown>)[f.field];
-            if (f.op === "==") return val === f.value;
-            if (f.op === "<") {
-              if (val instanceof Date && f.value instanceof Date) return val < f.value;
-              return false;
+
+    const buildQuery = (
+      filters: Array<{ field: string; op: string; value: unknown }> = [],
+    ): MockQuery => {
+      const q = new MockQuery(store, `__collectionGroup__/${collectionId}`);
+      q.filters = filters;
+      q.where = (field: string, op: string, value: unknown): MockQuery => buildQuery([
+        ...filters,
+        { field, op, value },
+      ]);
+      q.orderBy = () => q;
+      q.limit = () => q;
+      q.get = async () => {
+        const docs: Array<{ id: string; ref: MockDocRef; data: () => DocData }> = [];
+        for (const [key, data] of store.docs.entries()) {
+          const parts = key.split("/");
+          // collectionId is second-to-last segment, last is docId
+          if (parts.length >= 2 && parts[parts.length - 2] === collectionId) {
+            const docId = parts[parts.length - 1];
+            const collPath = parts.slice(0, parts.length - 1).join("/");
+            const ref = new MockDocRef(store, collPath, docId);
+            const passesFilters = filters.every((f) => {
+              const val = (data as Record<string, unknown>)[f.field];
+              if (f.op === "==") return val === f.value;
+              if (f.op === "<") {
+                if (val instanceof Date && f.value instanceof Date) return val < f.value;
+                if (typeof val === "number" && typeof f.value === "number") return val < f.value;
+                return false;
+              }
+              return true;
+            });
+            if (passesFilters) {
+              docs.push({ id: docId, ref, data: () => ({ ...data }) });
             }
-            return true;
-          });
-          if (passesFilters) {
-            docs.push({ id: docId, ref, data: () => ({ ...data }) });
           }
         }
-      }
-      return { docs };
+        return { docs };
+      };
+      return q;
     };
-    return q;
+
+    return buildQuery();
   }
 
   batch(): MockBatch {
@@ -329,11 +342,58 @@ describe("TS-034: per-user purge across all 3 layers (Firestore mode)", () => {
     const msgsBefore = await memory.getRecentMessages(userId, 10, threadId);
     expect(msgsBefore.length).toBeGreaterThan(0);
 
+    const threadBefore = await mockStore.collection("threads").doc(threadId).get();
+    expect(threadBefore.exists).toBe(true);
+    const threadMessagesBefore = await mockStore
+      .collection("threads")
+      .doc(threadId)
+      .collection("messages")
+      .get();
+    expect(threadMessagesBefore.docs.length).toBeGreaterThan(0);
+
     await memory.purgeUser(userId);
 
     // User document should be gone
     const userDoc = await mockStore.collection("users").doc(String(userId)).get();
     expect(userDoc.exists).toBe(false);
+
+    const threadAfter = await mockStore.collection("threads").doc(threadId).get();
+    expect(threadAfter.exists).toBe(false);
+    const threadMessagesAfter = await mockStore
+      .collection("threads")
+      .doc(threadId)
+      .collection("messages")
+      .get();
+    expect(threadMessagesAfter.docs.length).toBe(0);
+  });
+
+  it("stores a structured thread summary in Firestore", async () => {
+    const userId = 10021;
+    const threadId = await memory.getOrCreateActiveThread(userId, "pristino");
+    await memory.addMessage(userId, "user", "Necesito una propuesta comercial para Acme", threadId);
+    await memory.addMessage(userId, "assistant", "Perfecto, confirmemos alcance y cronograma.", threadId);
+
+    await memory.updateThreadMemory(userId, threadId, {
+      conversationKind: "proposal",
+      proposalState: {
+        status: "clarification",
+        clientName: "Acme",
+        serviceName: "Ofimática con IA",
+        objective: "Acelerar la preventa",
+        missingRequired: ["Cronograma"],
+        completenessScore: 51,
+      },
+    });
+
+    const threadDoc = await mockStore.collection("threads").doc(threadId).get();
+    expect(threadDoc.exists).toBe(true);
+    const data = threadDoc.data() as Record<string, unknown>;
+    expect(data.conversationKind).toBe("proposal");
+    expect(String(data.summary)).toContain("aclaración en curso");
+    expect(String(data.summary)).toContain("Acme");
+    expect(data.summaryVersion).toBeDefined();
+    expect(data.summaryUpdatedAt).toBeDefined();
+    expect((data.proposalState as Record<string, unknown>).status).toBe("clarification");
   });
 
   it("purgeUser removes episodic voice notes from Firestore", async () => {
@@ -374,6 +434,28 @@ describe("TS-034: per-user purge across all 3 layers (Firestore mode)", () => {
     const snapshot = await mockStore.collection("knowledge")
       .where("scopeUserId", "==", userId).get();
     expect(snapshot.docs.length).toBe(0);
+  });
+
+  it("returns higher-confidence knowledge first and increments reinforcement on retrieval", async () => {
+    const userId = 10041;
+    await memory.addKnowledge("project_context", userId, "Low confidence fact", {
+      confidence: 0.2,
+    });
+    await memory.addKnowledge("project_context", userId, "High confidence fact", {
+      confidence: 0.9,
+    });
+
+    const facts = await memory.getKnowledge("project_context", userId, 1);
+    expect(facts).toEqual(["High confidence fact"]);
+
+    const snapshot = await mockStore.collection("knowledge")
+      .where("scopeUserId", "==", userId).get();
+    const docs = snapshot.docs.map((doc) => doc.data() as Record<string, unknown>);
+    const high = docs.find((doc) => doc.fact === "High confidence fact");
+    const low = docs.find((doc) => doc.fact === "Low confidence fact");
+
+    expect(high?.reinforcementCount).toBe(2);
+    expect(low?.reinforcementCount).toBe(1);
   });
 
   it("purgeUser removes semantic tasks from Firestore", async () => {

@@ -5,7 +5,9 @@
 // ============================================================================
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import { logger } from "../logger.js";
+import { composeSkillPrompt } from "./skill-composer.js";
 // ---------------------------------------------------------------------------
 // Private helpers
 // ---------------------------------------------------------------------------
@@ -56,6 +58,199 @@ function extractListOrUndef(body, heading) {
         return undefined;
     const list = extractList(section);
     return list.length > 0 ? list : undefined;
+}
+function toStringValue(value) {
+    if (typeof value === "string") {
+        return value.trim();
+    }
+    if (typeof value === "number" || typeof value === "boolean") {
+        return String(value);
+    }
+    return "";
+}
+function toStringArray(value) {
+    if (Array.isArray(value)) {
+        return value.flatMap((item) => {
+            if (typeof item === "string") {
+                const trimmed = item.trim();
+                return trimmed ? [trimmed] : [];
+            }
+            if (item && typeof item === "object") {
+                const record = item;
+                if (typeof record.pattern === "string") {
+                    const trimmed = record.pattern.trim();
+                    return trimmed ? [trimmed] : [];
+                }
+                if (Array.isArray(record.keywords)) {
+                    return record.keywords.flatMap((keyword) => toStringArray(keyword));
+                }
+            }
+            return [];
+        });
+    }
+    const text = toStringValue(value);
+    return text ? [text] : [];
+}
+function toStringArrayFromObject(value, keys) {
+    if (!value || typeof value !== "object") {
+        return [];
+    }
+    const record = value;
+    for (const key of keys) {
+        const candidate = record[key];
+        if (candidate !== undefined) {
+            return toStringArray(candidate);
+        }
+    }
+    return [];
+}
+function normalizeSkillDefinition(agentId, skillId, skillSourcePath, content) {
+    let parsed;
+    try {
+        parsed = parseYaml(content);
+    }
+    catch (error) {
+        logger.warn("Skill definition YAML parse failed, loading raw fallback", {
+            agentId,
+            skillId,
+            path: skillSourcePath,
+            error,
+        });
+        const fallbackSkill = {
+            id: skillId,
+            name: skillId,
+            purpose: "",
+            businessValue: "",
+            triggerTypes: [],
+            owningAgent: agentId,
+            inputs: [],
+            outputs: [],
+            dependencies: [],
+            toolUsage: [],
+            memoryReadsWrites: { reads: [], writes: [] },
+            securityValidations: [],
+            observabilityEvents: [],
+            failureHandling: [],
+            interoperabilityContract: { consumes: [], produces: [] },
+            wowCriteria: [],
+            safeCriteria: [],
+            workflows: [],
+            sourcePath: skillSourcePath,
+            rawContent: content,
+        };
+        fallbackSkill.systemPrompt = composeSkillPrompt(fallbackSkill);
+        return fallbackSkill;
+    }
+    if (!parsed || typeof parsed !== "object") {
+        logger.warn("Skill definition could not be parsed, loading raw fallback", { agentId, skillId, path: skillSourcePath });
+        const fallbackSkill = {
+            id: skillId,
+            name: skillId,
+            purpose: "",
+            businessValue: "",
+            triggerTypes: [],
+            owningAgent: agentId,
+            inputs: [],
+            outputs: [],
+            dependencies: [],
+            toolUsage: [],
+            memoryReadsWrites: { reads: [], writes: [] },
+            securityValidations: [],
+            observabilityEvents: [],
+            failureHandling: [],
+            interoperabilityContract: { consumes: [], produces: [] },
+            wowCriteria: [],
+            safeCriteria: [],
+            workflows: [],
+            sourcePath: skillSourcePath,
+            rawContent: content,
+        };
+        fallbackSkill.systemPrompt = composeSkillPrompt(fallbackSkill);
+        return fallbackSkill;
+    }
+    const record = parsed;
+    const dependenciesRaw = record.dependencies;
+    const dependencies = dependenciesRaw && typeof dependenciesRaw === "object" && !Array.isArray(dependenciesRaw)
+        ? toStringArrayFromObject(dependenciesRaw, ["skills", "agents", "modules"])
+        : toStringArray(dependenciesRaw);
+    const triggerTypes = toStringArray(record.triggerTypes)
+        .concat(toStringArray(record.triggers))
+        .filter(Boolean);
+    const memoryReadsWritesRaw = record.memoryReadsWrites;
+    const memoryReadsWrites = memoryReadsWritesRaw && typeof memoryReadsWritesRaw === "object"
+        ? {
+            reads: toStringArrayFromObject(memoryReadsWritesRaw, ["reads"]),
+            writes: toStringArrayFromObject(memoryReadsWritesRaw, ["writes"]),
+        }
+        : { reads: [], writes: [] };
+    const interoperabilityRaw = record.interoperabilityContract;
+    const interoperabilityContract = interoperabilityRaw && typeof interoperabilityRaw === "object"
+        ? {
+            consumes: toStringArrayFromObject(interoperabilityRaw, ["consumes", "inputType", "inputs"]),
+            produces: toStringArrayFromObject(interoperabilityRaw, ["produces", "outputType", "outputs"]),
+        }
+        : { consumes: [], produces: [] };
+    const skill = {
+        id: toStringValue(record.id) || agentId,
+        name: toStringValue(record.name) || agentId,
+        purpose: toStringValue(record.purpose) || toStringValue(record.description),
+        businessValue: toStringValue(record.businessValue) || toStringValue(record.business_value),
+        triggerTypes,
+        owningAgent: toStringValue(record.owningAgent) || toStringValue(record.owner) || agentId,
+        inputs: toStringArray(record.inputs),
+        outputs: toStringArray(record.outputs),
+        dependencies,
+        toolUsage: toStringArray(record.toolUsage).concat(toStringArray(record.tools)),
+        memoryReadsWrites,
+        securityValidations: toStringArray(record.securityValidations),
+        observabilityEvents: toStringArray(record.observabilityEvents),
+        failureHandling: toStringArray(record.failureHandling),
+        interoperabilityContract,
+        wowCriteria: toStringArray(record.wowCriteria),
+        safeCriteria: toStringArray(record.safeCriteria),
+        workflows: [],
+        sourcePath: skillSourcePath,
+        rawContent: content,
+    };
+    skill.systemPrompt = composeSkillPrompt(skill);
+    return skill;
+}
+function loadAgentSkills(agentsPath, agentId) {
+    const skillRoot = join(agentsPath, agentId, "skills");
+    if (!existsSync(skillRoot)) {
+        return [];
+    }
+    const skillDirs = readdirSync(skillRoot, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory() && !dirent.name.startsWith("."))
+        .map((dirent) => dirent.name)
+        .sort((a, b) => a.localeCompare(b));
+    const skills = [];
+    for (const skillId of skillDirs) {
+        const skillPath = join(skillRoot, skillId, "skill.yaml");
+        if (!existsSync(skillPath)) {
+            continue;
+        }
+        try {
+            const content = readFileSync(skillPath, "utf-8");
+            const skill = normalizeSkillDefinition(agentId, skillId, skillPath, content);
+            if (!skill) {
+                continue;
+            }
+            skills.push(skill);
+            logger.info("Loaded skill definition", {
+                agentId,
+                skillId: skill.id,
+            });
+        }
+        catch (error) {
+            logger.warn("Failed to load skill definition", {
+                agentId,
+                skillId,
+                error,
+            });
+        }
+    }
+    return skills;
 }
 // ---------------------------------------------------------------------------
 // Validation
@@ -188,6 +383,30 @@ export function loadSharedDefaults(agentsPath) {
         return fallback;
     }
 }
+/** Load all skill definitions from each agent's skills directory. */
+export function loadAllSkills(agentsPath) {
+    const skillsByAgent = new Map();
+    if (!existsSync(agentsPath)) {
+        logger.warn("Agents directory not found while loading skills", { agentsPath });
+        return skillsByAgent;
+    }
+    const dirs = readdirSync(agentsPath, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => d.name);
+    for (const dir of dirs) {
+        if (dir.startsWith("_"))
+            continue;
+        const agentSkills = loadAgentSkills(agentsPath, dir);
+        if (agentSkills.length > 0) {
+            skillsByAgent.set(dir, agentSkills);
+        }
+    }
+    logger.info("Skill catalog loaded", {
+        agentCount: skillsByAgent.size,
+        skillCount: [...skillsByAgent.values()].reduce((total, items) => total + items.length, 0),
+    });
+    return skillsByAgent;
+}
 /** Load all agent definitions from the agents directory. */
 export function loadAllAgents(agentsPath) {
     const state = {
@@ -224,6 +443,7 @@ export function loadAllAgents(agentsPath) {
     }
     // Pre-load shared defaults (cached for skill loading)
     loadSharedDefaults(agentsPath);
+    state.skills = loadAllSkills(agentsPath);
     state.initialized = state.agents.size > 0;
     logger.info("Ecosystem loaded", { agentCount: state.agents.size });
     return state;

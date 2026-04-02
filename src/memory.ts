@@ -1,8 +1,17 @@
-import { getFirestore, Firestore, FieldValue } from 'firebase-admin/firestore';
+import { getFirestore, Firestore, FieldValue, type Query } from 'firebase-admin/firestore';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { logger } from "./logger.js";
 import fs from 'fs';
 import path from 'path';
+import {
+  buildGeneralThreadSummary,
+  buildProposalThreadSummary,
+  buildThreadMemoryContext,
+  type ThreadMemoryPatch,
+  type ThreadMemorySnapshot,
+  type ThreadProposalState,
+  previewMemoryText,
+} from "./thread-memory.js";
 
 /**
  * COGNITIVE MEMORY MANAGER — 3-Layer Firestore Architecture.
@@ -53,6 +62,385 @@ function formatDateTitle(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+function buildInitialThreadRecord(
+  userId: string,
+  agent: string,
+  title: string,
+  threadId: string,
+  now: Date,
+): Thread {
+  return {
+    threadId,
+    userId,
+    title,
+    status: "active",
+    agent,
+    conversationKind: "general",
+    summary: "",
+    summaryVersion: 0,
+    messageCount: 0,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+function mergeProposalState(
+  existing: ThreadProposalState | null | undefined,
+  patch: ThreadProposalState | null | undefined,
+): ThreadProposalState | null {
+  if (patch == null) {
+    return null;
+  }
+  const base = existing ?? { status: patch.status };
+  return {
+    ...base,
+    ...patch,
+    missingRequired: patch.missingRequired ?? base.missingRequired,
+    missingRecommended: patch.missingRecommended ?? base.missingRecommended,
+    openQuestions: patch.openQuestions ?? base.openQuestions,
+  };
+}
+
+const MAX_SEMANTIC_CONTEXT_CHARS = 2_200;
+const MAX_SEMANTIC_KNOWLEDGE_RESULTS = 5;
+const MAX_SEMANTIC_RAG_RESULTS = 3;
+const SEMANTIC_STOPWORDS = new Set([
+  "a",
+  "al",
+  "alrededor",
+  "ante",
+  "aun",
+  "aunque",
+  "con",
+  "como",
+  "de",
+  "del",
+  "desde",
+  "durante",
+  "e",
+  "el",
+  "en",
+  "entre",
+  "es",
+  "esa",
+  "ese",
+  "esto",
+  "la",
+  "las",
+  "le",
+  "les",
+  "lo",
+  "los",
+  "mas",
+  "más",
+  "mi",
+  "mis",
+  "no",
+  "o",
+  "para",
+  "pero",
+  "por",
+  "que",
+  "se",
+  "sin",
+  "su",
+  "sus",
+  "un",
+  "una",
+  "y",
+]);
+
+function compactSemanticWhitespace(value: string): string {
+  return value
+    .replace(/\r/g, "")
+    .replace(/\u202f/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripSemanticNoise(value: string): string {
+  return compactSemanticWhitespace(
+    value
+      .replace(/<\/?SYSTEM_OVERRIDE>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\[[^\]]+\]/g, " ")
+      .replace(/\bURI:\s*\S+/gi, " ")
+      .replace(/\bhttps?:\/\/\S+/gi, " ")
+      .replace(/\bwww\.\S+/gi, " "),
+  );
+}
+
+function normalizeSemanticText(value: string): string {
+  return compactSemanticWhitespace(
+    stripSemanticNoise(value)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s/-]+/g, " ")
+      .replace(/\s+/g, " "),
+  ).trim();
+}
+
+function tokenizeSemanticText(value: string): string[] {
+  const normalized = normalizeSemanticText(value);
+  if (!normalized) {
+    return [];
+  }
+
+  return normalized
+    .split(" ")
+    .map((token) => token.trim())
+    .filter((token) => token.length >= 2 && !SEMANTIC_STOPWORDS.has(token));
+}
+
+function countSharedTokens(leftTokens: string[], rightTokens: string[]): number {
+  if (leftTokens.length === 0 || rightTokens.length === 0) {
+    return 0;
+  }
+
+  const right = new Set(rightTokens);
+  let shared = 0;
+  for (const token of leftTokens) {
+    if (right.has(token)) {
+      shared += 1;
+    }
+  }
+  return shared;
+}
+
+function safeDate(value: unknown): Date | null {
+  if (value instanceof Date) {
+    return value;
+  }
+  if (value && typeof value === "object" && "toDate" in value && typeof (value as { toDate: () => Date }).toDate === "function") {
+    return (value as { toDate: () => Date }).toDate();
+  }
+  return null;
+}
+
+function timestampValue(value: unknown): number {
+  return safeDate(value)?.getTime() ?? 0;
+}
+
+function normalizeConfidence(value: number | undefined): number {
+  if (typeof value !== "number" || Number.isNaN(value) || !Number.isFinite(value)) {
+    return 0.5;
+  }
+  return Math.min(1, Math.max(0, value));
+}
+
+function validateConfidence(value: number | undefined): number {
+  const confidence = typeof value === "number" ? value : 0.5;
+  if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) {
+    throw new RangeError(`Knowledge confidence must be between 0.0 and 1.0; received ${String(value)}`);
+  }
+  return confidence;
+}
+
+function semanticAgeBonus(value: Date | null): number {
+  if (!value) {
+    return 0;
+  }
+
+  const ageDays = Math.max(0, (Date.now() - value.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.max(0, 7 - ageDays) / 7;
+}
+
+function formatKnowledgeSource(source: KnowledgeEntry["source"] | null | undefined): string {
+  const type = source?.type ?? "manual";
+  const ref = previewMemoryText(source?.ref, 60);
+  return ref ? `${type}:${ref}` : type;
+}
+
+function scoreKnowledgeRecord(record: KnowledgeRecord, queryTokens: string[], queryText = ""): number {
+  const factTokens = tokenizeSemanticText(record.fact);
+  const categoryTokens = tokenizeSemanticText(record.category.replace(/_/g, " "));
+  const sourceType = record.source?.type ?? "manual";
+  const sourceRef = record.source?.ref ?? "";
+  const sourceTokens = tokenizeSemanticText(`${sourceType} ${sourceRef}`);
+  const normalizedFact = normalizeSemanticText(record.fact);
+  const normalizedQuery = normalizeSemanticText(queryText);
+  const exactMatch = normalizedQuery && normalizedFact.includes(normalizedQuery) ? 1 : 0;
+  const tokenOverlap = countSharedTokens(queryTokens, factTokens);
+  const categoryOverlap = countSharedTokens(queryTokens, categoryTokens);
+  const sourceOverlap = countSharedTokens(queryTokens, sourceTokens);
+  const confidenceScore = normalizeConfidence(record.confidence) * 100;
+  const reinforcementScore = Math.min(Math.max(record.reinforcementCount ?? 0, 0), 20) * 4;
+  const freshnessScore = semanticAgeBonus(safeDate(record.updatedAt) ?? safeDate(record.lastReinforcedAt) ?? safeDate(record.createdAt)) * 10;
+
+  return (tokenOverlap * 14)
+    + (categoryOverlap * 8)
+    + (sourceOverlap * 5)
+    + (exactMatch * 24)
+    + confidenceScore
+    + reinforcementScore
+    + freshnessScore;
+}
+
+function compareKnowledgeRecords(left: KnowledgeRecord, right: KnowledgeRecord): number {
+  const confidenceDelta = normalizeConfidence(right.confidence) - normalizeConfidence(left.confidence);
+  if (confidenceDelta !== 0) {
+    return confidenceDelta;
+  }
+
+  const reinforcementDelta = (right.reinforcementCount ?? 0) - (left.reinforcementCount ?? 0);
+  if (reinforcementDelta !== 0) {
+    return reinforcementDelta;
+  }
+
+  const updatedDelta = timestampValue(right.updatedAt) - timestampValue(left.updatedAt);
+  if (updatedDelta !== 0) {
+    return updatedDelta;
+  }
+
+  const lastReinforcedDelta = timestampValue(right.lastReinforcedAt) - timestampValue(left.lastReinforcedAt);
+  if (lastReinforcedDelta !== 0) {
+    return lastReinforcedDelta;
+  }
+
+  const createdDelta = timestampValue(right.createdAt) - timestampValue(left.createdAt);
+  if (createdDelta !== 0) {
+    return createdDelta;
+  }
+
+  return normalizeSemanticText(right.fact).localeCompare(normalizeSemanticText(left.fact));
+}
+
+function sortKnowledgeRecords(records: KnowledgeRecord[]): KnowledgeRecord[] {
+  return [...records].sort(compareKnowledgeRecords);
+}
+
+function rankKnowledgeRecords(records: KnowledgeRecord[], queryText = ""): KnowledgeRecord[] {
+  const queryTokens = tokenizeSemanticText(queryText);
+  if (queryTokens.length === 0) {
+    return sortKnowledgeRecords(records);
+  }
+
+  return [...records].sort((left, right) => {
+    const scoreDelta = scoreKnowledgeRecord(right, queryTokens, queryText) - scoreKnowledgeRecord(left, queryTokens, queryText);
+    if (scoreDelta !== 0) {
+      return scoreDelta;
+    }
+    return compareKnowledgeRecords(left, right);
+  });
+}
+
+function scoreRagChunk(chunk: RagChunk, queryTokens: string[], queryText = ""): number {
+  const contentTokens = tokenizeSemanticText(chunk.content);
+  const categoryTokens = tokenizeSemanticText(chunk.category ?? "");
+  const tags = Array.isArray(chunk.tags) ? chunk.tags : [];
+  const tagTokens = tokenizeSemanticText(tags.join(" "));
+  const sourceTokens = tokenizeSemanticText(`${chunk.sourceType} ${chunk.sourceId}`);
+  const normalizedContent = normalizeSemanticText(chunk.content);
+  const normalizedQuery = normalizeSemanticText(queryText);
+  const exactMatch = normalizedQuery && normalizedContent.includes(normalizedQuery) ? 1 : 0;
+  const contentOverlap = countSharedTokens(queryTokens, contentTokens);
+  const categoryOverlap = countSharedTokens(queryTokens, categoryTokens);
+  const tagOverlap = countSharedTokens(queryTokens, tagTokens);
+  const sourceOverlap = countSharedTokens(queryTokens, sourceTokens);
+  const freshnessScore = semanticAgeBonus(safeDate(chunk.createdAt)) * 10;
+
+  return (contentOverlap * 18)
+    + (categoryOverlap * 8)
+    + (tagOverlap * 7)
+    + (sourceOverlap * 4)
+    + (exactMatch * 24)
+    + freshnessScore;
+}
+
+function compareRagChunks(left: RagChunk, right: RagChunk): number {
+  const createdDelta = timestampValue(right.createdAt) - timestampValue(left.createdAt);
+  if (createdDelta !== 0) {
+    return createdDelta;
+  }
+
+  return normalizeSemanticText(right.content).localeCompare(normalizeSemanticText(left.content));
+}
+
+function rankRagChunks(records: RagChunk[], queryText = ""): RagChunk[] {
+  const queryTokens = tokenizeSemanticText(queryText);
+  if (queryTokens.length === 0) {
+    return [...records].sort(compareRagChunks);
+  }
+
+  return [...records].sort((left, right) => {
+    const scoreDelta = scoreRagChunk(right, queryTokens, queryText) - scoreRagChunk(left, queryTokens, queryText);
+    if (scoreDelta !== 0) {
+      return scoreDelta;
+    }
+    return compareRagChunks(left, right);
+  });
+}
+
+function buildSemanticMemoryContext(
+  profile: UserProfile | null,
+  knowledgeRecords: KnowledgeRecord[],
+  ragChunks: RagChunk[],
+  query = "",
+): string {
+  const lines: string[] = [
+    query
+      ? `Memoria semántica relevante para la solicitud: ${previewMemoryText(query, 120)}`
+      : "Memoria semántica relevante:",
+  ];
+
+  if (profile?.preferences) {
+    const preferenceBits = [
+      profile.preferences.language ? `idioma ${profile.preferences.language}` : "",
+      profile.preferences.timezone ? `zona ${profile.preferences.timezone}` : "",
+      profile.preferences.responseStyle ? `estilo ${profile.preferences.responseStyle}` : "",
+      (profile.preferences.formatRules?.length ?? 0) > 0
+        ? `reglas ${profile.preferences.formatRules.join(", ")}`
+        : "",
+      (profile.preferences.topicsOfInterest?.length ?? 0) > 0
+        ? `intereses ${profile.preferences.topicsOfInterest.map((topic) => previewMemoryText(topic, 36)).join(", ")}`
+        : "",
+    ].filter(Boolean);
+
+    if (preferenceBits.length > 0) {
+      lines.push(`- Perfil: ${preferenceBits.join(" · ")}`);
+    }
+  }
+
+  if (knowledgeRecords.length > 0) {
+    lines.push("- Hechos recuperados:");
+    for (const record of knowledgeRecords.slice(0, MAX_SEMANTIC_KNOWLEDGE_RESULTS)) {
+      const sourceBits = [
+        `conf ${normalizeConfidence(record.confidence).toFixed(2)}`,
+        `ref ${record.reinforcementCount ?? 0}`,
+        record.category,
+        formatKnowledgeSource(record.source),
+      ].filter(Boolean);
+
+      lines.push(`  - [${sourceBits.join(" | ")}] ${previewMemoryText(record.fact, 180)}`);
+    }
+  }
+
+  if (ragChunks.length > 0) {
+    lines.push("- Evidencia relacionada:");
+    for (const chunk of ragChunks.slice(0, MAX_SEMANTIC_RAG_RESULTS)) {
+      const tags = Array.isArray(chunk.tags) ? chunk.tags : [];
+      const chunkSource = [
+        chunk.category ? previewMemoryText(chunk.category, 36) : "",
+        tags.length > 0 ? tags.map((tag) => previewMemoryText(tag, 24)).join(", ") : "",
+      ].filter(Boolean).join(" · ");
+      const sourceLabel = chunkSource || chunk.sourceType;
+      lines.push(`  - [${sourceLabel}] ${previewMemoryText(chunk.content, 180)}`);
+    }
+  }
+
+  if (lines.length === 1) {
+    return "";
+  }
+
+  const context = lines.join("\n");
+  if (context.length <= MAX_SEMANTIC_CONTEXT_CHARS) {
+    return context;
+  }
+
+  return `${context.slice(0, MAX_SEMANTIC_CONTEXT_CHARS).trimEnd()}...`;
+}
+
 // ─────────────────────────────────────────────
 //  INTERFACES
 // ─────────────────────────────────────────────
@@ -99,16 +487,7 @@ export interface UserProfile {
   activeThreadId?: string;
 }
 
-export interface Thread {
-  threadId: string;
-  userId: string;
-  title: string;
-  status: "active" | "archived" | "pinned";
-  agent: string;
-  summary?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export interface Thread extends ThreadMemorySnapshot {}
 
 export interface VoiceNote {
   noteId?: string;
@@ -153,6 +532,10 @@ export interface KnowledgeEntry {
   createdAt: Date;
   updatedAt: Date;
   permanent: boolean;
+}
+
+interface KnowledgeRecord extends KnowledgeEntry {
+  knowledgeId?: string;
 }
 
 export interface Task {
@@ -213,7 +596,7 @@ export class Memory {
 
   // In-memory fallback stores
   private localMessages: Map<string, StoredMessage[]> = new Map();
-  private localKnowledge: KnowledgeEntry[] = [];
+  private localKnowledge: KnowledgeRecord[] = [];
   private localUsers: Map<string, UserProfile> = new Map();
   private localThreads: Map<string, Thread> = new Map();
   private localTasks: Map<string, Task> = new Map();
@@ -279,7 +662,7 @@ export class Memory {
 
           const threadRef = this.db!.collection("threads").doc();
           const now = new Date();
-          t.set(threadRef, { userId: uid, title: `Conversación ${formatDateTitle()}`, status: "active", agent, createdAt: now, updatedAt: now });
+          t.set(threadRef, buildInitialThreadRecord(uid, agent, `Conversación ${formatDateTitle()}`, threadRef.id, now));
           t.set(userRef, {
             userId: uid, displayName: uid, role: "member", agent, identity: "",
             preferences: DEFAULT_PREFERENCES, experience: { ...DEFAULT_EXPERIENCE, firstInteraction: now },
@@ -300,7 +683,7 @@ export class Memory {
       if (existing?.activeThreadId) return existing.activeThreadId;
       const threadId = `thread_${uid}_${Date.now()}`;
       const now = new Date();
-      this.localThreads.set(threadId, { threadId, userId: uid, title: `Conversación ${formatDateTitle()}`, status: "active", agent, createdAt: now, updatedAt: now });
+      this.localThreads.set(threadId, buildInitialThreadRecord(uid, agent, `Conversación ${formatDateTitle()}`, threadId, now));
       this.localUsers.set(uid, {
         userId: uid, displayName: uid, role: "member", agent, identity: "",
         preferences: { ...DEFAULT_PREFERENCES }, experience: { ...DEFAULT_EXPERIENCE, firstInteraction: now },
@@ -324,7 +707,7 @@ export class Memory {
           }
           const threadRef = this.db!.collection("threads").doc();
           const now = new Date();
-          t.set(threadRef, { userId: uid, title: title || `Conversación ${formatDateTitle()}`, status: "active", agent, createdAt: now, updatedAt: now });
+          t.set(threadRef, buildInitialThreadRecord(uid, agent, title || `Conversación ${formatDateTitle()}`, threadRef.id, now));
           t.set(userRef, { activeThreadId: threadRef.id, lastActiveAt: now }, { merge: true });
           return threadRef.id;
         });
@@ -335,10 +718,222 @@ export class Memory {
       const now = new Date();
       const existing = this.localUsers.get(uid);
       if (existing?.activeThreadId) { const t = this.localThreads.get(existing.activeThreadId); if (t) t.status = "archived"; }
-      this.localThreads.set(threadId, { threadId, userId: uid, title: title || `Conversación ${formatDateTitle()}`, status: "active", agent, createdAt: now, updatedAt: now });
+      this.localThreads.set(threadId, buildInitialThreadRecord(uid, agent, title || `Conversación ${formatDateTitle()}`, threadId, now));
       if (existing) { existing.activeThreadId = threadId; existing.lastActiveAt = now; }
       return threadId;
     }
+  }
+
+  async getThreadSnapshot(userId: number, threadId?: string, agent = "pristino"): Promise<Thread | null> {
+    const tid = threadId || await this.getOrCreateActiveThread(userId, agent);
+    if (this.useFirestore && this.db) {
+      try {
+        const doc = await this.db.collection("threads").doc(tid).get();
+        return doc.exists ? ({ threadId: tid, ...(doc.data() as Record<string, unknown>) } as Thread) : null;
+      } catch (e) {
+        logger.error("Failed to fetch thread snapshot", { error: e, threadId: tid });
+        return null;
+      }
+    }
+
+    return this.localThreads.get(tid) ?? null;
+  }
+
+  async updateThreadMemory(
+    userId: number,
+    threadId: string,
+    patch: ThreadMemoryPatch,
+    agent = "pristino",
+  ): Promise<void> {
+    const tid = threadId || await this.getOrCreateActiveThread(userId, agent);
+    const summary =
+      typeof patch.summary === "string" && patch.summary.trim()
+        ? previewMemoryText(patch.summary, 320)
+        : patch.proposalState
+          ? buildProposalThreadSummary(patch.proposalState)
+          : buildGeneralThreadSummary(patch.title, {
+            userMessage: patch.lastUserMessagePreview ?? patch.lastMessagePreview ?? null,
+            assistantMessage: patch.lastAssistantMessagePreview ?? null,
+          });
+    const updates: Record<string, unknown> = {
+      updatedAt: new Date(),
+    };
+
+    for (const [key, value] of Object.entries(patch)) {
+      if (value === undefined) {
+        continue;
+      }
+      updates[key] = key === "proposalState" && value && typeof value === "object"
+        ? { ...(value as ThreadProposalState) }
+        : value;
+    }
+    if (summary) {
+      updates.summary = summary;
+      updates.summaryVersion = FieldValue.increment(1);
+      updates.summaryUpdatedAt = new Date();
+    }
+
+    if (this.useFirestore && this.db) {
+      try {
+        await this.db.collection("threads").doc(tid).set(updates, { merge: true });
+      } catch (e) {
+        logger.error("Failed to update thread memory", { error: e, threadId: tid });
+      }
+      return;
+    }
+
+    const current = this.localThreads.get(tid);
+    if (!current) {
+      return;
+    }
+
+    if (patch.proposalState !== undefined) {
+      current.proposalState = mergeProposalState(current.proposalState, patch.proposalState);
+    }
+
+    if (summary) {
+      current.summary = summary;
+      current.summaryVersion = (current.summaryVersion ?? 0) + 1;
+      current.summaryUpdatedAt = new Date();
+    }
+
+    for (const [key, value] of Object.entries(patch)) {
+      if (key === "proposalState" || value === undefined) {
+        continue;
+      }
+      const currentRecord = current as unknown as Record<string, unknown>;
+      currentRecord[key] = value as unknown;
+    }
+
+    current.updatedAt = new Date();
+    this.localThreads.set(tid, current);
+  }
+
+  async describeThreadMemory(userId: number, threadId?: string, agent = "pristino"): Promise<string> {
+    const snapshot = await this.getThreadSnapshot(userId, threadId, agent);
+    return buildThreadMemoryContext(snapshot);
+  }
+
+  private async loadKnowledgeRecords(category?: string, userId?: number): Promise<KnowledgeRecord[]> {
+    if (this.useFirestore && this.db) {
+      try {
+        let query: Query = this.db.collection("knowledge");
+        if (category !== undefined) {
+          query = query.where("category", "==", category);
+        }
+        if (userId !== undefined) {
+          query = query.where("scopeUserId", "==", userId);
+        }
+
+        const snapshot = await query.get();
+        return snapshot.docs
+          .map((doc) => {
+            const data = doc.data() as Record<string, unknown>;
+            if (typeof data.fact !== "string" || !data.fact.trim()) {
+              return null;
+            }
+
+            return {
+              knowledgeId: doc.id,
+              ...(data as Omit<KnowledgeRecord, "knowledgeId">),
+            } as KnowledgeRecord;
+          })
+          .filter((record): record is KnowledgeRecord => record !== null);
+      } catch (e) {
+        logger.error(`Failed to load knowledge records${category ? `: ${category}` : ""}`, { error: e, userId });
+        return [];
+      }
+    }
+
+    return this.localKnowledge
+      .filter((record) => (
+        (category === undefined || record.category === category)
+        && (userId === undefined || record.scopeUserId === userId)
+      ))
+      .map((record) => ({
+        ...record,
+        source: { ...record.source },
+      }));
+  }
+
+  private async reinforceKnowledgeRecord(record: KnowledgeRecord): Promise<void> {
+    if (!record.knowledgeId) {
+      return;
+    }
+
+    if (this.useFirestore && this.db) {
+      try {
+        const docRef = this.db.collection("knowledge").doc(record.knowledgeId);
+        const doc = await docRef.get();
+        if (!doc.exists) {
+          return;
+        }
+        const data = doc.data() as Record<string, unknown> | undefined;
+        const currentCount = typeof data?.reinforcementCount === "number" ? data.reinforcementCount : 0;
+        await docRef.update({
+          reinforcementCount: currentCount + 1,
+          lastReinforcedAt: new Date(),
+          updatedAt: new Date(),
+        });
+      } catch (e) {
+        logger.error("Failed to reinforce knowledge", { error: e, knowledgeId: record.knowledgeId });
+      }
+      return;
+    }
+
+    const localRecord = this.localKnowledge.find((entry) => entry.knowledgeId === record.knowledgeId);
+    if (!localRecord) {
+      return;
+    }
+
+    localRecord.reinforcementCount = (localRecord.reinforcementCount ?? 0) + 1;
+    localRecord.lastReinforcedAt = new Date();
+    localRecord.updatedAt = new Date();
+  }
+
+  async describeSemanticMemory(
+    userId: number,
+    query: string,
+    threadId?: string,
+    agent = "pristino",
+  ): Promise<string> {
+    void threadId;
+    void agent;
+
+    const profile = await this.getUserProfile(userId);
+    const userRecords = await this.loadKnowledgeRecords(undefined, userId);
+    const sharedRecords = [
+      ...(await this.loadKnowledgeRecords("team_preference")),
+      ...(await this.loadKnowledgeRecords("synergy_fact")),
+    ];
+
+    const deduped: KnowledgeRecord[] = [];
+    const seenKeys = new Set<string>();
+    for (const record of [...userRecords, ...sharedRecords]) {
+      const key = record.knowledgeId
+        ?? `${record.category}::${record.scope}::${record.scopeUserId ?? "shared"}::${normalizeSemanticText(record.fact)}`;
+      if (seenKeys.has(key)) {
+        continue;
+      }
+      seenKeys.add(key);
+      deduped.push(record);
+    }
+
+    const rankedKnowledge = rankKnowledgeRecords(deduped, query);
+    const queryTokens = tokenizeSemanticText(query);
+    const queryBackedKnowledge = queryTokens.length > 0
+      ? rankedKnowledge.filter((record) => scoreKnowledgeRecord(record, queryTokens, query) > 0)
+      : rankedKnowledge;
+    const selectedKnowledge = (queryBackedKnowledge.length > 0 ? queryBackedKnowledge : rankedKnowledge)
+      .slice(0, MAX_SEMANTIC_KNOWLEDGE_RESULTS);
+
+    for (const record of selectedKnowledge) {
+      await this.reinforceKnowledgeRecord(record);
+    }
+
+    const ragChunks = await this.searchRagChunks(userId, query, MAX_SEMANTIC_RAG_RESULTS);
+    const context = buildSemanticMemoryContext(profile, selectedKnowledge, ragChunks, query);
+    return context;
   }
 
   // ─────────────────────────────────────────────
@@ -352,6 +947,7 @@ export class Memory {
       ? (logger.warn("Message truncated", { original: content.length }), content.slice(0, MAX_CONTENT_LENGTH))
       : content;
     const tid = threadId || await this.getOrCreateActiveThread(userId, agent);
+    const preview = previewMemoryText(safe, 220);
 
     if (this.useFirestore && this.db) {
       try {
@@ -364,7 +960,22 @@ export class Memory {
           userId, sourceType, sourceRef: sourceRef || null,
         });
         // V12 fix: use set with merge instead of update to avoid crash if thread document is missing
-        batch.set(this.db.collection("threads").doc(tid), { updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+        batch.set(
+          this.db.collection("threads").doc(tid),
+          {
+            updatedAt: FieldValue.serverTimestamp(),
+            lastMessageRole: role,
+            lastMessagePreview: preview,
+            lastMessageAt: new Date(),
+            messageCount: FieldValue.increment(1),
+            ...(role === "user"
+              ? { lastUserMessagePreview: preview }
+              : role === "assistant"
+                ? { lastAssistantMessagePreview: preview }
+                : {}),
+          },
+          { merge: true },
+        );
         // V1 fix: dot-notation prevents sibling field destruction
         batch.set(this.db.collection("users").doc(String(userId)),
           { "experience.totalMessages": FieldValue.increment(1), lastActiveAt: new Date() },
@@ -377,6 +988,20 @@ export class Memory {
       existing.push({ role, content: safe, timestamp: Date.now(), threadId: tid, sourceType, sourceRef });
       if (existing.length > MAX_LOCAL_MESSAGES) existing.splice(0, existing.length - MAX_LOCAL_MESSAGES);
       this.localMessages.set(tid, existing);
+      const thread = this.localThreads.get(tid);
+      if (thread) {
+        thread.lastMessageRole = role;
+        thread.lastMessagePreview = preview;
+        thread.lastMessageAt = new Date();
+        thread.messageCount = (thread.messageCount ?? 0) + 1;
+        if (role === "user") {
+          thread.lastUserMessagePreview = preview;
+        } else if (role === "assistant") {
+          thread.lastAssistantMessagePreview = preview;
+        }
+        thread.updatedAt = new Date();
+        this.localThreads.set(tid, thread);
+      }
     }
   }
 
@@ -516,22 +1141,25 @@ export class Memory {
     if (!fact?.trim()) return;
     const safe = fact.length > MAX_CONTENT_LENGTH ? fact.slice(0, MAX_CONTENT_LENGTH) : fact;
     const now = new Date();
+    const confidence = validateConfidence(options.confidence);
 
     if (this.useFirestore && this.db) {
       try {
-        await this.db.collection("knowledge").add({
+        const ref = await this.db.collection("knowledge").add({
           category, scope: "user", scopeUserId: userId, fact: safe,
-          confidence: options.confidence ?? 0.5,
+          confidence,
           source: { type: options.sourceType ?? "manual", ref: options.sourceRef ?? null, extractedAt: now },
           reinforcementCount: 1, lastReinforcedAt: now,
           createdAt: now, updatedAt: now, permanent: options.permanent ?? true,
         });
-        logger.info(`Added knowledge: ${category}`, { userId });
+        logger.info(`Added knowledge: ${category}`, { userId, knowledgeId: ref.id });
       } catch (e) { logger.error(`Failed to add knowledge: ${category}`, { error: e }); }
     } else {
+      const knowledgeId = `knowledge_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
       this.localKnowledge.push({
+        knowledgeId,
         category, scope: "user", scopeUserId: userId, fact: safe,
-        confidence: options.confidence ?? 0.5,
+        confidence,
         source: { type: (options.sourceType ?? "manual") as KnowledgeEntry["source"]["type"], ref: options.sourceRef, extractedAt: now },
         reinforcementCount: 1, lastReinforcedAt: now,
         createdAt: now, updatedAt: now, permanent: options.permanent ?? true,
@@ -541,32 +1169,19 @@ export class Memory {
   }
 
   async getKnowledge(category: string, userId?: number, limit = 20): Promise<string[]> {
-    if (this.useFirestore && this.db) {
-      try {
-        let query = this.db.collection("knowledge").where("category", "==", category);
-        if (userId !== undefined) query = query.where("scopeUserId", "==", userId);
-        
-        const snapshot = await query.orderBy("createdAt", "desc").limit(limit).get();
-        return snapshot.docs.map(doc => doc.data().fact);
-      } catch (e) { logger.error(`Failed to get knowledge: ${category}`, { error: e }); return []; }
-    } else {
-      return this.localKnowledge
-        .filter(k => k.category === category && (userId === undefined || k.scopeUserId === userId))
-        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-        .slice(0, limit)
-        .map(k => k.fact);
+    const records = await this.loadKnowledgeRecords(category, userId);
+    const selected = sortKnowledgeRecords(records).slice(0, Math.max(0, limit));
+
+    for (const record of selected) {
+      await this.reinforceKnowledgeRecord(record);
     }
+
+    return selected.map((record) => record.fact);
   }
 
   async reinforceKnowledge(knowledgeId: string): Promise<void> {
-    if (!knowledgeId || !this.useFirestore || !this.db) return;
-    try {
-      await this.db.collection("knowledge").doc(knowledgeId).update({
-        reinforcementCount: FieldValue.increment(1),
-        lastReinforcedAt: new Date(),
-        updatedAt: new Date(),
-      });
-    } catch (e) { logger.error("Failed to reinforce knowledge", { error: e }); }
+    if (!knowledgeId) return;
+    await this.reinforceKnowledgeRecord({ knowledgeId } as KnowledgeRecord);
   }
 
   // Backward-compatible wrappers
@@ -702,21 +1317,31 @@ export class Memory {
     // Note: Full vector search requires embeddings + findNearest(). This is a text-match fallback
     // for local dev. In Firestore mode, use the Vertex AI extension or direct findNearest() calls.
     const uid = String(userId);
-    const queryLower = query.toLowerCase();
     if (this.useFirestore && this.db) {
       try {
-        // Basic text search fallback (vector search requires embedding pipeline)
         const snapshot = await this.db.collection("rag_chunks")
-          .where("userId", "==", uid).orderBy("createdAt", "desc").limit(limit * 3).get();
-        return snapshot.docs
-          .map(doc => doc.data() as RagChunk)
-          .filter(chunk => chunk.content.toLowerCase().includes(queryLower))
-          .slice(0, limit);
+          .where("userId", "==", uid)
+          .get();
+        const records = snapshot.docs
+          .map((doc) => doc.data() as RagChunk)
+          .filter((chunk) => typeof chunk.content === "string" && chunk.content.trim());
+        const ranked = rankRagChunks(records, query);
+        if (query.trim()) {
+          const queryTokens = tokenizeSemanticText(query);
+          const filtered = ranked.filter((chunk) => scoreRagChunk(chunk, queryTokens, query) > 0);
+          return (filtered.length > 0 ? filtered : ranked).slice(0, Math.max(0, limit));
+        }
+        return ranked.slice(0, Math.max(0, limit));
       } catch (e) { logger.error("Failed to search RAG chunks", { error: e }); return []; }
     } else {
-      return this.localRagChunks
-        .filter(c => c.userId === uid && c.content.toLowerCase().includes(queryLower))
-        .slice(-limit);
+      const records = this.localRagChunks.filter((chunk) => chunk.userId === uid);
+      const ranked = rankRagChunks(records, query);
+      if (query.trim()) {
+        const queryTokens = tokenizeSemanticText(query);
+        const filtered = ranked.filter((chunk) => scoreRagChunk(chunk, queryTokens, query) > 0);
+        return (filtered.length > 0 ? filtered : ranked).slice(0, Math.max(0, limit));
+      }
+      return ranked.slice(0, Math.max(0, limit));
     }
   }
 
@@ -785,37 +1410,48 @@ export class Memory {
 
     if (this.useFirestore && this.db) {
       try {
-        const batch = this.db.batch();
+        const deleteRefs = async (refs: Array<{ ref: { delete: () => Promise<unknown> } }>) => {
+          const chunkSize = 400;
+          for (let i = 0; i < refs.length; i += chunkSize) {
+            const batch = this.db!.batch();
+            for (const doc of refs.slice(i, i + chunkSize)) {
+              batch.delete(doc.ref as never);
+            }
+            await batch.commit();
+          }
+        };
 
-        // Working layer: user document + active thread messages
-        const userRef = this.db.collection("users").doc(uid);
-        batch.delete(userRef);
+        // Working layer: delete messages first, then thread docs, then user profile.
+        const messageSnap = await this.db.collectionGroup("messages").where("userId", "==", userId).get();
+        const threadSnap = await this.db.collection("threads").where("userId", "==", uid).get();
+        await deleteRefs(messageSnap.docs);
+        await deleteRefs(threadSnap.docs);
+        await this.db.collection("users").doc(uid).delete();
 
         // Episodic: voice_notes
         const vnSnap = await this.db.collection("voice_notes").where("userId", "==", uid).get();
-        vnSnap.docs.forEach(doc => batch.delete(doc.ref));
+        await deleteRefs(vnSnap.docs);
 
         // Episodic: meetings
         const mtSnap = await this.db.collection("meetings").where("userId", "==", uid).get();
-        mtSnap.docs.forEach(doc => batch.delete(doc.ref));
+        await deleteRefs(mtSnap.docs);
 
         // Episodic: interaction_log
         const ilSnap = await this.db.collection("interaction_log").where("userId", "==", uid).get();
-        ilSnap.docs.forEach(doc => batch.delete(doc.ref));
+        await deleteRefs(ilSnap.docs);
 
         // Semantic: knowledge
         const knSnap = await this.db.collection("knowledge").where("scopeUserId", "==", userId).get();
-        knSnap.docs.forEach(doc => batch.delete(doc.ref));
+        await deleteRefs(knSnap.docs);
 
         // Semantic: tasks
         const tkSnap = await this.db.collection("tasks").where("userId", "==", uid).get();
-        tkSnap.docs.forEach(doc => batch.delete(doc.ref));
+        await deleteRefs(tkSnap.docs);
 
         // Semantic: rag_chunks
         const rcSnap = await this.db.collection("rag_chunks").where("userId", "==", uid).get();
-        rcSnap.docs.forEach(doc => batch.delete(doc.ref));
+        await deleteRefs(rcSnap.docs);
 
-        await batch.commit();
         const elapsed = Date.now() - start;
         logger.info("User data purged", { userId: uid, elapsedMs: elapsed });
       } catch (e) {

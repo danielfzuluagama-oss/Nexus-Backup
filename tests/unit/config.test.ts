@@ -11,8 +11,7 @@ vi.mock("../../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-// Mock dotenv/config so it doesn't try to read a real .env file
-vi.mock("dotenv/config", () => ({}));
+vi.mock("dotenv", () => ({ config: vi.fn() }));
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -29,6 +28,7 @@ beforeEach(() => {
       key.startsWith("TELEGRAM_") ||
       key.startsWith("GROQ_") ||
       key.startsWith("OPENROUTER_") ||
+      key.startsWith("GEMINI_") ||
       key.startsWith("DB_PATH") ||
       key.startsWith("MAX_") ||
       key.startsWith("MODEL_") ||
@@ -132,6 +132,36 @@ describe("loadConfig — happy path", () => {
     const { loadConfig } = await import("../../src/config.js");
     const config = loadConfig();
     expect(config.openRouterModel).toBe("custom/router-model");
+  });
+
+  it("loads Gemini model and enables fallback when a Gemini key is present", async () => {
+    setMinimalEnv();
+    process.env.GEMINI_API_KEY_PRISTINO_1_DANI = "gemini-key-1";
+    process.env.GEMINI_API_KEY_PRISTINO_2_JAVIER = "gemini-key-2";
+    process.env.GEMINI_API_KEY_PRISTINO_3_KATHE = "gemini-key-3";
+    process.env.GEMINI_MODEL = "gemini-3-flash-preview";
+    process.env.GEMINI_SIMPLE_MODEL = "gemini-2.5-flash";
+    process.env.GEMINI_COMPLEX_MODEL = "gemini-3-flash-preview";
+    const { loadConfig, getAgentCredentials } = await import("../../src/config.js");
+    const config = loadConfig();
+    const geminiKeys = getAgentCredentials(config, "pristino").geminiApiKeys;
+
+    expect(config.geminiModel).toBe("gemini-3-flash-preview");
+    expect(config.geminiSimpleModel).toBe("gemini-2.5-flash");
+    expect(config.geminiComplexModel).toBe("gemini-3-flash-preview");
+    expect(config.geminiFallbackEnabled).toBe(true);
+    expect(geminiKeys).toHaveLength(3);
+    expect(geminiKeys[0].key).toBe("gemini-key-1");
+    expect(geminiKeys[1].key).toBe("gemini-key-2");
+    expect(geminiKeys[2].key).toBe("gemini-key-3");
+  });
+
+  it("parses the provider override flag", async () => {
+    setMinimalEnv();
+    process.env.LLM_PROVIDER_OVERRIDE = "gemini";
+    const { loadConfig } = await import("../../src/config.js");
+    const config = loadConfig();
+    expect(config.llmProviderOverride).toBe("gemini");
   });
 
   it("sets googleOAuthToken from env var", async () => {
@@ -375,6 +405,7 @@ describe("getAgentCredentials", () => {
     expect(creds.telegramBotToken).toBe("legacy-token");
     expect(creds.groqApiKeys).toEqual([{ key: "legacy-groq", owner: "LEGACY" }]);
     expect(creds.openRouterApiKeys).toEqual([{ key: "legacy-or", owner: "LEGACY" }]);
+    expect(creds.geminiApiKeys).toEqual([]);
   });
 
   it("returns empty arrays for legacy keys when they are not set", async () => {
@@ -391,6 +422,7 @@ describe("getAgentCredentials", () => {
     // Falls back to legacy: groqApiKey is empty string => empty array
     expect(creds.groqApiKeys).toEqual([]);
     expect(creds.openRouterApiKeys).toEqual([]);
+    expect(creds.geminiApiKeys).toEqual([]);
   });
 });
 

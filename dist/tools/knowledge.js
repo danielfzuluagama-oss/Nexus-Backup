@@ -23,6 +23,7 @@ const CORE_DOCS_DIRS = [
     path.resolve(process.cwd(), "team_core_docs"),
     path.resolve(process.cwd(), "inputs/prototype/Pristino Bot/team_core_docs"),
 ];
+const CORE_DOC_EXCERPT_CHAR_LIMIT = 4_000;
 async function getFsModule() {
     return import("fs/promises");
 }
@@ -61,6 +62,10 @@ export const definition = {
                     type: "string",
                     description: "Optional topic to focus on.",
                 },
+                include_full_document: {
+                    type: "boolean",
+                    description: "When true, return the entire core document instead of a compact excerpt.",
+                },
             },
             required: [],
         },
@@ -69,6 +74,7 @@ export const definition = {
 export async function readCoreKnowledge(args) {
     try {
         const topic = typeof args.topic === "string" ? args.topic.trim() : "";
+        const includeFullDocument = args.include_full_document === true;
         if (topic) {
             try {
                 const kb = await getOperationalKnowledgeAccessor();
@@ -90,7 +96,14 @@ export async function readCoreKnowledge(args) {
             return "Error: The core knowledge base is currently unavailable.";
         }
         logger.info("Core knowledge read successfully", { topic: args.topic, filePath: coreDocument.filePath });
-        return coreDocument.content;
+        if (includeFullDocument || coreDocument.content.length <= CORE_DOC_EXCERPT_CHAR_LIMIT) {
+            return coreDocument.content;
+        }
+        return [
+            coreDocument.content.slice(0, CORE_DOC_EXCERPT_CHAR_LIMIT),
+            "",
+            "[Core document excerpted. Use {\"include_full_document\": true} for the full text or pass a narrower topic.]",
+        ].join("\n");
     }
     catch (error) {
         logger.error("Failed to read core knowledge", { error });

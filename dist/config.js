@@ -1,5 +1,7 @@
-import "dotenv/config";
+import { config as loadDotenv } from "dotenv";
 import { logger } from "./logger.js";
+loadDotenv();
+loadDotenv({ path: ".secrets.local", override: true });
 /**
  * Scan env vars matching PREFIX_AGENT_N_OWNER and collect values ordered by N.
  * Also accepts legacy single-key (PREFIX_AGENT) as priority 0.
@@ -37,6 +39,21 @@ function collectOrderedKeys(prefix, agentSuffix) {
     })
         .map(k => ({ key: k.value, owner: k.owner }));
 }
+function parseBooleanEnv(value, defaultValue) {
+    if (value == null || !value.trim()) {
+        return defaultValue;
+    }
+    return !["0", "false", "no", "off"].includes(value.trim().toLowerCase());
+}
+function parseProviderOverride(value) {
+    const normalized = value?.trim().toLowerCase();
+    if (normalized === "groq"
+        || normalized === "gemini"
+        || normalized === "openrouter") {
+        return normalized;
+    }
+    return "auto";
+}
 function loadAgentCredentials() {
     const credentials = new Map();
     const agents = ["pristino", "deonto"];
@@ -45,15 +62,20 @@ function loadAgentCredentials() {
         const telegramBotToken = process.env[`TELEGRAM_BOT_TOKEN_${suffix}`] ?? "";
         const groqApiKeys = collectOrderedKeys("GROQ_API_KEY", suffix);
         const openRouterApiKeys = collectOrderedKeys("OPENROUTER_API_KEY", suffix);
-        if (telegramBotToken && groqApiKeys.length > 0) {
-            credentials.set(agent, { telegramBotToken, groqApiKeys, openRouterApiKeys });
+        const geminiApiKeys = collectOrderedKeys("GEMINI_API_KEY", suffix);
+        const hasAnyProviderKeys = groqApiKeys.length > 0
+            || openRouterApiKeys.length > 0
+            || geminiApiKeys.length > 0;
+        if (telegramBotToken && hasAnyProviderKeys) {
+            credentials.set(agent, { telegramBotToken, groqApiKeys, openRouterApiKeys, geminiApiKeys });
             logger.info(`Loaded credentials for agent: ${agent}`, {
                 groqKeys: groqApiKeys.length,
                 openRouterKeys: openRouterApiKeys.length,
+                geminiKeys: geminiApiKeys.length,
             });
         }
-        else if (telegramBotToken || groqApiKeys.length > 0) {
-            logger.warn(`Partial credentials for agent ${agent} — needs both TELEGRAM_BOT_TOKEN_${suffix} and at least one GROQ_API_KEY_${suffix}_*`);
+        else if (telegramBotToken || hasAnyProviderKeys) {
+            logger.warn(`Partial credentials for agent ${agent} — needs both TELEGRAM_BOT_TOKEN_${suffix} and at least one provider key (GROQ_API_KEY_${suffix}_*, GEMINI_API_KEY_${suffix}_* or OPENROUTER_API_KEY_${suffix}_*)`);
         }
     }
     return credentials;
@@ -70,6 +92,9 @@ export function loadConfig() {
         ?? "";
     const openRouterApiKey = process.env.OPENROUTER_API_KEY
         ?? process.env.OPENROUTER_API_KEY_PRISTINO
+        ?? "";
+    const geminiApiKey = process.env.GEMINI_API_KEY
+        ?? process.env.GEMINI_API_KEY_PRISTINO
         ?? "";
     if (!telegramBotToken && agentCredentials.size === 0) {
         missing.push("TELEGRAM_BOT_TOKEN_PRISTINO (or TELEGRAM_BOT_TOKEN)");
@@ -97,9 +122,14 @@ export function loadConfig() {
     if (!openRouterApiKey && agentCredentials.size === 0) {
         logger.info("OpenRouter API key not set — fallback disabled");
     }
+    if (!geminiApiKey && [...agentCredentials.values()].every((creds) => creds.geminiApiKeys.length === 0)) {
+        logger.info("Gemini API key not set — Gemini fallback disabled");
+    }
     if (agentCredentials.size > 0) {
         logger.info(`Multi-agent mode: ${[...agentCredentials.keys()].join(", ")}`);
     }
+    const hasGeminiKeys = geminiApiKey.length > 0
+        || [...agentCredentials.values()].some((creds) => creds.geminiApiKeys.length > 0);
     return {
         telegramBotToken,
         allowedUserIds,
@@ -113,6 +143,12 @@ export function loadConfig() {
         groqModelVision: process.env.GROQ_MODEL_VISION ?? "meta-llama/llama-4-scout-17b-16e-instruct",
         openRouterApiKey,
         openRouterModel: process.env.OPENROUTER_MODEL ?? "meta-llama/llama-3.3-70b-instruct",
+        geminiApiKey,
+        geminiModel: process.env.GEMINI_MODEL ?? "gemini-3-flash-preview",
+        geminiSimpleModel: process.env.GEMINI_SIMPLE_MODEL ?? process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
+        geminiComplexModel: process.env.GEMINI_COMPLEX_MODEL ?? process.env.GEMINI_MODEL ?? "gemini-3-flash-preview",
+        geminiFallbackEnabled: parseBooleanEnv(process.env.GEMINI_FALLBACK_ENABLED, hasGeminiKeys),
+        llmProviderOverride: parseProviderOverride(process.env.LLM_PROVIDER_OVERRIDE),
         dbPath: process.env.DB_PATH ?? "./pristino.db",
         maxIterations: Math.max(1, Number(process.env.MAX_ITERATIONS) || 5),
         maxHistory: Math.max(1, Number(process.env.MAX_HISTORY) || 20),
@@ -125,14 +161,18 @@ export function loadConfig() {
 }
 /** Get credentials for a specific agent, falling back to legacy config */
 export function getAgentCredentials(config, agentName) {
-    const creds = config.agentCredentials.get(agentName);
+    const agentCredentials = config.agentCredentials instanceof Map
+        ? config.agentCredentials
+        : new Map();
+    const creds = agentCredentials.get(agentName);
     if (creds)
         return creds;
     // Fallback to legacy single-agent config (wrap single keys in arrays)
     return {
-        telegramBotToken: config.telegramBotToken,
+        telegramBotToken: config.telegramBotToken ?? "",
         groqApiKeys: config.groqApiKey ? [{ key: config.groqApiKey, owner: "LEGACY" }] : [],
         openRouterApiKeys: config.openRouterApiKey ? [{ key: config.openRouterApiKey, owner: "LEGACY" }] : [],
+        geminiApiKeys: config.geminiApiKey ? [{ key: config.geminiApiKey, owner: "LEGACY" }] : [],
     };
 }
 /** Get per-instance database path. Mirror instances get separate SQLite files. */

@@ -101,6 +101,15 @@ describe("TS-028: Full ecosystem loading — 6+ agents registered with independe
     expect(state.skills).toBeInstanceOf(Map);
   });
 
+  it("loads skill catalogs for at least one agent", () => {
+    expect(state.skills.size).toBeGreaterThan(0);
+  });
+
+  it("pristino-orchestrator exposes the sales-architect skill", () => {
+    const skills = state.skills.get("pristino-orchestrator") ?? [];
+    expect(skills.some((skill) => skill.id === "sales-architect")).toBe(true);
+  });
+
   it("each loaded agent id is unique in the map", () => {
     const ids = Array.from(state.agents.keys());
     const uniqueIds = new Set(ids);

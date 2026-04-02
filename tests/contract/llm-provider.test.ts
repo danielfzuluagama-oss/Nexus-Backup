@@ -56,6 +56,12 @@ function buildConfig(overrides: Partial<Config> = {}): Config {
     groqModelVision: "vision-model",
     openRouterApiKey: "test-or-key",
     openRouterModel: "or-model",
+    geminiApiKey: "test-gemini-key",
+    geminiModel: "gemini-2.5-flash",
+    geminiSimpleModel: "gemini-2.5-flash",
+    geminiComplexModel: "gemini-3-flash-preview",
+    geminiFallbackEnabled: true,
+    llmProviderOverride: "auto",
     dbPath: "./test.db",
     maxIterations: 5,
     maxHistory: 20,
@@ -70,6 +76,7 @@ function buildConfig(overrides: Partial<Config> = {}): Config {
           telegramBotToken: "test-telegram-token",
           groqApiKeys: [{ key: "test-groq-key", owner: "TestOwner" }],
           openRouterApiKeys: [],
+          geminiApiKeys: [],
         },
       ],
     ]),
@@ -279,13 +286,14 @@ describe("LLMProvider contract (TS-046)", () => {
               telegramBotToken: "t",
               groqApiKeys: [],
               openRouterApiKeys: [],
+              geminiApiKeys: [],
             },
           ],
         ]),
       });
 
       expect(() => getProvider(config, "pristino")).toThrow(
-        /No Groq API keys configured for agent/
+        /No LLM API keys configured for agent/
       );
     });
 

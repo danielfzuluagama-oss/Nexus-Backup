@@ -20,7 +20,7 @@ vi.mock("../../src/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-vi.mock("dotenv/config", () => ({}));
+vi.mock("dotenv", () => ({ config: vi.fn() }));
 
 // Mock Groq SDK — must use constructor pattern
 const mockGroqCreate = vi.fn();
@@ -47,7 +47,16 @@ vi.mock("../../src/circuit-breaker.js", () => {
 // Imports (after mocks)
 // ---------------------------------------------------------------------------
 
-import { getProvider, getGroqClient, getOpenRouterClient, getVisionProvider } from "../../src/config/llm-providers.js";
+import {
+  getProvider,
+  getCommercialProposalProvider,
+  getGroqClient,
+  getOpenRouterClient,
+  getVisionProvider,
+  resetProviderTelemetryForTests,
+  sanitizeMessagesForGemini,
+  selectGeminiRoute,
+} from "../../src/config/llm-providers.js";
 import type { LLMMessage } from "../../src/config/llm-providers.js";
 import type { Config } from "../../src/config.js";
 import type { ToolDefinition } from "../../src/tools/registry.js";
@@ -66,6 +75,12 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     groqModelVision: "vision-model",
     openRouterApiKey: "test-or-key",
     openRouterModel: "or-model",
+    geminiApiKey: "test-gemini-key",
+    geminiModel: "gemini-2.5-flash",
+    geminiSimpleModel: "gemini-2.5-flash",
+    geminiComplexModel: "gemini-3-flash-preview",
+    geminiFallbackEnabled: true,
+    llmProviderOverride: "auto",
     dbPath: "./test.db",
     maxIterations: 5,
     maxHistory: 20,
@@ -82,6 +97,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
             { key: "groq-key-2", owner: "OWNER2" },
           ],
           openRouterApiKeys: [{ key: "or-key-1", owner: "OR_OWNER" }],
+          geminiApiKeys: [{ key: "gemini-key-1", owner: "GEM_OWNER" }],
         },
       ],
     ]),
@@ -113,10 +129,12 @@ function makeGroqResponse(content: string, toolCalls: unknown[] = []) {
 // ---------------------------------------------------------------------------
 
 beforeEach(() => {
+  resetProviderTelemetryForTests();
   mockGroqCreate.mockReset();
   mockGroqCreate.mockResolvedValue(makeGroqResponse("Hello from LLM"));
   vi.clearAllMocks();
   mockGroqCreate.mockResolvedValue(makeGroqResponse("Hello from LLM"));
+  global.fetch = vi.fn();
 });
 
 // ---------------------------------------------------------------------------
@@ -127,10 +145,10 @@ describe("getProvider", () => {
   it("throws when no Groq API keys are configured", () => {
     const config = makeConfig({
       agentCredentials: new Map([
-        ["pristino", { telegramBotToken: "t", groqApiKeys: [], openRouterApiKeys: [] }],
+        ["pristino", { telegramBotToken: "t", groqApiKeys: [], openRouterApiKeys: [], geminiApiKeys: [] }],
       ]),
     });
-    expect(() => getProvider(config, "pristino")).toThrow(/No Groq API keys/);
+    expect(() => getProvider(config, "pristino")).toThrow(/No LLM API keys configured/);
   });
 
   it("returns a provider with a chat function", () => {
@@ -209,10 +227,166 @@ describe("getProvider", () => {
     };
     global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
-    const config = makeConfig();
+    const config = makeConfig({ geminiFallbackEnabled: false });
     const provider = getProvider(config, "pristino");
     const result = await provider.chat(makeMessages(), makeTools());
     expect(result.content).toBe("OpenRouter response");
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("openrouter"),
+      expect.objectContaining({ method: "POST" })
+    );
+  });
+
+  it("chat() falls back to Gemini before OpenRouter when Groq tiers are exhausted", async () => {
+    mockGroqCreate.mockRejectedValue(new Error("429 rate_limit exceeded"));
+
+    const mockGeminiResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        choices: [{ message: { content: "Gemini fallback response", tool_calls: [] } }],
+      }),
+    };
+    global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
+
+    const config = makeConfig();
+    const provider = getProvider(config, "pristino");
+    const result = await provider.chat(makeMessages(), makeTools());
+
+    expect(result.content).toBe("Gemini fallback response");
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("generativelanguage.googleapis.com"),
+      expect.objectContaining({ method: "POST" })
+    );
+  });
+
+  it("uses the simple Gemini model for short requests", async () => {
+    const mockGeminiResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        choices: [{ message: { content: "Gemini simple response", tool_calls: [] } }],
+      }),
+    };
+    global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
+
+    const config = makeConfig({
+      llmProviderOverride: "gemini",
+      geminiFallbackEnabled: false,
+      geminiSimpleModel: "gemini-2.5-flash",
+      geminiComplexModel: "gemini-3-flash-preview",
+    });
+    const provider = getProvider(config, "pristino");
+    await provider.chat(makeMessages(), makeTools());
+
+    const [, requestInit] = vi.mocked(global.fetch).mock.calls[0];
+    const body = JSON.parse(String((requestInit as RequestInit).body));
+    expect(body.model).toBe("gemini-2.5-flash");
+  });
+
+  it("uses the complex Gemini model for long analytical requests", async () => {
+    const mockGeminiResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        choices: [{ message: { content: "Gemini complex response", tool_calls: [] } }],
+      }),
+    };
+    global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
+
+    const config = makeConfig({
+      llmProviderOverride: "gemini",
+      geminiFallbackEnabled: false,
+      geminiSimpleModel: "gemini-2.5-flash",
+      geminiComplexModel: "gemini-3-flash-preview",
+    });
+    const provider = getProvider(config, "pristino");
+    await provider.chat(
+      [{
+        role: "user",
+        content: "Analiza este flujo, compara riesgos, disena mitigaciones y entrega un plan por etapas con criterios de salida y dependencias para todo el proceso.",
+      }],
+      makeTools(),
+    );
+
+    const [, requestInit] = vi.mocked(global.fetch).mock.calls[0];
+    const body = JSON.parse(String((requestInit as RequestInit).body));
+    expect(body.model).toBe("gemini-3-flash-preview");
+  });
+
+  it("sanitizes tool-call history before sending Gemini requests", async () => {
+    const mockGeminiResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        choices: [{ message: { content: "Gemini resumed after tools", tool_calls: [] } }],
+      }),
+    };
+    global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
+
+    const config = makeConfig({
+      llmProviderOverride: "gemini",
+      geminiFallbackEnabled: false,
+    });
+    const provider = getProvider(config, "pristino");
+
+    await provider.chat(
+      [
+        { role: "user", content: "Busca informacion operativa y continua" },
+        {
+          role: "assistant",
+          content: null,
+          tool_calls: [
+            {
+              id: "call_1",
+              type: "function",
+              function: {
+                name: "search_operational_knowledge",
+                arguments: "{\"query\":\"flujo comercial\"}",
+              },
+            },
+          ],
+        },
+        {
+          role: "tool",
+          tool_call_id: "call_1",
+          name: "search_operational_knowledge",
+          content: "{\"matches\":1}",
+        },
+      ],
+      makeTools(),
+    );
+
+    const [, requestInit] = vi.mocked(global.fetch).mock.calls[0];
+    const body = JSON.parse(String((requestInit as RequestInit).body));
+    expect(body.messages).toEqual([
+      { role: "user", content: "Busca informacion operativa y continua" },
+      {
+        role: "assistant",
+        content:
+          "Tool call summary:\n- search_operational_knowledge({\"query\":\"flujo comercial\"})",
+      },
+      {
+        role: "assistant",
+        content: "Tool result from search_operational_knowledge (call_1):\n{\"matches\":1}",
+      },
+    ]);
+  });
+
+  it("treats Groq TPM 413 errors as quota exhaustion and cascades to Gemini", async () => {
+    mockGroqCreate.mockRejectedValue(
+      new Error("413 Request too large for model `openai/gpt-oss-120b` on tokens per minute (TPM): Limit 8000, Requested 8463.")
+    );
+
+    const mockGeminiResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        choices: [{ message: { content: "Gemini after TPM exhaustion", tool_calls: [] } }],
+      }),
+    };
+    global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
+
+    const config = makeConfig();
+    const provider = getProvider(config, "pristino");
+    const result = await provider.chat(makeMessages(), makeTools());
+
+    expect(result.content).toBe("Gemini after TPM exhaustion");
   });
 
   it("chat() throws when all providers exhausted", async () => {
@@ -225,6 +399,7 @@ describe("getProvider", () => {
           telegramBotToken: "t",
           groqApiKeys: [{ key: "key1", owner: "O1" }],
           openRouterApiKeys: [], // no openrouter fallback
+          geminiApiKeys: [],
         }],
       ]),
     });
@@ -249,6 +424,48 @@ describe("getProvider", () => {
     expect(quotaCallback).toHaveBeenCalledWith("OWNER1", "groq");
   });
 
+  it("tracks provider telemetry across quota exhaustion and recovery", async () => {
+    mockGroqCreate
+      .mockRejectedValueOnce(new Error("429 rate_limit"))
+      .mockResolvedValueOnce(makeGroqResponse("Recovered on second key"));
+
+    const config = makeConfig();
+    const provider = getProvider(config, "pristino");
+
+    await provider.chat(makeMessages(), makeTools());
+
+    const snapshot = provider.getTelemetrySnapshot?.();
+    expect(snapshot).toBeDefined();
+    expect(snapshot?.remainingQuotaKnown).toBe(false);
+    expect(snapshot?.totals.attempts).toBe(2);
+    expect(snapshot?.totals.successes).toBe(1);
+    expect(snapshot?.totals.quotaErrors).toBe(1);
+
+    const quotaEntry = snapshot?.entries.find(
+      (entry) => entry.provider === "groq" && entry.routeKind === "standard" && entry.keyIndex === 0,
+    );
+    const successEntry = snapshot?.entries.find(
+      (entry) => entry.provider === "groq" && entry.routeKind === "standard" && entry.keyIndex === 1,
+    );
+
+    expect(quotaEntry?.quotaErrors).toBe(1);
+    expect(successEntry?.successes).toBe(1);
+  });
+
+  it("does not emit quota callback or cascade keys on payload-too-large errors", async () => {
+    const quotaCallback = vi.fn();
+    mockGroqCreate.mockRejectedValueOnce(new Error("413 Request too large"));
+
+    const config = makeConfig();
+    const provider = getProvider(config, "pristino");
+    provider.onQuotaExhausted = quotaCallback;
+
+    await expect(provider.chat(makeMessages(), makeTools())).rejects.toThrow(/413|Request too large/);
+
+    expect(quotaCallback).not.toHaveBeenCalled();
+    expect(mockGroqCreate).toHaveBeenCalledTimes(1);
+  });
+
   it("falls back to legacy credentials when agent not in agentCredentials", () => {
     const config = makeConfig({
       agentCredentials: new Map(), // empty
@@ -269,6 +486,114 @@ describe("getProvider", () => {
     expect(callArgs.mcp_servers).toBeDefined();
     expect(Array.isArray(callArgs.mcp_servers)).toBe(true);
   });
+
+  it("forwards a per-request maxTokens override to the provider client", async () => {
+    mockGroqCreate.mockResolvedValueOnce(makeGroqResponse("response with capped output"));
+    const config = makeConfig();
+    const provider = getProvider(config, "pristino");
+
+    await provider.chat(makeMessages(), makeTools(), { maxTokens: 512 });
+
+    const callArgs = mockGroqCreate.mock.calls[0][0] as Record<string, unknown>;
+    expect(callArgs.max_tokens).toBe(512);
+  });
+});
+
+describe("getCommercialProposalProvider", () => {
+  it("prefers Gemini complex before Groq tiers for commercial proposals", async () => {
+    mockGroqCreate.mockImplementation(() => {
+      throw new Error("Groq should not be called before Gemini for commercial proposals");
+    });
+
+    const mockGeminiResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        choices: [{ message: { content: "Gemini proposal response", tool_calls: [] } }],
+      }),
+    };
+    global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
+
+    const config = makeConfig({ geminiFallbackEnabled: false });
+    const provider = getCommercialProposalProvider(config, "pristino");
+    const result = await provider.chat(makeMessages(), makeTools());
+
+    expect(result.content).toBe("Gemini proposal response");
+    expect(mockGroqCreate).not.toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("generativelanguage.googleapis.com"),
+      expect.objectContaining({ method: "POST" })
+    );
+  });
+});
+
+describe("selectGeminiRoute", () => {
+  it("routes a short single-turn request to the simple Gemini model", () => {
+    const config = makeConfig();
+    const route = selectGeminiRoute(makeMessages(), makeTools(), config);
+
+    expect(route.complexity).toBe("simple");
+    expect(route.model).toBe("gemini-2.5-flash");
+  });
+
+  it("routes a complex analytical request to the complex Gemini model", () => {
+    const config = makeConfig();
+    const route = selectGeminiRoute(
+      [{
+        role: "user",
+        content: "Analiza el contrato, compara escenarios, evalua riesgos, define matriz de mitigacion y entrega el plan completo con responsables y criterios de aprobacion.",
+      }],
+      makeTools(),
+      config,
+      { maxTokens: 1200 },
+    );
+
+    expect(route.complexity).toBe("complex");
+    expect(route.model).toBe("gemini-3-flash-preview");
+    expect(route.reason).toContain("complex_keywords");
+  });
+});
+
+describe("sanitizeMessagesForGemini", () => {
+  it("keeps regular messages and rewrites tool exchanges into plain assistant text", () => {
+    const sanitized = sanitizeMessagesForGemini([
+      { role: "system", content: "Sistema" },
+      { role: "user", content: "Consulta" },
+      {
+        role: "assistant",
+        content: "Voy a consultar el KB.",
+        tool_calls: [
+          {
+            id: "call_2",
+            type: "function",
+            function: {
+              name: "search_operational_knowledge",
+              arguments: "{\"query\":\"KB\"}",
+            },
+          },
+        ],
+      },
+      {
+        role: "tool",
+        tool_call_id: "call_2",
+        name: "search_operational_knowledge",
+        content: "{\"matches\":2}",
+      },
+    ]);
+
+    expect(sanitized).toEqual([
+      { role: "system", content: "Sistema" },
+      { role: "user", content: "Consulta" },
+      {
+        role: "assistant",
+        content:
+          "Voy a consultar el KB.\n\nTool call summary:\n- search_operational_knowledge({\"query\":\"KB\"})",
+      },
+      {
+        role: "assistant",
+        content: "Tool result from search_operational_knowledge (call_2):\n{\"matches\":2}",
+      },
+    ]);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -278,7 +603,7 @@ describe("getProvider", () => {
 describe("getGroqClient", () => {
   it("throws when no Groq keys configured", () => {
     const config = makeConfig({
-      agentCredentials: new Map([["pristino", { telegramBotToken: "t", groqApiKeys: [], openRouterApiKeys: [] }]]),
+      agentCredentials: new Map([["pristino", { telegramBotToken: "t", groqApiKeys: [], openRouterApiKeys: [], geminiApiKeys: [] }]]),
     });
     expect(() => getGroqClient(config, "pristino")).toThrow(/No Groq API keys/);
   });
@@ -305,7 +630,7 @@ describe("getGroqClient", () => {
 describe("getOpenRouterClient", () => {
   it("throws when no OpenRouter keys configured", () => {
     const config = makeConfig({
-      agentCredentials: new Map([["pristino", { telegramBotToken: "t", groqApiKeys: [{ key: "k", owner: "O" }], openRouterApiKeys: [] }]]),
+      agentCredentials: new Map([["pristino", { telegramBotToken: "t", groqApiKeys: [{ key: "k", owner: "O" }], openRouterApiKeys: [], geminiApiKeys: [] }]]),
     });
     expect(() => getOpenRouterClient(config, "pristino")).toThrow(/No OpenRouter API keys/);
   });
@@ -355,6 +680,7 @@ describe("getOpenRouterClient", () => {
           telegramBotToken: "t",
           groqApiKeys: [{ key: "k", owner: "O" }],
           openRouterApiKeys: [{ key: "", owner: "EMPTY" }],
+          geminiApiKeys: [],
         }],
       ]),
     });
@@ -370,7 +696,7 @@ describe("getOpenRouterClient", () => {
 describe("getVisionProvider", () => {
   it("throws when no Groq keys configured", () => {
     const config = makeConfig({
-      agentCredentials: new Map([["pristino", { telegramBotToken: "t", groqApiKeys: [], openRouterApiKeys: [] }]]),
+      agentCredentials: new Map([["pristino", { telegramBotToken: "t", groqApiKeys: [], openRouterApiKeys: [], geminiApiKeys: [] }]]),
     });
     expect(() => getVisionProvider(config, "pristino")).toThrow(/No Groq API keys/);
   });

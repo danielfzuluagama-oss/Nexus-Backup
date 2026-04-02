@@ -58,6 +58,9 @@ export interface SkillDefinition {
   wowCriteria: string[];
   safeCriteria: string[];
   workflows: WorkflowDefinition[];
+  sourcePath?: string;
+  rawContent?: string;
+  systemPrompt?: string;
 }
 
 /** Workflow definition (17 fields + optional v3.1 enrichments). */
@@ -230,6 +233,9 @@ export const SkillDefinitionSchema = z.object({
   wowCriteria: z.array(z.string()),
   safeCriteria: z.array(z.string()),
   workflows: z.array(WorkflowDefinitionSchema),
+  sourcePath: z.string().optional(),
+  rawContent: z.string().optional(),
+  systemPrompt: z.string().optional(),
 });
 
 export const AgentDefinitionSchema = z.object({

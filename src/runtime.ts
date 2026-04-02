@@ -53,6 +53,7 @@ export class AgentRuntime {
       instanceName: name,
       telegramToken: creds.telegramBotToken ? "configured" : "missing",
       groqKeys: creds.groqApiKeys.length,
+      geminiKeys: creds.geminiApiKeys.length,
       openRouterKeys: creds.openRouterApiKeys.length,
       modelTiers: config.groqModelTiers.length,
     });

@@ -67,6 +67,9 @@ export const SkillDefinitionSchema = z.object({
     wowCriteria: z.array(z.string()),
     safeCriteria: z.array(z.string()),
     workflows: z.array(WorkflowDefinitionSchema),
+    sourcePath: z.string().optional(),
+    rawContent: z.string().optional(),
+    systemPrompt: z.string().optional(),
 });
 export const AgentDefinitionSchema = z.object({
     id: z.string(),

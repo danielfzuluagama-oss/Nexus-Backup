@@ -1,11 +1,60 @@
-import { Bot } from "grammy";
+import { Bot, InputFile } from "grammy";
 import type { AgentRuntime } from "./runtime.js";
 import { runAgent, type AgentDeps } from "./agent.js";
 import { formatForTelegram, splitMessageHtml, stripHtml } from "./format.js";
 import { transcribeAudio } from "./audio.js";
-import { sanitizeInput } from "./security.js";
+import {
+  sanitizeInput,
+  SECURITY_INPUT_BLOCKED_MESSAGE,
+} from "./security.js";
 import { getOperationalKnowledgeAccessor } from "./knowledge/accessor.js";
-import type { OnboardingPack, ProcessModule } from "./knowledge/operational-kb.js";
+import type {
+  ExecutionPack,
+  OnboardingPack,
+  ProcessModule,
+} from "./knowledge/operational-kb.js";
+import { shouldSendQuotaNotification } from "./quota-notifications.js";
+import { getStandbyMessage, isStandbyModeEnabled } from "./telegram-controls.js";
+import {
+  classifyTelegramIntent,
+  inferAudienceRole,
+  normalizeForMatching,
+  type TelegramIntent,
+} from "./telegram-intents.js";
+import {
+  renderControlledScaffold,
+  type ControlledTemplateName,
+} from "./controlled-deliverables.js";
+import { buildAgentResponseContract } from "./response-contracts.js";
+import {
+  buildProposalArtifact,
+  extractClientNameFromRequest,
+  formatProposalDate,
+  parseProposalStageSections,
+  slugifyClientName,
+  isGenericCommercialProcessName,
+  type ProposalKnowledgeContext,
+} from "./proposals/proposal-artifact.js";
+import { parseProposalDraft } from "./proposals/proposal-draft.js";
+import { buildProposalProcessCatalog } from "./proposals/operational-catalog.js";
+import { loadMetodologiaKnowledge } from "./proposals/metodologia-knowledge.js";
+import {
+  assessProposalIntake,
+  buildProposalClarificationReply,
+  type ProposalIntakeAssessment,
+} from "./proposals/proposal-intake.js";
+import {
+  getGitHubProposalsConfig,
+  publishProposalArtifact,
+  type PublishedProposalArtifact,
+} from "./proposals/github-publisher.js";
+import {
+  formatProposalValidationError,
+  validateProposalArtifactHtml,
+  type ProposalValidationIssue,
+} from "./proposals/proposal-validation.js";
+import { composeCommercialProposalDraft } from "./proposals/proposal-composer.js";
+import type { ThreadProposalState } from "./thread-memory.js";
 
 /**
  * TELEGRAM GATEWAY — Multimodal ingress/egress and agent orchestration.
@@ -23,48 +72,6 @@ import type { OnboardingPack, ProcessModule } from "./knowledge/operational-kb.j
  */
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000;
 const MIN_AGENT_TIMEOUT_MS = 15_000;
-const OPERATIONAL_FAST_PATH_KEYWORDS = [
-  "proceso",
-  "process",
-  "onboarding",
-  "onboard",
-  "workflow",
-  "playbook",
-  "fase",
-  "fases",
-  "gate",
-  "gates",
-  "asset",
-  "assets",
-  "sop",
-  "sops",
-  "riesgo",
-  "riesgos",
-  "risk",
-  "risks",
-  "rol",
-  "roles",
-  "owner",
-  "owners",
-  "responsable",
-  "responsables",
-  "entrada",
-  "entradas",
-  "salida",
-  "salidas",
-  "entregable",
-  "deliverable",
-  "presales",
-];
-const OPERATIONAL_ONBOARDING_KEYWORDS = [
-  "onboarding",
-  "onboard",
-  "induccion",
-  "induction",
-  "nuevo integrante",
-  "resumen",
-  "summary",
-];
 
 function getAgentTimeoutMs(): number {
   const raw = Number(process.env.AGENT_TIMEOUT_MS);
@@ -72,20 +79,6 @@ function getAgentTimeoutMs(): number {
     return Math.floor(raw);
   }
   return DEFAULT_AGENT_TIMEOUT_MS;
-}
-
-function normalizeForMatching(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s/-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function includesAnyKeyword(haystack: string, keywords: string[]): boolean {
-  return keywords.some((keyword) => haystack.includes(keyword));
 }
 
 function detectProcessMention(
@@ -131,13 +124,35 @@ function detectProcessMention(
   return bestModule;
 }
 
-function inferAudienceRole(normalizedMessage: string): string {
-  if (normalizedMessage.includes("cliente")) return "cliente";
-  if (normalizedMessage.includes("implementador")) return "implementador";
-  if (normalizedMessage.includes("pm")) return "pm";
-  if (normalizedMessage.includes("ae")) return "ae";
-  if (normalizedMessage.includes("lider")) return "lider";
-  return "nuevo integrante";
+function hasExplicitProcessMention(
+  normalizedMessage: string,
+  module: ProcessModule,
+): boolean {
+  const candidates = [
+    module.processId,
+    module.processName,
+    ...module.variants,
+  ];
+
+  for (const candidate of candidates) {
+    const normalizedCandidate = normalizeForMatching(candidate);
+    if (!normalizedCandidate) continue;
+
+    if (normalizedMessage.includes(normalizedCandidate)) {
+      return true;
+    }
+
+    const tokens = normalizedCandidate
+      .split(" ")
+      .map((token) => token.trim())
+      .filter((token) => token.length >= 3);
+
+    if (tokens.length > 0 && tokens.every((token) => normalizedMessage.includes(token))) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function buildOperationalRisks(module: ProcessModule): string[] {
@@ -210,13 +225,390 @@ function formatModuleFastPathReply(module: ProcessModule): string {
   ].join("\n");
 }
 
-async function tryOperationalFastPath(
+function formatStageBlock(title: string, body: string[]): string {
+  return [title, ...body.filter(Boolean)].join("\n");
+}
+
+function escapeTelegramHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function buildPublishedProposalReply(
+  clientName: string,
+  publication: PublishedProposalArtifact,
+): string {
+  const viewLabel = publication.pagesReady ? "Ver propuesta" : "Abrir en GitHub";
+  const lines = [
+    `HTML autocontenido publicado para <b>${escapeTelegramHtml(clientName)}</b>.`,
+    `<a href="${publication.viewUrl}">${viewLabel}</a>`,
+  ];
+
+  if (publication.pagesReady) {
+    lines.push(`<a href="${publication.githubUrl}">Abrir en GitHub</a>`);
+  }
+
+  lines.push(`<a href="${publication.downloadUrl}">Descargar HTML</a>`);
+
+  if (!publication.pagesReady) {
+    lines.push("GitHub Pages sigue propagando el sitio; el enlace público puede tardar unos minutos en quedar listo.");
+  }
+
+  return lines.join("\n");
+}
+
+function buildProposalReadyReply(clientName: string, serviceName?: string): string {
+  return [
+    `Propuesta comercial estructurada para <b>${escapeTelegramHtml(clientName)}</b>.`,
+    serviceName ? `Servicio priorizado: <b>${escapeTelegramHtml(serviceName)}</b>.` : "",
+    "Ya quedó generada en HTML canónico y lista para revisión o publicación.",
+  ].filter(Boolean).join("\n");
+}
+
+function buildProposalFallbackReply(clientName: string, hasAttachment = false): string {
+  return [
+    `No pude publicar el enlace de GitHub para <b>${escapeTelegramHtml(clientName)}</b> en este intento.`,
+    hasAttachment
+      ? "Te adjunto el HTML autocontenido para que puedas revisarlo o descargarlo desde Telegram."
+      : "La versión final quedó bloqueada antes de generar el adjunto; si quieres, reintento con el bloque corregido.",
+  ].join("\n");
+}
+
+function compactLogValue(value: string | null | undefined, maxLength = 180): string | null {
+  if (!value) {
+    return null;
+  }
+
+  const compact = value.replace(/\s+/g, " ").trim();
+  if (!compact) {
+    return null;
+  }
+
+  return compact.length <= maxLength
+    ? compact
+    : `${compact.slice(0, Math.max(1, maxLength - 3)).trim()}...`;
+}
+
+function describeUnknownError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function summarizeProposalValidationIssues(
+  issues: ProposalValidationIssue[],
+): Array<{
+  code: string;
+  blocking: boolean;
+  message: string;
+  evidence: string | null;
+}> {
+  return issues.slice(0, 5).map((issue) => ({
+    code: issue.code,
+    blocking: issue.blocking,
+    message: compactLogValue(issue.message, 180) ?? issue.message,
+    evidence: compactLogValue(issue.evidence, 120),
+  }));
+}
+
+function shouldRequireProposalIntake(intent: TelegramIntent): boolean {
+  return intent.templateName === "proposal" && intent.kind !== "operational_lookup";
+}
+
+interface BuildProposalKnowledgeContextOptions {
+  proposalMode?: boolean;
+}
+
+interface ProposalHistoryMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
+}
+
+function resolveProposalClientSlug(text: string | null | undefined): string | null {
+  if (!text) {
+    return null;
+  }
+
+  const clientName = extractClientNameFromRequest(text);
+  return clientName ? slugifyClientName(clientName) : null;
+}
+
+function buildProposalConversationText(
+  currentText: string,
+  recentMessages: ProposalHistoryMessage[],
+  threadMemoryContext?: string,
+): string {
+  const previousUserMessages = recentMessages
+    .filter((message) => message.role === "user")
+    .map((message) => message.content.trim())
+    .filter(Boolean)
+    .slice(-3)
+    .reverse();
+
+  const current = currentText.trim();
+  const currentClientSlug = resolveProposalClientSlug(current);
+  const recentContextClientSlug = currentClientSlug
+    ? [...previousUserMessages, threadMemoryContext ?? ""]
+        .map((segment) => resolveProposalClientSlug(segment))
+        .find((slug): slug is string => Boolean(slug))
+        ?? null
+    : null;
+
+  if (currentClientSlug && recentContextClientSlug && currentClientSlug !== recentContextClientSlug) {
+    return current;
+  }
+
+  return [current, ...previousUserMessages, threadMemoryContext]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function buildProposalThreadState(
+  assessment: ProposalIntakeAssessment,
+  status: ThreadProposalState["status"],
+): ThreadProposalState {
+  const snapshot = assessment.snapshot;
+  return {
+    status,
+    clientName: snapshot.clientName,
+    serviceName: snapshot.serviceName,
+    objective: snapshot.objective,
+    geography: snapshot.geography,
+    scope: snapshot.scope,
+    timeline: snapshot.timeline,
+    investment: snapshot.investment,
+    nextStep: snapshot.nextStep,
+    completenessScore: assessment.completenessScore,
+    missingRequired: assessment.missingRequiredFields.map((field) => field.label),
+    missingRecommended: assessment.missingRecommendedFields.map((field) => field.label),
+    openQuestions: assessment.missingRequiredFields.map((field) => field.prompt),
+    updatedAt: new Date(),
+  };
+}
+
+async function buildProposalKnowledgeContext(
   text: string,
   log: AgentRuntime["logger"],
-): Promise<string | null> {
+  senderName?: string | null,
+  options: BuildProposalKnowledgeContextOptions = {},
+): Promise<ProposalKnowledgeContext> {
+  const kb = await getOperationalKnowledgeAccessor();
   const normalizedMessage = normalizeForMatching(text);
+  const proposalMode = options.proposalMode ?? false;
+  const [modules, evidence] = await Promise.all([
+    kb.listProcesses(),
+    kb.search(text, { limit: 8 }),
+  ]);
+
+  const detectedModule =
+    detectProcessMention(normalizedMessage, modules)
+    ?? modules.find((module) => module.processId === evidence.find((chunk) => chunk.processId)?.processId)
+    ?? null;
+  const genericCommercialModule = detectedModule
+    ? isGenericCommercialProcessName(detectedModule.processName)
+    : false;
+  const explicitModuleMention = detectedModule
+    ? hasExplicitProcessMention(normalizedMessage, detectedModule)
+    : false;
+  const useExecutionPack =
+    Boolean(detectedModule)
+    && !genericCommercialModule
+    && (!proposalMode || explicitModuleMention);
+  const internalProcessCatalog = buildProposalProcessCatalog(
+    text,
+    modules,
+    evidence,
+    useExecutionPack && detectedModule ? detectedModule.processId : null,
+  );
+
+  let executionPack: ExecutionPack | null = null;
+  if (useExecutionPack && detectedModule) {
+    executionPack = await kb.createExecutionPack(
+      detectedModule.processId,
+      "propuesta comercial",
+      text,
+    );
+  }
+
+  let metodologiaKnowledge: ProposalKnowledgeContext["metodologia"] | undefined;
+  let metodologiaReady: boolean | undefined;
+  try {
+    const mk = await loadMetodologiaKnowledge();
+    metodologiaKnowledge = {
+      services: mk.services,
+      resources: mk.resources,
+      founders: mk.founders,
+      fetchedAt: mk.fetchedAt,
+    };
+    metodologiaReady = mk.services.length > 0 && mk.resources.length > 0 && mk.founders.length > 0;
+  } catch (error) {
+    log.warn("MetodologIA public knowledge could not be loaded", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    metodologiaKnowledge = {
+      services: [{
+        title: "MetodologIA · Servicios",
+        description: "Servicios de workshops, bootcamps, consultoría y programas élite potenciados con IA.",
+        source: "https://metodologia.info/servicios/index",
+      }],
+      resources: [{
+        title: "MetodologIA · Recursos",
+        description: "Recursos y valores agregados publicados por MetodologIA.",
+        source: "https://metodologia.info/recursos/index",
+      }],
+      founders: [
+        { name: "Daniel Zuluaga", title: "Chief Efficiency Officer", bio: "Estratega de eficiencia y optimización operativa." },
+        { name: "Germán Eliécer Sepúlveda", title: "Chief Ecosystem Officer", bio: "Constructor de ecosistemas y alianzas estratégicas." },
+        { name: "Javier Montaño", title: "Chief Empowerment Officer", bio: "Diseñador de sistemas y metodologías de alto rendimiento." },
+        { name: "Katherine Oquendo", title: "Chief Enablement Officer", bio: "Líder de entornos habilitadores y experiencia." },
+      ],
+      fetchedAt: new Date(),
+    };
+    metodologiaReady = true;
+  }
+
+  log.info("Proposal knowledge context resolved", {
+    processId: detectedModule?.processId ?? null,
+    evidenceCount: evidence.length,
+    executionPack: executionPack?.processId ?? null,
+    proposalMode,
+    explicitModuleMention,
+    internalCatalogCount: internalProcessCatalog.length,
+    metodologiaReady,
+  });
+
+  return {
+    serviceName: executionPack?.deliverable ?? undefined,
+    executionPack,
+    evidence,
+    internalProcessCatalog,
+    metodologia: metodologiaKnowledge,
+    metodologiaReady,
+    requestedByFounder: senderName || null,
+  };
+}
+
+function buildExecutionScaffoldSeed(
+  module: ProcessModule,
+  pack: ExecutionPack,
+  templateName: ControlledTemplateName,
+): Record<string, string> {
+  const sharedScope = `Proceso: ${module.processName}. Entregable: ${pack.deliverable}.`;
+  const steps = pack.recommendedSteps.join("\n- ");
+  const evidence = pack.evidenceRequired.join(" | ");
+  const risks = pack.risks.join(" | ");
+
+  if (templateName === "proposal") {
+    return {
+      summary: [
+        `Dossier ejecutivo para ${pack.deliverable} dentro de ${module.processName}.`,
+        `Objetivo: ${pack.objective}.`,
+        "Estructura sugerida: Hero, Vision, Journey, Programa, Modalidades, Objeciones, Credenciales, Equipo, Metodologias, ROI, Condiciones, FAQ, Glosario y Cierre.",
+      ].join("\n"),
+      problem: [
+        `Contexto y dolor: ${module.summary}.`,
+        `Lo que se quiere resolver: ${pack.summary}.`,
+      ].join("\n"),
+      solution: [
+        "Ruta propuesta:",
+        `- ${steps}`,
+        "",
+        "Bloques sugeridos:",
+        "- Vision",
+        "- Journey",
+        "- Programa",
+        "- Modalidades",
+        "- Objeciones",
+        "- Credenciales",
+        "- Equipo",
+        "- Metodologias",
+        "- ROI",
+        "- Condiciones",
+        "- FAQ",
+        "- Glosario",
+        "- Cierre",
+      ].join("\n"),
+      timeline: [
+        "Cronograma sugerido:",
+        `- ${pack.recommendedSteps.slice(0, 4).join("\n- ")}`,
+      ].join("\n"),
+      investment: "[Pendiente] Definir inversion, modalidad y criterio de cierre con datos reales.",
+    };
+  }
+
+  if (templateName === "brief") {
+    return {
+      objective: pack.objective,
+      background: module.summary,
+      approach: `Secuencia sugerida:\n- ${steps}`,
+      deliverables: [pack.deliverable, ...pack.assets.slice(0, 3)].join(" | "),
+    };
+  }
+
+  if (templateName === "assessment") {
+    return {
+      executive_summary: `Assessment operativo base para ${pack.deliverable}.`,
+      context: `${sharedScope} Objetivo: ${pack.objective}`,
+      findings: risks,
+      recommendations: `Aplicar:\n- ${steps}`,
+      next_steps: "Confirmar owner, gate de entrada y evidencia mínima antes de ejecutar.",
+    };
+  }
+
+  return {
+    objective: pack.objective,
+    scope: `${sharedScope} Objetivo: ${pack.objective}`,
+    inputs: [...pack.assets.slice(0, 4), ...pack.sops.slice(0, 3)].join(" | ") || "Pendiente de precisar inputs.",
+    steps: `- ${steps}`,
+    evidence: evidence || "Pendiente de precisar evidencia de cierre.",
+    risks,
+    next_step: "Confirmar owner, input faltante y gate de inicio.",
+  };
+}
+
+function formatExecutionFastPathReply(
+  module: ProcessModule,
+  pack: ExecutionPack,
+  templateName: ControlledTemplateName,
+): string {
+  const scaffold = renderControlledScaffold(
+    templateName,
+    buildExecutionScaffoldSeed(module, pack, templateName),
+  );
+
+  return [
+    formatStageBlock("ETAPA 1 | REPASO DE LO ENTENDIDO", [
+      `Proceso detectado: ${module.processName}.`,
+      `Entregable solicitado: ${pack.deliverable}.`,
+      `Objetivo: ${pack.objective}.`,
+    ]),
+    formatStageBlock("ETAPA 2 | PLAN DE ACCION", [
+      `Resumen del proceso: ${pack.summary}`,
+      `Pasos recomendados: ${pack.recommendedSteps.join(" | ")}`,
+      pack.gates.length > 0 ? `Gates a respetar: ${pack.gates.join(" | ")}` : "",
+      pack.evidenceRequired.length > 0
+        ? `Evidencia requerida: ${pack.evidenceRequired.join(" | ")}`
+        : "",
+      `Riesgos clave: ${pack.risks.join(" | ")}`,
+    ]),
+    formatStageBlock("ETAPA 3 | SCAFFOLD INICIAL", [scaffold]),
+    formatStageBlock("ETAPA 4 | SIGUIENTE PASO", [
+      "Confirma owner, input faltante y criterio de cierre para pasar del scaffold a la ejecución.",
+    ]),
+  ].join("\n\n");
+}
+
+async function tryOperationalRoute(
+  text: string,
+  intent: TelegramIntent,
+  log: AgentRuntime["logger"],
+): Promise<string | null> {
+  const normalizedMessage = intent.normalizedMessage || normalizeForMatching(text);
   if (!normalizedMessage) return null;
-  if (!includesAnyKeyword(normalizedMessage, OPERATIONAL_FAST_PATH_KEYWORDS)) {
+  if (intent.kind === "agent") {
+    return null;
+  }
+  if (intent.templateName === "proposal") {
     return null;
   }
 
@@ -229,8 +621,8 @@ async function tryOperationalFastPath(
       return null;
     }
 
-    if (includesAnyKeyword(normalizedMessage, OPERATIONAL_ONBOARDING_KEYWORDS)) {
-      const audienceRole = inferAudienceRole(normalizedMessage);
+    if (intent.kind === "operational_onboarding") {
+      const audienceRole = intent.audienceRole || inferAudienceRole(normalizedMessage);
       const pack = await kb.createOnboardingPack(module.processId, audienceRole, text);
       if (pack) {
         log.info("Operational fast path resolved", {
@@ -238,6 +630,23 @@ async function tryOperationalFastPath(
           mode: "onboarding",
         });
         return formatOnboardingFastPathReply(module, pack);
+      }
+    }
+
+    if (intent.kind === "operational_execution") {
+      const templateName = intent.templateName ?? "execution_plan";
+      const pack = await kb.createExecutionPack(
+        module.processId,
+        intent.deliverable,
+        text,
+      );
+      if (pack) {
+        log.info("Operational fast path resolved", {
+          processId: module.processId,
+          mode: "execution",
+          template: templateName,
+        });
+        return formatExecutionFastPathReply(module, pack, templateName);
       }
     }
 
@@ -275,7 +684,21 @@ export function createBot(runtime: AgentRuntime): Bot {
    * Listen for quota exhaustion events from the LLM provider and notify all authorized users.
    */
   runtime.onQuotaExhausted = (owner, provider) => {
-    const message = `⚠️ <b>AVISO DE CUOTA</b>\n\nLa cuota de API de <b>${owner}</b> (${provider}) se ha agotado para el agente <i>${runtime.instanceName}</i>. El sistema está conmutando automáticamente a la siguiente clave disponible en el pool.`;
+    if (!shouldSendQuotaNotification(runtime.instanceName, provider)) {
+      log.info("Suppressing duplicate quota notification during cooldown", {
+        owner,
+        provider,
+        agent: runtime.instanceName,
+      });
+      return;
+    }
+
+    const message =
+      `⚠️ <b>AVISO DE CUOTA</b>\n\n` +
+      `El pool de API de <b>${provider}</b> para el agente <i>${runtime.instanceName}</i> ` +
+      `reporto agotamiento o rate limit en una o mas claves. ` +
+      `El sistema intentara continuar con otras credenciales disponibles. ` +
+      `Ultimo owner reportado: <b>${owner}</b>.`;
     
     for (const userId of runtime.config.allowedUserIds) {
       bot.api.sendMessage(userId, message, { parse_mode: "HTML" }).catch(err => {
@@ -316,6 +739,28 @@ export function createBot(runtime: AgentRuntime): Bot {
     const userId = ctx.from.id;
     let text = ctx.message.text || ctx.message.caption || "";
     let pendingMsgId: number | null = null;
+    let proposalKnowledgeContext: ProposalKnowledgeContext | null = null;
+    let proposalIntakeAssessment: ProposalIntakeAssessment | null = null;
+    let threadId: string | null = null;
+    let threadMemoryContext = "";
+    let semanticMemoryContext = "";
+    const describeThreadMemory =
+      typeof runtime.memory.describeThreadMemory === "function"
+        ? runtime.memory.describeThreadMemory.bind(runtime.memory)
+        : async () => "";
+    const describeSemanticMemory =
+      typeof runtime.memory.describeSemanticMemory === "function"
+        ? runtime.memory.describeSemanticMemory.bind(runtime.memory)
+        : async () => "";
+    const updateThreadMemory =
+      typeof runtime.memory.updateThreadMemory === "function"
+        ? runtime.memory.updateThreadMemory.bind(runtime.memory)
+        : async () => {};
+    const dismissPendingReply = async () => {
+      if (!pendingMsgId) return;
+      await ctx.api.deleteMessage(ctx.chat.id, pendingMsgId).catch(() => {});
+      pendingMsgId = null;
+    };
 
     // --- SKIP SERVICE MESSAGES ---
     // Telegram forum topics generate service messages (forum_topic_created, etc.)
@@ -332,10 +777,32 @@ export function createBot(runtime: AgentRuntime): Bot {
       return;
     }
 
+    if (isStandbyModeEnabled()) {
+      log.info("Standby mode enabled; skipping agent cognition", {
+        userId,
+        updateId: ctx.update.update_id,
+      });
+      await ctx.reply(getStandbyMessage());
+      return;
+    }
+
     // --- MULTIMODAL MIDDLEWARE (ROUTING & EXTRACTION) ---
     // Enter multimodal block if ANY media is present (voice/audio always override text).
     // After service message filter above, a no-text-no-media message is a sticker/contact/etc — safe to skip.
     const hasMedia = !!(ctx.message.voice || ctx.message.audio || ctx.message.photo || ctx.message.document || ctx.message.animation);
+    if (!hasMedia && text) {
+      const sanitized = sanitizeInput(text);
+      if (!sanitized.safe) {
+        log.warn("Blocked unsafe text message before intent classification", {
+          userId,
+          reason: sanitized.reason,
+        });
+        await ctx.reply(SECURITY_INPUT_BLOCKED_MESSAGE);
+        return;
+      }
+      text = sanitized.cleaned;
+    }
+
     if (hasMedia) {
       if (ctx.message.voice || ctx.message.audio) {
          try {
@@ -346,11 +813,13 @@ export function createBot(runtime: AgentRuntime): Bot {
            if (file.file_path) {
              const url = `https://api.telegram.org/file/bot${runtime.credentials.telegramBotToken}/${file.file_path}`;
              const transcript = await transcribeAudio(url, runtime.credentials.groqApiKeys[0].key);
-                          // FORCED STRUCTURAL INJECTION to bypass LLM RLHF refusals and enforce the Secretariat UX:
-              // V6 fix: sanitize transcript to prevent injection via audio content
+              // Audio transcripts are user input and must be security-checked before the LLM sees them.
               const sanitized = sanitizeInput(transcript || "Mudo o ininteligible");
               if (!sanitized.safe) {
                 log.warn("Audio transcript flagged by security", { userId, reason: sanitized.reason });
+                await dismissPendingReply();
+                await ctx.reply(SECURITY_INPUT_BLOCKED_MESSAGE);
+                return;
               }
               text = `<SYSTEM_OVERRIDE>
 CRÍTICO: ESTE ES UN AUDIO TRANSCRITO. ESTÁS OBLIGADO A PROCESARLO Y SEGUIR EL PROTOCOLO DE REFLEXIÓN MULTI-AGENTE.
@@ -370,7 +839,12 @@ NUNCA digas que no puedes leer multimedia.
       }
       else if (ctx.message.photo) {
          const photo = ctx.message.photo[ctx.message.photo.length - 1];
-         const caption = ctx.message.caption || "";
+         const rawCaption = ctx.message.caption || "";
+         const sanitizedCaption = rawCaption ? sanitizeInput(rawCaption) : null;
+         const caption = sanitizedCaption?.safe ? sanitizedCaption.cleaned : "";
+         if (sanitizedCaption && !sanitizedCaption.safe) {
+           log.warn("Photo caption omitted after security scan", { userId, reason: sanitizedCaption.reason });
+         }
          try {
             const file = await ctx.api.getFile(photo.file_id);
             if (!file.file_path) {
@@ -390,7 +864,12 @@ Responde confirmando recepcion. Indica que la URI esta lista para inspeccion pro
       else if (ctx.message.document) {
          const mime = ctx.message.document.mime_type || "desconocido";
          const name = ctx.message.document.file_name || "Documento";
-         const caption = ctx.message.caption || "";
+         const rawCaption = ctx.message.caption || "";
+         const sanitizedCaption = rawCaption ? sanitizeInput(rawCaption) : null;
+         const caption = sanitizedCaption?.safe ? sanitizedCaption.cleaned : "";
+         if (sanitizedCaption && !sanitizedCaption.safe) {
+           log.warn("Document caption omitted after security scan", { userId, reason: sanitizedCaption.reason });
+         }
          try {
             const file = await ctx.api.getFile(ctx.message.document.file_id);
             if (!file.file_path) {
@@ -417,30 +896,403 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       await ctx.api.editMessageText(ctx.chat.id, pendingMsgId, "Audio transcrito. Iniciando Reflexión Agéntica Profunda y Síntesis...").catch(() => {});
     }
 
+    const timeoutMs = getAgentTimeoutMs();
+    const agentTimeoutPromise = new Promise<string>((_, reject) =>
+      setTimeout(() => reject(new Error("Agent timeout")), timeoutMs)
+    );
+    // The timeout must stay live even if we return early from the proposal gate.
+    agentTimeoutPromise.catch(() => {});
+
+    let proposalConversationText = text;
+    try {
+      threadId = await runtime.memory.getOrCreateActiveThread(userId, runtime.instanceName);
+      const recentMessages = await runtime.memory.getRecentMessages(
+        userId,
+        6,
+        threadId,
+        runtime.instanceName,
+      );
+      threadMemoryContext = await describeThreadMemory(userId, threadId, runtime.instanceName);
+      proposalConversationText = buildProposalConversationText(text, recentMessages, threadMemoryContext);
+    } catch (error) {
+      log.warn("Failed to load proposal conversation history", {
+        userId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+
+    const intent = classifyTelegramIntent(proposalConversationText, { hasMedia });
+    log.info("Telegram intent classified", {
+      userId,
+      kind: intent.kind,
+      responseMode: intent.responseMode,
+      template: intent.templateName,
+      reason: intent.reason,
+    });
+    if (proposalConversationText !== text) {
+      log.info("Proposal conversation context preserved across turns", {
+        userId,
+        contextLength: proposalConversationText.length,
+      });
+    }
+    const proposalMode = intent.templateName === "proposal";
+    // Proposal content must not stay in shared Telegram chats; route it to the user's private chat instead.
+    const deliverProposalPrivately = proposalMode && ctx.chat?.type !== "private";
+    const proposalDeliveryTargetId = deliverProposalPrivately ? userId : ctx.chat.id;
+
+    const sendProposalText = async (content: string, useHtml = true) => {
+      if (deliverProposalPrivately) {
+        return useHtml
+          ? ctx.api.sendMessage(proposalDeliveryTargetId, content, { parse_mode: "HTML" })
+          : ctx.api.sendMessage(proposalDeliveryTargetId, content);
+      }
+
+      return useHtml
+        ? ctx.reply(content, { parse_mode: "HTML" })
+        : ctx.reply(content);
+    };
+
+    if (deliverProposalPrivately) {
+      log.info("Proposal delivery routed to private chat", {
+        userId,
+        sourceChatId: ctx.chat.id,
+        targetChatId: proposalDeliveryTargetId,
+        chatType: ctx.chat.type,
+      });
+    }
+
+    if (proposalMode) {
+      semanticMemoryContext = await describeSemanticMemory(
+        userId,
+        proposalConversationText,
+        threadId ?? undefined,
+        runtime.instanceName,
+      ).catch((error) => {
+        log.warn("Failed to load semantic proposal memory", {
+          userId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return "";
+      });
+    }
+
+    if (shouldRequireProposalIntake(intent)) {
+      proposalKnowledgeContext = await buildProposalKnowledgeContext(
+        proposalConversationText,
+        log,
+        ctx.from?.first_name,
+        { proposalMode },
+      ).catch((error) => {
+        log.warn("Failed to resolve proposal context before intake validation", {
+          userId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return {} as ProposalKnowledgeContext;
+      });
+
+      const intakeAssessment = assessProposalIntake(proposalConversationText, proposalKnowledgeContext);
+      proposalIntakeAssessment = intakeAssessment;
+      proposalKnowledgeContext = {
+        ...(proposalKnowledgeContext ?? {}),
+        serviceName: intakeAssessment.snapshot.serviceName ?? proposalKnowledgeContext?.serviceName ?? undefined,
+        threadMemoryContext,
+        semanticMemoryContext: semanticMemoryContext || undefined,
+        intake: intakeAssessment.snapshot,
+      };
+      log.info("Proposal intake assessed", {
+        userId,
+        ready: intakeAssessment.isReady,
+        completenessScore: intakeAssessment.completenessScore,
+        missingRequired: intakeAssessment.missingRequiredFields.map((field) => field.id),
+        missingRecommended: intakeAssessment.missingRecommendedFields.map((field) => field.id),
+      });
+
+      if (!intakeAssessment.isReady) {
+        if (pendingMsgId) {
+          await dismissPendingReply();
+        }
+
+        if (threadId) {
+          await updateThreadMemory(userId, threadId, {
+            conversationKind: "proposal",
+            proposalState: buildProposalThreadState(intakeAssessment, "clarification"),
+          }).catch((error) => {
+            log.warn("Failed to persist proposal clarification state", {
+              userId,
+              error: error instanceof Error ? error.message : String(error),
+            });
+          });
+        }
+
+        await sendProposalText(buildProposalClarificationReply(intakeAssessment));
+        return;
+      }
+    }
+
     // --- TIMEOUT PROTECTION CIRCUIT BREAKER ---
     // Forces the promise to resolve internally if the LLM/Agent gets stuck processing tools
     log.info("Running agent cognition...", { userId, textLength: text.length });
+    let proposalDraftJson: string | null = null;
+    let proposalArtifactClientName: string | null = null;
+    let resolvedProposalKnowledgeContext: ProposalKnowledgeContext | null = proposalKnowledgeContext ?? null;
+    const ensureProposalKnowledgeContext = async (
+      stage: "draft" | "artifact",
+    ): Promise<ProposalKnowledgeContext> => {
+      if (!resolvedProposalKnowledgeContext) {
+        const contextStartedAt = Date.now();
+        const baseProposalKnowledgeContext = await buildProposalKnowledgeContext(
+          proposalConversationText,
+          log,
+          ctx.from?.first_name,
+          { proposalMode },
+        )
+          .catch((error) => {
+            log.warn("Failed to enrich proposal knowledge context", {
+              userId,
+              stage,
+              error: error instanceof Error ? error.message : String(error),
+            });
+            return {} as ProposalKnowledgeContext;
+          });
+
+        resolvedProposalKnowledgeContext = {
+          ...baseProposalKnowledgeContext,
+          semanticMemoryContext: semanticMemoryContext || baseProposalKnowledgeContext.semanticMemoryContext,
+        };
+
+        log.info("Proposal knowledge context ready", {
+          userId,
+          stage,
+          elapsedMs: Date.now() - contextStartedAt,
+          hasExecutionPack: Boolean(resolvedProposalKnowledgeContext.executionPack),
+          evidenceCount: resolvedProposalKnowledgeContext.evidence?.length ?? 0,
+          processMatches: resolvedProposalKnowledgeContext.internalProcessCatalog?.length ?? 0,
+        });
+      } else if (
+        semanticMemoryContext
+        && semanticMemoryContext !== resolvedProposalKnowledgeContext.semanticMemoryContext
+      ) {
+        resolvedProposalKnowledgeContext = {
+          ...resolvedProposalKnowledgeContext,
+          semanticMemoryContext,
+        };
+      }
+
+      return resolvedProposalKnowledgeContext;
+    };
     const cognitionTask = (async () => {
-      const directResponse = !hasMedia ? await tryOperationalFastPath(text, log) : null;
+      if (intent.templateName === "proposal") {
+        const resolvedProposalKnowledgeContext = await ensureProposalKnowledgeContext("draft");
+
+        const draftStartedAt = Date.now();
+        const proposalDraft = await composeCommercialProposalDraft(getAgentDeps(), {
+          userId,
+          requestText: proposalConversationText,
+          knowledgeContext: resolvedProposalKnowledgeContext,
+          agentName: runtime.instanceName,
+        });
+        log.info("Proposal draft composed", {
+          userId,
+          elapsedMs: Date.now() - draftStartedAt,
+          clientName: proposalDraft.clientName,
+          serviceName: proposalDraft.serviceName,
+          steps: proposalDraft.steps.length,
+          deliverables: proposalDraft.deliverables.length,
+        });
+
+        proposalDraftJson = JSON.stringify(proposalDraft);
+        proposalArtifactClientName = proposalDraft.clientName;
+        return buildProposalReadyReply(proposalDraft.clientName, proposalDraft.serviceName);
+      }
+
+      const directResponse = await tryOperationalRoute(text, intent, log);
       if (directResponse) {
         return directResponse;
+      }
+
+      const responseContract = buildAgentResponseContract(intent);
+      if (responseContract) {
+        return runAgent(getAgentDeps(), userId, text, { responseContract });
       }
 
       return runAgent(getAgentDeps(), userId, text);
     })();
 
-    const timeoutMs = getAgentTimeoutMs();
-    const result = await Promise.race([
+    let result = await Promise.race([
       cognitionTask,
-      new Promise<string>((_, reject) =>
-        setTimeout(() => reject(new Error("Agent timeout")), timeoutMs)
-      ),
+      agentTimeoutPromise,
     ]).catch((err) => {
       log.error("Message handling failed or timed out", { userId, error: err.message || err });
       return `Lo siento, la solicitud tardó demasiado en procesarse (Timeout ${Math.floor(timeoutMs / 1000)}s). Por favor intenta de nuevo.`;
     });
 
     log.info("Agent cognition complete", { userId, resultLength: result.length });
+
+    let proposalArtifact:
+      | ReturnType<typeof buildProposalArtifact>
+      | null = null;
+    let proposalArtifactBlocked = false;
+    let publishedProposal: PublishedProposalArtifact | null = null;
+    let proposalPublishFailed = false;
+
+    if (intent.templateName === "proposal") {
+      try {
+        const resolvedProposalKnowledgeContext = await ensureProposalKnowledgeContext("artifact");
+
+        const artifactStartedAt = Date.now();
+        const candidateProposalArtifact = buildProposalArtifact(
+          proposalConversationText,
+          proposalDraftJson ?? result,
+          new Date(),
+          resolvedProposalKnowledgeContext,
+        );
+        log.info("Proposal artifact built", {
+          userId,
+          elapsedMs: Date.now() - artifactStartedAt,
+          clientName: candidateProposalArtifact.clientName,
+          serviceName: candidateProposalArtifact.serviceName,
+          htmlLength: candidateProposalArtifact.html.length,
+        });
+        proposalArtifactClientName = candidateProposalArtifact.clientName;
+
+        const proposalValidation = validateProposalArtifactHtml(candidateProposalArtifact.html);
+        if (!proposalValidation.valid) {
+          proposalPublishFailed = true;
+          proposalArtifactBlocked = true;
+          log.warn("Proposal artifact failed canonical validation", {
+            userId,
+            clientName: candidateProposalArtifact.clientName,
+            repoPath: candidateProposalArtifact.repoPath,
+            fileName: candidateProposalArtifact.fileName,
+            validationIssueCount: proposalValidation.issues.length,
+            blockingIssueCount: proposalValidation.issues.filter((issue) => issue.blocking).length,
+            validationIssueCodes: [...new Set(proposalValidation.issues.map((issue) => issue.code))],
+            validationIssues: summarizeProposalValidationIssues(proposalValidation.issues),
+            error: formatProposalValidationError(proposalValidation),
+          });
+        } else {
+          proposalArtifact = candidateProposalArtifact;
+          const githubConfig = getGitHubProposalsConfig();
+
+          if (githubConfig) {
+            try {
+              publishedProposal = await publishProposalArtifact(proposalArtifact, githubConfig);
+              log.info("Proposal artifact published to GitHub", {
+                userId,
+                repoPath: publishedProposal.repoPath,
+                viewUrl: publishedProposal.viewUrl,
+                githubUrl: publishedProposal.githubUrl,
+                pagesReady: publishedProposal.pagesReady,
+                verificationOk: publishedProposal.verification?.ok ?? null,
+              });
+              if (!publishedProposal.pagesReady) {
+                log.warn("GitHub Pages still propagating proposal publication", {
+                  userId,
+                  repoPath: publishedProposal.repoPath,
+                  pagesUrl: publishedProposal.pagesUrl,
+                });
+              }
+              if (publishedProposal.verification && !publishedProposal.verification.ok) {
+                log.warn("Published proposal link verification reported degraded status", {
+                  userId,
+                  repoPath: publishedProposal.repoPath,
+                  issues: publishedProposal.verification.issues,
+                  pagesReady: publishedProposal.pagesReady,
+                });
+              }
+            } catch (error) {
+              proposalPublishFailed = true;
+              log.warn("Proposal GitHub publication failed", {
+                userId,
+                clientName: proposalArtifact.clientName,
+                repoPath: proposalArtifact.repoPath,
+                fileName: proposalArtifact.fileName,
+                githubOwner: githubConfig.owner,
+                githubRepo: githubConfig.repo,
+                githubBranch: githubConfig.branch,
+                publishTransports: {
+                  rest: Boolean(githubConfig.token?.trim()),
+                  ssh: Boolean(githubConfig.sshKey?.trim()),
+                },
+                error: describeUnknownError(error),
+              });
+            }
+          } else {
+            proposalPublishFailed = true;
+            log.info("Proposal artifact generated without GitHub publishing config", {
+              userId,
+              fileName: proposalArtifact.fileName,
+            });
+          }
+        }
+      } catch (error) {
+        proposalPublishFailed = true;
+        log.warn("Proposal artifact generation failed before publication", {
+          userId,
+          clientName: proposalArtifactClientName,
+          error: describeUnknownError(error),
+        });
+      }
+
+      if (!proposalArtifact && !proposalArtifactBlocked) {
+        const fallbackDraft = proposalDraftJson ? parseProposalDraft(proposalDraftJson) : null;
+        const clientName =
+          proposalArtifactClientName
+          ?? proposalKnowledgeContext?.intake?.clientName
+          ?? extractClientNameFromRequest(proposalConversationText)
+          ?? extractClientNameFromRequest(result)
+          ?? "Cliente por confirmar";
+        const requestDate = formatProposalDate(new Date());
+        const folderName = `${slugifyClientName(clientName)}-${requestDate}`;
+        proposalArtifact = {
+          clientName,
+          clientSlug: slugifyClientName(clientName),
+          serviceName: "Propuesta comercial",
+          processName: "Proceso por precisar",
+          requestDate,
+          folderName,
+          repoPath: `proposals/${folderName}/index.html`,
+          fileName: `${folderName}.html`,
+          sections: fallbackDraft?.sections ?? parseProposalStageSections(result),
+          html: formatStageBlock("Propuesta", [result]),
+        } as ReturnType<typeof buildProposalArtifact>;
+        proposalPublishFailed = true;
+        log.warn("Proposal artifact downgraded to fallback HTML attachment", {
+          userId,
+          clientName: proposalArtifact.clientName,
+          repoPath: proposalArtifact.repoPath,
+          fileName: proposalArtifact.fileName,
+          hadStructuredDraft: Boolean(fallbackDraft),
+        });
+      }
+    }
+
+    if (threadId) {
+      try {
+        if (intent.templateName === "proposal" && proposalIntakeAssessment) {
+          const proposalStatus = publishedProposal
+            ? "published"
+            : proposalArtifact
+              ? "drafted"
+              : "ready";
+          await updateThreadMemory(userId, threadId, {
+            conversationKind: "proposal",
+            proposalState: buildProposalThreadState(proposalIntakeAssessment, proposalStatus),
+          });
+        } else {
+          await updateThreadMemory(userId, threadId, {
+            conversationKind: "general",
+            lastUserMessagePreview: text,
+            lastAssistantMessagePreview: result,
+          });
+        }
+      } catch (error) {
+        log.warn("Failed to persist thread memory snapshot", {
+          userId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
 
     // --- EGRESS FALLBACK & FORMATTING LOOP ---
     // Ensures robust message delivery even if Telegram's strict HTML parser fails
@@ -449,11 +1301,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       for (let i = 0; i < replyChunks.length; i++) {
         const chunk = replyChunks[i];
         try {
-          if (useHtml) {
-             await ctx.reply(chunk, { parse_mode: "HTML" });
-          } else {
-             await ctx.reply(chunk);
-          }
+          await sendProposalText(chunk, useHtml);
           log.info("Sent chunk successfully", { userId, chunkIndex: i });
         } catch (err: unknown) {
              const errObj = err as { description?: string };
@@ -474,10 +1322,96 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
 
     // Remove the tracking message to give a clean final output
     if (pendingMsgId) {
-      await ctx.api.deleteMessage(ctx.chat.id, pendingMsgId).catch(() => {});
+      await dismissPendingReply();
     }
 
     await sendWithFallback(chunks, true);
+
+    if (publishedProposal && proposalArtifact) {
+      await sendProposalText(
+        buildPublishedProposalReply(proposalArtifact.clientName, publishedProposal),
+        true,
+      ).then(() => {
+        log.info("Sent published proposal links", {
+          userId,
+          clientName: proposalArtifact.clientName,
+          repoPath: publishedProposal.repoPath,
+          viewUrl: publishedProposal.viewUrl,
+          githubUrl: publishedProposal.githubUrl,
+        });
+      }).catch((error) => {
+        log.error("Failed to send published proposal links", {
+          userId,
+          error,
+        });
+      });
+    }
+
+    if (proposalArtifact && proposalPublishFailed) {
+      await sendProposalText(buildProposalFallbackReply(proposalArtifact.clientName, true), true).catch((error) => {
+        log.error("Failed to send proposal fallback notice", {
+          userId,
+          error,
+        });
+      });
+    }
+
+    if (!proposalArtifact && intent.templateName === "proposal") {
+      const clientName =
+        proposalArtifactClientName
+        ?? proposalKnowledgeContext?.intake?.clientName
+        ?? extractClientNameFromRequest(text)
+        ?? extractClientNameFromRequest(result)
+        ?? "Cliente por confirmar";
+      log.warn("Proposal artifact missing before delivery", {
+        userId,
+        clientName,
+        artifactBlocked: proposalArtifactBlocked,
+        proposalPublishFailed,
+        hadDraftJson: Boolean(proposalDraftJson),
+        hadPublishedProposal: Boolean(publishedProposal),
+      });
+      await sendProposalText(buildProposalFallbackReply(clientName, false), true).catch((error) => {
+        log.error("Failed to send proposal fallback notice (no artifact)", {
+          userId,
+          error,
+        });
+      });
+    }
+
+    if (proposalArtifact) {
+      const proposalDocument = new InputFile(Buffer.from(proposalArtifact.html, "utf8"), proposalArtifact.fileName);
+      const proposalCaption = `HTML autocontenido generado para ${proposalArtifact.clientName}.`;
+
+      const sendProposalDocument = deliverProposalPrivately
+        ? () => ctx.api.sendDocument(
+            proposalDeliveryTargetId,
+            proposalDocument,
+            { caption: proposalCaption },
+          )
+        : () => ctx.replyWithDocument(
+            proposalDocument,
+            { caption: proposalCaption },
+          );
+
+      await sendProposalDocument().catch((error) => {
+        log.error("Failed to send proposal HTML document", {
+          userId,
+          error,
+        });
+      }).then((deliveryResult) => {
+        if (!deliveryResult) {
+          return;
+        }
+        log.info("Sent proposal HTML document", {
+          userId,
+          clientName: proposalArtifact.clientName,
+          fileName: proposalArtifact.fileName,
+          deliveredPrivately: deliverProposalPrivately,
+          targetChatId: deliverProposalPrivately ? proposalDeliveryTargetId : ctx.chat?.id ?? null,
+        });
+      });
+    }
   });
 
 

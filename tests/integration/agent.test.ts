@@ -40,9 +40,21 @@ vi.mock("../../src/security.js", () => ({
 vi.mock("../../src/tokens.js", () => ({
   calculateBudget: vi.fn().mockReturnValue({ available: 100_000 }),
   trimHistory: vi.fn((msgs: unknown[]) => msgs),
+  fitMessagesToRequestBudget: vi.fn((msgs: unknown[], _tools: unknown[], options?: { desiredResponseTokens?: number }) => ({
+    messages: Array.isArray(msgs) ? [...msgs] : msgs,
+    inputTokens: 100,
+    toolTokens: 0,
+    responseTokens: options?.desiredResponseTokens ?? 4096,
+    availableResponseTokens: 4096,
+    trimmed: false,
+    fits: true,
+  })),
 }));
 
-import { runAgent } from "../../src/agent.js";
+import {
+  runAgent,
+  REQUEST_TOO_LARGE_MESSAGE,
+} from "../../src/agent.js";
 import type { AgentDeps } from "../../src/agent.js";
 import { logger } from "../../src/logger.js";
 
@@ -63,13 +75,17 @@ function makeDeps(chatResponse?: {
     llm: {
       chat: vi.fn().mockResolvedValue(response),
     } as any,
-    memory: {
-      addMessage: vi.fn().mockResolvedValue(undefined),
-      getRecentMessages: vi.fn().mockResolvedValue([]),
-      getUserProfile: vi.fn().mockResolvedValue(null),
-      getTeamPreferences: vi.fn().mockResolvedValue([]),
-      getSynergyFacts: vi.fn().mockResolvedValue([]),
-    } as any,
+      memory: {
+        addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
+        getRecentMessages: vi.fn().mockResolvedValue([]),
+        getUserProfile: vi.fn().mockResolvedValue(null),
+        getTeamPreferences: vi.fn().mockResolvedValue([]),
+        getSynergyFacts: vi.fn().mockResolvedValue([]),
+        describeThreadMemory: vi.fn().mockResolvedValue(""),
+        describeSemanticMemory: vi.fn().mockResolvedValue(""),
+        updateThreadMemory: vi.fn().mockResolvedValue(undefined),
+      } as any,
     config: {
       maxHistory: 10,
       maxIterations: 5,
@@ -96,6 +112,37 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
     const result = await runAgent(deps, 0, "What is the primary risk in Q3?");
     expect(typeof result).toBe("string");
     expect(result.length).toBeGreaterThan(0);
+  });
+
+  it("injects semantic memory context into the LLM prompt", async () => {
+    const deps = makeDeps();
+    const semanticContext = [
+      "Memoria semántica relevante para la solicitud: Plan a Q3 launch",
+      "- Hechos recuperados:",
+      "  - [conf 0.90 | ref 2 | project_context | manual] Launch window is Q3",
+    ].join("\n");
+
+    vi.mocked(deps.memory.describeSemanticMemory).mockResolvedValue(semanticContext);
+
+    await runAgent(deps, 0, "Plan a Q3 launch");
+
+    expect(deps.memory.describeSemanticMemory).toHaveBeenCalledWith(
+      0,
+      "Plan a Q3 launch",
+      "thread-1",
+      "pristino",
+    );
+    expect(deps.memory.getTeamPreferences).not.toHaveBeenCalled();
+    expect(deps.memory.getSynergyFacts).not.toHaveBeenCalled();
+
+    const chatCall = vi.mocked(deps.llm.chat).mock.calls[0];
+    const messages = chatCall[0] as Array<{ role: string; content: string }>;
+    const semanticMessage = messages.find(
+      (message) => message.role === "system" && message.content.includes("Memoria semántica relevante")
+    );
+
+    expect(semanticMessage).toBeDefined();
+    expect(semanticMessage?.content).toContain("Launch window is Q3");
   });
 
   it("cognition loop logs at least one 'Cognition iteration started' entry", async () => {
@@ -138,6 +185,7 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -226,6 +274,7 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -296,6 +345,7 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -362,6 +412,7 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -446,6 +497,7 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -522,6 +574,7 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -594,6 +647,7 @@ describe("TS-004: Routing audit log — mode, agents, reason, timestamp recorded
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -647,6 +701,7 @@ describe("TS-064: All providers unavailable — user-friendly fallback message",
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -688,6 +743,7 @@ describe("TS-064: All providers unavailable — user-friendly fallback message",
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -718,6 +774,7 @@ describe("TS-064: All providers unavailable — user-friendly fallback message",
       } as any,
       memory: {
         addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
         getRecentMessages: vi.fn().mockResolvedValue([]),
         getUserProfile: vi.fn().mockResolvedValue(null),
         getTeamPreferences: vi.fn().mockResolvedValue([]),
@@ -737,5 +794,162 @@ describe("TS-064: All providers unavailable — user-friendly fallback message",
       (c) => typeof c[0] === "string" && c[0].includes("providers unavailable")
     );
     expect(warnLog).toBeDefined();
+  });
+});
+
+describe("payload sizing hardening", () => {
+  beforeEach(() => {
+    vi.mocked(logger.info).mockClear();
+    vi.mocked(logger.warn).mockClear();
+    vi.mocked(logger.error).mockClear();
+  });
+
+  it("loads history before persisting the current user turn", async () => {
+    const deps = makeDeps();
+    const memory = deps.memory as any;
+    const llmChat = deps.llm.chat as any;
+
+    await runAgent(deps, 42, "mensaje actual");
+
+    expect(memory.getRecentMessages.mock.invocationCallOrder[0]).toBeLessThan(
+      memory.addMessage.mock.invocationCallOrder[0]
+    );
+
+    const requestMessages = llmChat.mock.calls[0][0] as Array<{ role: string; content?: string }>;
+    const matchingTurns = requestMessages.filter(
+      (message) => message.role === "user" && message.content === "mensaje actual"
+    );
+    expect(matchingTurns).toHaveLength(1);
+  });
+
+  it("injects thread memory context into the prompt and persists the final snapshot", async () => {
+    const deps = makeDeps();
+    const memory = deps.memory as any;
+
+    vi.mocked(memory.describeThreadMemory).mockResolvedValueOnce(
+      "Memoria persistida del hilo:\n- Título: Conversación en curso\n- Tipo: general",
+    );
+
+    const result = await runAgent(deps, 42, "Recuerda el contexto de esta conversación");
+
+    expect(result).toBe("Final response from LLM");
+    expect(memory.describeThreadMemory).toHaveBeenCalledWith(42, "thread-1", "pristino");
+    expect(memory.updateThreadMemory).toHaveBeenCalledWith(
+      42,
+      "thread-1",
+      expect.objectContaining({
+        conversationKind: "general",
+        lastUserMessagePreview: "Recuerda el contexto de esta conversación",
+        lastAssistantMessagePreview: "Final response from LLM",
+      }),
+    );
+
+    const requestMessages = vi.mocked(deps.llm.chat).mock.calls[0][0] as Array<{ role: string; content?: string }>;
+    expect(
+      requestMessages.some(
+        (message) =>
+          message.role === "system" &&
+          typeof message.content === "string" &&
+          message.content.includes("Memoria persistida del hilo"),
+      ),
+    ).toBe(true);
+  });
+
+  it("returns REQUEST_TOO_LARGE_MESSAGE when request preflight no longer fits", async () => {
+    const { fitMessagesToRequestBudget } = await import("../../src/tokens.js");
+    vi.mocked(fitMessagesToRequestBudget).mockReturnValueOnce({
+      messages: [{ role: "system", content: "s" }, { role: "user", content: "u" }],
+      inputTokens: 7900,
+      toolTokens: 500,
+      responseTokens: 64,
+      availableResponseTokens: 64,
+      trimmed: true,
+      fits: false,
+    });
+
+    const deps = makeDeps();
+    const result = await runAgent(deps, 42, "solicitud extensa");
+
+    expect(result).toBe(REQUEST_TOO_LARGE_MESSAGE);
+    expect((deps.llm.chat as any).mock.calls).toHaveLength(0);
+  });
+
+  it("returns REQUEST_TOO_LARGE_MESSAGE for payload-too-large provider errors", async () => {
+    const deps: AgentDeps = {
+      llm: {
+        chat: vi.fn().mockRejectedValue(new Error("413 Request too large")),
+      } as any,
+      memory: {
+        addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
+        getRecentMessages: vi.fn().mockResolvedValue([]),
+        getUserProfile: vi.fn().mockResolvedValue(null),
+        getTeamPreferences: vi.fn().mockResolvedValue([]),
+        getSynergyFacts: vi.fn().mockResolvedValue([]),
+      } as any,
+      config: {
+        maxHistory: 10,
+        maxIterations: 3,
+        maxTokens: 4096,
+        modelContextWindow: 8192,
+      } as any,
+    };
+
+    const result = await runAgent(deps, 42, "solicitud extensa");
+
+    expect(result).toBe(REQUEST_TOO_LARGE_MESSAGE);
+  });
+
+  it("truncates oversized tool results before reinjecting them into the next LLM call", async () => {
+    const { executeTool } = await import("../../src/tools/registry.js");
+    vi.mocked(executeTool).mockResolvedValueOnce("x".repeat(9_000));
+
+    const llmChat = vi
+      .fn()
+      .mockResolvedValueOnce({
+        content: null,
+        toolCalls: [
+          {
+            id: "tool-1",
+            function: {
+              name: "route_request",
+              arguments: "{}",
+            },
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        content: "ok",
+        toolCalls: [],
+      });
+
+    const deps: AgentDeps = {
+      llm: {
+        chat: llmChat,
+      } as any,
+      memory: {
+        addMessage: vi.fn().mockResolvedValue(undefined),
+        getOrCreateActiveThread: vi.fn().mockResolvedValue("thread-1"),
+        getRecentMessages: vi.fn().mockResolvedValue([]),
+        getUserProfile: vi.fn().mockResolvedValue(null),
+        getTeamPreferences: vi.fn().mockResolvedValue([]),
+        getSynergyFacts: vi.fn().mockResolvedValue([]),
+      } as any,
+      config: {
+        maxHistory: 10,
+        maxIterations: 3,
+        maxTokens: 4096,
+        modelContextWindow: 8192,
+      } as any,
+    };
+
+    await runAgent(deps, 42, "usa una tool");
+
+    const secondCallMessages = llmChat.mock.calls[1][0] as Array<{ role: string; content?: string }>;
+    const toolMessage = secondCallMessages.find((message) => message.role === "tool");
+
+    expect(toolMessage).toBeDefined();
+    expect((toolMessage?.content ?? "").length).toBeLessThan(4_200);
+    expect(toolMessage?.content).toContain("tool-output-truncated");
   });
 });

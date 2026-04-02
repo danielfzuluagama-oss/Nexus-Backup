@@ -1,11 +1,15 @@
 import { describe, it, expect } from "vitest";
 import {
   estimateTokens,
+  estimateMessagesTokens,
+  estimateToolDefinitionsTokens,
   calculateBudget,
+  fitMessagesToRequestBudget,
   trimHistory,
 } from "../../src/tokens.js";
 import type { Config } from "../../src/config.js";
 import type { LLMMessage } from "../../src/config/llm-providers.js";
+import type { ToolDefinition } from "../../src/tools/registry.js";
 
 // ---------------------------------------------------------------------------
 // Minimal Config stub — only fields consumed by tokens.ts
@@ -26,6 +30,12 @@ function makeConfig(
     groqModelVision: "",
     openRouterApiKey: "",
     openRouterModel: "",
+    geminiApiKey: "",
+    geminiModel: "gemini-2.5-flash",
+    geminiSimpleModel: "gemini-2.5-flash",
+    geminiComplexModel: "gemini-3-flash-preview",
+    geminiFallbackEnabled: false,
+    llmProviderOverride: "auto",
     dbPath: "",
     maxIterations: 1,
     maxHistory: 20,
@@ -57,6 +67,33 @@ describe("estimateTokens", () => {
   it("handles a 1200-char string as exactly 300 tokens", () => {
     const text = "a".repeat(1200);
     expect(estimateTokens(text)).toBe(300);
+  });
+});
+
+describe("estimateMessagesTokens", () => {
+  it("sums token estimates across all messages", () => {
+    const messages: LLMMessage[] = [
+      { role: "system", content: "abcd" }, // 1
+      { role: "user", content: "abcdefghi" }, // 3
+      { role: "assistant", content: "" }, // 0
+    ];
+    expect(estimateMessagesTokens(messages)).toBe(4);
+  });
+});
+
+describe("estimateToolDefinitionsTokens", () => {
+  it("estimates tokens from serialized tool definitions", () => {
+    const tools: ToolDefinition[] = [
+      {
+        type: "function",
+        function: {
+          name: "demo_tool",
+          description: "A demo tool",
+          parameters: { type: "object", properties: {}, required: [] },
+        },
+      },
+    ];
+    expect(estimateToolDefinitionsTokens(tools)).toBeGreaterThan(0);
   });
 });
 
@@ -177,5 +214,46 @@ describe("trimHistory [TS-061]", () => {
     ];
     // null/undefined treated as 0 tokens each; should not throw
     expect(() => trimHistory(messages, 5)).not.toThrow();
+  });
+});
+
+describe("fitMessagesToRequestBudget", () => {
+  it("preserves leading system messages while trimming older conversation history", () => {
+    const messages: LLMMessage[] = [
+      { role: "system", content: "system-1" },
+      { role: "system", content: "system-2" },
+      { role: "user", content: "a".repeat(600) },
+      { role: "assistant", content: "b".repeat(600) },
+      { role: "user", content: "latest" },
+    ];
+
+    const result = fitMessagesToRequestBudget(messages, [], {
+      requestTokenLimit: 300,
+      desiredResponseTokens: 256,
+      minResponseTokens: 128,
+      safetyTokens: 32,
+    });
+
+    expect(result.messages[0]).toEqual(messages[0]);
+    expect(result.messages[1]).toEqual(messages[1]);
+    expect(result.messages.at(-1)).toEqual(messages.at(-1));
+    expect(result.trimmed).toBe(true);
+  });
+
+  it("marks the request as not fitting when even the fixed prompt leaves too little response budget", () => {
+    const messages: LLMMessage[] = [
+      { role: "system", content: "x".repeat(1200) }, // 300 tokens
+      { role: "user", content: "latest" },
+    ];
+
+    const result = fitMessagesToRequestBudget(messages, [], {
+      requestTokenLimit: 350,
+      desiredResponseTokens: 256,
+      minResponseTokens: 128,
+      safetyTokens: 32,
+    });
+
+    expect(result.fits).toBe(false);
+    expect(result.availableResponseTokens).toBeLessThan(128);
   });
 });

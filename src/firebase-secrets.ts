@@ -1,6 +1,25 @@
-import { defineSecret } from "firebase-functions/params";
+import { defineJsonSecret, defineSecret } from "firebase-functions/params";
 
-const SECRET_NAMES = [
+interface GeminiJsonSecretEntry {
+  env?: string;
+  key?: string;
+}
+
+interface GeminiJsonSecretShape {
+  keys?: GeminiJsonSecretEntry[];
+}
+
+interface GitHubProposalsSecretShape {
+  token?: string;
+  sshKey?: string;
+  sshKnownHosts?: string;
+  owner?: string;
+  repo?: string;
+  branch?: string;
+  pagesBaseUrl?: string;
+}
+
+const DIRECT_SECRET_NAMES = [
   "TELEGRAM_BOT_TOKEN_PRISTINO",
   "TELEGRAM_BOT_TOKEN_DEONTO",
   "GROQ_API_KEY_PRISTINO_1_JAVIER",
@@ -23,19 +42,81 @@ const SECRET_NAMES = [
   "OPENROUTER_API_KEY_DEONTO_5_GERSE",
 ] as const;
 
-const secretParams = SECRET_NAMES.map((name) => defineSecret(name));
+const directSecretParams = DIRECT_SECRET_NAMES.map((name) => defineSecret(name));
+const geminiConfigSecrets = [
+  defineJsonSecret<GeminiJsonSecretShape>("GEMINI_CONFIG_PRISTINO"),
+  defineJsonSecret<GeminiJsonSecretShape>("GEMINI_CONFIG_DEONTO"),
+] as const;
+const githubProposalsConfigSecret =
+  defineJsonSecret<GitHubProposalsSecretShape>("GITHUB_PROPOSALS_CONFIG");
 
-export const functionSecrets = secretParams;
+export const functionSecrets = [
+  ...directSecretParams,
+  ...geminiConfigSecrets,
+  githubProposalsConfigSecret,
+];
+
+function hasConcreteEnvValue(name: string): boolean {
+  const value = process.env[name]?.trim();
+  return Boolean(value && value !== "<PENDING>");
+}
+
+function readSecretValue(secret: { name: string; value: () => string }): string {
+  try {
+    return secret.value().trim();
+  } catch {
+    return "";
+  }
+}
 
 export function materializeFunctionSecrets(): void {
-  for (const secret of secretParams) {
-    if (process.env[secret.name]?.trim()) {
+  for (const secret of directSecretParams) {
+    if (hasConcreteEnvValue(secret.name)) {
       continue;
     }
 
-    const value = secret.value().trim();
+    const value = readSecretValue(secret);
     if (value) {
       process.env[secret.name] = value;
+    }
+  }
+
+  for (const secret of geminiConfigSecrets) {
+    const config = secret.value();
+    if (!config || !Array.isArray(config.keys)) {
+      continue;
+    }
+
+    for (const entry of config.keys) {
+      const envName = entry.env?.trim();
+      const keyValue = entry.key?.trim();
+      if (!envName || !keyValue || hasConcreteEnvValue(envName)) {
+        continue;
+      }
+
+      process.env[envName] = keyValue;
+    }
+  }
+
+  const githubConfig = githubProposalsConfigSecret.value();
+  if (githubConfig) {
+    const mappings: Array<[string, string | undefined]> = [
+      ["GITHUB_PROPOSALS_TOKEN", githubConfig.token],
+      ["GITHUB_PROPOSALS_SSH_KEY", githubConfig.sshKey],
+      ["GITHUB_PROPOSALS_SSH_KNOWN_HOSTS", githubConfig.sshKnownHosts],
+      ["GITHUB_PROPOSALS_OWNER", githubConfig.owner],
+      ["GITHUB_PROPOSALS_REPO", githubConfig.repo],
+      ["GITHUB_PROPOSALS_BRANCH", githubConfig.branch],
+      ["GITHUB_PAGES_BASE_URL", githubConfig.pagesBaseUrl],
+    ];
+
+    for (const [envName, rawValue] of mappings) {
+      const value = rawValue?.trim();
+      if (!value || hasConcreteEnvValue(envName)) {
+        continue;
+      }
+
+      process.env[envName] = value;
     }
   }
 }
