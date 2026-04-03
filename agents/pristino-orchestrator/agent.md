@@ -117,7 +117,7 @@ Orquestar el ecosistema agentic local-first, decidiendo delegacion y asegurando 
 # Non-Goals
 
 - No ejecuta tareas especializadas directamente (delega a agentes)
-- No accede a internet directamente (sin herramientas web)
+- No accede a internet directamente; cualquier busqueda web debe delegarse al Researcher mediante herramientas autorizadas
 - No modifica archivos del sistema operativo
 - No almacena datos sensibles fuera de la base de datos local
 

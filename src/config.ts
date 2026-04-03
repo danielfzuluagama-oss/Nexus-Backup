@@ -1,5 +1,10 @@
 import { config as loadDotenv } from "dotenv";
 import { logger } from "./logger.js";
+import {
+  resolveWebSearchSettings,
+  type WebSearchSettings,
+  type WebSearchProvider,
+} from "./web-search.js";
 
 loadDotenv();
 loadDotenv({ path: ".secrets.local", override: true });
@@ -49,6 +54,7 @@ export interface Config {
   agentsPath: string;
   agentCredentials: Map<AgentName, AgentCredentials>;
   googleOAuthToken: string;
+  webSearch: WebSearchSettings;
 }
 
 /**
@@ -111,6 +117,8 @@ function parseProviderOverride(
 
   return "auto";
 }
+
+export type { WebSearchProvider, WebSearchSettings };
 
 function loadAgentCredentials(): Map<AgentName, AgentCredentials> {
   const credentials = new Map<AgentName, AgentCredentials>();
@@ -206,6 +214,7 @@ export function loadConfig(): Config {
   const hasGeminiKeys =
     geminiApiKey.length > 0
     || [...agentCredentials.values()].some((creds) => creds.geminiApiKeys.length > 0);
+  const webSearch = resolveWebSearchSettings();
 
   return {
     telegramBotToken,
@@ -234,6 +243,7 @@ export function loadConfig(): Config {
     agentsPath: process.env.AGENTS_PATH ?? "./agents",
     agentCredentials,
     googleOAuthToken: process.env.GOOGLE_OAUTH_ACCESS_TOKEN ?? "",
+    webSearch,
   };
 }
 

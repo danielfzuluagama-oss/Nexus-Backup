@@ -19,6 +19,14 @@ interface GitHubProposalsSecretShape {
   pagesBaseUrl?: string;
 }
 
+interface WebSearchConfigSecretShape {
+  provider?: string;
+  braveApiKey?: string;
+  tavilyApiKey?: string;
+  geminiModel?: string;
+  enabled?: boolean | string;
+}
+
 const DIRECT_SECRET_NAMES = [
   "TELEGRAM_BOT_TOKEN_PRISTINO",
   "TELEGRAM_BOT_TOKEN_DEONTO",
@@ -49,11 +57,14 @@ const geminiConfigSecrets = [
 ] as const;
 const githubProposalsConfigSecret =
   defineJsonSecret<GitHubProposalsSecretShape>("GITHUB_PROPOSALS_CONFIG");
+const webSearchConfigSecret =
+  defineJsonSecret<WebSearchConfigSecretShape>("WEB_SEARCH_CONFIG");
 
 export const functionSecrets = [
   ...directSecretParams,
   ...geminiConfigSecrets,
   githubProposalsConfigSecret,
+  webSearchConfigSecret,
 ];
 
 function hasConcreteEnvValue(name: string): boolean {
@@ -108,6 +119,31 @@ export function materializeFunctionSecrets(): void {
       ["GITHUB_PROPOSALS_REPO", githubConfig.repo],
       ["GITHUB_PROPOSALS_BRANCH", githubConfig.branch],
       ["GITHUB_PAGES_BASE_URL", githubConfig.pagesBaseUrl],
+    ];
+
+    for (const [envName, rawValue] of mappings) {
+      const value = rawValue?.trim();
+      if (!value || hasConcreteEnvValue(envName)) {
+        continue;
+      }
+
+      process.env[envName] = value;
+    }
+  }
+
+  const webSearchConfig = webSearchConfigSecret.value();
+  if (webSearchConfig) {
+    const mappings: Array<[string, string | undefined]> = [
+      ["WEB_SEARCH_PROVIDER", webSearchConfig.provider],
+      ["BRAVE_SEARCH_API_KEY", webSearchConfig.braveApiKey],
+      ["TAVILY_API_KEY", webSearchConfig.tavilyApiKey],
+      ["GEMINI_WEB_SEARCH_MODEL", webSearchConfig.geminiModel],
+      [
+        "WEB_SEARCH_ENABLED",
+        typeof webSearchConfig.enabled === "boolean"
+          ? String(webSearchConfig.enabled)
+          : webSearchConfig.enabled,
+      ],
     ];
 
     for (const [envName, rawValue] of mappings) {

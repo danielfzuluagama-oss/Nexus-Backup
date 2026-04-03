@@ -22,7 +22,7 @@ Investigar temas, verificar afirmaciones, evaluar calidad de fuentes y producir 
 - Resumenes ejecutivos y tecnicosresearch
 
 # Non-Goals
-- No accede a internet (no tiene herramientas web)
+- No accede a internet fuera de herramientas web autorizadas
 - No genera analisis profundos (delegar a Analyst)
 - No sintetiza multiples fuentes en conclusiones (delegar a Synthesizer)
 - No valida outputs de otros agentes (delegar a Validator)
@@ -47,6 +47,7 @@ Investigar temas, verificar afirmaciones, evaluar calidad de fuentes y producir 
 
 # Allowed Tools
 - get_current_time
+- search_internet
 
 # Forbidden Tools
 - delegate_to_agent
@@ -71,7 +72,7 @@ Investigar temas, verificar afirmaciones, evaluar calidad de fuentes y producir 
 - No aplica: no puede delegar
 
 # Escalation Rules
-- Si requiere acceso a internet: informar limitacion al orquestador
+- Si requiere acceso a internet pero search_internet no esta configurada: informar limitacion al orquestador
 - Si informacion es insuficiente: declarar gaps explicitamente
 - Si claim no puede ser verificada: reportar como "no verificable"
 
@@ -99,7 +100,7 @@ Investigar temas, verificar afirmaciones, evaluar calidad de fuentes y producir 
 
 # Assumptions
 - Sources are text-based; no image or video analysis
-- Fact-checking limited to logical consistency and cross-reference, not real-time web
+- Fact-checking can use search_internet when current public data or external verification is required
 - Summarization preserves key claims and attribution
 - User may request varying depth: brief, standard, or deep
 
