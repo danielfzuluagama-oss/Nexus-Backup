@@ -5,6 +5,7 @@ import { getSubAgents } from "./tools/delegate.js";
 import { getOperationalKnowledgeAccessor } from "./knowledge/accessor.js";
 import { getOperationalKnowledgeStore } from "./knowledge/operational-store.js";
 import { getGitHubProposalsConfig } from "./proposals/github-publisher.js";
+import { getWebSearchIssues, resolveActiveWebSearchProvider, } from "./web-search.js";
 function nowIso() {
     return new Date().toISOString();
 }
@@ -145,6 +146,36 @@ function buildProposalFlowStatus(ecosystem, githubConfigured) {
         issues,
     };
 }
+function buildWebSearchStatus(context) {
+    const toolNames = getToolNames();
+    const toolRegistered = toolNames.includes("search_internet");
+    const researcher = context.ecosystem.agents.get("researcher");
+    const researcherReady = Array.isArray(researcher?.allowedTools)
+        ? researcher.allowedTools.includes("search_internet")
+        : false;
+    const issues = getWebSearchIssues(context.config.webSearch);
+    const activeProvider = resolveActiveWebSearchProvider(context.config.webSearch);
+    if (!toolRegistered) {
+        issues.push("search_internet tool is not registered in the runtime");
+    }
+    if (!researcherReady) {
+        issues.push("researcher agent is not allowed to use search_internet");
+    }
+    const overallStatus = !context.config.webSearch.enabled || !toolRegistered || !researcherReady
+        ? "blocked"
+        : activeProvider
+            ? "ready"
+            : "degraded";
+    return {
+        overallStatus,
+        enabled: context.config.webSearch.enabled,
+        configuredProvider: context.config.webSearch.provider,
+        activeProvider,
+        toolRegistered,
+        researcherReady,
+        issues,
+    };
+}
 export async function buildServiceStatus(context) {
     const operationalStore = getOperationalKnowledgeStore();
     const firestoreAvailable = operationalStore.isAvailable();
@@ -207,5 +238,6 @@ export async function buildServiceStatus(context) {
             pagesBaseUrl: githubConfig?.pagesBaseUrl ?? null,
         },
         proposalFlow: buildProposalFlowStatus(context.ecosystem, Boolean(githubConfig)),
+        webSearch: buildWebSearchStatus(context),
     };
 }

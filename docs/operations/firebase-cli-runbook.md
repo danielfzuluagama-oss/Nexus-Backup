@@ -178,6 +178,62 @@ npm run firebase -- deploy --project nexus-5b9bb --only functions:api,functions:
   - pide ademas datos comerciales de activacion como alcance, cronograma, mercado o moneda
   - si faltan esos datos, responde con preguntas y no emite HTML incompleto
 
+### Activacion de busqueda web
+
+- Secret recomendado para Functions:
+  - `WEB_SEARCH_CONFIG`
+- Shape JSON esperado:
+
+```json
+{
+  "provider": "gemini",
+  "geminiModel": "gemini-2.5-flash",
+  "enabled": true
+}
+```
+
+- Providers soportados por el runtime:
+  - `brave`
+  - `tavily`
+  - `gemini`
+  - `auto`
+- En `auto`, el runtime prioriza `BRAVE_SEARCH_API_KEY`, luego `TAVILY_API_KEY` y por ultimo las `GEMINI_API_KEY_*` ya materializadas desde `GEMINI_CONFIG_*`.
+- La runtime materializa desde ese bundle:
+  - `WEB_SEARCH_PROVIDER`
+  - `BRAVE_SEARCH_API_KEY`
+  - `TAVILY_API_KEY`
+  - `GEMINI_WEB_SEARCH_MODEL`
+  - `WEB_SEARCH_ENABLED`
+- Para `provider=gemini`, no hace falta duplicar una key dentro de `WEB_SEARCH_CONFIG`:
+  - reutiliza las `GEMINI_API_KEY_*` que ya usa el runtime del bot
+  - si no se define `geminiModel`, el runtime cae a `gemini-2.5-flash`
+- Comando de carga recomendado:
+
+```bash
+npm run firebase -- functions:secrets:set WEB_SEARCH_CONFIG --project nexus-5b9bb --format json --data-file /ruta/al/web-search-config.json
+```
+
+- Despliegue minimo despues de cambiar el secret o el adapter:
+
+```bash
+npm run firebase -- deploy --project nexus-5b9bb --only functions:api,functions:worker
+```
+
+- Verificacion operativa:
+
+```bash
+curl -s https://api-7bngy2juba-uc.a.run.app/status | jq '.webSearch'
+```
+
+- Campos a revisar dentro de `webSearch`:
+  - `overallStatus`
+  - `enabled`
+  - `configuredProvider`
+  - `activeProvider`
+  - `toolRegistered`
+  - `researcherReady`
+  - `issues`
+
 ### Queries de incidentes para propuestas
 
 Inspeccionar el flujo de propuestas en produccion:

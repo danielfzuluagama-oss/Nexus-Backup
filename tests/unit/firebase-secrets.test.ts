@@ -28,6 +28,9 @@ beforeEach(() => {
       || key.startsWith("OPENROUTER_")
       || key.startsWith("GEMINI_")
       || key.startsWith("GITHUB_")
+      || key.startsWith("WEB_SEARCH")
+      || key.startsWith("BRAVE_")
+      || key.startsWith("TAVILY_")
     ) {
       delete process.env[key];
     }
@@ -51,6 +54,7 @@ describe("materializeFunctionSecrets", () => {
     const secretNames = functionSecrets.map((secret) => secret.name);
 
     expect(secretNames).toContain("GITHUB_PROPOSALS_CONFIG");
+    expect(secretNames).toContain("WEB_SEARCH_CONFIG");
     expect(secretNames).not.toContain("GITHUB_PROPOSALS_TOKEN");
     expect(secretNames).not.toContain("GITHUB_PROPOSALS_SSH_KEY");
     expect(secretNames).not.toContain("GITHUB_PROPOSALS_SSH_KNOWN_HOSTS");
@@ -117,6 +121,21 @@ describe("materializeFunctionSecrets", () => {
     expect(process.env.GITHUB_PROPOSALS_REPO).toBe("propuestas-comerciales");
     expect(process.env.GITHUB_PROPOSALS_BRANCH).toBe("main");
     expect(process.env.GITHUB_PAGES_BASE_URL).toBe("https://danielfzuluagama-oss.github.io/propuestas-comerciales");
+  });
+
+  it("materializes web search config from JSON secret", async () => {
+    secretValues.set("WEB_SEARCH_CONFIG", {
+      provider: "gemini",
+      geminiModel: "gemini-2.5-flash",
+      enabled: true,
+    });
+
+    const { materializeFunctionSecrets } = await import("../../src/firebase-secrets.js");
+    materializeFunctionSecrets();
+
+    expect(process.env.WEB_SEARCH_PROVIDER).toBe("gemini");
+    expect(process.env.GEMINI_WEB_SEARCH_MODEL).toBe("gemini-2.5-flash");
+    expect(process.env.WEB_SEARCH_ENABLED).toBe("true");
   });
 
   it("preserves concrete GitHub env vars while filling missing JSON-backed values", async () => {

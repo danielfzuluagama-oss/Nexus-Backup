@@ -15,6 +15,7 @@ import { logger } from "./logger.js";
 import { initializeOpenClawSymlinks } from "./tools/symlink.js";
 import { claimTelegramUpdate, markTelegramUpdateCompleted, markTelegramUpdateFailed, } from "./telegram-update-guard.js";
 import { buildServiceStatus } from "./service-status.js";
+import { attachTelegramTaskContext, createTelegramTaskContext, getTelegramUpdateUserId, parseTelegramTaskContext, } from "./telegram-task-context.js";
 const PRIMARY_INTERNAL_BOT_NAME = "pristino";
 const PRIMARY_PUBLIC_BOT_NAME = (process.env.PRIMARY_BOT_NAME ?? "nexus")
     .trim()
@@ -128,10 +129,11 @@ function parseTaskPayload(raw) {
     const candidate = parsed;
     const botName = typeof candidate.botName === "string" ? candidate.botName : "";
     const update = candidate.update;
+    const taskContext = parseTelegramTaskContext(candidate.taskContext);
     if (!botName || !update || typeof update !== "object") {
         return null;
     }
-    return { botName, update: update };
+    return { botName, update: update, taskContext };
 }
 export function decodeTaskPayloadFromBase64(data) {
     try {
@@ -153,14 +155,38 @@ async function processTaskPayloadWithBots(bots, payload) {
         });
         return false;
     }
+    const workerStartedAt = Date.now();
+    const baseTaskContext = payload.taskContext
+        ?? createTelegramTaskContext({
+            botName: resolvedBotName,
+            updateId: payload.update.update_id,
+            userId: getTelegramUpdateUserId(payload.update),
+            source: "local",
+        });
+    const taskContext = {
+        ...baseTaskContext,
+        workerReceivedAt: workerStartedAt,
+        queueWaitMs: typeof baseTaskContext.queuedAt === "number"
+            ? Math.max(0, workerStartedAt - baseTaskContext.queuedAt)
+            : null,
+    };
+    const instrumentedUpdate = attachTelegramTaskContext(payload.update, taskContext);
     logger.info("Consuming task payload", {
+        executionId: taskContext.executionId,
+        source: taskContext.source,
         botName: resolvedBotName,
         requestedBotName: payload.botName,
         update_id: payload.update.update_id,
+        workerReceivedAt: taskContext.workerReceivedAt,
+        queueWaitMs: taskContext.queueWaitMs,
+        totalSinceIngressMs: typeof taskContext.ingressReceivedAt === "number"
+            ? Math.max(0, workerStartedAt - taskContext.ingressReceivedAt)
+            : null,
     });
     const claimResult = await claimTelegramUpdate(resolvedBotName, payload.update.update_id);
     if (claimResult === "duplicate") {
         logger.info("Skipping duplicate Telegram update", {
+            executionId: taskContext.executionId,
             botName: resolvedBotName,
             requestedBotName: payload.botName,
             update_id: payload.update.update_id,
@@ -168,11 +194,30 @@ async function processTaskPayloadWithBots(bots, payload) {
         return true;
     }
     try {
-        await targetBot.handleUpdate(payload.update);
+        await targetBot.handleUpdate(instrumentedUpdate);
         await markTelegramUpdateCompleted(resolvedBotName, payload.update.update_id);
+        logger.info("Completed task payload", {
+            executionId: taskContext.executionId,
+            botName: resolvedBotName,
+            update_id: payload.update.update_id,
+            workerProcessingMs: Date.now() - workerStartedAt,
+            totalSinceIngressMs: typeof taskContext.ingressReceivedAt === "number"
+                ? Math.max(0, Date.now() - taskContext.ingressReceivedAt)
+                : null,
+        });
     }
     catch (error) {
         await markTelegramUpdateFailed(resolvedBotName, payload.update.update_id, error);
+        logger.error("Task payload failed during bot execution", {
+            executionId: taskContext.executionId,
+            botName: resolvedBotName,
+            update_id: payload.update.update_id,
+            workerProcessingMs: Date.now() - workerStartedAt,
+            totalSinceIngressMs: typeof taskContext.ingressReceivedAt === "number"
+                ? Math.max(0, Date.now() - taskContext.ingressReceivedAt)
+                : null,
+            error,
+        });
         throw error;
     }
     return true;
@@ -313,6 +358,7 @@ async function buildServiceContext() {
         }
     });
     app.post("/webhook/:botName", async (req, res) => {
+        const ingressStartedAt = Date.now();
         const paramBotName = req.params.botName;
         const requestedBotName = Array.isArray(paramBotName) ? paramBotName[0] : paramBotName;
         const botName = resolveInternalBotName(requestedBotName);
@@ -322,12 +368,26 @@ async function buildServiceContext() {
         }
         const update = req.body;
         try {
-            const taskPayload = { botName, update };
+            const taskContext = createTelegramTaskContext({
+                botName,
+                updateId: update.update_id,
+                userId: getTelegramUpdateUserId(update),
+                source: "webhook",
+                ingressReceivedAt: ingressStartedAt,
+                queuedAt: Date.now(),
+                traceHeader: req.get("x-cloud-trace-context") ?? null,
+                webhookPath: req.originalUrl ?? req.path ?? null,
+            });
+            const taskPayload = { botName, update, taskContext };
             const dataBuffer = Buffer.from(JSON.stringify(taskPayload));
             await pubsub.topic(topicName).publishMessage({ data: dataBuffer });
             logger.info("Published Telegram update to Pub/Sub", {
+                executionId: taskContext.executionId,
                 botName,
                 update_id: update.update_id,
+                ingressAckMs: Date.now() - ingressStartedAt,
+                queuedAt: taskContext.queuedAt,
+                traceHeader: taskContext.traceHeader,
             });
             res.status(200).send("OK");
         }

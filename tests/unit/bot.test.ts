@@ -457,6 +457,46 @@ describe("Message handler — text messages", () => {
     );
   });
 
+  it("uses the propagated task execution context when present", async () => {
+    const runtime = makeRuntime();
+    createBot(runtime);
+
+    const ctx = makeCtx({
+      update: {
+        update_id: 77,
+        __nexusTaskContext: {
+          executionId: "exec-ctx-77",
+          source: "webhook",
+          ingressReceivedAt: Date.now() - 250,
+          queuedAt: Date.now() - 120,
+          workerReceivedAt: Date.now() - 80,
+          queueWaitMs: 40,
+          traceHeader: "trace-ctx",
+          webhookPath: "/webhook/nexus",
+        },
+      },
+      message: { text: "What is the weather?", message_id: 1 },
+    });
+
+    await capturedMessageHandlerRef.fn!(ctx);
+
+    expect(runtime.logger.info).toHaveBeenCalledWith(
+      "Telegram execution context ready",
+      expect.objectContaining({
+        executionId: "exec-ctx-77",
+        source: "webhook",
+        queueWaitMs: 40,
+      }),
+    );
+    expect(runtime.logger.info).toHaveBeenCalledWith(
+      "Running agent cognition...",
+      expect.objectContaining({
+        executionId: "exec-ctx-77",
+        queueWaitMs: 40,
+      }),
+    );
+  });
+
   it("sends agent response back via ctx.reply", async () => {
     const runtime = makeRuntime();
     createBot(runtime);
@@ -533,6 +573,60 @@ describe("Message handler — text messages", () => {
       expect.stringContaining("Respuesta directa del KB operativo para Proceso Presales."),
       { parse_mode: "HTML" },
     );
+  });
+
+  it("skips thread hydration when the operational fast path resolves early", async () => {
+    const runtime = makeRuntime();
+    createBot(runtime);
+
+    mockOperationalListProcesses.mockResolvedValueOnce([
+      {
+        processId: "proceso-presales",
+        processName: "Proceso Presales",
+        variants: ["presales"],
+        relatedProcesses: [],
+        status: "ready",
+        summary: "Califica oportunidades y prepara handoff comercial.",
+        owners: ["AE", "PM"],
+        docCount: 12,
+        chunkCount: 48,
+        sources: [],
+        phases: ["Discovery", "Scoping", "Proposal"],
+        gates: ["Discovery validado"],
+        assets: ["Brief", "Propuesta"],
+        sops: ["SOP Discovery"],
+        metrics: [],
+        capabilities: {
+          onboarding: [],
+          assistance: [],
+          execution: [],
+        },
+      },
+    ]);
+    mockOperationalCreateOnboardingPack.mockResolvedValueOnce({
+      processId: "proceso-presales",
+      processName: "Proceso Presales",
+      audienceRole: "nuevo integrante",
+      summary: "Califica oportunidades y prepara handoff comercial.",
+      checklist: ["Revisar brief"],
+      walkthrough: ["Paso 1: Discovery"],
+      essentialAssets: ["Brief"],
+      essentialSops: ["SOP Discovery"],
+      firstQuestions: ["¿Cual es el trigger?"],
+      evidence: [],
+    });
+
+    const ctx = makeCtx({
+      message: {
+        text: "Necesito onboarding del proceso presales.",
+        message_id: 21,
+      },
+    });
+    await capturedMessageHandlerRef.fn!(ctx);
+
+    expect(mockGetRecentMessages).not.toHaveBeenCalled();
+    expect(mockDescribeThreadMemory).not.toHaveBeenCalled();
+    expect(vi.mocked(runAgent)).not.toHaveBeenCalled();
   });
 
   it("uses the operational execution fast path even when the requested deliverable is a proposal", async () => {
@@ -696,6 +790,24 @@ describe("Message handler — text messages", () => {
         (call) => typeof call[0] === "string" && call[0].includes("bloqueada antes de generar el adjunto"),
       ),
     ).toBe(false);
+  });
+
+  it("skips proposal history preload for generic non-proposal messages", async () => {
+    const runtime = makeRuntime();
+    createBot(runtime);
+
+    const ctx = makeCtx({
+      message: {
+        text: "What is the weather?",
+        message_id: 22,
+      },
+    });
+    await capturedMessageHandlerRef.fn!(ctx);
+
+    expect(mockGetOrCreateActiveThread).toHaveBeenCalled();
+    expect(mockDescribeThreadMemory).toHaveBeenCalled();
+    expect(mockGetRecentMessages).not.toHaveBeenCalled();
+    expect(vi.mocked(runAgent)).toHaveBeenCalled();
   });
 
   it("delivers proposal content privately when the request comes from a group chat", async () => {
