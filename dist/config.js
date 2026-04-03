@@ -1,5 +1,6 @@
 import { config as loadDotenv } from "dotenv";
 import { logger } from "./logger.js";
+import { resolveWebSearchSettings, } from "./web-search.js";
 loadDotenv();
 loadDotenv({ path: ".secrets.local", override: true });
 /**
@@ -130,6 +131,7 @@ export function loadConfig() {
     }
     const hasGeminiKeys = geminiApiKey.length > 0
         || [...agentCredentials.values()].some((creds) => creds.geminiApiKeys.length > 0);
+    const webSearch = resolveWebSearchSettings();
     return {
         telegramBotToken,
         allowedUserIds,
@@ -157,6 +159,7 @@ export function loadConfig() {
         agentsPath: process.env.AGENTS_PATH ?? "./agents",
         agentCredentials,
         googleOAuthToken: process.env.GOOGLE_OAUTH_ACCESS_TOKEN ?? "",
+        webSearch,
     };
 }
 /** Get credentials for a specific agent, falling back to legacy config */

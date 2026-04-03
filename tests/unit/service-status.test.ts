@@ -101,6 +101,14 @@ function makeContext(overrides: Record<string, unknown> = {}) {
       llmProviderOverride: "auto",
       geminiFallbackEnabled: true,
       googleOAuthToken: "",
+      webSearch: {
+        enabled: true,
+        provider: "auto",
+        braveApiKey: "brave-key",
+        tavilyApiKey: "",
+        geminiApiKey: "",
+        geminiModel: "gemini-2.5-flash",
+      },
     },
     ecosystem: {
       initialized: true,
@@ -111,6 +119,14 @@ function makeContext(overrides: Record<string, unknown> = {}) {
             id: "pristino-orchestrator",
             name: "Pristino Orchestrator",
             allowedTools: ["route_to_agent", "search_memory"],
+          },
+        ],
+        [
+          "researcher",
+          {
+            id: "researcher",
+            name: "Researcher",
+            allowedTools: ["get_current_time", "search_internet"],
           },
         ],
       ]),
@@ -131,7 +147,7 @@ function makeContext(overrides: Record<string, unknown> = {}) {
 describe("buildServiceStatus", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetToolNames.mockReturnValue(["search_memory", "route_to_agent"]);
+    mockGetToolNames.mockReturnValue(["search_memory", "route_to_agent", "search_internet"]);
     mockGetSubAgents.mockReturnValue(new Map([["researcher", {}], ["validator", {}]]));
     mockOperationalStore.isAvailable.mockReturnValue(true);
     mockOperationalStore.hasSyncedKnowledge.mockResolvedValue(true);
@@ -172,6 +188,10 @@ describe("buildServiceStatus", () => {
     expect(status.proposalFlow.smokeScriptAvailable).toBe(true);
     expect(status.proposalFlow.templateAssetAvailable).toBe(true);
     expect(status.proposalFlow.renderSafeguardsReady).toBe(true);
+    expect(status.webSearch.overallStatus).toBe("ready");
+    expect(status.webSearch.activeProvider).toBe("brave");
+    expect(status.webSearch.toolRegistered).toBe(true);
+    expect(status.webSearch.researcherReady).toBe(true);
   });
 
   it("marks the proposal flow as degraded when GitHub publishing is unavailable", async () => {
@@ -213,6 +233,52 @@ describe("buildServiceStatus", () => {
     expect(status.proposalFlow.issues).toContain(
       "GitHub proposal publishing is not configured in the current runtime",
     );
+  });
+
+  it("marks web search as degraded when enabled without provider keys", async () => {
+    const status = await buildServiceStatus(
+      makeContext({
+        config: {
+          llmProviderOverride: "auto",
+          geminiFallbackEnabled: true,
+          googleOAuthToken: "",
+          webSearch: {
+            enabled: true,
+            provider: "auto",
+            braveApiKey: "",
+            tavilyApiKey: "",
+            geminiApiKey: "",
+            geminiModel: "gemini-2.5-flash",
+          },
+        },
+      }) as never,
+    );
+
+    expect(status.webSearch.overallStatus).toBe("degraded");
+    expect(status.webSearch.issues).toContain("No web search provider credential is configured");
+  });
+
+  it("marks web search as ready when Gemini is the active provider", async () => {
+    const status = await buildServiceStatus(
+      makeContext({
+        config: {
+          llmProviderOverride: "auto",
+          geminiFallbackEnabled: true,
+          googleOAuthToken: "",
+          webSearch: {
+            enabled: true,
+            provider: "gemini",
+            braveApiKey: "",
+            tavilyApiKey: "",
+            geminiApiKey: "gemini-key",
+            geminiModel: "gemini-2.5-flash",
+          },
+        },
+      }) as never,
+    );
+
+    expect(status.webSearch.overallStatus).toBe("ready");
+    expect(status.webSearch.activeProvider).toBe("gemini");
   });
 
   it("reports server mode when running behind function runtime env vars", async () => {

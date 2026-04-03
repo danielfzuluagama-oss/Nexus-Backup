@@ -1,6 +1,7 @@
 import * as getCurrentTime from "./get-current-time.js";
 import * as knowledge from "./knowledge.js";
 import * as searchOperationalKnowledge from "./search-operational-knowledge.js";
+import * as searchInternet from "./search-internet.js";
 import * as getProcessModule from "./get-process-module.js";
 import * as getOperationalKbStatus from "./get-operational-kb-status.js";
 import * as prepareProcessOnboarding from "./prepare-process-onboarding.js";
@@ -20,6 +21,7 @@ export class ToolRegistry {
         this.register(getCurrentTime.definition, getCurrentTime.execute);
         this.register(knowledge.definition, knowledge.readCoreKnowledge);
         this.register(searchOperationalKnowledge.definition, searchOperationalKnowledge.execute);
+        this.register(searchInternet.definition, searchInternet.execute);
         this.register(getProcessModule.definition, getProcessModule.execute);
         this.register(getOperationalKbStatus.definition, getOperationalKbStatus.execute);
         this.register(prepareProcessOnboarding.definition, prepareProcessOnboarding.execute);

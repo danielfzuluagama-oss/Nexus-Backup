@@ -27,10 +27,12 @@ const geminiConfigSecrets = [
     defineJsonSecret("GEMINI_CONFIG_DEONTO"),
 ];
 const githubProposalsConfigSecret = defineJsonSecret("GITHUB_PROPOSALS_CONFIG");
+const webSearchConfigSecret = defineJsonSecret("WEB_SEARCH_CONFIG");
 export const functionSecrets = [
     ...directSecretParams,
     ...geminiConfigSecrets,
     githubProposalsConfigSecret,
+    webSearchConfigSecret,
 ];
 function hasConcreteEnvValue(name) {
     const value = process.env[name]?.trim();
@@ -78,6 +80,28 @@ export function materializeFunctionSecrets() {
             ["GITHUB_PROPOSALS_REPO", githubConfig.repo],
             ["GITHUB_PROPOSALS_BRANCH", githubConfig.branch],
             ["GITHUB_PAGES_BASE_URL", githubConfig.pagesBaseUrl],
+        ];
+        for (const [envName, rawValue] of mappings) {
+            const value = rawValue?.trim();
+            if (!value || hasConcreteEnvValue(envName)) {
+                continue;
+            }
+            process.env[envName] = value;
+        }
+    }
+    const webSearchConfig = webSearchConfigSecret.value();
+    if (webSearchConfig) {
+        const mappings = [
+            ["WEB_SEARCH_PROVIDER", webSearchConfig.provider],
+            ["BRAVE_SEARCH_API_KEY", webSearchConfig.braveApiKey],
+            ["TAVILY_API_KEY", webSearchConfig.tavilyApiKey],
+            ["GEMINI_WEB_SEARCH_MODEL", webSearchConfig.geminiModel],
+            [
+                "WEB_SEARCH_ENABLED",
+                typeof webSearchConfig.enabled === "boolean"
+                    ? String(webSearchConfig.enabled)
+                    : webSearchConfig.enabled,
+            ],
         ];
         for (const [envName, rawValue] of mappings) {
             const value = rawValue?.trim();

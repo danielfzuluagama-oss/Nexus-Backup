@@ -29,6 +29,9 @@ beforeEach(() => {
       key.startsWith("GROQ_") ||
       key.startsWith("OPENROUTER_") ||
       key.startsWith("GEMINI_") ||
+      key.startsWith("WEB_SEARCH") ||
+      key.startsWith("BRAVE_") ||
+      key.startsWith("TAVILY_") ||
       key.startsWith("DB_PATH") ||
       key.startsWith("MAX_") ||
       key.startsWith("MODEL_") ||
@@ -181,6 +184,37 @@ describe("loadConfig — happy path", () => {
     const { loadConfig } = await import("../../src/config.js");
     const config = loadConfig();
     expect(config.googleOAuthToken).toBe("oauth-token-xyz");
+  });
+
+  it("loads web search settings from env vars", async () => {
+    setMinimalEnv();
+    process.env.WEB_SEARCH_ENABLED = "true";
+    process.env.WEB_SEARCH_PROVIDER = "tavily";
+    process.env.TAVILY_API_KEY = "tvly-test-key";
+
+    const { loadConfig } = await import("../../src/config.js");
+    const config = loadConfig();
+
+    expect(config.webSearch.enabled).toBe(true);
+    expect(config.webSearch.provider).toBe("tavily");
+    expect(config.webSearch.tavilyApiKey).toBe("tvly-test-key");
+    expect(config.webSearch.braveApiKey).toBe("");
+  });
+
+  it("loads Gemini web search settings from materialized runtime keys", async () => {
+    setMinimalEnv();
+    process.env.WEB_SEARCH_ENABLED = "true";
+    process.env.WEB_SEARCH_PROVIDER = "gemini";
+    process.env.GEMINI_API_KEY_PRISTINO_1_DANI = "gemini-web-key";
+    process.env.GEMINI_WEB_SEARCH_MODEL = "gemini-2.5-flash";
+
+    const { loadConfig } = await import("../../src/config.js");
+    const config = loadConfig();
+
+    expect(config.webSearch.enabled).toBe(true);
+    expect(config.webSearch.provider).toBe("gemini");
+    expect(config.webSearch.geminiApiKey).toBe("gemini-web-key");
+    expect(config.webSearch.geminiModel).toBe("gemini-2.5-flash");
   });
 });
 

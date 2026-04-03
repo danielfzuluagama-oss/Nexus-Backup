@@ -30,6 +30,7 @@ import {
   type ControlledTemplateName,
 } from "./controlled-deliverables.js";
 import { buildAgentResponseContract } from "./response-contracts.js";
+import { buildInternetResearchResponseContract } from "./web-search.js";
 import {
   buildProposalArtifact,
   extractClientNameFromRequest,
@@ -63,6 +64,10 @@ import {
   recordTelegramConversationUpdate,
 } from "./telegram-update-guard.js";
 import type { ThreadProposalState } from "./thread-memory.js";
+import {
+  buildTelegramExecutionId,
+  readTelegramTaskContext,
+} from "./telegram-task-context.js";
 
 /**
  * TELEGRAM GATEWAY — Multimodal ingress/egress and agent orchestration.
@@ -390,15 +395,19 @@ function includesAnyNormalizedKeyword(haystack: string, keywords: string[]): boo
   return keywords.some((keyword) => haystack.includes(normalizeForMatching(keyword)));
 }
 
+function threadMemorySignalsProposal(threadMemoryContext?: string): boolean {
+  const normalizedThreadContext = normalizeForMatching(threadMemoryContext ?? "");
+  return (
+    normalizedThreadContext.includes("tipo proposal")
+    || normalizedThreadContext.includes("estado comercial")
+  );
+}
+
 function hasProposalConversationSignals(
   recentMessages: ProposalHistoryMessage[],
   threadMemoryContext?: string,
 ): boolean {
-  const normalizedThreadContext = normalizeForMatching(threadMemoryContext ?? "");
-  if (
-    normalizedThreadContext.includes("tipo proposal")
-    || normalizedThreadContext.includes("estado comercial")
-  ) {
+  if (threadMemorySignalsProposal(threadMemoryContext)) {
     return true;
   }
 
@@ -412,6 +421,50 @@ function hasProposalConversationSignals(
     }
     return classifyTelegramIntent(message.content).templateName === "proposal";
   });
+}
+
+function shouldLoadProposalConversationHistory(
+  currentText: string,
+  currentIntent: TelegramIntent,
+  threadMemoryContext?: string,
+): boolean {
+  const normalizedCurrentMessage = currentIntent.normalizedMessage || normalizeForMatching(currentText);
+  if (!normalizedCurrentMessage) {
+    return false;
+  }
+
+  if (includesAnyNormalizedKeyword(normalizedCurrentMessage, CAPABILITY_EXPLORATION_KEYWORDS)) {
+    return false;
+  }
+
+  if (currentIntent.templateName === "proposal") {
+    return true;
+  }
+
+  if (currentIntent.kind !== "agent") {
+    return false;
+  }
+
+  if (
+    includesAnyNormalizedKeyword(normalizedCurrentMessage, PROPOSAL_CONTINUATION_KEYWORDS)
+    || includesAnyNormalizedKeyword(normalizedCurrentMessage, PROPOSAL_FIELD_HINT_KEYWORDS)
+  ) {
+    return true;
+  }
+
+  if (!threadMemorySignalsProposal(threadMemoryContext)) {
+    return false;
+  }
+
+  if (currentIntent.templateName) {
+    return false;
+  }
+
+  if (currentIntent.responseMode !== "default") {
+    return false;
+  }
+
+  return false;
 }
 
 function shouldPreserveProposalConversationContext(
@@ -871,6 +924,15 @@ export function createBot(runtime: AgentRuntime): Bot {
   bot.on("message", async (ctx) => {
     const userId = ctx.from.id;
     const updateId = ctx.update.update_id;
+    const messageStartedAt = Date.now();
+    const taskContext = readTelegramTaskContext(ctx.update);
+    const executionId =
+      taskContext?.executionId
+      ?? buildTelegramExecutionId(runtime.instanceName, updateId, userId);
+    const getEndToEndElapsedMs = (): number | null =>
+      typeof taskContext?.ingressReceivedAt === "number"
+        ? Math.max(0, Date.now() - taskContext.ingressReceivedAt)
+        : null;
     const messageThreadId = getTelegramMessageThreadId(ctx.message);
     const conversationContext = {
       conversationKey: buildTelegramConversationKey({
@@ -880,6 +942,16 @@ export function createBot(runtime: AgentRuntime): Bot {
       }),
     };
     const conversationKey = conversationContext.conversationKey;
+    log.info("Telegram execution context ready", {
+      executionId,
+      userId,
+      updateId,
+      conversationKey,
+      source: taskContext?.source ?? "local",
+      queueWaitMs: taskContext?.queueWaitMs ?? null,
+      workerReceivedAt: taskContext?.workerReceivedAt ?? null,
+      totalSinceIngressMs: getEndToEndElapsedMs(),
+    });
     let text = ctx.message.text || ctx.message.caption || "";
     let pendingMsgId: number | null = null;
     let proposalKnowledgeContext: ProposalKnowledgeContext | null = null;
@@ -971,6 +1043,32 @@ export function createBot(runtime: AgentRuntime): Bot {
           ? ctx.api.sendDocument(targetChatId, document, options)
           : ctx.api.sendDocument(targetChatId, document),
       );
+    const sendDirectResponseWithFallback = async (content: string): Promise<void> => {
+      const htmlFormatted = formatForTelegram(content);
+      const chunks = splitMessageHtml(htmlFormatted);
+
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        try {
+          await replyFresh(chunk, { parse_mode: "HTML" });
+        } catch (err: unknown) {
+          const errObj = err as { description?: string };
+          log.error("Failed to send direct fast-path chunk", {
+            executionId,
+            userId,
+            updateId,
+            conversationKey,
+            chunkIndex: i,
+            error: err,
+          });
+
+          if (errObj?.description?.includes("can't parse entities")) {
+            const plainChunk = stripHtml(chunk);
+            await replyFresh(plainChunk);
+          }
+        }
+      }
+    };
 
     // --- SKIP SERVICE MESSAGES ---
     // Telegram forum topics generate service messages (forum_topic_created, etc.)
@@ -1125,43 +1223,129 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
     let proposalConversationText = text;
     const currentIntent = classifyTelegramIntent(text, { hasMedia });
     let intent = currentIntent;
+    const fastPathStartedAt = Date.now();
+    if (currentIntent.kind !== "agent") {
+      const directResponse = await tryOperationalRoute(text, currentIntent, log);
+      if (directResponse) {
+        const directReplyStartedAt = Date.now();
+        log.info("Operational fast path hit before thread hydration", {
+          executionId,
+          userId,
+          updateId,
+          conversationKey,
+          intentKind: currentIntent.kind,
+          queueWaitMs: taskContext?.queueWaitMs ?? null,
+          fastPathMs: Date.now() - fastPathStartedAt,
+          totalElapsedMs: Date.now() - messageStartedAt,
+          endToEndElapsedMs: getEndToEndElapsedMs(),
+        });
+        await sendDirectResponseWithFallback(directResponse);
+
+        try {
+          threadId = await runtime.memory.getOrCreateActiveThread(
+            userId,
+            runtime.instanceName,
+            conversationContext,
+          );
+          await updateThreadMemory(userId, threadId, {
+            conversationKind: "operational",
+            lastUserMessagePreview: text,
+            lastAssistantMessagePreview: directResponse,
+          });
+        } catch (error) {
+          log.warn("Failed to persist operational fast-path thread memory", {
+            executionId,
+            userId,
+            updateId,
+            conversationKey,
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+
+        log.info("Operational fast path delivery complete", {
+          executionId,
+          userId,
+          updateId,
+          conversationKey,
+          replyDeliveryMs: Date.now() - directReplyStartedAt,
+          totalElapsedMs: Date.now() - messageStartedAt,
+          endToEndElapsedMs: getEndToEndElapsedMs(),
+        });
+
+        return;
+      }
+    }
+
+    const proposalContextStartedAt = Date.now();
     try {
       threadId = await runtime.memory.getOrCreateActiveThread(
         userId,
         runtime.instanceName,
         conversationContext,
       );
-      const recentMessages = await runtime.memory.getRecentMessages(
-        userId,
-        6,
-        threadId,
-        runtime.instanceName,
-      );
       threadMemoryContext = await describeThreadMemory(userId, threadId, runtime.instanceName);
-      if (
-        shouldPreserveProposalConversationContext(
-          text,
-          currentIntent,
-          recentMessages,
-          threadMemoryContext,
-        )
-      ) {
-        proposalConversationText = buildProposalConversationText(text, recentMessages, threadMemoryContext);
-        intent = classifyTelegramIntent(proposalConversationText, { hasMedia });
+      const shouldLoadHistory = shouldLoadProposalConversationHistory(
+        text,
+        currentIntent,
+        threadMemoryContext,
+      );
+
+      if (shouldLoadHistory) {
+        const recentMessages = await runtime.memory.getRecentMessages(
+          userId,
+          6,
+          threadId,
+          runtime.instanceName,
+        );
+        if (
+          shouldPreserveProposalConversationContext(
+            text,
+            currentIntent,
+            recentMessages,
+            threadMemoryContext,
+          )
+        ) {
+          proposalConversationText = buildProposalConversationText(
+            text,
+            recentMessages,
+            threadMemoryContext,
+          );
+          intent = classifyTelegramIntent(proposalConversationText, { hasMedia });
+        }
       }
+      log.info("Proposal context hydration complete", {
+        executionId,
+        userId,
+        updateId,
+        conversationKey,
+        historyLoaded: shouldLoadHistory,
+        proposalContextMs: Date.now() - proposalContextStartedAt,
+        threadMemoryChars: threadMemoryContext.length,
+        totalElapsedMs: Date.now() - messageStartedAt,
+        endToEndElapsedMs: getEndToEndElapsedMs(),
+      });
     } catch (error) {
       log.warn("Failed to load proposal conversation history", {
+        executionId,
         userId,
+        updateId,
+        conversationKey,
         error: error instanceof Error ? error.message : String(error),
       });
     }
 
     log.info("Telegram intent classified", {
+      executionId,
       userId,
+      updateId,
+      conversationKey,
       kind: intent.kind,
       responseMode: intent.responseMode,
       template: intent.templateName,
       reason: intent.reason,
+      queueWaitMs: taskContext?.queueWaitMs ?? null,
+      elapsedMs: Date.now() - messageStartedAt,
+      endToEndElapsedMs: getEndToEndElapsedMs(),
     });
     if (proposalConversationText !== text) {
       log.info("Proposal conversation context preserved across turns", {
@@ -1275,7 +1459,16 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
 
     // --- TIMEOUT PROTECTION CIRCUIT BREAKER ---
     // Forces the promise to resolve internally if the LLM/Agent gets stuck processing tools
-    log.info("Running agent cognition...", { userId, textLength: text.length });
+    log.info("Running agent cognition...", {
+      executionId,
+      userId,
+      updateId,
+      conversationKey,
+      textLength: text.length,
+      preAgentMs: Date.now() - messageStartedAt,
+      queueWaitMs: taskContext?.queueWaitMs ?? null,
+      endToEndElapsedMs: getEndToEndElapsedMs(),
+    });
     let proposalDraftJson: string | null = null;
     let proposalArtifactClientName: string | null = null;
     let resolvedProposalKnowledgeContext: ProposalKnowledgeContext | null = proposalKnowledgeContext ?? null;
@@ -1355,9 +1548,14 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       }
 
       const responseContract = buildAgentResponseContract(intent);
-      if (responseContract) {
+      const internetResearchContract = buildInternetResearchResponseContract(text);
+      const combinedResponseContract = [responseContract, internetResearchContract]
+        .filter((value): value is string => Boolean(value))
+        .join("\n\n");
+
+      if (combinedResponseContract) {
         return runAgent(getAgentDeps(), userId, text, {
-          responseContract,
+          responseContract: combinedResponseContract,
           conversationContext,
         });
       }
@@ -1365,15 +1563,32 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       return runAgent(getAgentDeps(), userId, text, { conversationContext });
     })();
 
+    const cognitionStartedAt = Date.now();
     let result = await Promise.race([
       cognitionTask,
       agentTimeoutPromise,
     ]).catch((err) => {
-      log.error("Message handling failed or timed out", { userId, error: err.message || err });
+      log.error("Message handling failed or timed out", {
+        executionId,
+        userId,
+        updateId,
+        conversationKey,
+        elapsedMs: Date.now() - messageStartedAt,
+        error: err.message || err,
+      });
       return `Lo siento, la solicitud tardó demasiado en procesarse (Timeout ${Math.floor(timeoutMs / 1000)}s). Por favor intenta de nuevo.`;
     });
 
-    log.info("Agent cognition complete", { userId, resultLength: result.length });
+    log.info("Agent cognition complete", {
+      executionId,
+      userId,
+      updateId,
+      conversationKey,
+      resultLength: result.length,
+      agentRunMs: Date.now() - cognitionStartedAt,
+      totalElapsedMs: Date.now() - messageStartedAt,
+      endToEndElapsedMs: getEndToEndElapsedMs(),
+    });
 
     if (await isStaleConversationUpdate()) {
       if (pendingMsgId) {
@@ -1590,6 +1805,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       await dismissPendingReply();
     }
 
+    const replyDeliveryStartedAt = Date.now();
     await sendWithFallback(chunks, true);
 
     if (publishedProposal && proposalArtifact) {
@@ -1598,6 +1814,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
         true,
       ).then(() => {
         log.info("Sent published proposal links", {
+          executionId,
           userId,
           clientName: proposalArtifact.clientName,
           repoPath: publishedProposal.repoPath,
@@ -1606,6 +1823,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
         });
       }).catch((error) => {
         log.error("Failed to send published proposal links", {
+          executionId,
           userId,
           error,
         });
@@ -1615,6 +1833,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
     if (proposalArtifact && proposalPublishFailed) {
       await sendProposalText(buildProposalFallbackReply(proposalArtifact.clientName, true), true).catch((error) => {
         log.error("Failed to send proposal fallback notice", {
+          executionId,
           userId,
           error,
         });
@@ -1638,6 +1857,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       });
       await sendProposalText(buildProposalFallbackReply(clientName, false), true).catch((error) => {
         log.error("Failed to send proposal fallback notice (no artifact)", {
+          executionId,
           userId,
           error,
         });
@@ -1661,6 +1881,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
 
       await sendProposalDocument().catch((error) => {
         log.error("Failed to send proposal HTML document", {
+          executionId,
           userId,
           error,
         });
@@ -1669,6 +1890,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
           return;
         }
         log.info("Sent proposal HTML document", {
+          executionId,
           userId,
           clientName: proposalArtifact.clientName,
           fileName: proposalArtifact.fileName,
@@ -1677,6 +1899,19 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
         });
       });
     }
+
+    log.info("Telegram delivery complete", {
+      executionId,
+      userId,
+      updateId,
+      conversationKey,
+      replyDeliveryMs: Date.now() - replyDeliveryStartedAt,
+      totalElapsedMs: Date.now() - messageStartedAt,
+      endToEndElapsedMs: getEndToEndElapsedMs(),
+      proposalMode,
+      publishedProposal: Boolean(publishedProposal),
+      deliveredProposalDocument: Boolean(proposalArtifact),
+    });
   });
 
 

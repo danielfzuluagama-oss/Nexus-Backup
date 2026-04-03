@@ -152,6 +152,7 @@ describe("ToolRegistry — register", () => {
     // Built-in tools from constructor
     expect(names).toContain("get_current_time");
     expect(names).toContain("read_core_knowledge");
+    expect(names).toContain("search_internet");
   });
 
   it("built-in tools are registered on construction", () => {

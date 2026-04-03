@@ -175,6 +175,37 @@ describe("service bot initialization", () => {
     expect(mockBotHandleUpdate).toHaveBeenCalledWith(update);
   });
 
+  it("propagates task context into the update handled by the bot worker", async () => {
+    const { processTaskPayload } = await import("../../src/service.js");
+    const update = { update_id: 1774733137156 } as never;
+
+    await processTaskPayload({
+      botName: "pristino",
+      update,
+      taskContext: {
+        executionId: "exec-123",
+        source: "webhook",
+        ingressReceivedAt: Date.now() - 150,
+        queuedAt: Date.now() - 80,
+        traceHeader: "trace-abc",
+        webhookPath: "/webhook/nexus",
+      },
+    });
+
+    const handledUpdate = mockBotHandleUpdate.mock.calls[0]?.[0] as Record<string, unknown>;
+
+    expect(handledUpdate.__nexusTaskContext).toEqual(
+      expect.objectContaining({
+        executionId: "exec-123",
+        source: "webhook",
+        traceHeader: "trace-abc",
+        webhookPath: "/webhook/nexus",
+        workerReceivedAt: expect.any(Number),
+        queueWaitMs: expect.any(Number),
+      }),
+    );
+  });
+
   it("derives a public cloud functions webhook base URL from forwarded host metadata", async () => {
     const { resolveWebhookBaseUrl } = await import("../../src/service.js");
 
