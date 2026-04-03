@@ -1,13 +1,21 @@
 import { getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 const COLLECTION_NAME = "telegram_update_guard";
+const CONVERSATION_COLLECTION_NAME = "telegram_conversation_guard";
 const LEASE_MS = 10 * 60 * 1000;
 const localStates = new Map();
+const localConversationStates = new Map();
 function toKey(botName, updateId) {
     return `${botName}:${updateId}`;
 }
+function toConversationKey(botName, conversationKey) {
+    return `${botName}:${conversationKey}`;
+}
 function isTrackedUpdate(updateId) {
     return Number.isInteger(updateId) && updateId > 0;
+}
+function isTrackedConversation(conversationKey) {
+    return typeof conversationKey === "string" && conversationKey.trim().length > 0;
 }
 function now() {
     return Date.now();
@@ -58,6 +66,53 @@ export async function claimTelegramUpdate(botName, updateId) {
         transaction.set(ref, createProcessingState(botName, updateId, (current?.attempts ?? 0) + 1, timestamp), { merge: true });
         return "claimed";
     });
+}
+export async function recordTelegramConversationUpdate(botName, conversationKey, updateId) {
+    if (!isTrackedUpdate(updateId) || !isTrackedConversation(conversationKey)) {
+        return;
+    }
+    const key = toConversationKey(botName, conversationKey);
+    const timestamp = now();
+    if (!hasFirestore()) {
+        const current = localConversationStates.get(key);
+        if ((current?.latestUpdateId ?? 0) >= updateId) {
+            return;
+        }
+        localConversationStates.set(key, {
+            botName,
+            conversationKey,
+            latestUpdateId: updateId,
+            updatedAt: timestamp,
+        });
+        return;
+    }
+    const db = getFirestore();
+    const ref = db.collection(CONVERSATION_COLLECTION_NAME).doc(key);
+    await db.runTransaction(async (transaction) => {
+        const snapshot = await transaction.get(ref);
+        const current = snapshot.exists ? snapshot.data() : null;
+        if ((current?.latestUpdateId ?? 0) >= updateId) {
+            return;
+        }
+        transaction.set(ref, {
+            botName,
+            conversationKey,
+            latestUpdateId: updateId,
+            updatedAt: timestamp,
+        }, { merge: true });
+    });
+}
+export async function isTelegramConversationUpdateStale(botName, conversationKey, updateId) {
+    if (!isTrackedUpdate(updateId) || !isTrackedConversation(conversationKey)) {
+        return false;
+    }
+    const key = toConversationKey(botName, conversationKey);
+    if (!hasFirestore()) {
+        return (localConversationStates.get(key)?.latestUpdateId ?? updateId) > updateId;
+    }
+    const snapshot = await getFirestore().collection(CONVERSATION_COLLECTION_NAME).doc(key).get();
+    const current = snapshot.exists ? snapshot.data() : null;
+    return (current?.latestUpdateId ?? updateId) > updateId;
 }
 export async function markTelegramUpdateCompleted(botName, updateId) {
     if (!isTrackedUpdate(updateId)) {
@@ -123,4 +178,5 @@ export async function markTelegramUpdateFailed(botName, updateId, error) {
 }
 export function resetTelegramUpdateGuardForTests() {
     localStates.clear();
+    localConversationStates.clear();
 }

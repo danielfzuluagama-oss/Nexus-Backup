@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { executeWorkflow } from "../../src/ecosystem/skill-engine.js";
+import { executeWorkflow, executeWorkflowDetailed } from "../../src/ecosystem/skill-engine.js";
 import type { WorkflowDefinition, StepDefinition, SubAgentRunner } from "../../src/ecosystem/types.js";
 
 // Mock logger to prevent console noise in tests
@@ -139,6 +139,61 @@ describe("TS-051: sequential step execution with default timeout", () => {
 
     // Second step's prompt should contain the prior output
     expect(capturedContexts[1]).toContain("step-output");
+  });
+
+  it("merges structured context_patch values into subsequent step prompts", async () => {
+    const prompts: string[] = [];
+
+    const runner: SubAgentRunner = vi.fn(async (_task, prompt) => {
+      prompts.push(prompt);
+      if (prompts.length === 1) {
+        return JSON.stringify({
+          primary_output: "timestamp-ready",
+          context_patch: {
+            timestamp: "Thursday, March 6, 2026, 3:45 PM UTC",
+          },
+          handoff: null,
+        });
+      }
+
+      return "formatted-response";
+    });
+
+    const steps = [
+      makeStep({
+        stepNumber: 1,
+        title: "Fetch Time",
+        promptToUse: "Get time context",
+      }),
+      makeStep({
+        stepNumber: 2,
+        title: "Format Time",
+        promptToUse: "Format this timestamp: {{timestamp}}",
+      }),
+    ];
+
+    await executeWorkflow(runner, makeWorkflow(steps), {});
+
+    expect(prompts[1]).toContain("Thursday, March 6, 2026, 3:45 PM UTC");
+  });
+
+  it("returns finalContext when using executeWorkflowDetailed", async () => {
+    const runner: SubAgentRunner = vi.fn(async () =>
+      JSON.stringify({
+        primary_output: "ok",
+        context_patch: {
+          resolvedTimezone: "Asia/Tokyo",
+        },
+        handoff: null,
+      })
+    );
+
+    const result = await executeWorkflowDetailed(runner, makeWorkflow([makeStep()]), {
+      requestedTimezone: "Asia/Tokyo",
+    });
+
+    expect(result.output).toBe("ok");
+    expect(result.finalContext.resolvedTimezone).toBe("Asia/Tokyo");
   });
 });
 
@@ -294,5 +349,36 @@ describe("TS-053: handoff includes all prior step outputs in context", () => {
 
     expect(capturedPrompts[0]).toContain("user-42");
     expect(capturedPrompts[0]).toContain("telegram");
+  });
+
+  it("treats conditional handoff instructions as conditional, not unconditional", async () => {
+    const runner: SubAgentRunner = vi.fn()
+      .mockResolvedValueOnce(
+        JSON.stringify({
+          primary_output: "DIRECT",
+          context_patch: { classification: "DIRECT" },
+          handoff: null,
+        })
+      )
+      .mockResolvedValueOnce("final-answer");
+
+    const steps = [
+      makeStep({
+        stepNumber: 1,
+        title: "Classify",
+        promptToUse: "Return DIRECT or DELEGATE",
+        handoffIfNeeded: "If DELEGATE: hand off to delegation skill",
+      }),
+      makeStep({
+        stepNumber: 2,
+        title: "Answer",
+        promptToUse: "Use classification {{classification}} and answer directly",
+      }),
+    ];
+
+    const result = await executeWorkflow(runner, makeWorkflow(steps), {});
+
+    expect(runner).toHaveBeenCalledTimes(2);
+    expect(result).toBe("final-answer");
   });
 });

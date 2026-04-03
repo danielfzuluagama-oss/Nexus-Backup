@@ -524,4 +524,27 @@ describe("TS-072: structured thread memory snapshots", () => {
     expect(context).toContain("Cliente: Acme");
     expect(context).toContain("Preguntas abiertas");
   });
+
+  it("isolates active threads by conversation key for the same user", async () => {
+    const userId = 7202;
+
+    const privateThread = await memory.getOrCreateActiveThread(userId, "pristino", {
+      conversationKey: "telegram_chat_7202_thread_root",
+    });
+    const topicThread = await memory.getOrCreateActiveThread(userId, "pristino", {
+      conversationKey: "telegram_chat_-100123_thread_88",
+    });
+    const privateThreadAgain = await memory.getOrCreateActiveThread(userId, "pristino", {
+      conversationKey: "telegram_chat_7202_thread_root",
+    });
+
+    expect(privateThread).not.toBe(topicThread);
+    expect(privateThreadAgain).toBe(privateThread);
+
+    const privateSnapshot = await memory.getThreadSnapshot(userId, privateThread);
+    const topicSnapshot = await memory.getThreadSnapshot(userId, topicThread);
+
+    expect(privateSnapshot?.conversationKey).toBe("telegram_chat_7202_thread_root");
+    expect(topicSnapshot?.conversationKey).toBe("telegram_chat_-100123_thread_88");
+  });
 });

@@ -116,6 +116,7 @@ export async function runAgent(deps, userId, userMessage, options = {}) {
     const { llm, memory, config } = deps;
     const depth = options.depth ?? 0;
     const isSubAgent = depth > 0;
+    const conversationContext = options.conversationContext;
     // === Depth guard: prevent infinite recursion ===
     if (depth > MAX_DEPTH) {
         logger.error("Max recursion depth exceeded", { depth, MAX_DEPTH });
@@ -154,7 +155,7 @@ export async function runAgent(deps, userId, userMessage, options = {}) {
     if (!input.safe) {
         logger.warn("Blocked flagged input before LLM execution", { userId, reason: input.reason });
         if (!isSubAgent) {
-            mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino");
+            mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino", conversationContext);
             await memory.addMessage(userId, "user", trimmed, mainThreadId);
             await memory.addMessage(userId, "assistant", SECURITY_INPUT_BLOCKED_MESSAGE, mainThreadId);
             await persistGeneralThreadMemory(SECURITY_INPUT_BLOCKED_MESSAGE).catch((error) => {
@@ -168,7 +169,7 @@ export async function runAgent(deps, userId, userMessage, options = {}) {
     }
     // Load history before persisting the current user turn so the active turn is not duplicated.
     if (!isSubAgent) {
-        mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino");
+        mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino", conversationContext);
         priorHistory = await memory.getRecentMessages(userId, config.maxHistory - 1, mainThreadId);
         threadMemoryContext = await describeThreadMemory(userId, mainThreadId, "pristino").catch((error) => {
             logger.warn("Failed to load thread memory snapshot", {

@@ -97,13 +97,33 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
             { key: "groq-key-2", owner: "OWNER2" },
           ],
           openRouterApiKeys: [{ key: "or-key-1", owner: "OR_OWNER" }],
-          geminiApiKeys: [{ key: "gemini-key-1", owner: "GEM_OWNER" }],
+          geminiApiKeys: [],
         },
       ],
     ]),
     googleOAuthToken: "",
     ...overrides,
   };
+}
+
+function makeConfigWithGemini(overrides: Partial<Config> = {}): Config {
+  return makeConfig({
+    agentCredentials: new Map([
+      [
+        "pristino",
+        {
+          telegramBotToken: "test-token",
+          groqApiKeys: [
+            { key: "groq-key-1", owner: "OWNER1" },
+            { key: "groq-key-2", owner: "OWNER2" },
+          ],
+          openRouterApiKeys: [{ key: "or-key-1", owner: "OR_OWNER" }],
+          geminiApiKeys: [{ key: "gemini-key-1", owner: "GEM_OWNER" }],
+        },
+      ],
+    ]),
+    ...overrides,
+  });
 }
 
 function makeMessages(): LLMMessage[] {
@@ -152,14 +172,35 @@ describe("getProvider", () => {
   });
 
   it("returns a provider with a chat function", () => {
-    const config = makeConfig();
+    const config = makeConfigWithGemini();
     const provider = getProvider(config, "pristino");
     expect(typeof provider.chat).toBe("function");
   });
 
+  it("prefers Gemini before Groq when Gemini keys are available in auto mode", async () => {
+    mockGroqCreate.mockImplementation(() => {
+      throw new Error("Groq should not be called before Gemini in auto mode");
+    });
+
+    const mockGeminiResponse = {
+      ok: true,
+      json: vi.fn().mockResolvedValue({
+        choices: [{ message: { content: "Gemini preferred response", tool_calls: [] } }],
+      }),
+    };
+    global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
+
+    const config = makeConfigWithGemini();
+    const provider = getProvider(config, "pristino");
+    const result = await provider.chat(makeMessages(), makeTools());
+
+    expect(result.content).toBe("Gemini preferred response");
+    expect(mockGroqCreate).not.toHaveBeenCalled();
+  });
+
   it("chat() returns the LLM response on success", async () => {
     mockGroqCreate.mockResolvedValueOnce(makeGroqResponse("Test response"));
-    const config = makeConfig();
+    const config = makeConfigWithGemini();
     const provider = getProvider(config, "pristino");
     const result = await provider.chat(makeMessages(), makeTools());
     expect(result.content).toBe("Test response");
@@ -169,7 +210,7 @@ describe("getProvider", () => {
   it("chat() returns tool calls when present in response", async () => {
     const toolCalls = [{ id: "c1", type: "function", function: { name: "get_time", arguments: "{}" } }];
     mockGroqCreate.mockResolvedValueOnce(makeGroqResponse(null as unknown as string, toolCalls));
-    const config = makeConfig();
+    const config = makeConfigWithGemini();
     const provider = getProvider(config, "pristino");
     const result = await provider.chat(makeMessages(), makeTools());
     expect(result.content).toBeNull();
@@ -248,7 +289,7 @@ describe("getProvider", () => {
     };
     global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
 
-    const config = makeConfig();
+    const config = makeConfigWithGemini();
     const provider = getProvider(config, "pristino");
     const result = await provider.chat(makeMessages(), makeTools());
 
@@ -268,7 +309,7 @@ describe("getProvider", () => {
     };
     global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
 
-    const config = makeConfig({
+    const config = makeConfigWithGemini({
       llmProviderOverride: "gemini",
       geminiFallbackEnabled: false,
       geminiSimpleModel: "gemini-2.5-flash",
@@ -291,7 +332,7 @@ describe("getProvider", () => {
     };
     global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
 
-    const config = makeConfig({
+    const config = makeConfigWithGemini({
       llmProviderOverride: "gemini",
       geminiFallbackEnabled: false,
       geminiSimpleModel: "gemini-2.5-flash",
@@ -320,7 +361,7 @@ describe("getProvider", () => {
     };
     global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
 
-    const config = makeConfig({
+    const config = makeConfigWithGemini({
       llmProviderOverride: "gemini",
       geminiFallbackEnabled: false,
     });
@@ -382,7 +423,7 @@ describe("getProvider", () => {
     };
     global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
 
-    const config = makeConfig();
+    const config = makeConfigWithGemini();
     const provider = getProvider(config, "pristino");
     const result = await provider.chat(makeMessages(), makeTools());
 
@@ -513,7 +554,7 @@ describe("getCommercialProposalProvider", () => {
     };
     global.fetch = vi.fn().mockResolvedValue(mockGeminiResponse);
 
-    const config = makeConfig({ geminiFallbackEnabled: false });
+    const config = makeConfigWithGemini({ geminiFallbackEnabled: false });
     const provider = getCommercialProposalProvider(config, "pristino");
     const result = await provider.chat(makeMessages(), makeTools());
 

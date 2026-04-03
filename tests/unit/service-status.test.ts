@@ -157,6 +157,7 @@ describe("buildServiceStatus", () => {
     expect(status.ok).toBe(true);
     expect(status.bots).toEqual(["pristino"]);
     expect(status.mode).toBe("local");
+    expect(status.ecosystem.totalWorkflowCount).toBe(0);
     expect(status.providers.runtimes[0]?.configuredKeys).toEqual({
       groq: 1,
       gemini: 1,

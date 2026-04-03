@@ -47,13 +47,34 @@ function formatDateTitle() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
-function buildInitialThreadRecord(userId, agent, title, threadId, now) {
+const DEFAULT_ACTIVE_THREAD_SLOT = "default";
+function normalizeActiveThreadSlot(conversationKey) {
+    const normalized = typeof conversationKey === "string" ? conversationKey.trim() : "";
+    return normalized || DEFAULT_ACTIVE_THREAD_SLOT;
+}
+function normalizeActiveThreadMap(value) {
+    if (!value || typeof value !== "object") {
+        return {};
+    }
+    return Object.entries(value).reduce((accumulator, [key, rawValue]) => {
+        if (typeof rawValue === "string" && rawValue.trim()) {
+            accumulator[key] = rawValue;
+        }
+        return accumulator;
+    }, {});
+}
+function buildLocalThreadId(userId) {
+    const entropy = Math.random().toString(36).slice(2, 8);
+    return `thread_${userId}_${Date.now()}_${entropy}`;
+}
+function buildInitialThreadRecord(userId, agent, title, threadId, now, context = {}) {
     return {
         threadId,
         userId,
         title,
         status: "active",
         agent,
+        conversationKey: normalizeActiveThreadSlot(context.conversationKey),
         conversationKind: "general",
         summary: "",
         summaryVersion: 0,
@@ -437,27 +458,45 @@ export class Memory {
     // ─────────────────────────────────────────────
     //  THREADS
     // ─────────────────────────────────────────────
-    async getOrCreateActiveThread(userId, agent) {
+    async getOrCreateActiveThread(userId, agent, context = {}) {
         const uid = String(userId);
+        const threadSlot = normalizeActiveThreadSlot(context.conversationKey);
         if (this.useFirestore && this.db) {
             try {
                 const userRef = this.db.collection("users").doc(uid);
                 const newThreadId = await this.db.runTransaction(async (t) => {
                     const userDoc = await t.get(userRef);
-                    if (userDoc.exists && userDoc.data()?.activeThreadId) {
-                        return userDoc.data().activeThreadId;
+                    const activeThreadsByKey = normalizeActiveThreadMap(userDoc.data()?.activeThreadsByKey);
+                    const existingThreadId = activeThreadsByKey[threadSlot]
+                        ?? (threadSlot === DEFAULT_ACTIVE_THREAD_SLOT ? userDoc.data()?.activeThreadId : null);
+                    if (userDoc.exists && existingThreadId) {
+                        return existingThreadId;
                     }
                     const threadRef = this.db.collection("threads").doc();
                     const now = new Date();
-                    t.set(threadRef, buildInitialThreadRecord(uid, agent, `Conversación ${formatDateTitle()}`, threadRef.id, now));
+                    const nextActiveThreadsByKey = {
+                        ...activeThreadsByKey,
+                        [threadSlot]: threadRef.id,
+                    };
+                    t.set(threadRef, buildInitialThreadRecord(uid, agent, `Conversación ${formatDateTitle()}`, threadRef.id, now, context));
                     t.set(userRef, {
-                        userId: uid, displayName: uid, role: "member", agent, identity: "",
-                        preferences: DEFAULT_PREFERENCES, experience: { ...DEFAULT_EXPERIENCE, firstInteraction: now },
-                        createdAt: now, lastActiveAt: now, activeThreadId: threadRef.id,
+                        userId: uid,
+                        displayName: uid,
+                        role: "member",
+                        agent,
+                        identity: "",
+                        preferences: DEFAULT_PREFERENCES,
+                        experience: { ...DEFAULT_EXPERIENCE, firstInteraction: now },
+                        createdAt: now,
+                        lastActiveAt: now,
+                        activeThreadId: threadSlot === DEFAULT_ACTIVE_THREAD_SLOT
+                            ? threadRef.id
+                            : userDoc.data()?.activeThreadId,
+                        activeThreadsByKey: nextActiveThreadsByKey,
                     }, { merge: true });
                     return threadRef.id;
                 });
-                logger.info("Active thread resolved", { userId: uid, threadId: newThreadId });
+                logger.info("Active thread resolved", { userId: uid, threadId: newThreadId, threadSlot });
                 return newThreadId;
             }
             catch (e) {
@@ -467,35 +506,64 @@ export class Memory {
         }
         else {
             const existing = this.localUsers.get(uid);
-            if (existing?.activeThreadId)
-                return existing.activeThreadId;
-            const threadId = `thread_${uid}_${Date.now()}`;
+            const activeThreadsByKey = normalizeActiveThreadMap(existing?.activeThreadsByKey);
+            const existingThreadId = activeThreadsByKey[threadSlot]
+                ?? (threadSlot === DEFAULT_ACTIVE_THREAD_SLOT ? existing?.activeThreadId : null);
+            if (existingThreadId) {
+                return existingThreadId;
+            }
+            const threadId = buildLocalThreadId(uid);
             const now = new Date();
-            this.localThreads.set(threadId, buildInitialThreadRecord(uid, agent, `Conversación ${formatDateTitle()}`, threadId, now));
+            this.localThreads.set(threadId, buildInitialThreadRecord(uid, agent, `Conversación ${formatDateTitle()}`, threadId, now, context));
             this.localUsers.set(uid, {
-                userId: uid, displayName: uid, role: "member", agent, identity: "",
-                preferences: { ...DEFAULT_PREFERENCES }, experience: { ...DEFAULT_EXPERIENCE, firstInteraction: now },
-                createdAt: now, lastActiveAt: now, activeThreadId: threadId,
+                userId: uid,
+                displayName: uid,
+                role: "member",
+                agent,
+                identity: "",
+                preferences: { ...DEFAULT_PREFERENCES },
+                experience: { ...DEFAULT_EXPERIENCE, firstInteraction: now },
+                createdAt: now,
+                lastActiveAt: now,
+                activeThreadId: threadSlot === DEFAULT_ACTIVE_THREAD_SLOT
+                    ? threadId
+                    : existing?.activeThreadId,
+                activeThreadsByKey: {
+                    ...activeThreadsByKey,
+                    [threadSlot]: threadId,
+                },
             });
             return threadId;
         }
     }
-    async startNewThread(userId, agent, title) {
+    async startNewThread(userId, agent, title, context = {}) {
         const uid = String(userId);
+        const threadSlot = normalizeActiveThreadSlot(context.conversationKey);
         if (this.useFirestore && this.db) {
             try {
                 const userRef = this.db.collection("users").doc(uid);
                 const newThreadId = await this.db.runTransaction(async (t) => {
                     const userDoc = await t.get(userRef);
-                    const currentThreadId = userDoc.data()?.activeThreadId;
+                    const activeThreadsByKey = normalizeActiveThreadMap(userDoc.data()?.activeThreadsByKey);
+                    const currentThreadId = activeThreadsByKey[threadSlot]
+                        ?? (threadSlot === DEFAULT_ACTIVE_THREAD_SLOT ? userDoc.data()?.activeThreadId : null);
                     if (currentThreadId) {
                         // V12: Safe upsert instead of strict update
                         t.set(this.db.collection("threads").doc(currentThreadId), { status: "archived" }, { merge: true });
                     }
                     const threadRef = this.db.collection("threads").doc();
                     const now = new Date();
-                    t.set(threadRef, buildInitialThreadRecord(uid, agent, title || `Conversación ${formatDateTitle()}`, threadRef.id, now));
-                    t.set(userRef, { activeThreadId: threadRef.id, lastActiveAt: now }, { merge: true });
+                    t.set(threadRef, buildInitialThreadRecord(uid, agent, title || `Conversación ${formatDateTitle()}`, threadRef.id, now, context));
+                    t.set(userRef, {
+                        activeThreadId: threadSlot === DEFAULT_ACTIVE_THREAD_SLOT
+                            ? threadRef.id
+                            : userDoc.data()?.activeThreadId,
+                        activeThreadsByKey: {
+                            ...activeThreadsByKey,
+                            [threadSlot]: threadRef.id,
+                        },
+                        lastActiveAt: now,
+                    }, { merge: true });
                     return threadRef.id;
                 });
                 return newThreadId;
@@ -506,18 +574,45 @@ export class Memory {
             }
         }
         else {
-            const threadId = `thread_${uid}_${Date.now()}`;
+            const threadId = buildLocalThreadId(uid);
             const now = new Date();
             const existing = this.localUsers.get(uid);
-            if (existing?.activeThreadId) {
-                const t = this.localThreads.get(existing.activeThreadId);
-                if (t)
-                    t.status = "archived";
+            const activeThreadsByKey = normalizeActiveThreadMap(existing?.activeThreadsByKey);
+            const currentThreadId = activeThreadsByKey[threadSlot]
+                ?? (threadSlot === DEFAULT_ACTIVE_THREAD_SLOT ? existing?.activeThreadId : null);
+            if (currentThreadId) {
+                const currentThread = this.localThreads.get(currentThreadId);
+                if (currentThread) {
+                    currentThread.status = "archived";
+                }
             }
-            this.localThreads.set(threadId, buildInitialThreadRecord(uid, agent, title || `Conversación ${formatDateTitle()}`, threadId, now));
+            this.localThreads.set(threadId, buildInitialThreadRecord(uid, agent, title || `Conversación ${formatDateTitle()}`, threadId, now, context));
             if (existing) {
-                existing.activeThreadId = threadId;
+                existing.activeThreadId = threadSlot === DEFAULT_ACTIVE_THREAD_SLOT
+                    ? threadId
+                    : existing.activeThreadId;
+                existing.activeThreadsByKey = {
+                    ...activeThreadsByKey,
+                    [threadSlot]: threadId,
+                };
                 existing.lastActiveAt = now;
+            }
+            else {
+                this.localUsers.set(uid, {
+                    userId: uid,
+                    displayName: uid,
+                    role: "member",
+                    agent,
+                    identity: "",
+                    preferences: { ...DEFAULT_PREFERENCES },
+                    experience: { ...DEFAULT_EXPERIENCE, firstInteraction: now },
+                    createdAt: now,
+                    lastActiveAt: now,
+                    activeThreadId: threadSlot === DEFAULT_ACTIVE_THREAD_SLOT ? threadId : undefined,
+                    activeThreadsByKey: {
+                        [threadSlot]: threadId,
+                    },
+                });
             }
             return threadId;
         }

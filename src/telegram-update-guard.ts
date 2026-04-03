@@ -13,19 +13,35 @@ type UpdateState = {
   completedAt?: number;
   lastError?: string | null;
 };
+type ConversationState = {
+  botName: string;
+  conversationKey: string;
+  latestUpdateId: number;
+  updatedAt: number;
+};
 
 export type TelegramUpdateClaimResult = "claimed" | "duplicate";
 
 const COLLECTION_NAME = "telegram_update_guard";
+const CONVERSATION_COLLECTION_NAME = "telegram_conversation_guard";
 const LEASE_MS = 10 * 60 * 1000;
 const localStates = new Map<string, UpdateState>();
+const localConversationStates = new Map<string, ConversationState>();
 
 function toKey(botName: string, updateId: number): string {
   return `${botName}:${updateId}`;
 }
 
+function toConversationKey(botName: string, conversationKey: string): string {
+  return `${botName}:${conversationKey}`;
+}
+
 function isTrackedUpdate(updateId: number): boolean {
   return Number.isInteger(updateId) && updateId > 0;
+}
+
+function isTrackedConversation(conversationKey: string): boolean {
+  return typeof conversationKey === "string" && conversationKey.trim().length > 0;
 }
 
 function now(): number {
@@ -97,6 +113,76 @@ export async function claimTelegramUpdate(
     );
     return "claimed";
   });
+}
+
+export async function recordTelegramConversationUpdate(
+  botName: string,
+  conversationKey: string,
+  updateId: number,
+): Promise<void> {
+  if (!isTrackedUpdate(updateId) || !isTrackedConversation(conversationKey)) {
+    return;
+  }
+
+  const key = toConversationKey(botName, conversationKey);
+  const timestamp = now();
+
+  if (!hasFirestore()) {
+    const current = localConversationStates.get(key);
+    if ((current?.latestUpdateId ?? 0) >= updateId) {
+      return;
+    }
+
+    localConversationStates.set(key, {
+      botName,
+      conversationKey,
+      latestUpdateId: updateId,
+      updatedAt: timestamp,
+    });
+    return;
+  }
+
+  const db = getFirestore();
+  const ref = db.collection(CONVERSATION_COLLECTION_NAME).doc(key);
+
+  await db.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(ref);
+    const current = snapshot.exists ? (snapshot.data() as ConversationState) : null;
+    if ((current?.latestUpdateId ?? 0) >= updateId) {
+      return;
+    }
+
+    transaction.set(
+      ref,
+      {
+        botName,
+        conversationKey,
+        latestUpdateId: updateId,
+        updatedAt: timestamp,
+      },
+      { merge: true },
+    );
+  });
+}
+
+export async function isTelegramConversationUpdateStale(
+  botName: string,
+  conversationKey: string,
+  updateId: number,
+): Promise<boolean> {
+  if (!isTrackedUpdate(updateId) || !isTrackedConversation(conversationKey)) {
+    return false;
+  }
+
+  const key = toConversationKey(botName, conversationKey);
+
+  if (!hasFirestore()) {
+    return (localConversationStates.get(key)?.latestUpdateId ?? updateId) > updateId;
+  }
+
+  const snapshot = await getFirestore().collection(CONVERSATION_COLLECTION_NAME).doc(key).get();
+  const current = snapshot.exists ? (snapshot.data() as ConversationState) : null;
+  return (current?.latestUpdateId ?? updateId) > updateId;
 }
 
 export async function markTelegramUpdateCompleted(botName: string, updateId: number): Promise<void> {
@@ -181,4 +267,5 @@ export async function markTelegramUpdateFailed(
 
 export function resetTelegramUpdateGuardForTests(): void {
   localStates.clear();
+  localConversationStates.clear();
 }

@@ -42,6 +42,18 @@ function getSkillsByAgent(ecosystem) {
     }))
         .sort((left, right) => left.agentId.localeCompare(right.agentId));
 }
+function getTotalWorkflowCount(ecosystem) {
+    const skillsMap = ecosystem.skills instanceof Map ? ecosystem.skills : new Map();
+    return [...skillsMap.values()].reduce((total, skills) => {
+        if (!Array.isArray(skills)) {
+            return total;
+        }
+        return total + skills.reduce((skillTotal, skill) => {
+            const workflowCount = Array.isArray(skill.workflows) ? skill.workflows.length : 0;
+            return skillTotal + workflowCount;
+        }, 0);
+    }, 0);
+}
 function hasSkill(ecosystem, agentId, skillId) {
     const skillsMap = ecosystem.skills instanceof Map ? ecosystem.skills : new Map();
     const skills = skillsMap.get(agentId) ?? [];
@@ -145,6 +157,7 @@ export async function buildServiceStatus(context) {
     const agents = getEcosystemAgents(context.ecosystem);
     const skillsByAgent = getSkillsByAgent(context.ecosystem);
     const totalSkillCount = skillsByAgent.reduce((total, entry) => total + entry.skillCount, 0);
+    const totalWorkflowCount = getTotalWorkflowCount(context.ecosystem);
     return {
         ok: true,
         generatedAt: nowIso(),
@@ -158,6 +171,7 @@ export async function buildServiceStatus(context) {
             initialized: context.ecosystem.initialized,
             agentCount: agents.length,
             totalSkillCount,
+            totalWorkflowCount,
             agents,
             skillsByAgent,
         },

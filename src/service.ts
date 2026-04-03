@@ -18,6 +18,10 @@ import {
   createRouteExecutor,
   getRouteRequestDefinition,
 } from "./ecosystem/router.js";
+import {
+  createWorkflowExecutor,
+  getWorkflowExecutionDefinition,
+} from "./ecosystem/workflow-tool.js";
 import { logger } from "./logger.js";
 import { initializeOpenClawSymlinks } from "./tools/symlink.js";
 import {
@@ -304,6 +308,9 @@ async function buildServiceContext(): Promise<ServiceContext> {
         const routeDefinition = getRouteRequestDefinition(ecosystem);
         const routeExecutor = createRouteExecutor(ecosystem, runner);
         registerTool(routeDefinition, routeExecutor);
+        const workflowDefinition = getWorkflowExecutionDefinition(ecosystem);
+        const workflowExecutor = createWorkflowExecutor(ecosystem, runner);
+        registerTool(workflowDefinition, workflowExecutor);
       }
 
       const bot = createBot(runtime);
@@ -342,6 +349,9 @@ async function buildServiceContext(): Promise<ServiceContext> {
       const routeDefinition = getRouteRequestDefinition(ecosystem);
       const routeExecutor = createRouteExecutor(ecosystem, runner);
       registerTool(routeDefinition, routeExecutor);
+      const workflowDefinition = getWorkflowExecutionDefinition(ecosystem);
+      const workflowExecutor = createWorkflowExecutor(ecosystem, runner);
+      registerTool(workflowDefinition, workflowExecutor);
 
       initDelegation(deps);
       logger.info("Ecosystem initialized (legacy mode)", {

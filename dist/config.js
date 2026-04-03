@@ -145,7 +145,7 @@ export function loadConfig() {
         openRouterModel: process.env.OPENROUTER_MODEL ?? "meta-llama/llama-3.3-70b-instruct",
         geminiApiKey,
         geminiModel: process.env.GEMINI_MODEL ?? "gemini-3-flash-preview",
-        geminiSimpleModel: process.env.GEMINI_SIMPLE_MODEL ?? process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
+        geminiSimpleModel: process.env.GEMINI_SIMPLE_MODEL ?? process.env.GEMINI_MODEL ?? "gemini-3-flash-preview",
         geminiComplexModel: process.env.GEMINI_COMPLEX_MODEL ?? process.env.GEMINI_MODEL ?? "gemini-3-flash-preview",
         geminiFallbackEnabled: parseBooleanEnv(process.env.GEMINI_FALLBACK_ENABLED, hasGeminiKeys),
         llmProviderOverride: parseProviderOverride(process.env.LLM_PROVIDER_OVERRIDE),

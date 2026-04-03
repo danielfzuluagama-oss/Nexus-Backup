@@ -88,13 +88,13 @@ gh repo view danielfzuluagama-oss/propuestas-comerciales
 
 ## Fallback Gemini
 
-- Orden actual de cascada: `Groq -> Gemini -> OpenRouter`.
+- Orden actual de cascada estandar: `Gemini -> Groq -> OpenRouter`.
 - Modelo por defecto en este repo: `gemini-3-flash-preview`, verificado con la cuenta activa y la API oficial compatible con OpenAI.
 - Override opcional local: `GEMINI_MODEL=gemini-2.5-flash` si se quiere volver a un modelo estable no-preview.
 - Gate actual de Gemini:
-  - `GEMINI_SIMPLE_MODEL` para solicitudes cortas o de baja complejidad. Default: `gemini-2.5-flash`.
+  - `GEMINI_SIMPLE_MODEL` para solicitudes cortas o de baja complejidad. Default: `gemini-3-flash-preview`.
   - `GEMINI_COMPLEX_MODEL` para solicitudes analiticas o de varias etapas. Default: `gemini-3-flash-preview`.
-  - La seleccion se activa cuando Gemini es el provider efectivo, ya sea por fallback o por override explicito.
+  - La seleccion se activa cuando Gemini es el provider efectivo, ya sea como ruta preferida en `auto` o por override explicito.
 - Override de provider para diagnostico o smoke tests: `LLM_PROVIDER_OVERRIDE=auto|groq|gemini|openrouter`.
 - Flag local opcional: `GEMINI_FALLBACK_ENABLED=true|false`.
 - Secretos de Firebase usados por Functions:

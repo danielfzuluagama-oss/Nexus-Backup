@@ -25,6 +25,7 @@ export interface ThreadMemorySnapshot {
   title: string;
   status: "active" | "archived" | "pinned";
   agent: string;
+  conversationKey?: string;
   conversationKind?: ThreadConversationKind;
   summary?: string;
   summaryVersion?: number;
@@ -44,6 +45,7 @@ export interface ThreadMemoryPatch {
   title?: string;
   status?: "active" | "archived" | "pinned";
   agent?: string;
+  conversationKey?: string;
   conversationKind?: ThreadConversationKind;
   summary?: string;
   summaryVersion?: number;

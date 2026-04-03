@@ -679,8 +679,8 @@ async function tryWithKeys(
 /**
  * Multi-tier, multi-key LLM provider with 2D cascading failover.
  *
- * For each Groq model tier, iterates all available API keys before advancing.
- * After all Groq tiers × keys are exhausted, falls back to OpenRouter (same key cascade).
+ * Standard chat now prefers Gemini first for better conversational quality while
+ * preserving Groq and OpenRouter as downstream fallbacks.
  */
 export function getProvider(config: Config, agentName: AgentName): LLMProvider {
   const creds = getAgentCredentials(config, agentName);
@@ -800,25 +800,25 @@ export function getProvider(config: Config, agentName: AgentName): LLMProvider {
         throw new Error(`Forced provider openrouter unavailable for ${agentName}.`);
       }
 
-      // Vertical cascade: iterate through model tiers
-      const groqResult = await runGroqCascade();
-      if (groqResult) {
-        return groqResult;
-      }
-
-      // All Groq tiers × keys exhausted — cascade to Gemini
       const geminiResult = await runGeminiCascade();
       if (geminiResult) {
-        if (creds.groqApiKeys.length > 0) {
-          logger.warn(`All Groq tiers exhausted for ${agentName}, Gemini served the request`);
+        if (creds.groqApiKeys.length > 0 && creds.geminiApiKeys.length > 0) {
+          logger.info(`Gemini served the standard request for ${agentName} before Groq fallback`);
         }
         return geminiResult;
       }
 
-      // All Groq/Gemini fallbacks exhausted — cascade to OpenRouter
+      const groqResult = await runGroqCascade();
+      if (groqResult) {
+        if (creds.geminiApiKeys.length > 0) {
+          logger.warn(`Gemini unavailable for ${agentName}, Groq served the request`);
+        }
+        return groqResult;
+      }
+
       if (creds.openRouterApiKeys.length > 0) {
         if (creds.groqApiKeys.length > 0 || creds.geminiApiKeys.length > 0) {
-          logger.warn(`All Groq/Gemini fallbacks exhausted for ${agentName}, cascading to OpenRouter`);
+          logger.warn(`All Gemini/Groq fallbacks exhausted for ${agentName}, cascading to OpenRouter`);
         }
         const openRouterResult = await runOpenRouterCascade();
         if (openRouterResult) return openRouterResult;

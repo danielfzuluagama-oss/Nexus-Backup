@@ -1,5 +1,5 @@
 import type { LLMProvider, LLMMessage } from "./config/llm-providers.js";
-import type { Memory } from "./memory.js";
+import type { ActiveThreadContext, Memory } from "./memory.js";
 import type { Config } from "./config.js";
 import type { EcosystemState } from "./ecosystem/types.js";
 import {
@@ -127,6 +127,7 @@ interface RunOptions {
   systemPrompt?: string;  // override system prompt (used by sub-agents)
   allowedTools?: string[]; // restrict tool access (used by sub-agents)
   responseContract?: string; // additional output contract appended to system prompt
+  conversationContext?: ActiveThreadContext;
 }
 
 /** Initialize the delegate tool executor (call once at startup). */
@@ -170,6 +171,7 @@ export async function runAgent(
   const { llm, memory, config } = deps;
   const depth = options.depth ?? 0;
   const isSubAgent = depth > 0;
+  const conversationContext = options.conversationContext;
 
   // === Depth guard: prevent infinite recursion ===
   if (depth > MAX_DEPTH) {
@@ -220,7 +222,7 @@ export async function runAgent(
   if (!input.safe) {
     logger.warn("Blocked flagged input before LLM execution", { userId, reason: input.reason });
     if (!isSubAgent) {
-      mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino");
+      mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino", conversationContext);
       await memory.addMessage(userId, "user", trimmed, mainThreadId);
       await memory.addMessage(userId, "assistant", SECURITY_INPUT_BLOCKED_MESSAGE, mainThreadId);
       await persistGeneralThreadMemory(SECURITY_INPUT_BLOCKED_MESSAGE).catch((error) => {
@@ -235,7 +237,7 @@ export async function runAgent(
 
   // Load history before persisting the current user turn so the active turn is not duplicated.
   if (!isSubAgent) {
-    mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino");
+    mainThreadId = await memory.getOrCreateActiveThread(userId, "pristino", conversationContext);
     priorHistory = await memory.getRecentMessages(userId, config.maxHistory - 1, mainThreadId);
     threadMemoryContext = await describeThreadMemory(userId, mainThreadId, "pristino").catch((error) => {
       logger.warn("Failed to load thread memory snapshot", {

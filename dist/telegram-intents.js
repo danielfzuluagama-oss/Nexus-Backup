@@ -7,18 +7,12 @@ const OPERATIONAL_KEYWORDS = [
     "fases",
     "gate",
     "gates",
-    "asset",
-    "assets",
-    "sop",
-    "sops",
     "rol",
     "roles",
     "owner",
     "owners",
     "responsable",
     "responsables",
-    "entregable",
-    "deliverable",
     "presales",
     "onboarding",
     "induccion",
@@ -46,16 +40,47 @@ const EXECUTION_KEYWORDS = [
     "brief",
     "entregable",
 ];
-const DELIVERABLE_KEYWORDS = [
-    "propuesta",
+const PROPOSAL_NOUN_KEYWORDS = [
+    "propuesta comercial",
     "proposal",
-    "comercial",
-    "brief",
+    "cotizacion",
+    "cotizacion comercial",
+    "cotización comercial",
+    "oferta comercial",
+];
+const PROPOSAL_ACTION_KEYWORDS = [
+    "crea",
+    "crear",
+    "construye",
+    "construir",
+    "genera",
+    "generar",
+    "prepara",
+    "preparar",
+    "arma",
+    "armar",
+    "redacta",
+    "redactar",
+    "haz",
+    "hacer",
+    "ayudame a crear",
+    "ayudame a construir",
+    "ayudame con",
+    "quiero",
+    "necesito",
+    "cotiza",
+    "cotizar",
+];
+const ASSESSMENT_KEYWORDS = [
     "assessment",
     "diagnostico",
     "diagnóstico",
     "auditoria",
     "auditoría",
+];
+const DELIVERABLE_KEYWORDS = [
+    "brief",
+    ...ASSESSMENT_KEYWORDS,
     "html",
     "plantilla",
     "template",
@@ -83,8 +108,18 @@ export function normalizeForMatching(value) {
         .replace(/\s+/g, " ")
         .trim();
 }
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 function includesAnyKeyword(haystack, keywords) {
-    return keywords.some((keyword) => haystack.includes(normalizeForMatching(keyword)));
+    return keywords.some((keyword) => {
+        const normalizedKeyword = normalizeForMatching(keyword);
+        if (!normalizedKeyword) {
+            return false;
+        }
+        const pattern = new RegExp(`(?:^|\\s)${escapeRegExp(normalizedKeyword)}(?=\\s|$)`);
+        return pattern.test(haystack);
+    });
 }
 export function inferAudienceRole(normalizedMessage) {
     if (normalizedMessage.includes("cliente"))
@@ -99,20 +134,24 @@ export function inferAudienceRole(normalizedMessage) {
         return "lider";
     return "nuevo integrante";
 }
+export function isExplicitProposalRequest(normalizedMessage) {
+    if (!includesAnyKeyword(normalizedMessage, PROPOSAL_NOUN_KEYWORDS)) {
+        return false;
+    }
+    if (includesAnyKeyword(normalizedMessage, PROPOSAL_ACTION_KEYWORDS)) {
+        return true;
+    }
+    return /^(propuesta comercial|proposal|cotizacion(?: comercial)?|oferta comercial)\b/.test(normalizedMessage);
+}
 export function inferControlledTemplate(normalizedMessage) {
-    if (normalizedMessage.includes("propuesta")
-        || normalizedMessage.includes("proposal")
-        || normalizedMessage.includes("comercial")
-        || normalizedMessage.includes("cotizacion")) {
+    if (includesAnyKeyword(normalizedMessage, ASSESSMENT_KEYWORDS)) {
+        return "assessment";
+    }
+    if (isExplicitProposalRequest(normalizedMessage)) {
         return "proposal";
     }
     if (normalizedMessage.includes("brief")) {
         return "brief";
-    }
-    if (normalizedMessage.includes("assessment")
-        || normalizedMessage.includes("diagnostico")
-        || normalizedMessage.includes("auditoria")) {
-        return "assessment";
     }
     if (normalizedMessage.includes("plan")
         || normalizedMessage.includes("roadmap")
@@ -143,6 +182,7 @@ export function classifyTelegramIntent(text, options = {}) {
     const audienceRole = inferAudienceRole(normalizedMessage);
     const templateName = inferControlledTemplate(normalizedMessage);
     const deliverable = inferDeliverableLabel(normalizedMessage, templateName);
+    const explicitProposalRequest = isExplicitProposalRequest(normalizedMessage);
     const mentionsOperational = includesAnyKeyword(normalizedMessage, OPERATIONAL_KEYWORDS);
     const wantsOnboarding = includesAnyKeyword(normalizedMessage, ONBOARDING_KEYWORDS);
     const wantsExecution = includesAnyKeyword(normalizedMessage, EXECUTION_KEYWORDS);
@@ -179,6 +219,17 @@ export function classifyTelegramIntent(text, options = {}) {
             templateName,
             normalizedMessage,
             reason: "Operational lookup keywords detected.",
+        };
+    }
+    if (explicitProposalRequest) {
+        return {
+            kind: "agent",
+            responseMode: "staged_deliverable",
+            audienceRole,
+            deliverable,
+            templateName: "proposal",
+            normalizedMessage,
+            reason: "Explicit commercial proposal request detected.",
         };
     }
     if (wantsDeliverable) {

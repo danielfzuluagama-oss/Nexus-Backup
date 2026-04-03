@@ -21,6 +21,7 @@ vi.mock("../../src/logger.js", () => ({
 import {
   loadAgent,
   loadAllAgents,
+  loadAllSkills,
   loadSharedDefaults,
 } from "../../src/ecosystem/loader.js";
 import { AgentDefinitionSchema } from "../../src/ecosystem/types.js";
@@ -286,6 +287,30 @@ describe("TS-027: Shared defaults loaded from real defaults.yaml", () => {
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("workflow hydration from real skill.yaml assets", () => {
+  it("loadAllSkills hydrates workflows from the real catalog", () => {
+    const skills = loadAllSkills(REAL_AGENTS_PATH);
+    const timekeeperSkills = skills.get("timekeeper");
+    const timeQuery = timekeeperSkills?.find((skill) => skill.id === "time-query");
+
+    expect(timeQuery).toBeDefined();
+    expect(timeQuery?.workflows.length).toBeGreaterThan(0);
+  });
+
+  it("normalizes real workflow variants such as DoD, kpis arrays, and mechanical prompt nulls", () => {
+    const skills = loadAllSkills(REAL_AGENTS_PATH);
+    const timekeeperSkills = skills.get("timekeeper");
+    const timeQuery = timekeeperSkills?.find((skill) => skill.id === "time-query");
+    const workflow = timeQuery?.workflows.find((item) => item.id === "utc-time-query");
+
+    expect(workflow).toBeDefined();
+    expect(workflow?.dod.length).toBeGreaterThan(0);
+    expect(workflow?.kpis.response_time_p95).toBe("<3s");
+    expect(workflow?.raci.consulted).toBeNull();
+    expect(workflow?.steps[0]?.promptToUse).toBeNull();
   });
 });
 

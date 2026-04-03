@@ -156,6 +156,17 @@ describe("loadConfig — happy path", () => {
     expect(geminiKeys[2].key).toBe("gemini-key-3");
   });
 
+  it("defaults Gemini simple and complex routes to gemini-3-flash-preview", async () => {
+    setMinimalEnv();
+    process.env.GEMINI_API_KEY_PRISTINO_1_DANI = "gemini-key-1";
+    const { loadConfig } = await import("../../src/config.js");
+    const config = loadConfig();
+
+    expect(config.geminiModel).toBe("gemini-3-flash-preview");
+    expect(config.geminiSimpleModel).toBe("gemini-3-flash-preview");
+    expect(config.geminiComplexModel).toBe("gemini-3-flash-preview");
+  });
+
   it("parses the provider override flag", async () => {
     setMinimalEnv();
     process.env.LLM_PROVIDER_OVERRIDE = "gemini";

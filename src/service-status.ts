@@ -47,6 +47,7 @@ export interface ServiceStatusReport {
     initialized: boolean;
     agentCount: number;
     totalSkillCount: number;
+    totalWorkflowCount: number;
     agents: Array<{
       id: string;
       name: string;
@@ -143,6 +144,21 @@ function getSkillsByAgent(ecosystem: EcosystemState): Array<{
         .sort((left, right) => left.localeCompare(right)),
     }))
     .sort((left, right) => left.agentId.localeCompare(right.agentId));
+}
+
+function getTotalWorkflowCount(ecosystem: EcosystemState): number {
+  const skillsMap = ecosystem.skills instanceof Map ? ecosystem.skills : new Map();
+
+  return [...skillsMap.values()].reduce((total, skills) => {
+    if (!Array.isArray(skills)) {
+      return total;
+    }
+
+    return total + skills.reduce((skillTotal, skill) => {
+      const workflowCount = Array.isArray(skill.workflows) ? skill.workflows.length : 0;
+      return skillTotal + workflowCount;
+    }, 0);
+  }, 0);
 }
 
 function hasSkill(ecosystem: EcosystemState, agentId: string, skillId: string): boolean {
@@ -283,6 +299,7 @@ export async function buildServiceStatus(context: ServiceStatusContext): Promise
   const agents = getEcosystemAgents(context.ecosystem);
   const skillsByAgent = getSkillsByAgent(context.ecosystem);
   const totalSkillCount = skillsByAgent.reduce((total, entry) => total + entry.skillCount, 0);
+  const totalWorkflowCount = getTotalWorkflowCount(context.ecosystem);
 
   return {
     ok: true,
@@ -297,6 +314,7 @@ export async function buildServiceStatus(context: ServiceStatusContext): Promise
       initialized: context.ecosystem.initialized,
       agentCount: agents.length,
       totalSkillCount,
+      totalWorkflowCount,
       agents,
       skillsByAgent,
     },

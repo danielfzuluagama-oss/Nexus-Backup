@@ -22,6 +22,10 @@ import {
   type TelegramIntent,
 } from "./telegram-intents.js";
 import {
+  buildTelegramConversationKey,
+  getTelegramMessageThreadId,
+} from "./telegram-conversation.js";
+import {
   renderControlledScaffold,
   type ControlledTemplateName,
 } from "./controlled-deliverables.js";
@@ -54,6 +58,10 @@ import {
   type ProposalValidationIssue,
 } from "./proposals/proposal-validation.js";
 import { composeCommercialProposalDraft } from "./proposals/proposal-composer.js";
+import {
+  isTelegramConversationUpdateStale,
+  recordTelegramConversationUpdate,
+} from "./telegram-update-guard.js";
 import type { ThreadProposalState } from "./thread-memory.js";
 
 /**
@@ -72,6 +80,60 @@ import type { ThreadProposalState } from "./thread-memory.js";
  */
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000;
 const MIN_AGENT_TIMEOUT_MS = 15_000;
+const PROPOSAL_CONTINUATION_KEYWORDS = [
+  "continua",
+  "continuar",
+  "sigue",
+  "sigamos",
+  "avanza",
+  "completa",
+  "ajusta",
+  "refina",
+  "corrige",
+  "actualiza",
+  "version final",
+  "versión final",
+  "siguiente paso",
+  "hazlo",
+  "hazla",
+  "generalo",
+  "generala",
+];
+const PROPOSAL_FIELD_HINT_KEYWORDS = [
+  "alcance",
+  "scope",
+  "cronograma",
+  "timeline",
+  "objetivo",
+  "servicio",
+  "cliente",
+  "inversion",
+  "inversión",
+  "precio",
+  "pricing",
+  "modalidad",
+  "entregables",
+  "deliverables",
+  "moneda",
+];
+const CAPABILITY_EXPLORATION_KEYWORDS = [
+  "que puedes hacer",
+  "qué puedes hacer",
+  "que mas puedes hacer",
+  "qué más puedes hacer",
+  "otras capacidades",
+  "capacidades del bot",
+  "que sabes",
+  "qué sabes",
+  "skills",
+  "agentes",
+  "workflow",
+  "workflows",
+  "asistentes",
+  "herramientas",
+  "menu",
+  "menú",
+];
 
 function getAgentTimeoutMs(): number {
   const raw = Number(process.env.AGENT_TIMEOUT_MS);
@@ -312,7 +374,7 @@ function summarizeProposalValidationIssues(
 }
 
 function shouldRequireProposalIntake(intent: TelegramIntent): boolean {
-  return intent.templateName === "proposal" && intent.kind !== "operational_lookup";
+  return intent.templateName === "proposal" && intent.kind === "agent";
 }
 
 interface BuildProposalKnowledgeContextOptions {
@@ -322,6 +384,80 @@ interface BuildProposalKnowledgeContextOptions {
 interface ProposalHistoryMessage {
   role: "user" | "assistant" | "system";
   content: string;
+}
+
+function includesAnyNormalizedKeyword(haystack: string, keywords: string[]): boolean {
+  return keywords.some((keyword) => haystack.includes(normalizeForMatching(keyword)));
+}
+
+function hasProposalConversationSignals(
+  recentMessages: ProposalHistoryMessage[],
+  threadMemoryContext?: string,
+): boolean {
+  const normalizedThreadContext = normalizeForMatching(threadMemoryContext ?? "");
+  if (
+    normalizedThreadContext.includes("tipo proposal")
+    || normalizedThreadContext.includes("estado comercial")
+  ) {
+    return true;
+  }
+
+  return recentMessages.some((message) => {
+    const normalizedMessage = normalizeForMatching(message.content);
+    if (!normalizedMessage) {
+      return false;
+    }
+    if (normalizedMessage.includes("propuesta comercial")) {
+      return true;
+    }
+    return classifyTelegramIntent(message.content).templateName === "proposal";
+  });
+}
+
+function shouldPreserveProposalConversationContext(
+  currentText: string,
+  currentIntent: TelegramIntent,
+  recentMessages: ProposalHistoryMessage[],
+  threadMemoryContext?: string,
+): boolean {
+  const normalizedCurrentMessage = currentIntent.normalizedMessage || normalizeForMatching(currentText);
+  if (!normalizedCurrentMessage) {
+    return false;
+  }
+
+  if (includesAnyNormalizedKeyword(normalizedCurrentMessage, CAPABILITY_EXPLORATION_KEYWORDS)) {
+    return false;
+  }
+
+  if (currentIntent.templateName === "proposal") {
+    return true;
+  }
+
+  if (!hasProposalConversationSignals(recentMessages, threadMemoryContext)) {
+    return false;
+  }
+
+  if (currentIntent.kind !== "agent") {
+    return false;
+  }
+
+  if (currentIntent.templateName) {
+    return false;
+  }
+
+  if (currentIntent.responseMode !== "default") {
+    return false;
+  }
+
+  if (includesAnyNormalizedKeyword(normalizedCurrentMessage, PROPOSAL_CONTINUATION_KEYWORDS)) {
+    return true;
+  }
+
+  if (includesAnyNormalizedKeyword(normalizedCurrentMessage, PROPOSAL_FIELD_HINT_KEYWORDS)) {
+    return true;
+  }
+
+  return false;
 }
 
 function resolveProposalClientSlug(text: string | null | undefined): string | null {
@@ -608,9 +744,6 @@ async function tryOperationalRoute(
   if (intent.kind === "agent") {
     return null;
   }
-  if (intent.templateName === "proposal") {
-    return null;
-  }
 
   try {
     const kb = await getOperationalKnowledgeAccessor();
@@ -737,6 +870,16 @@ export function createBot(runtime: AgentRuntime): Bot {
   // Handle all incoming messages (text, photos, gifs, etc.)
   bot.on("message", async (ctx) => {
     const userId = ctx.from.id;
+    const updateId = ctx.update.update_id;
+    const messageThreadId = getTelegramMessageThreadId(ctx.message);
+    const conversationContext = {
+      conversationKey: buildTelegramConversationKey({
+        chatId: ctx.chat?.id,
+        userId,
+        messageThreadId,
+      }),
+    };
+    const conversationKey = conversationContext.conversationKey;
     let text = ctx.message.text || ctx.message.caption || "";
     let pendingMsgId: number | null = null;
     let proposalKnowledgeContext: ProposalKnowledgeContext | null = null;
@@ -761,6 +904,73 @@ export function createBot(runtime: AgentRuntime): Bot {
       await ctx.api.deleteMessage(ctx.chat.id, pendingMsgId).catch(() => {});
       pendingMsgId = null;
     };
+    const isStaleConversationUpdate = async (): Promise<boolean> => {
+      try {
+        return await isTelegramConversationUpdateStale(
+          runtime.instanceName,
+          conversationKey,
+          updateId,
+        );
+      } catch (error) {
+        log.warn("Failed to verify Telegram conversation freshness", {
+          userId,
+          updateId,
+          conversationKey,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return false;
+      }
+    };
+    const executeIfFresh = async <T>(
+      label: string,
+      action: () => Promise<T>,
+    ): Promise<T | null> => {
+      if (await isStaleConversationUpdate()) {
+        log.info("Skipping stale Telegram response", {
+          userId,
+          updateId,
+          conversationKey,
+          label,
+        });
+        return null;
+      }
+
+      return action();
+    };
+    const replyFresh = (
+      content: string,
+      options?: { parse_mode?: "HTML" },
+    ) =>
+      executeIfFresh("reply", () =>
+        options ? ctx.reply(content, options) : ctx.reply(content),
+      );
+    const replyWithDocumentFresh = (
+      document: InputFile,
+      options?: { caption?: string },
+    ) =>
+      executeIfFresh("reply_document", () =>
+        options ? ctx.replyWithDocument(document, options) : ctx.replyWithDocument(document),
+      );
+    const sendMessageFresh = (
+      targetChatId: number,
+      content: string,
+      useHtml = true,
+    ) =>
+      executeIfFresh("send_message", () =>
+        useHtml
+          ? ctx.api.sendMessage(targetChatId, content, { parse_mode: "HTML" })
+          : ctx.api.sendMessage(targetChatId, content),
+      );
+    const sendDocumentFresh = (
+      targetChatId: number,
+      document: InputFile,
+      options?: { caption?: string },
+    ) =>
+      executeIfFresh("send_document", () =>
+        options
+          ? ctx.api.sendDocument(targetChatId, document, options)
+          : ctx.api.sendDocument(targetChatId, document),
+      );
 
     // --- SKIP SERVICE MESSAGES ---
     // Telegram forum topics generate service messages (forum_topic_created, etc.)
@@ -777,12 +987,21 @@ export function createBot(runtime: AgentRuntime): Bot {
       return;
     }
 
+    await recordTelegramConversationUpdate(runtime.instanceName, conversationKey, updateId).catch((error) => {
+      log.warn("Failed to register latest Telegram conversation update", {
+        userId,
+        updateId,
+        conversationKey,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    });
+
     if (isStandbyModeEnabled()) {
       log.info("Standby mode enabled; skipping agent cognition", {
         userId,
-        updateId: ctx.update.update_id,
+        updateId,
       });
-      await ctx.reply(getStandbyMessage());
+      await replyFresh(getStandbyMessage());
       return;
     }
 
@@ -797,7 +1016,7 @@ export function createBot(runtime: AgentRuntime): Bot {
           userId,
           reason: sanitized.reason,
         });
-        await ctx.reply(SECURITY_INPUT_BLOCKED_MESSAGE);
+        await replyFresh(SECURITY_INPUT_BLOCKED_MESSAGE);
         return;
       }
       text = sanitized.cleaned;
@@ -806,8 +1025,8 @@ export function createBot(runtime: AgentRuntime): Bot {
     if (hasMedia) {
       if (ctx.message.voice || ctx.message.audio) {
          try {
-           const pendingReply = await ctx.reply("Extrayendo y transcribiendo audio...");
-           pendingMsgId = pendingReply.message_id;
+           const pendingReply = await replyFresh("Extrayendo y transcribiendo audio...");
+           pendingMsgId = pendingReply?.message_id ?? null;
 
            const file = await ctx.getFile();
            if (file.file_path) {
@@ -818,7 +1037,7 @@ export function createBot(runtime: AgentRuntime): Bot {
               if (!sanitized.safe) {
                 log.warn("Audio transcript flagged by security", { userId, reason: sanitized.reason });
                 await dismissPendingReply();
-                await ctx.reply(SECURITY_INPUT_BLOCKED_MESSAGE);
+                await replyFresh(SECURITY_INPUT_BLOCKED_MESSAGE);
                 return;
               }
               text = `<SYSTEM_OVERRIDE>
@@ -904,8 +1123,14 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
     agentTimeoutPromise.catch(() => {});
 
     let proposalConversationText = text;
+    const currentIntent = classifyTelegramIntent(text, { hasMedia });
+    let intent = currentIntent;
     try {
-      threadId = await runtime.memory.getOrCreateActiveThread(userId, runtime.instanceName);
+      threadId = await runtime.memory.getOrCreateActiveThread(
+        userId,
+        runtime.instanceName,
+        conversationContext,
+      );
       const recentMessages = await runtime.memory.getRecentMessages(
         userId,
         6,
@@ -913,7 +1138,17 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
         runtime.instanceName,
       );
       threadMemoryContext = await describeThreadMemory(userId, threadId, runtime.instanceName);
-      proposalConversationText = buildProposalConversationText(text, recentMessages, threadMemoryContext);
+      if (
+        shouldPreserveProposalConversationContext(
+          text,
+          currentIntent,
+          recentMessages,
+          threadMemoryContext,
+        )
+      ) {
+        proposalConversationText = buildProposalConversationText(text, recentMessages, threadMemoryContext);
+        intent = classifyTelegramIntent(proposalConversationText, { hasMedia });
+      }
     } catch (error) {
       log.warn("Failed to load proposal conversation history", {
         userId,
@@ -921,7 +1156,6 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       });
     }
 
-    const intent = classifyTelegramIntent(proposalConversationText, { hasMedia });
     log.info("Telegram intent classified", {
       userId,
       kind: intent.kind,
@@ -935,21 +1169,19 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
         contextLength: proposalConversationText.length,
       });
     }
-    const proposalMode = intent.templateName === "proposal";
+    const proposalMode = intent.kind === "agent" && intent.templateName === "proposal";
     // Proposal content must not stay in shared Telegram chats; route it to the user's private chat instead.
     const deliverProposalPrivately = proposalMode && ctx.chat?.type !== "private";
     const proposalDeliveryTargetId = deliverProposalPrivately ? userId : ctx.chat.id;
 
     const sendProposalText = async (content: string, useHtml = true) => {
       if (deliverProposalPrivately) {
-        return useHtml
-          ? ctx.api.sendMessage(proposalDeliveryTargetId, content, { parse_mode: "HTML" })
-          : ctx.api.sendMessage(proposalDeliveryTargetId, content);
+        return sendMessageFresh(proposalDeliveryTargetId, content, useHtml);
       }
 
       return useHtml
-        ? ctx.reply(content, { parse_mode: "HTML" })
-        : ctx.reply(content);
+        ? replyFresh(content, { parse_mode: "HTML" })
+        : replyFresh(content);
     };
 
     if (deliverProposalPrivately) {
@@ -1008,6 +1240,18 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       });
 
       if (!intakeAssessment.isReady) {
+        if (await isStaleConversationUpdate()) {
+          if (pendingMsgId) {
+            await dismissPendingReply();
+          }
+          log.info("Skipping stale proposal clarification turn", {
+            userId,
+            updateId,
+            conversationKey,
+          });
+          return;
+        }
+
         if (pendingMsgId) {
           await dismissPendingReply();
         }
@@ -1081,7 +1325,12 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       return resolvedProposalKnowledgeContext;
     };
     const cognitionTask = (async () => {
-      if (intent.templateName === "proposal") {
+      const directResponse = await tryOperationalRoute(text, intent, log);
+      if (directResponse) {
+        return directResponse;
+      }
+
+      if (proposalMode) {
         const resolvedProposalKnowledgeContext = await ensureProposalKnowledgeContext("draft");
 
         const draftStartedAt = Date.now();
@@ -1105,17 +1354,15 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
         return buildProposalReadyReply(proposalDraft.clientName, proposalDraft.serviceName);
       }
 
-      const directResponse = await tryOperationalRoute(text, intent, log);
-      if (directResponse) {
-        return directResponse;
-      }
-
       const responseContract = buildAgentResponseContract(intent);
       if (responseContract) {
-        return runAgent(getAgentDeps(), userId, text, { responseContract });
+        return runAgent(getAgentDeps(), userId, text, {
+          responseContract,
+          conversationContext,
+        });
       }
 
-      return runAgent(getAgentDeps(), userId, text);
+      return runAgent(getAgentDeps(), userId, text, { conversationContext });
     })();
 
     let result = await Promise.race([
@@ -1128,6 +1375,18 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
 
     log.info("Agent cognition complete", { userId, resultLength: result.length });
 
+    if (await isStaleConversationUpdate()) {
+      if (pendingMsgId) {
+        await dismissPendingReply();
+      }
+      log.info("Aborting stale Telegram update after cognition", {
+        userId,
+        updateId,
+        conversationKey,
+      });
+      return;
+    }
+
     let proposalArtifact:
       | ReturnType<typeof buildProposalArtifact>
       | null = null;
@@ -1135,7 +1394,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
     let publishedProposal: PublishedProposalArtifact | null = null;
     let proposalPublishFailed = false;
 
-    if (intent.templateName === "proposal") {
+    if (proposalMode) {
       try {
         const resolvedProposalKnowledgeContext = await ensureProposalKnowledgeContext("artifact");
 
@@ -1267,9 +1526,9 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       }
     }
 
-    if (threadId) {
+    if (threadId && !(await isStaleConversationUpdate())) {
       try {
-        if (intent.templateName === "proposal" && proposalIntakeAssessment) {
+        if (proposalMode && proposalIntakeAssessment) {
           const proposalStatus = publishedProposal
             ? "published"
             : proposalArtifact
@@ -1292,6 +1551,12 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
           error: error instanceof Error ? error.message : String(error),
         });
       }
+    } else if (threadId) {
+      log.info("Skipping stale thread-memory persistence", {
+        userId,
+        updateId,
+        conversationKey,
+      });
     }
 
     // --- EGRESS FALLBACK & FORMATTING LOOP ---
@@ -1356,7 +1621,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       });
     }
 
-    if (!proposalArtifact && intent.templateName === "proposal") {
+    if (!proposalArtifact && proposalMode) {
       const clientName =
         proposalArtifactClientName
         ?? proposalKnowledgeContext?.intake?.clientName
@@ -1384,12 +1649,12 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
       const proposalCaption = `HTML autocontenido generado para ${proposalArtifact.clientName}.`;
 
       const sendProposalDocument = deliverProposalPrivately
-        ? () => ctx.api.sendDocument(
+        ? () => sendDocumentFresh(
             proposalDeliveryTargetId,
             proposalDocument,
             { caption: proposalCaption },
           )
-        : () => ctx.replyWithDocument(
+        : () => replyWithDocumentFresh(
             proposalDocument,
             { caption: proposalCaption },
           );

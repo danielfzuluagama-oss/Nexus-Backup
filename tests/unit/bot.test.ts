@@ -40,6 +40,8 @@ const {
   mockUpdateThreadMemory,
   mockGetGitHubProposalsConfig,
   mockPublishProposalArtifact,
+  mockRecordTelegramConversationUpdate,
+  mockIsTelegramConversationUpdateStale,
 } = vi.hoisted(() => {
   const capturedMiddleware: Array<(ctx: unknown, next?: () => Promise<void>) => Promise<void>> = [];
   const capturedMessageHandlerRef = { fn: null as ((ctx: unknown) => Promise<void>) | null };
@@ -60,6 +62,8 @@ const {
   const mockUpdateThreadMemory = vi.fn().mockResolvedValue(undefined);
   const mockGetGitHubProposalsConfig = vi.fn().mockReturnValue(null);
   const mockPublishProposalArtifact = vi.fn();
+  const mockRecordTelegramConversationUpdate = vi.fn().mockResolvedValue(undefined);
+  const mockIsTelegramConversationUpdateStale = vi.fn().mockResolvedValue(false);
   return {
     capturedMiddleware,
     capturedMessageHandlerRef,
@@ -80,6 +84,8 @@ const {
     mockUpdateThreadMemory,
     mockGetGitHubProposalsConfig,
     mockPublishProposalArtifact,
+    mockRecordTelegramConversationUpdate,
+    mockIsTelegramConversationUpdateStale,
   };
 });
 
@@ -152,6 +158,11 @@ vi.mock("../../src/proposals/proposal-validation.js", () => ({
 vi.mock("../../src/proposals/github-publisher.js", () => ({
   getGitHubProposalsConfig: mockGetGitHubProposalsConfig,
   publishProposalArtifact: mockPublishProposalArtifact,
+}));
+
+vi.mock("../../src/telegram-update-guard.js", () => ({
+  recordTelegramConversationUpdate: mockRecordTelegramConversationUpdate,
+  isTelegramConversationUpdateStale: mockIsTelegramConversationUpdateStale,
 }));
 
 // Grammy mock — uses hoisted state so it's available at hoist time
@@ -320,6 +331,10 @@ beforeEach(() => {
   mockGetGitHubProposalsConfig.mockReset();
   mockGetGitHubProposalsConfig.mockReturnValue(null);
   mockPublishProposalArtifact.mockReset();
+  mockRecordTelegramConversationUpdate.mockReset();
+  mockRecordTelegramConversationUpdate.mockResolvedValue(undefined);
+  mockIsTelegramConversationUpdateStale.mockReset();
+  mockIsTelegramConversationUpdateStale.mockResolvedValue(false);
   vi.mocked(transcribeAudio).mockReset();
   vi.mocked(transcribeAudio).mockResolvedValue("transcribed text");
   vi.mocked(stripHtml).mockReset();
@@ -433,7 +448,12 @@ describe("Message handler — text messages", () => {
     expect(vi.mocked(runAgent)).toHaveBeenCalledWith(
       expect.objectContaining({ llm: runtime.llm }),
       18219468,
-      "What is the weather?"
+      "What is the weather?",
+      expect.objectContaining({
+        conversationContext: {
+          conversationKey: "telegram_chat_18219468_thread_root",
+        },
+      }),
     );
   });
 
@@ -515,7 +535,7 @@ describe("Message handler — text messages", () => {
     );
   });
 
-  it("uses the proposal fast path and returns a ready reply", async () => {
+  it("uses the operational execution fast path even when the requested deliverable is a proposal", async () => {
     const runtime = makeRuntime();
     createBot(runtime);
 
@@ -575,9 +595,10 @@ describe("Message handler — text messages", () => {
 
     expect(vi.mocked(runAgent)).not.toHaveBeenCalled();
     expect(ctx.reply).toHaveBeenCalledWith(
-      expect.stringContaining("Propuesta comercial estructurada para <b>Acme Corp</b>."),
+      expect.stringContaining("ETAPA 3 | SCAFFOLD INICIAL"),
       { parse_mode: "HTML" },
     );
+    expect(mockSendDocument).not.toHaveBeenCalled();
   });
 
   it("keeps a long commercial proposal on the proposal path and still delivers HTML", async () => {
@@ -872,13 +893,13 @@ describe("Message handler — text messages", () => {
 
     expect(mockDescribeSemanticMemory).toHaveBeenCalledWith(
       18219468,
-      expect.stringContaining("Memoria persistida del hilo"),
+      expect.stringContaining("Necesito una propuesta comercial para Acme Corp"),
       "thread-1",
       "pristino",
     );
   });
 
-  it("keeps a proposal follow-up on the proposal path even when the latest message is generic", async () => {
+  it("keeps a proposal follow-up on the proposal path only when the latest turn explicitly continues the proposal", async () => {
     const runtime = makeRuntime();
     createBot(runtime);
 
@@ -897,7 +918,7 @@ describe("Message handler — text messages", () => {
 
     const ctx = makeCtx({
       message: {
-        text: "hola estas ahi ?",
+        text: "continua con la propuesta y prepara la version final",
         message_id: 24,
       },
     });
@@ -909,6 +930,129 @@ describe("Message handler — text messages", () => {
       expect.stringContaining("Antes de generar la propuesta completa"),
       { parse_mode: "HTML" },
     );
+  });
+
+  it("lets factual questions escape proposal memory contamination", async () => {
+    const runtime = makeRuntime();
+    createBot(runtime);
+
+    mockGetRecentMessages.mockResolvedValueOnce([
+      {
+        role: "user",
+        content: "Necesito una propuesta comercial para Antes de Crear Una en html.",
+        timestamp: Date.now() - 10_000,
+      },
+      {
+        role: "assistant",
+        content: "Antes de generar la propuesta completa necesito cerrar algunos datos.",
+        timestamp: Date.now() - 5_000,
+      },
+    ]);
+    mockDescribeThreadMemory.mockResolvedValueOnce(
+      [
+        "Memoria persistida del hilo:",
+        "- Título: Conversación en curso",
+        "- Tipo: proposal",
+        "- Estado comercial: clarification",
+        "- Cliente: Antes de Crear Una",
+        "- Servicio: Ofimática con IA",
+      ].join("\n"),
+    );
+    vi.mocked(runAgent).mockResolvedValueOnce("Son las 9:00 a. m. en Tokio.");
+
+    const ctx = makeCtx({
+      message: {
+        text: "¿Qué hora es en Tokio?",
+        message_id: 33,
+      },
+    });
+
+    await capturedMessageHandlerRef.fn!(ctx);
+
+    expect(vi.mocked(runAgent)).toHaveBeenCalledWith(
+      expect.objectContaining({ llm: runtime.llm }),
+      18219468,
+      "¿Qué hora es en Tokio?",
+      expect.objectContaining({
+        conversationContext: {
+          conversationKey: "telegram_chat_18219468_thread_root",
+        },
+      }),
+    );
+    expect(ctx.reply).toHaveBeenCalledWith("Son las 9:00 a. m. en Tokio.", { parse_mode: "HTML" });
+    expect(ctx.replyWithDocument).not.toHaveBeenCalled();
+  });
+
+  it("suppresses stale responses when a newer update already owns the conversation", async () => {
+    const runtime = makeRuntime();
+    createBot(runtime);
+
+    mockIsTelegramConversationUpdateStale.mockResolvedValue(true);
+    vi.mocked(runAgent).mockResolvedValueOnce("Respuesta vieja que no debe salir.");
+
+    const ctx = makeCtx({
+      message: {
+        text: "Necesito ayuda con esto",
+        message_id: 34,
+      },
+      update: { update_id: 34 },
+    });
+
+    await capturedMessageHandlerRef.fn!(ctx);
+
+    expect(vi.mocked(runAgent)).toHaveBeenCalled();
+    expect(ctx.reply).not.toHaveBeenCalledWith("Respuesta vieja que no debe salir.", { parse_mode: "HTML" });
+    expect(ctx.reply).not.toHaveBeenCalled();
+  });
+
+  it("lets capability questions escape proposal memory contamination", async () => {
+    const runtime = makeRuntime();
+    createBot(runtime);
+
+    mockGetRecentMessages.mockResolvedValueOnce([
+      {
+        role: "user",
+        content: "Quiero que me ayudes a construir una propuesta comercial para el cliente IEB Consultores de Energia.",
+        timestamp: Date.now() - 10_000,
+      },
+      {
+        role: "assistant",
+        content: "Antes de generar la propuesta completa necesito cerrar algunos datos para no dejar campos vacios en la plantilla.",
+        timestamp: Date.now() - 5_000,
+      },
+    ]);
+    mockDescribeThreadMemory.mockResolvedValueOnce(
+      [
+        "Memoria persistida del hilo:",
+        "- Título: Conversación en curso",
+        "- Tipo: proposal",
+        "- Estado comercial: clarification",
+        "- Cliente: IEB Consultores de Energia",
+        "- Servicio: Automatización comercial",
+      ].join("\n"),
+    );
+    vi.mocked(runAgent).mockResolvedValueOnce("Estas son las capacidades del bot.");
+
+    const ctx = makeCtx({
+      message: {
+        text: "quiero ver otras capacidades del bot",
+        message_id: 32,
+      },
+    });
+
+    await capturedMessageHandlerRef.fn!(ctx);
+
+    expect(vi.mocked(runAgent)).toHaveBeenCalledWith(
+      expect.objectContaining({ llm: runtime.llm }),
+      18219468,
+      "quiero ver otras capacidades del bot",
+      expect.objectContaining({
+        conversationContext: {
+          conversationKey: "telegram_chat_18219468_thread_root",
+        },
+      }),
+    );
+    expect(ctx.reply).toHaveBeenCalledWith("Estas son las capacidades del bot.", { parse_mode: "HTML" });
   });
 
   it("drops stale proposal context when a new turn names a different client", async () => {
@@ -997,6 +1141,9 @@ describe("Message handler — text messages", () => {
       18219468,
       "Analiza esta idea y dame el plan por etapas para implementarla.",
       expect.objectContaining({
+        conversationContext: {
+          conversationKey: "telegram_chat_18219468_thread_root",
+        },
         responseContract: expect.stringContaining("ETAPA 1 | REPASO DE LO ENTENDIDO"),
       }),
     );
@@ -1737,7 +1884,7 @@ describe("Message handler — agent timeout", () => {
     const ctx = makeCtx({ message: { text: "slow query", message_id: 50 } });
     const messagePromise = capturedMessageHandlerRef.fn!(ctx);
 
-    vi.advanceTimersByTime(15_100);
+    await vi.advanceTimersByTimeAsync(15_100);
     await messagePromise;
 
     const sentText = (ctx.reply as ReturnType<typeof vi.fn>).mock.calls[0][0] as string;

@@ -7,7 +7,16 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
-import type { AgentDefinition, PromptType, EcosystemState, SkillDefinition } from "./types.js";
+import type {
+  AgentDefinition,
+  PromptType,
+  EcosystemState,
+  SkillDefinition,
+  WorkflowDefinition,
+  StepDefinition,
+  RaciAssignment,
+} from "./types.js";
+import { WorkflowDefinitionSchema } from "./types.js";
 import { logger } from "../logger.js";
 import { composeSkillPrompt } from "./skill-composer.js";
 
@@ -121,6 +130,230 @@ function toStringArrayFromObject(value: unknown, keys: string[]): string[] {
   return [];
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function toNullableStringValue(value: unknown): string | null {
+  const text = toStringValue(value);
+  if (!text) {
+    return null;
+  }
+
+  const normalized = text.toLowerCase();
+  if (normalized === "null" || normalized === "none" || normalized === "n/a") {
+    return null;
+  }
+
+  if (normalized.includes("mechanical step")) {
+    return null;
+  }
+
+  return text;
+}
+
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function normalizeKpis(value: unknown): Record<string, string> {
+  if (Array.isArray(value)) {
+    const entries = value.flatMap((item) => {
+      const text = toStringValue(item);
+      if (!text) {
+        return [];
+      }
+
+      const separatorIndex = text.indexOf(":");
+      if (separatorIndex <= 0) {
+        return [[text, ""]];
+      }
+
+      const key = text.slice(0, separatorIndex).trim();
+      const metric = text.slice(separatorIndex + 1).trim();
+      return key ? [[key, metric]] : [];
+    });
+
+    return Object.fromEntries(entries);
+  }
+
+  if (!isRecord(value)) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(value)
+      .map(([key, metric]) => [key.trim(), toStringValue(metric)] as const)
+      .filter(([key, metric]) => key.length > 0 && metric.length > 0)
+  );
+}
+
+function normalizeRaciAssignment(
+  value: unknown,
+  fallbackResponsible: string,
+): RaciAssignment {
+  if (!isRecord(value)) {
+    return {
+      responsible: fallbackResponsible,
+      accountable: fallbackResponsible,
+      consulted: null,
+      informed: "logger",
+    };
+  }
+
+  const consultedRaw = value.consulted;
+  const consultedValues = Array.isArray(consultedRaw)
+    ? toStringArray(consultedRaw)
+    : [];
+  const consultedString = Array.isArray(consultedRaw)
+    ? consultedValues.join(", ")
+    : toNullableStringValue(consultedRaw);
+  const consulted =
+    consultedString && consultedString.toLowerCase() !== "none"
+      ? consultedString
+      : null;
+
+  return {
+    responsible: toStringValue(value.responsible) || fallbackResponsible,
+    accountable: toStringValue(value.accountable) || fallbackResponsible,
+    consulted,
+    informed: toStringValue(value.informed) || "logger",
+  };
+}
+
+function normalizeStepDefinition(value: unknown, index: number): StepDefinition {
+  if (typeof value === "string") {
+    return {
+      stepNumber: index + 1,
+      title: `Step ${index + 1}`,
+      desc: value,
+      whyThisMatters: "",
+      inputNeeded: "",
+      actionInstruction: value,
+      promptToUse: null,
+      expectedOutput: "",
+      validationRule: "",
+      failureSignal: "",
+      recoveryAction: "",
+      handoffIfNeeded: null,
+    };
+  }
+
+  const record = isRecord(value) ? value : {};
+  const parsedStepNumber = Number(record.stepNumber);
+  const stepNumber = Number.isFinite(parsedStepNumber) && parsedStepNumber > 0
+    ? parsedStepNumber
+    : index + 1;
+
+  return {
+    stepNumber,
+    title: toStringValue(record.title) || `Step ${stepNumber}`,
+    desc: toStringValue(record.desc) || toStringValue(record.description),
+    whyThisMatters: toStringValue(record.whyThisMatters),
+    inputNeeded: toStringValue(record.inputNeeded),
+    actionInstruction: toStringValue(record.actionInstruction),
+    promptToUse: toNullableStringValue(record.promptToUse),
+    expectedOutput: toStringValue(record.expectedOutput),
+    validationRule: toStringValue(record.validationRule),
+    failureSignal: toStringValue(record.failureSignal),
+    recoveryAction: toStringValue(record.recoveryAction),
+    handoffIfNeeded: toNullableStringValue(record.handoffIfNeeded),
+  };
+}
+
+function normalizeWorkflowDefinition(
+  value: unknown,
+  agentId: string,
+  skillId: string,
+  index: number,
+  implicitId?: string,
+): WorkflowDefinition | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const title =
+    toStringValue(value.title)
+    || toStringValue(value.name)
+    || implicitId
+    || `workflow-${index + 1}`;
+
+  const workflowId =
+    toStringValue(value.id)
+    || implicitId
+    || slugify(title)
+    || `${skillId}-workflow-${index + 1}`;
+
+  const workflow: WorkflowDefinition = {
+    id: workflowId,
+    title,
+    objective: toStringValue(value.objective) || toStringValue(value.goal),
+    trigger: toStringValue(value.trigger),
+    preconditions: toStringArray(value.preconditions),
+    inputs: toStringArray(value.inputs),
+    steps: Array.isArray(value.steps)
+      ? value.steps.map((step, stepIndex) => normalizeStepDefinition(step, stepIndex))
+      : [],
+    mainOutput:
+      toStringValue(value.mainOutput)
+      || toStringValue(value.output)
+      || toStringValue(value.primaryOutput),
+    secondaryOutputs: toStringArray(value.secondaryOutputs),
+    dod: toStringArray(value.dod).concat(toStringArray(value.DoD)),
+    qaChecklist: toStringArray(value.qaChecklist),
+    raci: normalizeRaciAssignment(value.raci, agentId),
+    kpis: normalizeKpis(value.kpis),
+    cadence: toStringValue(value.cadence),
+    errorHandling: toStringValue(value.errorHandling),
+    fallbackRoute: toStringValue(value.fallbackRoute),
+    escalationRoute: toStringValue(value.escalationRoute),
+    designRationale: toStringValue(value.designRationale) || undefined,
+    timeoutMs: Number.isFinite(Number(value.timeoutMs)) ? Number(value.timeoutMs) : undefined,
+  };
+
+  const parsed = WorkflowDefinitionSchema.safeParse(workflow);
+  if (!parsed.success) {
+    logger.warn("Workflow definition normalization failed, skipping workflow", {
+      agentId,
+      skillId,
+      workflowId,
+      issues: parsed.error.issues.map((issue) => ({
+        path: issue.path.join("."),
+        message: issue.message,
+      })),
+    });
+    return null;
+  }
+
+  return parsed.data;
+}
+
+function normalizeWorkflows(
+  value: unknown,
+  agentId: string,
+  skillId: string,
+): WorkflowDefinition[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((workflow, index) => normalizeWorkflowDefinition(workflow, agentId, skillId, index))
+      .filter((workflow): workflow is WorkflowDefinition => workflow !== null);
+  }
+
+  if (!isRecord(value)) {
+    return [];
+  }
+
+  return Object.entries(value)
+    .map(([implicitId, workflow], index) =>
+      normalizeWorkflowDefinition(workflow, agentId, skillId, index, implicitId)
+    )
+    .filter((workflow): workflow is WorkflowDefinition => workflow !== null);
+}
+
 function normalizeSkillDefinition(
   agentId: string,
   skillId: string,
@@ -223,8 +456,8 @@ function normalizeSkillDefinition(
       : { consumes: [], produces: [] };
 
   const skill: SkillDefinition = {
-    id: toStringValue(record.id) || agentId,
-    name: toStringValue(record.name) || agentId,
+    id: toStringValue(record.id) || skillId,
+    name: toStringValue(record.name) || skillId,
     purpose: toStringValue(record.purpose) || toStringValue(record.description),
     businessValue: toStringValue(record.businessValue) || toStringValue(record.business_value),
     triggerTypes,
@@ -240,7 +473,7 @@ function normalizeSkillDefinition(
     interoperabilityContract,
     wowCriteria: toStringArray(record.wowCriteria),
     safeCriteria: toStringArray(record.safeCriteria),
-    workflows: [],
+    workflows: normalizeWorkflows(record.workflows, agentId, skillId),
     sourcePath: skillSourcePath,
     rawContent: content,
   };

@@ -7,6 +7,7 @@ import { getOperationalKnowledgeAccessor } from "./knowledge/accessor.js";
 import { shouldSendQuotaNotification } from "./quota-notifications.js";
 import { getStandbyMessage, isStandbyModeEnabled } from "./telegram-controls.js";
 import { classifyTelegramIntent, inferAudienceRole, normalizeForMatching, } from "./telegram-intents.js";
+import { buildTelegramConversationKey, getTelegramMessageThreadId, } from "./telegram-conversation.js";
 import { renderControlledScaffold, } from "./controlled-deliverables.js";
 import { buildAgentResponseContract } from "./response-contracts.js";
 import { buildProposalArtifact, extractClientNameFromRequest, formatProposalDate, parseProposalStageSections, slugifyClientName, isGenericCommercialProcessName, } from "./proposals/proposal-artifact.js";
@@ -17,6 +18,7 @@ import { assessProposalIntake, buildProposalClarificationReply, } from "./propos
 import { getGitHubProposalsConfig, publishProposalArtifact, } from "./proposals/github-publisher.js";
 import { formatProposalValidationError, validateProposalArtifactHtml, } from "./proposals/proposal-validation.js";
 import { composeCommercialProposalDraft } from "./proposals/proposal-composer.js";
+import { isTelegramConversationUpdateStale, recordTelegramConversationUpdate, } from "./telegram-update-guard.js";
 /**
  * TELEGRAM GATEWAY — Multimodal ingress/egress and agent orchestration.
  *
@@ -33,6 +35,60 @@ import { composeCommercialProposalDraft } from "./proposals/proposal-composer.js
  */
 const DEFAULT_AGENT_TIMEOUT_MS = 120_000;
 const MIN_AGENT_TIMEOUT_MS = 15_000;
+const PROPOSAL_CONTINUATION_KEYWORDS = [
+    "continua",
+    "continuar",
+    "sigue",
+    "sigamos",
+    "avanza",
+    "completa",
+    "ajusta",
+    "refina",
+    "corrige",
+    "actualiza",
+    "version final",
+    "versión final",
+    "siguiente paso",
+    "hazlo",
+    "hazla",
+    "generalo",
+    "generala",
+];
+const PROPOSAL_FIELD_HINT_KEYWORDS = [
+    "alcance",
+    "scope",
+    "cronograma",
+    "timeline",
+    "objetivo",
+    "servicio",
+    "cliente",
+    "inversion",
+    "inversión",
+    "precio",
+    "pricing",
+    "modalidad",
+    "entregables",
+    "deliverables",
+    "moneda",
+];
+const CAPABILITY_EXPLORATION_KEYWORDS = [
+    "que puedes hacer",
+    "qué puedes hacer",
+    "que mas puedes hacer",
+    "qué más puedes hacer",
+    "otras capacidades",
+    "capacidades del bot",
+    "que sabes",
+    "qué sabes",
+    "skills",
+    "agentes",
+    "workflow",
+    "workflows",
+    "asistentes",
+    "herramientas",
+    "menu",
+    "menú",
+];
 function getAgentTimeoutMs() {
     const raw = Number(process.env.AGENT_TIMEOUT_MS);
     if (Number.isFinite(raw) && raw >= MIN_AGENT_TIMEOUT_MS) {
@@ -218,7 +274,58 @@ function summarizeProposalValidationIssues(issues) {
     }));
 }
 function shouldRequireProposalIntake(intent) {
-    return intent.templateName === "proposal" && intent.kind !== "operational_lookup";
+    return intent.templateName === "proposal" && intent.kind === "agent";
+}
+function includesAnyNormalizedKeyword(haystack, keywords) {
+    return keywords.some((keyword) => haystack.includes(normalizeForMatching(keyword)));
+}
+function hasProposalConversationSignals(recentMessages, threadMemoryContext) {
+    const normalizedThreadContext = normalizeForMatching(threadMemoryContext ?? "");
+    if (normalizedThreadContext.includes("tipo proposal")
+        || normalizedThreadContext.includes("estado comercial")) {
+        return true;
+    }
+    return recentMessages.some((message) => {
+        const normalizedMessage = normalizeForMatching(message.content);
+        if (!normalizedMessage) {
+            return false;
+        }
+        if (normalizedMessage.includes("propuesta comercial")) {
+            return true;
+        }
+        return classifyTelegramIntent(message.content).templateName === "proposal";
+    });
+}
+function shouldPreserveProposalConversationContext(currentText, currentIntent, recentMessages, threadMemoryContext) {
+    const normalizedCurrentMessage = currentIntent.normalizedMessage || normalizeForMatching(currentText);
+    if (!normalizedCurrentMessage) {
+        return false;
+    }
+    if (includesAnyNormalizedKeyword(normalizedCurrentMessage, CAPABILITY_EXPLORATION_KEYWORDS)) {
+        return false;
+    }
+    if (currentIntent.templateName === "proposal") {
+        return true;
+    }
+    if (!hasProposalConversationSignals(recentMessages, threadMemoryContext)) {
+        return false;
+    }
+    if (currentIntent.kind !== "agent") {
+        return false;
+    }
+    if (currentIntent.templateName) {
+        return false;
+    }
+    if (currentIntent.responseMode !== "default") {
+        return false;
+    }
+    if (includesAnyNormalizedKeyword(normalizedCurrentMessage, PROPOSAL_CONTINUATION_KEYWORDS)) {
+        return true;
+    }
+    if (includesAnyNormalizedKeyword(normalizedCurrentMessage, PROPOSAL_FIELD_HINT_KEYWORDS)) {
+        return true;
+    }
+    return false;
 }
 function resolveProposalClientSlug(text) {
     if (!text) {
@@ -448,9 +555,6 @@ async function tryOperationalRoute(text, intent, log) {
     if (intent.kind === "agent") {
         return null;
     }
-    if (intent.templateName === "proposal") {
-        return null;
-    }
     try {
         const kb = await getOperationalKnowledgeAccessor();
         const modules = await kb.listProcesses();
@@ -560,6 +664,16 @@ export function createBot(runtime) {
     // Handle all incoming messages (text, photos, gifs, etc.)
     bot.on("message", async (ctx) => {
         const userId = ctx.from.id;
+        const updateId = ctx.update.update_id;
+        const messageThreadId = getTelegramMessageThreadId(ctx.message);
+        const conversationContext = {
+            conversationKey: buildTelegramConversationKey({
+                chatId: ctx.chat?.id,
+                userId,
+                messageThreadId,
+            }),
+        };
+        const conversationKey = conversationContext.conversationKey;
         let text = ctx.message.text || ctx.message.caption || "";
         let pendingMsgId = null;
         let proposalKnowledgeContext = null;
@@ -582,6 +696,40 @@ export function createBot(runtime) {
             await ctx.api.deleteMessage(ctx.chat.id, pendingMsgId).catch(() => { });
             pendingMsgId = null;
         };
+        const isStaleConversationUpdate = async () => {
+            try {
+                return await isTelegramConversationUpdateStale(runtime.instanceName, conversationKey, updateId);
+            }
+            catch (error) {
+                log.warn("Failed to verify Telegram conversation freshness", {
+                    userId,
+                    updateId,
+                    conversationKey,
+                    error: error instanceof Error ? error.message : String(error),
+                });
+                return false;
+            }
+        };
+        const executeIfFresh = async (label, action) => {
+            if (await isStaleConversationUpdate()) {
+                log.info("Skipping stale Telegram response", {
+                    userId,
+                    updateId,
+                    conversationKey,
+                    label,
+                });
+                return null;
+            }
+            return action();
+        };
+        const replyFresh = (content, options) => executeIfFresh("reply", () => options ? ctx.reply(content, options) : ctx.reply(content));
+        const replyWithDocumentFresh = (document, options) => executeIfFresh("reply_document", () => options ? ctx.replyWithDocument(document, options) : ctx.replyWithDocument(document));
+        const sendMessageFresh = (targetChatId, content, useHtml = true) => executeIfFresh("send_message", () => useHtml
+            ? ctx.api.sendMessage(targetChatId, content, { parse_mode: "HTML" })
+            : ctx.api.sendMessage(targetChatId, content));
+        const sendDocumentFresh = (targetChatId, document, options) => executeIfFresh("send_document", () => options
+            ? ctx.api.sendDocument(targetChatId, document, options)
+            : ctx.api.sendDocument(targetChatId, document));
         // --- SKIP SERVICE MESSAGES ---
         // Telegram forum topics generate service messages (forum_topic_created, etc.)
         // that have no text and no media. These must be silently skipped.
@@ -596,12 +744,20 @@ export function createBot(runtime) {
             log.info("Skipping service message", { userId, type: Object.keys(msg).filter(k => typeof msg[k] !== 'undefined' && !['message_id', 'from', 'chat', 'date'].includes(k)).slice(0, 3) });
             return;
         }
+        await recordTelegramConversationUpdate(runtime.instanceName, conversationKey, updateId).catch((error) => {
+            log.warn("Failed to register latest Telegram conversation update", {
+                userId,
+                updateId,
+                conversationKey,
+                error: error instanceof Error ? error.message : String(error),
+            });
+        });
         if (isStandbyModeEnabled()) {
             log.info("Standby mode enabled; skipping agent cognition", {
                 userId,
-                updateId: ctx.update.update_id,
+                updateId,
             });
-            await ctx.reply(getStandbyMessage());
+            await replyFresh(getStandbyMessage());
             return;
         }
         // --- MULTIMODAL MIDDLEWARE (ROUTING & EXTRACTION) ---
@@ -615,7 +771,7 @@ export function createBot(runtime) {
                     userId,
                     reason: sanitized.reason,
                 });
-                await ctx.reply(SECURITY_INPUT_BLOCKED_MESSAGE);
+                await replyFresh(SECURITY_INPUT_BLOCKED_MESSAGE);
                 return;
             }
             text = sanitized.cleaned;
@@ -623,8 +779,8 @@ export function createBot(runtime) {
         if (hasMedia) {
             if (ctx.message.voice || ctx.message.audio) {
                 try {
-                    const pendingReply = await ctx.reply("Extrayendo y transcribiendo audio...");
-                    pendingMsgId = pendingReply.message_id;
+                    const pendingReply = await replyFresh("Extrayendo y transcribiendo audio...");
+                    pendingMsgId = pendingReply?.message_id ?? null;
                     const file = await ctx.getFile();
                     if (file.file_path) {
                         const url = `https://api.telegram.org/file/bot${runtime.credentials.telegramBotToken}/${file.file_path}`;
@@ -634,7 +790,7 @@ export function createBot(runtime) {
                         if (!sanitized.safe) {
                             log.warn("Audio transcript flagged by security", { userId, reason: sanitized.reason });
                             await dismissPendingReply();
-                            await ctx.reply(SECURITY_INPUT_BLOCKED_MESSAGE);
+                            await replyFresh(SECURITY_INPUT_BLOCKED_MESSAGE);
                             return;
                         }
                         text = `<SYSTEM_OVERRIDE>
@@ -722,11 +878,16 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
         // The timeout must stay live even if we return early from the proposal gate.
         agentTimeoutPromise.catch(() => { });
         let proposalConversationText = text;
+        const currentIntent = classifyTelegramIntent(text, { hasMedia });
+        let intent = currentIntent;
         try {
-            threadId = await runtime.memory.getOrCreateActiveThread(userId, runtime.instanceName);
+            threadId = await runtime.memory.getOrCreateActiveThread(userId, runtime.instanceName, conversationContext);
             const recentMessages = await runtime.memory.getRecentMessages(userId, 6, threadId, runtime.instanceName);
             threadMemoryContext = await describeThreadMemory(userId, threadId, runtime.instanceName);
-            proposalConversationText = buildProposalConversationText(text, recentMessages, threadMemoryContext);
+            if (shouldPreserveProposalConversationContext(text, currentIntent, recentMessages, threadMemoryContext)) {
+                proposalConversationText = buildProposalConversationText(text, recentMessages, threadMemoryContext);
+                intent = classifyTelegramIntent(proposalConversationText, { hasMedia });
+            }
         }
         catch (error) {
             log.warn("Failed to load proposal conversation history", {
@@ -734,7 +895,6 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
                 error: error instanceof Error ? error.message : String(error),
             });
         }
-        const intent = classifyTelegramIntent(proposalConversationText, { hasMedia });
         log.info("Telegram intent classified", {
             userId,
             kind: intent.kind,
@@ -748,19 +908,17 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
                 contextLength: proposalConversationText.length,
             });
         }
-        const proposalMode = intent.templateName === "proposal";
+        const proposalMode = intent.kind === "agent" && intent.templateName === "proposal";
         // Proposal content must not stay in shared Telegram chats; route it to the user's private chat instead.
         const deliverProposalPrivately = proposalMode && ctx.chat?.type !== "private";
         const proposalDeliveryTargetId = deliverProposalPrivately ? userId : ctx.chat.id;
         const sendProposalText = async (content, useHtml = true) => {
             if (deliverProposalPrivately) {
-                return useHtml
-                    ? ctx.api.sendMessage(proposalDeliveryTargetId, content, { parse_mode: "HTML" })
-                    : ctx.api.sendMessage(proposalDeliveryTargetId, content);
+                return sendMessageFresh(proposalDeliveryTargetId, content, useHtml);
             }
             return useHtml
-                ? ctx.reply(content, { parse_mode: "HTML" })
-                : ctx.reply(content);
+                ? replyFresh(content, { parse_mode: "HTML" })
+                : replyFresh(content);
         };
         if (deliverProposalPrivately) {
             log.info("Proposal delivery routed to private chat", {
@@ -804,6 +962,17 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
                 missingRecommended: intakeAssessment.missingRecommendedFields.map((field) => field.id),
             });
             if (!intakeAssessment.isReady) {
+                if (await isStaleConversationUpdate()) {
+                    if (pendingMsgId) {
+                        await dismissPendingReply();
+                    }
+                    log.info("Skipping stale proposal clarification turn", {
+                        userId,
+                        updateId,
+                        conversationKey,
+                    });
+                    return;
+                }
                 if (pendingMsgId) {
                     await dismissPendingReply();
                 }
@@ -863,7 +1032,11 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
             return resolvedProposalKnowledgeContext;
         };
         const cognitionTask = (async () => {
-            if (intent.templateName === "proposal") {
+            const directResponse = await tryOperationalRoute(text, intent, log);
+            if (directResponse) {
+                return directResponse;
+            }
+            if (proposalMode) {
                 const resolvedProposalKnowledgeContext = await ensureProposalKnowledgeContext("draft");
                 const draftStartedAt = Date.now();
                 const proposalDraft = await composeCommercialProposalDraft(getAgentDeps(), {
@@ -884,15 +1057,14 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
                 proposalArtifactClientName = proposalDraft.clientName;
                 return buildProposalReadyReply(proposalDraft.clientName, proposalDraft.serviceName);
             }
-            const directResponse = await tryOperationalRoute(text, intent, log);
-            if (directResponse) {
-                return directResponse;
-            }
             const responseContract = buildAgentResponseContract(intent);
             if (responseContract) {
-                return runAgent(getAgentDeps(), userId, text, { responseContract });
+                return runAgent(getAgentDeps(), userId, text, {
+                    responseContract,
+                    conversationContext,
+                });
             }
-            return runAgent(getAgentDeps(), userId, text);
+            return runAgent(getAgentDeps(), userId, text, { conversationContext });
         })();
         let result = await Promise.race([
             cognitionTask,
@@ -902,11 +1074,22 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
             return `Lo siento, la solicitud tardó demasiado en procesarse (Timeout ${Math.floor(timeoutMs / 1000)}s). Por favor intenta de nuevo.`;
         });
         log.info("Agent cognition complete", { userId, resultLength: result.length });
+        if (await isStaleConversationUpdate()) {
+            if (pendingMsgId) {
+                await dismissPendingReply();
+            }
+            log.info("Aborting stale Telegram update after cognition", {
+                userId,
+                updateId,
+                conversationKey,
+            });
+            return;
+        }
         let proposalArtifact = null;
         let proposalArtifactBlocked = false;
         let publishedProposal = null;
         let proposalPublishFailed = false;
-        if (intent.templateName === "proposal") {
+        if (proposalMode) {
             try {
                 const resolvedProposalKnowledgeContext = await ensureProposalKnowledgeContext("artifact");
                 const artifactStartedAt = Date.now();
@@ -1031,9 +1214,9 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
                 });
             }
         }
-        if (threadId) {
+        if (threadId && !(await isStaleConversationUpdate())) {
             try {
-                if (intent.templateName === "proposal" && proposalIntakeAssessment) {
+                if (proposalMode && proposalIntakeAssessment) {
                     const proposalStatus = publishedProposal
                         ? "published"
                         : proposalArtifact
@@ -1058,6 +1241,13 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
                     error: error instanceof Error ? error.message : String(error),
                 });
             }
+        }
+        else if (threadId) {
+            log.info("Skipping stale thread-memory persistence", {
+                userId,
+                updateId,
+                conversationKey,
+            });
         }
         // --- EGRESS FALLBACK & FORMATTING LOOP ---
         // Ensures robust message delivery even if Telegram's strict HTML parser fails
@@ -1112,7 +1302,7 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
                 });
             });
         }
-        if (!proposalArtifact && intent.templateName === "proposal") {
+        if (!proposalArtifact && proposalMode) {
             const clientName = proposalArtifactClientName
                 ?? proposalKnowledgeContext?.intake?.clientName
                 ?? extractClientNameFromRequest(text)
@@ -1137,8 +1327,8 @@ Confirma recepcion. Ofrece delegar a Document Intelligence para analisis profund
             const proposalDocument = new InputFile(Buffer.from(proposalArtifact.html, "utf8"), proposalArtifact.fileName);
             const proposalCaption = `HTML autocontenido generado para ${proposalArtifact.clientName}.`;
             const sendProposalDocument = deliverProposalPrivately
-                ? () => ctx.api.sendDocument(proposalDeliveryTargetId, proposalDocument, { caption: proposalCaption })
-                : () => ctx.replyWithDocument(proposalDocument, { caption: proposalCaption });
+                ? () => sendDocumentFresh(proposalDeliveryTargetId, proposalDocument, { caption: proposalCaption })
+                : () => replyWithDocumentFresh(proposalDocument, { caption: proposalCaption });
             await sendProposalDocument().catch((error) => {
                 log.error("Failed to send proposal HTML document", {
                     userId,

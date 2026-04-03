@@ -10,6 +10,7 @@ import { registerTool } from "./tools/registry.js";
 import { registerEcosystemAgents } from "./tools/delegate.js";
 import { loadAllAgents } from "./ecosystem/loader.js";
 import { createRouteExecutor, getRouteRequestDefinition, } from "./ecosystem/router.js";
+import { createWorkflowExecutor, getWorkflowExecutionDefinition, } from "./ecosystem/workflow-tool.js";
 import { logger } from "./logger.js";
 import { initializeOpenClawSymlinks } from "./tools/symlink.js";
 import { claimTelegramUpdate, markTelegramUpdateCompleted, markTelegramUpdateFailed, } from "./telegram-update-guard.js";
@@ -210,6 +211,9 @@ async function buildServiceContext() {
                 const routeDefinition = getRouteRequestDefinition(ecosystem);
                 const routeExecutor = createRouteExecutor(ecosystem, runner);
                 registerTool(routeDefinition, routeExecutor);
+                const workflowDefinition = getWorkflowExecutionDefinition(ecosystem);
+                const workflowExecutor = createWorkflowExecutor(ecosystem, runner);
+                registerTool(workflowDefinition, workflowExecutor);
             }
             const bot = createBot(runtime);
             await initializeBotInstance(bot, name);
@@ -243,6 +247,9 @@ async function buildServiceContext() {
             const routeDefinition = getRouteRequestDefinition(ecosystem);
             const routeExecutor = createRouteExecutor(ecosystem, runner);
             registerTool(routeDefinition, routeExecutor);
+            const workflowDefinition = getWorkflowExecutionDefinition(ecosystem);
+            const workflowExecutor = createWorkflowExecutor(ecosystem, runner);
+            registerTool(workflowDefinition, workflowExecutor);
             initDelegation(deps);
             logger.info("Ecosystem initialized (legacy mode)", {
                 agents: [...ecosystem.agents.keys()],
